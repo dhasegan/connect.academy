@@ -1,0 +1,131 @@
+
+<!-- Course Name -->
+<div class="course-name">
+    <a href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
+</div>
+
+<div class="row">
+    <!-- Picture here -->
+    <div class="col-md-5">
+        <div class="course-image-wrapper">
+            {% if course.image %}
+                <img class="img-rounded course-image" src="{% url 'course_image' course.slug %}" alt="{{course.name}} image">
+            {% else %}
+                <img class="img-rounded course-image" src="{{ STATIC_URL }}books.jpg" alt="{{course.name}} image">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Some info -->
+    <div class="col-md-7 course-brief-detail-wrapper">
+        {% if course.course_id %}
+            <div class="course-brief-detail">
+                    <strong> Course ID: </strong> 
+                    <span class="content">
+                        {{ course.course_id }}
+                    </span>
+            </div>
+        {% endif %}
+        {% if course.credits %}
+            <div class="course-brief-detail">
+                    <strong> Credits: </strong> 
+                    <span class="content">
+                        {{ course.credits }}
+                    </span>
+            </div>
+        {% endif %}
+        {% if course.participants %}
+            <div class="course-brief-detail">
+                    <strong> Min. | Max. participants: </strong> 
+                    <span class="content">
+                        {{ course.participants }}
+                    </span>
+            </div>
+        {% endif %}
+        {% if course.abbreviation %}
+            <div class="course-brief-detail">
+                    <strong> Abbreviation: </strong> 
+                    <span class="content">
+                        {{ course.abbreviation }}
+                    </span>
+            </div>
+        {% endif %}
+        {% if course_type %}
+            <div class="course-brief-detail">
+                    <strong> Course Type: </strong> 
+                    <span class="content">
+                        {{ course_type }}
+                    </span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'objects/course_ratings.html' %}
+
+{% if course.instructors %}
+<div class="course-detail">
+    <strong> Instructors: </strong> 
+    <div class="content">
+        {% for prof in instructors %}
+            {{ prof.name }}; 
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if course.description %}
+<div class="course-detail">
+    <strong> Description: </strong> 
+    <div class="content">
+        {{ course.description|linebreaks }}
+    </div>
+</div>
+{% endif %}
+
+{% if course.additional_info %}
+<div class="course-detail">
+    <strong> Additional information: </strong> 
+    <div class="content">
+        {{ course.additional_info }}
+    </div>
+</div>
+{% endif %}
+
+{% if course.grades %}
+<div class="course-detail">
+    <strong> Grade breakdown: </strong> 
+    <div class="content">
+        {{ course.grades }}
+    </div>
+</div>
+{% endif %}
+
+{% if course.grades_info %}
+<div class="course-detail">
+    <strong> Additional Information about grades: </strong> 
+    <div class="content">
+        {{ course.grades_info }}
+    </div>
+</div>
+{% endif %}
+
+{% if course.hours_per_week %}
+<div class="course-detail">
+    <strong> Hours per week: </strong> 
+    <span class="content">
+        {{ course.hours_per_week }}
+    </span>
+</div>
+{% endif %}
+
+{% if course.catalogue %}
+<div class="course-detail">
+    <strong> Catalogue: </strong> 
+    <span class="content">
+        {{ course.catalogue }}
+    </span>
+</div>
+{% endif %}
+
+<!-- sections_info is useless -->

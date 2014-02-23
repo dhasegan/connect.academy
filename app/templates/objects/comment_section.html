@@ -1,0 +1,38 @@
+{% load humanize %}
+
+<div class="panel panel-default comments">
+    <div class="panel-body">
+        <form role="form" action="{% url 'submit_comment' %}" method="post">
+            <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
+            <input type="hidden" name="course_id" value="{{course.id}}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-9">
+                    <textarea class="form-control comment-submit" rows="2" max-length="1000" placeholder="Write a comment..." name="comment"></textarea>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="comments-display">
+            {% for comment in comments reversed %}
+                <hr>
+                <div class="row">
+                    <div class="text-muted col-md-4"> @{{ comment.id }} </div>
+                    <div class="text-muted col-md-8">
+                        <div class="comment-datetime">
+                            {{ comment.datetime|naturaltime }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-text">
+                    {{ comment.comment }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

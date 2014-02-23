@@ -1,0 +1,47 @@
+<div class="ratings">
+    {% for rating in ratings %}
+        <div class="row">
+            <form class="rating-form" method="post" action="/vote_course">
+                <div class="col-md-5">
+                    {% if rating.type != 'Professor' %}
+                        {{ rating.type }}:
+                    {% else %}
+                        {{ rating.prof }}:
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    {% if user_auth %}
+                        <span class="badge course-rating"> <span class="glyphicon glyphicon-star {% if rating.my_score %} yellow-star {% endif %}"></span>
+                            <span class="rating-my-score"> {% if rating.my_score %} {{ rating.my_score }} {% endif %} </span>
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <span class="rating-stars {% if not user_auth %} ratings-tooltip {% endif %} {% if user_auth %} ratings-tooltip-clarif {% endif %} ">
+                    </span>
+                    <span class="rating-nrs">
+                        ({{ rating.count }})
+                    </span>
+                </div>
+
+                {% csrf_token %}
+                <input type="hidden" name="course_id" value="{{ course.id }}">
+                <input type="hidden" name="username" value="{{ user_auth }}">
+                <input type="hidden" name="rating_value" value="{{ rating.score }}">
+                <input type="hidden" name="rating_type" value="{{ rating.type_db }}">
+                <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
+                <input type="hidden" name="old_score" value="{% if rating.my_score %} {{ rating.my_score }} {% endif %}">
+                {% if rating.type == 'Professor' %}
+                    <input type="hidden" name="profname" value="{{ rating.prof }}">
+                {% endif %}
+                {% if user_auth %}
+                    <input type="hidden" name="authenticated" value="True">
+                {% endif %}
+            </form>
+        </div>
+
+        {% if rating.type == 'Difficulty' %}
+            <hr/>
+        {% endif %}
+    {% endfor %}
+</div>

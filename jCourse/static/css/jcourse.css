@@ -1,0 +1,125 @@
+
+/********* Main page ***********/
+.course-block-wrapper {
+    padding-bottom: 12px;
+}
+
+.school-group {
+    margin-top: 8px;
+}
+
+.course-image {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.course-block-wrapper .panel-course .panel-body {
+    min-height: 195px;
+}
+
+.course-name {
+    font-size: 18px;
+}
+.panel-body .course-credits {
+    float: right;
+}
+
+.panel-body .course-rating {
+    float: right;
+}
+
+.panel-body .course-rating .yellow-star {
+    color: #EDDA74;
+}
+
+.badge.course-credits {
+    background-color: #C38EC7;
+}
+
+.badge.course-rating {
+    margin-top: 2px;
+    background-color: #659EC7;
+}
+
+.course-catalog {
+    font-size: 10px;
+    margin-top: 12px;
+}
+
+/* Credit slider */
+#credit-slider .ui-slider-range {
+    background: #729fcf;
+}
+#credit-slider .ui-slider-handle {
+    border-color: #729fcf;
+}
+
+.credit-slider-values {
+    margin-top: 15px;
+}
+
+/* Login form */
+.login-form .login-input {
+    max-width: 120px;
+}
+
+/******* Course page *********/
+.course-details .course-brief-detail-wrapper {
+    margin-top: 10px;
+}
+
+.course-details .course-detail {
+    margin-top: 16px;
+}
+
+.main-content .course-details .course-brief-detail-wrapper .course-brief-detail {
+    margin-top: 4px;
+}
+
+/* Comments */
+.comments .comment-submit {
+    resize: vertical;
+}
+
+.comments .comments-display hr {
+    margin-bottom: 12px;
+}
+
+.comments .comment-text {
+    margin-top: 6px;
+}
+
+.comments .comment-datetime {
+    float: right;
+}
+
+/* Ratings */
+.ratings {
+    margin-top: 8px;
+}
+
+.ratings hr {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.ratings .rating-form .rating-nrs {
+    font-size: 10px;
+}
+
+.ratings .yellow-star {
+    color: #EDDA74;
+}
+
+/******* All Comments page *******/
+.comments-page .comments-display hr {
+    margin-bottom: 12px;
+}
+
+.comments-page .comment-text {
+    margin-top: 6px;
+}
+
+.comments-page .comment-datetime {
+    float: right;
+}

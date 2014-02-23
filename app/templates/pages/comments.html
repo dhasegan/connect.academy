@@ -1,0 +1,30 @@
+{% extends 'pages/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="panel panel-default comments-page">
+        <div class="panel-body">
+            <div class="comments-display">
+                {% for comment in comments reversed %}
+                    <div class="row">
+                        <div class="text-muted col-md-1"> @{{ comment.id }} </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'course_page' comment.course.slug %}"> {{ comment.course.name }} </a>
+                        </div>
+                        <div class="text-muted col-md-5">
+                            <div class="comment-datetime">
+                                {{ comment.datetime|naturaltime }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-text">
+                        {{ comment.comment }}
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

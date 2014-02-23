@@ -1,0 +1,52 @@
+<div class="col-md-6 course-block-wrapper">
+<div class="panel panel-default panel-course
+{% if course.major %} major-{{ course.major }} {% endif %}
+{% if course.school %} school-{{ course.school }} {% endif %}
+{% if course.studies %} studies-{{ course.studies }} {% endif %}">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="course-name">
+                    <a href="/course/{{ course.course.slug }}">{{ course.course.name }}</a>
+                </div>
+            </div>
+            <div class="col-md-2">
+                    <span class="badge course-credits"> {{ course.course.credits }} </span>
+                    {% if course.overall_rating %}
+                        <span class="badge course-rating"> <span class="glyphicon glyphicon-star yellow-star"></span> {{ course.overall_rating|floatformat:1 }} </span>
+                    {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+              {% if course.course.image %}
+                <img class="img-rounded course-image" data-original="{% url 'course_image' course.course.slug %}" alt="{{course.course.name}} image">
+              {% else %}
+                <img class="img-rounded course-image" src="{{ STATIC_URL }}books.jpg" alt="{{course.course.name}} image">
+              {% endif %}
+            </div>
+
+            <div class="col-md-8 course-details">
+                
+
+                <div class="course-instructors">
+                    {% for prof in course.profs|slice:":3" %}
+                        {{ prof.name }};
+                    {% endfor %}
+                    {% if course.profs|length > 3 %}
+                        ...
+                    {% endif %}
+                </div>
+
+                <div class="course-rating">
+                    
+                </div>
+
+                <p class="course-catalog text-muted">
+                    {{ course.catalogue }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

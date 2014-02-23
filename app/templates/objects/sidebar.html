@@ -1,0 +1,67 @@
+<!-- sidebar -->
+<div class="panel panel-default">
+  <div class="panel-body">
+  	<!-- Search bar -->
+    {% comment %}
+    <div class="input-group">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+      <input type="text" class="form-control" placeholder="Search">
+      <!-- Remove it if AJAX'd -->
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div>
+    <!-- IDEA: AJAX Querying -->
+  	<hr>
+    {% endcomment %}
+
+    <input type="text" class="form-control course-search-bar" placeholder="Search by course name">
+
+    <hr>
+
+    <div class="btn-group studies-group" data-toggle="buttons">
+      <label class="btn btn-primary btn-studies">
+        <input type="radio" class="studies-radio" name="studies" id="st_UG"> UG </input>
+      </label>
+      <label class="btn btn-primary btn-studies">
+        <input type="radio" class="studies-radio" name="studies" id="st_Grad"> Grad </input>
+      </label>
+      <label class="btn btn-primary btn-studies active">
+        <input type="radio" class="studies-radio" name="studies" id="st_Both"> Both </input>
+      </label>
+    </div>
+
+    <hr>
+
+    <!-- Checkboxes for majors -->
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" class="major-checkbox" id="all-majors-cb" value="">
+          All majors
+      </label>
+    </div>
+    {% for category in categories %}
+    <div class="checkbox major-cb">
+      <label>
+        <input type="checkbox" class="major-checkbox cb-{{category.2}}  " id="checkbox_{{ category.0 }}" value="">
+        {{ category.1 }}
+      </label>
+    </div>
+    {% endfor %}
+
+    <hr>
+
+    <h5>Credits range:</h5>
+    <div id="credit-slider"></div>
+    <div class="credit-slider-values row">
+      <div class="col-md-4">
+        <input class="form-control credit-slider-handle" id="slider-handle-0" value="" disabled>
+      </div>
+      <div class="col-md-4"> </div>
+      <div class="col-md-4">
+        <input class="form-control credit-slider-handle" id="slider-handle-1" value="" disabled>
+      </div>
+    </div>
+    
+  </div>
+</div>
