@@ -3,6 +3,11 @@
 from os import environ, path
 import boto
 
+#E-mail:
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+
+
 DEBUG = environ.get('JCOURSE_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
 
@@ -134,6 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'storages',
     'app',
+    'south'
 )
 
 # A sample logging configuration. The only tangible logging

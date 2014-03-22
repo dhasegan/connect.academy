@@ -6,14 +6,17 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="/home">jCourse</a>
+    <a class="navbar-brand" href="/home">Link.Academy</a>
   </div>
 
   <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
+  {% if user_auth %}
     <ul class="nav navbar-nav">
       <li {% if page == 'home' %} class="active" {% endif %}><a href="/home">All courses</a></li>
       <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="/all_comments">All comments</a></li>
     </ul>
+  {% endif %}
+  
     {% include 'objects/login.html' %}
     {% comment %}
     <ul class="nav navbar-nav navbar-right">

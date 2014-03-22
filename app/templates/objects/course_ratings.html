@@ -34,6 +34,7 @@
                 {% if rating.type == 'Professor' %}
                     <input type="hidden" name="profname" value="{{ rating.prof }}">
                 {% endif %}
+
                 {% if user_auth %}
                     <input type="hidden" name="authenticated" value="True">
                 {% endif %}

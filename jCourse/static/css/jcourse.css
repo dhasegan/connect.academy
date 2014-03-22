@@ -123,3 +123,27 @@
 .comments-page .comment-datetime {
     float: right;
 }
+
+/******* Welcome page **********/
+
+.centered-form{
+    margin-top: 60px;
+}
+
+.centered-form .panel{
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: rgba(0, 0, 0, 0.3);
+}
+
+#home-image-container {
+    float:left;
+    width:30%;
+}
+
+
+
+#home-container {   
+   position:relative;
+   top:90px;
+   
+}

@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
@@ -7,6 +6,8 @@ from app.course_info import *
 
 class jUser(User):
     department = models.CharField(max_length=50)
+    university = models.ForeignKey('University',default = 1)
+    confirmation_hash = models.CharField(max_length = 100, default="") 
 
 class Professor(models.Model):
     name = models.CharField(max_length=50)
@@ -67,3 +68,7 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return "Comm" + str(self.id)
+
+class University(models.Model):
+    name = models.CharField(max_length=100)
+    domain = models.CharField(max_length=100)
