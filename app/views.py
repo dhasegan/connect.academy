@@ -148,7 +148,7 @@ def login_action(request):
     
     if not login_success(login_user, login_pass):
         #user not found.
-        context['error'] = "3The <b>username</b> " + login_user + " or <b>password</b> is incorrect. Please try again.<br/>"
+        context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
         context['error'] += "If you don't have an account, you may be able to register below.<br/>"
         
         return render(request, "pages/welcome_page.html", context)
@@ -169,7 +169,8 @@ def login_action(request):
         return redirect("home")
         
     else:
-        context['error'] = "4Invalid user! Please try again! The account may not be activated!"
+        context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
+        context['error'] += "If you don't have an account, you may be able to register below.<br/>"
         return render(request, "pages/welcome_page.html", context)
     
     raise Http404
@@ -181,6 +182,25 @@ def logout_action(request):
         user = request.user
     logout(request)
     return redirect('/')
+
+# Sends a confirmation e-mail to the user currently logged in (if e-mail is available)
+def send_confirmation(request):
+    return redirect('/home')
+#   if request.user.email and len(request.user.email) > 0:
+#        seed = ''.join(random.choice(string.lowercase) for x in range(30))
+#        confirmation_hash = hashlib.sha224(seed).hexdigest()
+#        request.user.confirmation_hash = confirmation_hash
+#        request.user.save()
+#        send_email_confirmation(request.user,confirmation_hash)
+#        return redirect("/home")
+#    else:
+#        # We don't have the user's e-mail address.
+#        if request.method != POST:
+#            return redirect("/send_confirmation")
+#        else:
+#            email = request.POST["email"]
+#            emailID, domain = email.split('@')
+
 
 def welcome(request):
     context = {

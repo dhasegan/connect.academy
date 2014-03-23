@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^login$','app.views.login_action', name='login'),
     url(r'^logout$', 'app.views.logout_action', name='logout'),
     url(r'^register$', 'app.views.signup_action', name='register'),
-    url(r'^vote_course', 'app.views.vote_course', name='vote_course')
+    url(r'^vote_course', 'app.views.vote_course', name='vote_course'),
+    url(r'^send_confirmation$', 'app.views.send_confirmation', name='send_confirmation')
 )

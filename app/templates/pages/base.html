@@ -15,6 +15,16 @@
       {% include 'objects/navbar.html' %}
 
       <div class="main-content">
+        {% if user_auth and not user_auth.is_active %}
+            
+        <div class="alert alert-danger">
+            {% if user_auth.email and user_auth.email != "" %}
+              Your account is not yet activated. Please check your email and open the confirmation link that we have sent you. <a href="/send_confirmation"> Resend confirmation link </a>
+            {% else %}
+              Your account is not yet activated. Click <a href="/send_confirmation">here</a> to activate it.
+            {% endif %}
+        </div>
+        {%endif%}
         {% block content %}
         {% endblock %}
       </div>
