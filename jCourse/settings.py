@@ -7,6 +7,8 @@ import boto
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 
+#Authentication Backends
+AUTHENTICATION_BACKENDS = ('app.helpers.jUserBackend',)
 
 DEBUG = environ.get('JCOURSE_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
