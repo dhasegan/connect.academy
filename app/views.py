@@ -138,6 +138,7 @@ def login_action(request):
     login_user = form.cleaned_data['username']
     login_pass = form.cleaned_data['password']
     
+    # Using jUserBackend, which also tries to find a match for the email address.
     user=authenticate(username = login_user,password=login_pass)
     if user is not None:
         # Found user
@@ -147,20 +148,21 @@ def login_action(request):
     
     
     if not login_success(login_user, login_pass):
-        #user not found.
+        #user not found neither on our database nor on campusnet
         context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
         context['error'] += "If you don't have an account, you may be able to register below.<br/>"
         
         return render(request, "pages/welcome_page.html", context)
     else:
-        # campusnet confirmed but user does not exist
+        # campusnet confirmed
         users = jUser.objects.filter(username=login_user).count()
         if users == 0:
-            user = jUser.objects.create_user(username=login_user, password=login_pass)
-            user.is_active = False
+            # Jacobs University user
+            jacobs = University.objects.filter(domain="jacobs-university.de")[0] 
+            user = jUser.objects.create_user(username=login_user, password=login_pass, university=jacobs)
+            user.is_active = False # Account inactive until confirmed
             user.save()
 
-    
     user = authenticate(username=login_user, password=login_pass)
     
     if user is not None:
@@ -184,23 +186,77 @@ def logout_action(request):
     return redirect('/')
 
 # Sends a confirmation e-mail to the user currently logged in (if e-mail is available)
+@login_required
 def send_confirmation(request):
-    return redirect('/home')
-#   if request.user.email and len(request.user.email) > 0:
-#        seed = ''.join(random.choice(string.lowercase) for x in range(30))
-#        confirmation_hash = hashlib.sha224(seed).hexdigest()
-#        request.user.confirmation_hash = confirmation_hash
-#        request.user.save()
-#        send_email_confirmation(request.user,confirmation_hash)
-#        return redirect("/home")
-#    else:
-#        # We don't have the user's e-mail address.
-#        if request.method != POST:
-#            return redirect("/send_confirmation")
-#        else:
-#            email = request.POST["email"]
-#            emailID, domain = email.split('@')
+    context = {
+        "page": "send_confirmation",
+    }
+    context.update(csrf(request))
+    context["user_auth"] = user_authenticated(request)
+    seed = ''.join(random.choice(string.lowercase) for x in range(30))
+    confirmation_hash = hashlib.sha224(seed).hexdigest()
+    
+    if request.user.email and len(request.user.email) > 0:
+        # The user already has an e-mail address
+        request.user.confirmation_hash = confirmation_hash
+        request.user.save()
+        confirmation_link = request.get_host() + "/confirmation/" + confirmation_hash
+        send_email_confirmation(request.user,confirmation_link)
+        return redirect("/home")
+    else:
+        # We don't have the user's e-mail address.
+        if request.method == "POST" and request.POST["email"]:
+            # The e-mail address is posted
+            form = EmailConfirmationForm(request.POST)
+            if not form.is_valid():
+                raise Http404
 
+            email = form.cleaned_data["email"]
+            emailID, domain = email.split('@')
+            universities = University.objects.filter(domain=domain)
+            if len(universities) < 1: 
+                # university not found
+                context["error"] = "Sorry, we don't have any <b>university</b> with the domain of your <b>e-mail address</b>. <br/>"
+                context["error"] += "Please check if you made any errors or come back soon.<br/>"
+                return render(request,"pages/send_confirmation.html", context)
+            else:
+                # university found
+                university = universities[0]
+                # We recognize the university
+                request.user.university = university
+                request.user.email = email
+                request.user.confirmation_hash = confirmation_hash
+                request.user.save()
+                confirmation_link = request.get_host() + "/confirmation/" + confirmation_hash
+                send_email_confirmation(request.user,confirmation_link)
+                return redirect("/home")
+        else: 
+            # e-mail is not posted
+            return render(request, "pages/send_confirmation.html", context)
+
+    raise Http404 # Should never reach this line
+
+def validate_user(request,confirmation):
+
+
+    user = get_object_or_404(jUser, confirmation_hash = confirmation)
+
+    user.is_active = True
+    user.confirmation_hash = ""  # don't need it anymore.
+    user.save()
+  
+    return redirect("/")
+
+# If a user receives a confirmation e-mail, but they didn't sign up, they can delete their account by following
+# the delete link. This is the view associated with the delete URL.
+def delete_user(request,confirmation):
+    context = {
+        "page" : "delete"
+    }
+    user = get_object_or_404(jUser, confirmation_hash = confirmation)
+    user.delete()
+    context["error"] = "User successfully deleted. <br/>" # using error for now, should probably change this.
+    return render(request,"pages/welcome_page.html", context)
 
 def welcome(request):
     context = {

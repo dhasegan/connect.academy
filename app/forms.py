@@ -67,3 +67,5 @@ class SignupForm(forms.Form):
     class Meta:
         model = jUser
 
+class EmailConfirmationForm(forms.Form):
+    email = forms.EmailField()

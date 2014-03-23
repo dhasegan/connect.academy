@@ -1,0 +1,19 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+	{% if error %}
+        <div class="alert alert-danger">
+            {{ error | safe}}
+        </div>
+    {% endif %}
+
+    <div >
+    	<form action="/send_confirmation" method="POST">
+    		{% csrf_token %}
+    		<input type="email" name="email" class="form-control input-sm" placeholder="University E-mail Address" required />
+    		<input type="submit" class="btn btn-info btn-block" value="Send Confirmation E-mail" />
+    	</form>
+    </div>
+    	
+
+{% endblock %}
