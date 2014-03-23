@@ -6,7 +6,7 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
-from app.helpers import send_email_confirmation
+from app.helpers import *
 import hashlib
 import string
 import random
@@ -138,55 +138,40 @@ def login_action(request):
     login_user = form.cleaned_data['username']
     login_pass = form.cleaned_data['password']
     
-    user=authenticate(email = login_user,password=login_pass)
+    user=authenticate(username = login_user,password=login_pass)
     if user is not None:
-        # Found user with that email and password
-        if user.is_authenticated():
-            # OK
-            login(email=login_user,password=login_pass)
-            context['user_auth']= user 
-            return render(request, "pages/home.html",context)
-        else:
-            # Wrong username/pass
-            context['error'] = "Oops... Something went wrong. We apologize. Please try logging in again.<br/>"  
-
-            return render(request,"pages/welcome_page.html",context)
-
-    user = authenticate(username=login_user,password=login_pass)
-    if user is not None:
-        if user.is_authenticated():
-            login(username=login_user,password=login_pass)
-            context['user_auth'] = user
-            return render(request,"pages/home.html",context)
-        else:
-            context['error'] = "Oops... Something went wrong. We apologize. Please try logging in again.<br/>"  
-            return render(request,"pages/welcome_page.html",context)
+        # Found user
+        login(request,user)
+        context['user_auth']= user 
+        return redirect("/home")
+    
     
     if not login_success(login_user, login_pass):
-        context['error'] = "You don't <b>exist</b> vlla."
+        #user not found.
+        context['error'] = "3The <b>username</b> " + login_user + " or <b>password</b> is incorrect. Please try again.<br/>"
         context['error'] += "If you don't have an account, you may be able to register below.<br/>"
+        
         return render(request, "pages/welcome_page.html", context)
-
-
-    users = jUser.objects.filter(username=login_username)
-    if len(users) == 0:
-        user = jUser.objects.create_user(username=login_username, password="1234")
-        user.save()
-
-    user = authenticate(username=login_username, password="1234")
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            if 'login' in request.META.get('HTTP_REFERER'):
-                return redirect('/')
-            return redirect(request.META.get('HTTP_REFERER'))
-        else:
-            context['error'] = "Invalid user! Please try again! The account may not be activated!"
-            return render(request, "pages/login_page.html", context)
     else:
-        context['error'] = "Invalid login! Please try again!"
-        return render(request, "pages/login_page.html", context)
+        # campusnet confirmed but user does not exist
+        users = jUser.objects.filter(username=login_user).count()
+        if users == 0:
+            user = jUser.objects.create_user(username=login_user, password=login_pass)
+            user.is_active = False
+            user.save()
 
+    
+    user = authenticate(username=login_user, password=login_pass)
+    
+    if user is not None:
+        login(request, user)
+        context['user_auth']=user
+        return redirect("home")
+        
+    else:
+        context['error'] = "4Invalid user! Please try again! The account may not be activated!"
+        return render(request, "pages/welcome_page.html", context)
+    
     raise Http404
 
 
@@ -200,9 +185,9 @@ def logout_action(request):
 def welcome(request):
     context = {
         "page": "welcome",
-        "user_auth": user_authenticated(request)
     }
     if user_authenticated(request):
+        context['user_auth'] = request.user
         return redirect('/home')
 
     return render(request,"pages/welcome_page.html",context)
@@ -272,7 +257,7 @@ def signup_action(request):
         auth_user = authenticate(username=username, password=password)
         if auth_user is not None:
             login(request, auth_user)
-            context["user_auth"] = user_authenticated(request)
+            context["user_auth"] = auth_user
             if 'login' in request.META.get('HTTP_REFERER'):
                 return redirect('/')
             return redirect(request.META.get('HTTP_REFERER'))

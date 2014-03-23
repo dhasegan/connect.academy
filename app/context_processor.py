@@ -4,7 +4,7 @@ from app.course_info import *
 
 def user_authenticated(request):
     if request.user and request.user.is_authenticated():
-        return request.user.username
+        return request.user
     return False
 
 def course_timeline_context(courses):

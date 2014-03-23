@@ -18,7 +18,14 @@
 {% else %}
 
   <ul class="nav navbar-nav navbar-right">
-    <li><a href="{% url 'logout' %}">Logout {{ user_auth }}</a></li>
+    <li><a href="{% url 'logout' %}">Logout <b>
+    {% if user_auth.first_name %}
+    {{ user_auth.first_name }}
+    {% else %}
+    {{ user_auth.username }}
+    {% endif %}
+    </b>
+    </a></li>
   </ul>
 
 {% endif %}

@@ -1,5 +1,9 @@
 from app.models import *
 from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.models import User, check_password
+from django.db.models import Q
+
 def send_email_confirmation(user,confirmation_link):
 	fname = user.first_name
 	lname = user.last_name
@@ -14,4 +18,17 @@ def send_email_confirmation(user,confirmation_link):
 	
 	send_mail("Link.academy Account Confirmation", message,"Link.Academy <noreply@link-academy.com>",[email],fail_silently=False)
 
+class jUserBackend(object):
+	def authenticate(self, username=None, password=None):
+		try:
+			user = jUser.objects.get(Q(email = username)|Q(username=username))
+			if user.check_password(password):
+				return user
+		except jUser.DoesNotExist:
+			return None 
 
+	def get_user(self, user_id):
+		try:
+			return jUser.objects.get(pk=user_id)
+		except jUser.DoesNotExist:
+			return None
