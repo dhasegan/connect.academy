@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404, render_to_resp
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.tokens import default_token_generator
+from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from app.helpers import *
 import hashlib
@@ -193,15 +195,14 @@ def send_confirmation(request):
     }
     context.update(csrf(request))
     context["user_auth"] = user_authenticated(request)
-    seed = ''.join(random.choice(string.lowercase) for x in range(30))
-    confirmation_hash = hashlib.sha224(seed).hexdigest()
+    user = request.user
+    confirmation_hash = default_token_generator.make_token(user)
     
-    if request.user.email and len(request.user.email) > 0:
+    if user.email and len(user.email) > 0:
         # The user already has an e-mail address
-        request.user.confirmation_hash = confirmation_hash
-        request.user.save()
-        confirmation_link = request.get_host() + "/confirmation/" + confirmation_hash
-        send_email_confirmation(request.user,confirmation_link)
+        # user.save()
+        
+        send_email_confirmation(user,request.get_host(),confirmation_hash)
         return redirect("/home")
     else:
         # We don't have the user's e-mail address.
@@ -227,8 +228,7 @@ def send_confirmation(request):
                 request.user.email = email
                 request.user.confirmation_hash = confirmation_hash
                 request.user.save()
-                confirmation_link = request.get_host() + "/confirmation/" + confirmation_hash
-                send_email_confirmation(request.user,confirmation_link)
+                send_email_confirmation(user,request.get_host(), confirmation_hash)
                 return redirect("/home")
         else: 
             # e-mail is not posted
@@ -236,24 +236,29 @@ def send_confirmation(request):
 
     raise Http404 # Should never reach this line
 
-def validate_user(request,confirmation):
+# takes the username and the confirmation hash
+def validate_user(request,username,confirmation):
+    
+    user = get_object_or_404(jUser, username = username)
 
-
-    user = get_object_or_404(jUser, confirmation_hash = confirmation)
+    if not default_token_generator.check_token(user, confirmation):
+        raise Http404
 
     user.is_active = True
-    user.confirmation_hash = ""  # don't need it anymore.
     user.save()
   
     return redirect("/")
 
 # If a user receives a confirmation e-mail, but they didn't sign up, they can delete their account by following
 # the delete link. This is the view associated with the delete URL.
-def delete_user(request,confirmation):
+def delete_user(request,username,confirmation):
     context = {
         "page" : "delete"
     }
-    user = get_object_or_404(jUser, confirmation_hash = confirmation)
+    user = get_object_or_404(jUser, username=username)
+    if not default_token_generator.check_token(user, confirmation):
+        raise Http404
+
     user.delete()
     context["error"] = "User successfully deleted. <br/>" # using error for now, should probably change this.
     return render(request,"pages/welcome_page.html", context)
@@ -298,7 +303,7 @@ def signup_action(request):
         error = True
     if users_same_email > 0:
         if "error" in context:
-            context["error"]+= "A user with that <b>e-mail address</b> already exists. If you already have an account, you can log in on the panel above.<br/>"
+            context["error"] += "A user with that <b>e-mail address</b> already exists. If you already have an account, you can log in on the panel above.<br/>"
         else:
             context["error"] = "A user with that <b>e-mail address</b> already exists. If you already have an account, you can log in on the panel above.<br/>"
 
@@ -316,16 +321,14 @@ def signup_action(request):
 
     
     # create user
-    seed = ''.join(random.choice(string.lowercase) for x in range(30))
-    confirmation_hash = hashlib.sha224(seed).hexdigest()
+    confirmation_hash = default_token_generator.make_token(user)
     if (password_confirmation == password): # passwords match
         user = jUser.objects.create_user(username=username, password=password,email=email,university=university,
             first_name=fname, last_name=lname, confirmation_hash = confirmation_hash)
         user.is_active = False
         
         #### Send confirmation e-mail
-        confirmation = request.get_host() + "/confirmation/" + confirmation_hash
-        send_email_confirmation(user,confirmation)
+        send_email_confirmation(user,request.get_host(), confirmation_hash)
         # Then save the user
         user.save()
 
