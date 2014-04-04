@@ -29,6 +29,7 @@ DATABASES = {
         'PASSWORD': environ.get('JCOURSE_DATABASE_PASSWORD', ''),
         'HOST': environ.get('JCOURSE_DATABASE_HOST', ''),
         'PORT': environ.get('JCOURSE_DATABASE_PORT', ''),
+        'TEST_NAME': environ.get('JCOURSE_DATABASE_TEST_NAME', PROJECT_ROOT + 'db/test_database.db'),
     }
 }
 
@@ -186,3 +187,6 @@ if not DEBUG:
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage' if not DEBUG else 'django.core.files.storage.FileSystemStorage'
 MEDIA_URL = 'http://{0}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME) if not DEBUG else '/media/'
+
+########################## South library configuration
+SOUTH_TESTS_MIGRATE = False

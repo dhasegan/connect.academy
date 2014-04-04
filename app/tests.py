@@ -1,16 +1,27 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+# Helpers
+import random
+import json
 
-Replace this with more appropriate tests for your application.
-"""
+# Project specific
+from app.models import *
+from django.utils import unittest
+from app.populator import Populator
 
-from django.test import TestCase
 
+class PopulatorTest(unittest.TestCase):
+    def test_empty_db(self):
+        self.assertEqual( len(jUser.objects.all()), 0 )
+        self.assertEqual( len(University.objects.all()), 0 )
+        self.assertEqual( len(Professor.objects.all()), 0 )
+        self.assertEqual( len(Rating.objects.all()), 0 )
+        self.assertEqual( len(Professor_Rating.objects.all()), 0 )
+        self.assertEqual( len(Course.objects.all()), 0 )
+        self.assertEqual( len(Comment.objects.all()), 0 )
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_populate_db(self):
+        populator = Populator()
+        universities = 3
+        users = 5
+        populator.populate_database(universities=universities, users=users)
+        self.assertEqual( len(University.objects.all()), universities)
+        self.assertEqual( len(jUser.objects.all()), users)
