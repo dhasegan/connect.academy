@@ -2,13 +2,14 @@ from app.models import *
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User, check_password
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 
-def send_email_confirmation(user,confirmation_link):
+def send_email_confirmation(user,host,confirmation_hash):
 	fname = user.first_name
-	lname = user.last_name
 	email = user.email
-	host, page, c_hash = confirmation_link.split('/')
+	confirmation_link = ("http://%s%s" %  (host, reverse('confirmation', args=(user.username, confirmation_hash))))
+	delete_link = ("http://%s%s" %  (host, reverse('delete', args=(user.username, confirmation_hash))))
 	if len(fname) == 0:
 		fname = user.username
 	message = "Dear " + fname + ",\r\n"
@@ -19,7 +20,7 @@ def send_email_confirmation(user,confirmation_link):
 	message += "If you did not register with Link.Academy, you can ignore this message, in which case "
 	message += "we will delete the account in 3 days. If you wish to delete the account now, you can enter "
 	message += "the following URL in the address bar:\r\n\r\n"
-	message += host + "/delete/" + c_hash + "\r\n\r\n"
+	message += delete_link + "\r\n\r\n"
 	message += "Greetings,\r\n"
 	message += "The Link.academy Team.\r\n"
 
