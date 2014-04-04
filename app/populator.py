@@ -11,7 +11,7 @@ class Populator:
         self.words = open(word_file).read().splitlines()
 
     def random_word(self):
-        return (self.words[ random.randrange(len(self.words)) ]).encode("ascii", "ignore")
+        return random.choice(self.words).encode("ascii", "ignore")
 
     def add_university(self):
         while (True):
