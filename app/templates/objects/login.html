@@ -1,4 +1,4 @@
-{% if not user_auth %}
+    {% if not user_auth %}
 
     <form class="navbar-form navbar-right login-form" method="post" action="/login">
         {% csrf_token %}
@@ -28,9 +28,9 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                <li><a href="/profile/{{user_auth.username}}">My profile </a></li>
                 <li><a href="#">Change Password</a></li>
-                <li><a href="/logout">Logout</a></li>
-                <li><a href="/profile/{{user_auth.username}}">My profile </a></li> 
+                <li><a href="/logout">Logout</a></li> 
                 <li class="divider"></li>
                 <li class="dropdown-submenu">
                     <a tabindex="-1" href="#">Hover me for more options</a> <!-- (ssh) keeping those here for more functionality to be added -->

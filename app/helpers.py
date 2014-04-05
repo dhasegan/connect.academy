@@ -3,17 +3,19 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User, check_password
 from django.core.urlresolvers import reverse
+from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Q
 
-def send_email_confirmation(user,host,confirmation_hash):
+def send_email_confirmation(user,host):
 	fname = user.first_name
 	email = user.email
+	confirmation_hash = default_token_generator.make_token(user)
 	confirmation_link = ("http://%s%s" %  (host, reverse('confirmation', args=(user.username, confirmation_hash))))
 	delete_link = ("http://%s%s" %  (host, reverse('delete', args=(user.username, confirmation_hash))))
 	if len(fname) == 0:
 		fname = user.username
 	message = "Dear " + fname + ",\r\n"
-	message +="Thank you for registering with Link.Academy!\r\n"
+	message +="Thank you for registering with Connect.Academy!\r\n"
 	message +="An account has been created with this e-mail address. \r\n"
 	message += "Please confirm your account by entering the following URL in the address bar:\r\n\r\n"
 	message += confirmation_link + "\r\n\r\n"
@@ -22,7 +24,7 @@ def send_email_confirmation(user,host,confirmation_hash):
 	message += "the following URL in the address bar:\r\n\r\n"
 	message += delete_link + "\r\n\r\n"
 	message += "Greetings,\r\n"
-	message += "The Link.academy Team.\r\n"
+	message += "The Connect.academy Team.\r\n"
 
 	
 	send_mail("Link.academy Account Confirmation", message,"Link.Academy <noreply@link-academy.com>",[email],fail_silently=False)
