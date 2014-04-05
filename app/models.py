@@ -7,7 +7,6 @@ from app.course_info import *
 class jUser(User):
     department = models.CharField(max_length=50)
     university = models.ForeignKey('University',default = 1)
-    confirmation_hash = models.CharField(max_length = 100, default="") 
 
 class Professor(models.Model):
     name = models.CharField(max_length=50)
