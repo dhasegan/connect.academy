@@ -195,14 +195,14 @@ def send_confirmation(request):
     }
     context.update(csrf(request))
     context["user_auth"] = user_authenticated(request)
+    
     user = request.user
-    confirmation_hash = default_token_generator.make_token(user)
     
     if user.email and len(user.email) > 0:
         # The user already has an e-mail address
         # user.save()
         
-        send_email_confirmation(user,request.get_host(),confirmation_hash)
+        send_email_confirmation(user,request.get_host())
         return redirect("/home")
     else:
         # We don't have the user's e-mail address.
@@ -224,11 +224,11 @@ def send_confirmation(request):
                 # university found
                 university = universities[0]
                 # We recognize the university
-                request.user.university = university
-                request.user.email = email
-                request.user.confirmation_hash = confirmation_hash
-                request.user.save()
-                send_email_confirmation(user,request.get_host(), confirmation_hash)
+                user = request.user
+                user.university = university
+                user.email = email
+                user.save()
+                send_email_confirmation(user,request.get_host())
                 return redirect("/home")
         else: 
             # e-mail is not posted
@@ -321,21 +321,21 @@ def signup_action(request):
 
     
     # create user
-    confirmation_hash = default_token_generator.make_token(user)
+    
     if (password_confirmation == password): # passwords match
         user = jUser.objects.create_user(username=username, password=password,email=email,university=university,
-            first_name=fname, last_name=lname, confirmation_hash = confirmation_hash)
+            first_name=fname, last_name=lname)
         user.is_active = False
         
-        #### Send confirmation e-mail
-        send_email_confirmation(user,request.get_host(), confirmation_hash)
-        # Then save the user
-        user.save()
+        #save new user
+        user.save()       
 
         # Authenticate user
         auth_user = authenticate(username=username, password=password)
         if auth_user is not None:
             login(request, auth_user)
+            # it needs to be request.user, not auth_user. 
+            send_email_confirmation(request.user,request.get_host())
             context["user_auth"] = auth_user
             if 'login' in request.META.get('HTTP_REFERER'):
                 return redirect('/')
@@ -346,3 +346,15 @@ def signup_action(request):
         else:
             context["error"] = "Your <b>passwords</b> don't match. Please try again. <br/>"
             return render(request,"pages/welcome_page.html",context)
+
+@login_required
+def profile(request,username):
+    # stub for profile view
+    context = {'page': 'profile'}
+    context['user_auth'] = user_authenticated(request)
+    user = jUser.objects.filter(username=username)
+    if user:
+        user = user[0] 
+        context['user'] = user
+
+    return render(request,"pages/profile.html",context)

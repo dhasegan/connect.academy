@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 
+
 urlpatterns = patterns('',
 	url(r'^welcome$', 'app.views.welcome'),
     url(r'^$', 'app.views.welcome'),
@@ -13,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^register$', 'app.views.signup_action', name='register'),
     url(r'^vote_course', 'app.views.vote_course', name='vote_course'),
     url(r'^send_confirmation$', 'app.views.send_confirmation', name='send_confirmation'),
-    url(r'^confirmation/(?P<confirmation>[\w-]+)$', 'app.views.validate_user', name='confirmation'),
-    url(r'^delete/(?P<confirmation>[\w-]+)$', 'app.views.delete_user', name='delete') # delete user with confirmation_hash
+    url(r'^confirmation/(?P<username>[\w-]+)/(?P<confirmation>[\w-]+)$', 'app.views.validate_user', name='confirmation'),
+    url(r'^delete/(?P<username>[\w-]+)/(?P<confirmation>[\w-]+)$', 'app.views.delete_user', name='delete'), # delete user with confirmation_hash
+    url(r'^profile/(?P<username>[\w-]+)$', 'app.views.profile', name='profile')
 )
