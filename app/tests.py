@@ -125,6 +125,26 @@ class HomePageTest(TestCase):
         self.assertTrue("courses" in  response.context)
         self.assertEquals( len(response.context["courses"]), self.nr_courses )
 
+class AllCommentsPageTest(TestCase):
+    def setUp(self):
+        self.nr_comments = 50
+        Populator().populate_database(nr_universities=3, nr_users=5, nr_comments=self.nr_comments)
+        self.client = Client()
+        user = random.choice( jUser.objects.all() )
+        self.client.login(username=user.username, password='1234')
+
+    def test_entry_pages(self):
+        response = self.client.get('/all_comments')
+        self.assertEqual(response.status_code, 200)
+
+    def test_proper_context(self):
+        response = self.client.get('/all_comments')
+        self.assertTrue("page" in response.context and response.context["page"] != "")
+        self.assertEquals(response.context["page"], "all_comments")
+        self.assertTrue("comments" in response.context)
+        self.assertEquals( len(response.context["comments"]), self.nr_comments)
+
+
 class PopulatorTest(TestCase):
     def test_empty_db(self):
         self.assertEqual( len(jUser.objects.all()), 0 )
