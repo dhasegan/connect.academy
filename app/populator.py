@@ -102,10 +102,22 @@ class Populator:
         for i in range(count):
             self.add_course()
 
-    def populate_database(self, nr_universities=3, nr_users=10, nr_professors=10, nr_courses=10):
+    def add_comment(self, course):
+        comment = ""
+        for i in range( random.randint(10, 30) ):
+            comment = self.random_word() + " "
+        commObj = Comment(comment=comment, course=course)
+        commObj.save()
+
+    def populate_comments(self, count):
+        courses = Course.objects.all()
+        for i in range(count):
+            course = random.choice( courses )
+            self.add_comment(course)
+
+    def populate_database(self, nr_universities=3, nr_users=10, nr_professors=10, nr_courses=10, nr_comments=30):
         self.populate_universities(nr_universities)
         self.populate_users(nr_users)
         self.populate_professors(nr_professors)
         self.populate_courses(nr_courses)
-
-
+        self.populate_comments(nr_comments)
