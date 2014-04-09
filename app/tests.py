@@ -108,13 +108,22 @@ class LoginActionTest(TestCase):
 
 class HomePageTest(TestCase):
     def setUp(self):
-        Populator().populate_database(nr_universities=3, nr_users=5)
+        self.nr_courses = 10
+        Populator().populate_database(nr_universities=3, nr_users=5, nr_courses=self.nr_courses)
         self.client = Client()
+        user = random.choice( jUser.objects.all() )
+        self.client.login(username=user.username, password='1234')
 
     def test_entry_pages(self):
         response = self.client.get('/home')
-        self.assertEqual(response.status_code, 302)
-    # TODO
+        self.assertEqual(response.status_code, 200)
+
+    def test_proper_context(self):
+        response = self.client.get('/home')
+        self.assertTrue("page" in response.context and response.context["page"] != "")
+        self.assertEquals(response.context["page"], "home")
+        self.assertTrue("courses" in  response.context)
+        self.assertEquals( len(response.context["courses"]), self.nr_courses )
 
 class PopulatorTest(TestCase):
     def test_empty_db(self):
