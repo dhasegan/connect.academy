@@ -43,7 +43,7 @@ class Course(models.Model):
     description = models.CharField(max_length=5000, blank=True, null=True)
     additional_info = models.CharField(max_length=5000, blank=True, null=True)
     sections_info = models.CharField(max_length=5000, blank=True, null=True)
-    catalogue = models.CharField(max_length=300)
+    catalogue = models.CharField(max_length=300) # Create separate divisions
     grades = models.CharField(max_length=1000, blank=True, null=True)
     grades_info = models.CharField(max_length=5000, blank=True, null=True)
     abbreviation = models.CharField(max_length=50, blank=True, null=True)

@@ -12,6 +12,11 @@ from django.test import TestCase
 from django.test.client import Client
 
 class WelcomePageTest(TestCase):
+    """
+    @title WelcomePageTest
+    @description Tests the '/welcome' and '/' urls with the associate view
+    """
+
     def setUp(self):
         self.client = Client()
 
@@ -27,9 +32,13 @@ class WelcomePageTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 class LoginActionTest(TestCase):
-    def setUp(self):
-        Populator().populate_database(universities=3, users=5)
+    """
+    @title LoginActionTest
+    @description Tests the '/login' url with the associate view
+    """
 
+    def setUp(self):
+        Populator().populate_database(nr_universities=3, nr_users=5)
         self.client = Client(enforce_csrf_checks=False)
 
     def test_entry_pages(self):
@@ -46,7 +55,8 @@ class LoginActionTest(TestCase):
             'username': user.username,
             'password': '1234'
         })
-        # The Django framework cannot login the request
+        # The Django test framework cannot authenticate the user of the request
+        # But it will return a redirect 302
         self.assertEqual(response.status_code, 302)
 
     def test_fake_logging(self):
@@ -98,7 +108,7 @@ class LoginActionTest(TestCase):
 
 class HomePageTest(TestCase):
     def setUp(self):
-        Populator().populate_database(universities=3, users=5)
+        Populator().populate_database(nr_universities=3, nr_users=5)
         self.client = Client()
 
     def test_entry_pages(self):
@@ -120,6 +130,6 @@ class PopulatorTest(TestCase):
         populator = Populator()
         universities = 3
         users = 5
-        populator.populate_database(universities=universities, users=users)
+        populator.populate_database(nr_universities=universities, nr_users=users)
         self.assertEqual( len(University.objects.all()), universities)
         self.assertEqual( len(jUser.objects.all()), users)
