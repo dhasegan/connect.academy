@@ -196,6 +196,63 @@ class AllCommentsPageTest(TestCase):
         self.assertTrue("comments" in response.context)
         self.assertEquals( len(response.context["comments"]), self.nr_comments)
 
+class SubmitCommentTest(TestCase):
+    def setUp(self):
+        self.nr_comments = 5
+        Populator().populate_database(nr_universities=3, nr_users=5, \
+            nr_professors=10, nr_courses=10, nr_comments=self.nr_comments)
+        self.client = Client()
+        user = random.choice( jUser.objects.all() )
+        self.client.login(username=user.username, password='1234')
+
+    def test_entry_pages(self):
+        response = self.client.get('/submit_comment')
+        self.assertEqual(response.status_code, 404)
+        response = self.client.post('/submit_comment')
+        self.assertEqual(response.status_code, 404)
+
+    def test_posting_comment(self):
+        course = random.choice( Course.objects.all() )
+        comment_text = "Comment text to be inserted"
+        response = self.client.post('/submit_comment', {
+            "course_id": course.id,
+            "comment": comment_text,
+            "url": "/course/" + course.slug, # Should be removed after refactoring
+            })
+        self.assertEqual(response.status_code, 302)
+
+        self.assertEquals( len(Comment.objects.all()), self.nr_comments + 1 )
+        comm = Comment.objects.filter( comment=comment_text )
+        self.assertEquals( len(comm), 1 )
+        self.assertEquals(comm[0].course, course)
+
+    def test_bad_request(self):
+        course = random.choice( Course.objects.all() )
+        comment_text = "Comment text to be inserted"
+
+        response = self.client.post('/submit_comment', {
+            "comment": comment_text,
+            "url": "/course/" + course.slug,
+            })
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post('/submit_comment', {
+            "course_id": course.id,
+            "url": "/course/" + course.slug,
+            })
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post('/submit_comment', {
+            "course_id": course.id,
+            "comment": "",
+            "url": "/course/" + course.slug,
+            })
+        self.assertEqual(response.status_code, 404)
+
+        # TODO: If the number of characters is too high
+
+""" TODO: Also test for bad requests to login_required views """
+
 class PopulatorTest(TestCase):
     def test_empty_db(self):
         self.assertEqual( len(jUser.objects.all()), 0 )
