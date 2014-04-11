@@ -106,7 +106,7 @@ class Populator:
     def add_comment(self, course):
         comment = ""
         for i in range( random.randint(10, 30) ):
-            comment = self.random_word() + " "
+            comment = comment + self.random_word() + " "
         commObj = Comment(comment=comment, course=course)
         commObj.save()
 
@@ -126,8 +126,8 @@ class Populator:
         rat_type = None
         for rating_type in rating_types:
             for user in users:
-                if len(Rating.objects.filter(user=user, course=course, rating_type=rating_type)) == 0:
-                    rat_type = rating_type
+                if len(Rating.objects.filter(user=user, course=course, rating_type=rating_type[0])) == 0:
+                    rat_type = rating_type[0]
                     rater = user
                     break
         if rater == None:
