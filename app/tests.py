@@ -144,7 +144,6 @@ class AllCommentsPageTest(TestCase):
         self.assertTrue("comments" in response.context)
         self.assertEquals( len(response.context["comments"]), self.nr_comments)
 
-
 class PopulatorTest(TestCase):
     def test_empty_db(self):
         self.assertEqual( len(jUser.objects.all()), 0 )
@@ -154,11 +153,22 @@ class PopulatorTest(TestCase):
         self.assertEqual( len(Professor_Rating.objects.all()), 0 )
         self.assertEqual( len(Course.objects.all()), 0 )
         self.assertEqual( len(Comment.objects.all()), 0 )
+        self.assertEqual( len(Rating.objects.all()), 0 )
 
     def test_populate_db(self):
         populator = Populator()
-        universities = 3
-        users = 5
-        populator.populate_database(nr_universities=universities, nr_users=users)
-        self.assertEqual( len(University.objects.all()), universities)
-        self.assertEqual( len(jUser.objects.all()), users)
+        nr_universities = 3
+        nr_users = 5
+        nr_professors = 10
+        nr_courses = 10
+        nr_comments = 30
+        nr_ratings = 30
+        populator.populate_database(nr_universities=nr_universities, nr_users=nr_users,
+            nr_professors=nr_professors, nr_courses=nr_courses, nr_comments=nr_comments,
+            nr_ratings=nr_ratings)
+        self.assertEqual( len(University.objects.all()), nr_universities)
+        self.assertEqual( len(jUser.objects.all()), nr_users)
+        self.assertEqual( len(Professor.objects.all()), nr_professors)
+        self.assertEqual( len(Course.objects.all()), nr_courses)
+        self.assertEqual( len(Comment.objects.all()), nr_comments)
+        self.assertEqual( len(Rating.objects.all()), nr_ratings)

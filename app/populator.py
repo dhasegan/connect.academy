@@ -1,6 +1,7 @@
 # Helpers
 import random
 import json
+import sys
 
 from app.models import *
 
@@ -115,9 +116,52 @@ class Populator:
             course = random.choice( courses )
             self.add_comment(course)
 
-    def populate_database(self, nr_universities=3, nr_users=10, nr_professors=10, nr_courses=10, nr_comments=30):
+    def add_rating(self, course):
+        rating = ""
+        users = list(jUser.objects.all())
+        random.shuffle(users)
+        rating_types = [] + list(RATING_TYPES)
+        random.shuffle(rating_types)
+        rater = None
+        rat_type = None
+        for rating_type in rating_types:
+            for user in users:
+                if len(Rating.objects.filter(user=user, course=course, rating_type=rating_type)) == 0:
+                    rat_type = rating_type
+                    rater = user
+                    break
+        if rater == None:
+            return False
+
+        rating = random.randint(1,5)
+        if rat_type != PROFESSOR_R:
+            rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type)
+            rat.save()
+        else:
+            prof = random.choice(course.instructors.all())
+            rat = Professor_Rating(user=rater, course=course, rating=rating, rating_type=rat_type, prof=prof)
+            rat.save()
+        return True
+
+    def populate_ratings(self, count):
+        courses = Course.objects.all()
+        if len(Rating.objects.all()) + count > \
+            len(Course.objects.all()) * len(jUser.objects.all()) * len(RATING_TYPES):
+            sys.stderr.write("ERROR: You requested too many ratings for too few courses!")
+            return ;
+        for i in range(count):
+            course = random.choice( courses )
+            if len(Rating.objects.filter(course=course)) >= len(jUser.objects.all()) * len(RATING_TYPES):
+                i -= 1
+                continue
+            while not self.add_rating(course):
+                pass
+
+    def populate_database(self, nr_universities=3, nr_users=10, \
+        nr_professors=10, nr_courses=10, nr_comments=30, nr_ratings=30):
         self.populate_universities(nr_universities)
         self.populate_users(nr_users)
         self.populate_professors(nr_professors)
         self.populate_courses(nr_courses)
         self.populate_comments(nr_comments)
+        self.populate_ratings(nr_ratings)
