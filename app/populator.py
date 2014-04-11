@@ -145,10 +145,6 @@ class Populator:
 
     def populate_ratings(self, count):
         courses = Course.objects.all()
-        if len(Rating.objects.all()) + count > \
-            len(Course.objects.all()) * len(jUser.objects.all()) * len(RATING_TYPES):
-            sys.stderr.write("ERROR: You requested too many ratings for too few courses!")
-            return ;
         for i in range(count):
             course = random.choice( courses )
             if len(Rating.objects.filter(course=course)) >= len(jUser.objects.all()) * len(RATING_TYPES):
@@ -157,8 +153,27 @@ class Populator:
             while not self.add_rating(course):
                 pass
 
-    def populate_database(self, nr_universities=3, nr_users=10, \
-        nr_professors=10, nr_courses=10, nr_comments=30, nr_ratings=30):
+    def check_dependencies(self, nr_universities=0, nr_users=0, \
+        nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
+        if nr_universities + len(University.objects.all()) <= 0 \
+            and (nr_users > 0 or nr_courses > 0):
+            raise RuntimeError("Not enough universities in the DB")
+        if nr_courses + len(Course.objects.all()) > 0 \
+            and (nr_professors + len(Professor.objects.all()) <= 0):
+            raise RuntimeError("Not enough professors in the DB")
+        if nr_comments + len(Comment.objects.all()) > 0 \
+            and (nr_courses + len(Course.objects.all()) <= 0):
+            raise RuntimeError("Not enough courses in the DB")
+        if nr_ratings + len(Rating.objects.all()) > (nr_courses + len(Course.objects.all())) * \
+            (nr_users + len(jUser.objects.all())) * len(RATING_TYPES):
+            raise RuntimeError("Not enough courses and/or users in the DB")
+
+    def populate_database(self, nr_universities=0, nr_users=0, \
+        nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
+
+        self.check_dependencies(nr_universities=nr_universities, nr_users=nr_users, 
+            nr_professors=nr_professors, nr_courses=nr_courses, nr_comments=nr_comments,
+            nr_ratings=nr_ratings)
         self.populate_universities(nr_universities)
         self.populate_users(nr_users)
         self.populate_professors(nr_professors)

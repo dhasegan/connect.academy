@@ -109,7 +109,8 @@ class LoginActionTest(TestCase):
 class HomePageTest(TestCase):
     def setUp(self):
         self.nr_courses = 10
-        Populator().populate_database(nr_universities=3, nr_users=5, nr_courses=self.nr_courses)
+        Populator().populate_database(nr_universities=3, nr_users=5, \
+            nr_professors=self.nr_courses, nr_courses=self.nr_courses)
         self.client = Client()
         user = random.choice( jUser.objects.all() )
         self.client.login(username=user.username, password='1234')
@@ -128,7 +129,8 @@ class HomePageTest(TestCase):
 class AllCommentsPageTest(TestCase):
     def setUp(self):
         self.nr_comments = 50
-        Populator().populate_database(nr_universities=3, nr_users=5, nr_comments=self.nr_comments)
+        Populator().populate_database(nr_universities=3, nr_users=5, \
+            nr_professors=10, nr_courses=10, nr_comments=self.nr_comments)
         self.client = Client()
         user = random.choice( jUser.objects.all() )
         self.client.login(username=user.username, password='1234')
