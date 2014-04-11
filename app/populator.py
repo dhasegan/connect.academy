@@ -35,12 +35,7 @@ class Populator:
             if len( jUser.objects.filter(username=username) ) > 0:
                 continue
             univs = University.objects.all()
-            univ = None
-            if len(univs) == 0:
-                add_university()
-                univ = University.objects.all()[0]
-            else:
-                univ = univs[ random.randrange(len(univs)) ]
+            univ = univs[ random.randrange(len(univs)) ]
             active = True
             password = "1234"
             email = username + "@" + univ.domain
@@ -91,10 +86,9 @@ class Populator:
                 credits=credits, description=description, catalogue=catalogue)
             course.save()
 
-            nr_instructors = random.randint(0,3)
+            total_nr_instructors = len( Professor.objects.all() )
+            nr_instructors = random.randint(1,min(2,total_nr_instructors))
             for i in range(nr_instructors):
-                if len( Professor.objects.all() ) <= 3:
-                    self.populate_professors(3)
                 instructor = random.choice(Professor.objects.all())
                 course.instructors.add(instructor)
             break
