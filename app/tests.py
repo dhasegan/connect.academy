@@ -251,6 +251,119 @@ class SubmitCommentTest(TestCase):
 
         # TODO: If the number of characters is too high
 
+class VoteCourseTest(TestCase):
+    def setUp(self):
+        self.nr_ratings = 5
+        Populator().populate_database(nr_universities=3, nr_users=5, \
+            nr_professors=10, nr_courses=10, nr_comments=2, nr_ratings=self.nr_ratings)
+        self.client = Client()
+
+        Populator().populate_database(nr_users=1)
+        users = jUser.objects.all()
+        self.user = users[ len(users) - 1 ]
+        self.client.login(username=self.user.username, password='1234')
+
+    def test_entry_pages(self):
+        response = self.client.get('/vote_course')
+        self.assertEqual(response.status_code, 404)
+        response = self.client.post('/vote_course')
+        self.assertEqual(response.status_code, 404)
+
+    def test_rating_course(self):
+        for rating_type in RATING_TYPES:
+            course = random.choice( Course.objects.all() )
+            rating = random.randint(1,5)
+            post_context = {
+                "course_id": course.id,
+                "rating_value": rating,
+                "rating_type": rating_type[0],
+                "url": "/course/" + course.slug, # Should be removed after refactoring
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/vote_course', post_context)
+            self.assertEqual(response.status_code, 302)
+
+            self.assertEquals( len(Rating.objects.all()), self.nr_ratings + 1 )
+            self.nr_ratings += 1
+            rat = Rating.objects.filter( user=self.user, rating_type=rating_type[0] )
+            self.assertEquals( len(rat), 1 )
+            self.assertEquals(rat[0].course, course)
+            self.assertEquals(rat[0].rating, rating)
+
+        ratings = Rating.objects.filter( user=self.user )
+        self.assertEquals(len(ratings), len(RATING_TYPES))
+
+    def test_bad_request(self):
+        for rating_type in RATING_TYPES:
+            course = random.choice( Course.objects.all() )
+            rating = random.randint(1,5)\
+
+            """ bad request like bad rating or bad type or missing sutff, missing prof """
+
+
+            post_context = {
+                "rating_value": rating,
+                "rating_type": rating_type[0],
+                "url": "/course/" + course.slug, # Should be removed after refactoring
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/vote_course', post_context)
+            self.assertEqual(response.status_code, 404)
+
+            post_context = {
+                "course_id": course.id,
+                "rating_type": rating_type[0],
+                "url": "/course/" + course.slug,
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/vote_course', post_context)
+            self.assertEqual(response.status_code, 404)
+
+            post_context = {
+                "course_id": course.id,
+                "rating_value": rating,
+                "rating_type": "NORATINGTYPETHATEXISTS",
+                "url": "/course/" + course.slug,
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/vote_course', post_context)
+            self.assertEqual(response.status_code, 404)
+
+            # post_context = {
+            #     "course_id": course.id,
+            #     "rating_value": 1000,
+            #     "rating_type": rating_type[0],
+            #     "url": "/course/" + course.slug,
+            #     }
+            # if rating_type[0] == PROFESSOR_R:
+            #     post_context['profname'] = random.choice(course.instructors.all()).name
+            # response = self.client.post('/vote_course', post_context)
+            # self.assertEqual(response.status_code, 404)
+
+            if rating_type[0] == PROFESSOR_R:
+                post_context = {
+                    "course_id": course.id,
+                    "rating_value": rating,
+                    "rating_type": rating_type[0],
+                    "url": "/course/" + course.slug,
+                    }
+                response = self.client.post('/vote_course', post_context)
+                self.assertEqual(response.status_code, 404)
+
+                post_context = {
+                    "course_id": course.id,
+                    "rating_value": rating,
+                    "rating_type": rating_type[0],
+                    "url": "/course/" + course.slug,
+                    "profname": "NOT A PROFESSORS NAME"
+                    }
+                response = self.client.post('/vote_course', post_context)
+                self.assertEqual(response.status_code, 404)
+
 """ TODO: Also test for bad requests to login_required views """
 
 class PopulatorTest(TestCase):
