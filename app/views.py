@@ -48,14 +48,14 @@ def course_page(request, slug):
 
 
 @login_required
-def vote_course(request):
+def rate_course(request):
 
     context = {}
     if request.method != 'POST':
         raise Http404
     user = get_object_or_404(jUser, id=request.user.id)
 
-    form = VoteCourseForm(request.POST)
+    form = RateCourseForm(request.POST)
     if not form.is_valid():
         raise Http404
 
