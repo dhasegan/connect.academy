@@ -16,5 +16,10 @@ urlpatterns = patterns('',
     url(r'^send_confirmation$', 'app.views.send_confirmation', name='send_confirmation'),
     url(r'^confirmation/(?P<username>[\w-]+)/(?P<confirmation>[\w-]+)$', 'app.views.validate_user', name='confirmation'),
     url(r'^delete/(?P<username>[\w-]+)/(?P<confirmation>[\w-]+)$', 'app.views.delete_user', name='delete'), # delete user with confirmation_hash
-    url(r'^profile/(?P<username>[\w-]+)$', 'app.views.profile', name='profile')
+    url(r'^profile/(?P<username>[\w-]+)$', 'app.views.profile', name='profile'),
+    url(r'^manage_account$','app.views.manage_account',name='manage_account'),
+    url(r'^password_change_action$','app.views.password_change_action', name='password_change_action'),
+    url(r'^username_change_action$','app.views.username_change_action', name='username_change_action'),
+    url(r'^name_change_action$','app.views.name_change_action',name='name_change_action')
+    
 )

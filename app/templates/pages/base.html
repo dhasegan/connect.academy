@@ -13,6 +13,19 @@
   <body>
     <div class="container">
       {% include 'objects/navbar.html' %}
+      
+      {% if error %}
+      <div class="alert alert-danger">
+          {{ error | safe}}
+      </div>
+      {% endif %}
+
+      {% if success %}
+      <div class="alert alert-success">
+          {{ success | safe}}
+      </div>
+      {% endif %}
+
 
       <div class="main-content">
         {% if user_auth and not user_auth.is_active %}
