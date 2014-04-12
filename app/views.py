@@ -201,14 +201,17 @@ def send_confirmation(request):
     
     if user.email and len(user.email) > 0:
         # The user already has an e-mail address
-        # user.save()
-        
+            
         send_email_confirmation(user,request.get_host())
         return redirect("/home")
     else:
         # We don't have the user's e-mail address.
         if request.method == "POST" and request.POST["email"]:
             # The e-mail address is posted
+            if jUser.objects.filter(email=request.POST["email"]).count() > 0:
+                context["error"] = "A user with that <b>e-mail address</b> already exists."
+                return render(request, "pages/send_confirmation.html", context)
+
             form = EmailConfirmationForm(request.POST)
             if not form.is_valid():
                 raise Http404
@@ -261,7 +264,7 @@ def delete_user(request,username,confirmation):
         raise Http404
 
     user.delete()
-    context["success"] = "User successfully deleted. <br/>" # using error for now, should probably change this.
+    context["success"] = "User successfully deleted. <br/>"
     return render(request,"pages/welcome_page.html", context)
 
 def welcome(request):
@@ -293,7 +296,14 @@ def signup_action(request):
     email = form.cleaned_data["email"]
     fname = form.cleaned_data["fname"]
     lname = form.cleaned_data["lname"]
+    is_instructor = form.cleaned_data["is_instructor"]
     emailID, domain = email.split("@")
+
+    if is_instructor:
+        user_type = USER_TYPE_INSTRUCTOR
+    else:
+        user_type = USER_TYPE_STUDENT
+
 
     # Check if username or email exists
     users_same_name = jUser.objects.filter(username=username).count()
@@ -312,7 +322,7 @@ def signup_action(request):
         return render(request, "pages/welcome_page.html",context)
 
     # Check if we know the domain of the e-mail address
-    universities = University.objects.filter(domain=domain)
+    universities = University.objects.filter(domain__name=domain)
     if len(universities) < 1: # not found
         context["error"] = "Sorry, we don't have a <b>university</b> with the domain of your <b>e-mail address</b>. Please check again soon.<br/>"
         return render(request,"pages/welcome_page.html", context)
@@ -324,7 +334,7 @@ def signup_action(request):
     # create user
     
     if (password_confirmation == password): # passwords match
-        user = jUser.objects.create_user(username=username, password=password,email=email,university=university,
+        user = jUser.objects.create_user(username=username, user_type=user_type ,password=password,email=email,university=university,
             first_name=fname, last_name=lname)
         user.is_active = False
         
@@ -347,6 +357,26 @@ def signup_action(request):
         else:
             context["error"] = "Your <b>passwords</b> don't match. Please try again. <br/>"
             return render(request,"pages/welcome_page.html",context)
+
+# This function takes an e-mail address and returns a HTTP Response with the name of the university that has the
+# domain of the e-mail address. If it is not found, it returns HttpResponse("NotFound")
+# It will be used to send AJAX requests from the welcome page during signup
+def universityByEmail(request):
+    if request.method != "GET":
+        raise Http404
+
+    email = request.GET["email"]
+    _, domain = email.split("@")
+
+    universities = University.objects.filter(domains__name = domain)
+
+    if len(universities) < 1:
+        return HttpResponse("NotFound")
+
+    university = universities[0]
+    return HttpResponse(university.name)
+
+
 
 @login_required
 def profile(request,username):

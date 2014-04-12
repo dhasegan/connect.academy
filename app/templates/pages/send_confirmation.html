@@ -1,11 +1,6 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
-	{% if error %}
-        <div class="alert alert-danger">
-            {{ error | safe}}
-        </div>
-    {% endif %}
 
     <div >
     	<form action="/send_confirmation" method="POST">
