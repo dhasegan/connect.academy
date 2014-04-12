@@ -221,10 +221,11 @@ class SubmitCommentTest(TestCase):
             })
         self.assertEqual(response.status_code, 302)
 
-        self.assertEquals( len(Comment.objects.all()), self.nr_comments + 1 )
         comm = Comment.objects.filter( comment=comment_text )
         self.assertEquals( len(comm), 1 )
         self.assertEquals(comm[0].course, course)
+        comms = Comment.objects.all()
+        self.assertEquals( len(comms), self.nr_comments + 1 )
 
     def test_bad_request(self):
         course = random.choice( Course.objects.all() )
@@ -251,7 +252,7 @@ class SubmitCommentTest(TestCase):
 
         # TODO: If the number of characters is too high
 
-class VoteCourseTest(TestCase):
+class RateCourseTest(TestCase):
     def setUp(self):
         self.nr_ratings = 5
         Populator().populate_database(nr_universities=3, nr_users=5, \
@@ -264,9 +265,9 @@ class VoteCourseTest(TestCase):
         self.client.login(username=self.user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/vote_course')
+        response = self.client.get('/rate_course')
         self.assertEqual(response.status_code, 404)
-        response = self.client.post('/vote_course')
+        response = self.client.post('/rate_course')
         self.assertEqual(response.status_code, 404)
 
     def test_rating_course(self):
@@ -281,7 +282,7 @@ class VoteCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/vote_course', post_context)
+            response = self.client.post('/rate_course', post_context)
             self.assertEqual(response.status_code, 302)
 
             self.assertEquals( len(Rating.objects.all()), self.nr_ratings + 1 )
@@ -309,7 +310,7 @@ class VoteCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/vote_course', post_context)
+            response = self.client.post('/rate_course', post_context)
             self.assertEqual(response.status_code, 404)
 
             post_context = {
@@ -319,7 +320,7 @@ class VoteCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/vote_course', post_context)
+            response = self.client.post('/rate_course', post_context)
             self.assertEqual(response.status_code, 404)
 
             post_context = {
@@ -330,19 +331,19 @@ class VoteCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/vote_course', post_context)
+            response = self.client.post('/rate_course', post_context)
             self.assertEqual(response.status_code, 404)
 
-            # post_context = {
-            #     "course_id": course.id,
-            #     "rating_value": 1000,
-            #     "rating_type": rating_type[0],
-            #     "url": "/course/" + course.slug,
-            #     }
-            # if rating_type[0] == PROFESSOR_R:
-            #     post_context['profname'] = random.choice(course.instructors.all()).name
-            # response = self.client.post('/vote_course', post_context)
-            # self.assertEqual(response.status_code, 404)
+            post_context = {
+                "course_id": course.id,
+                "rating_value": 1000,
+                "rating_type": rating_type[0],
+                "url": "/course/" + course.slug,
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/rate_course', post_context)
+            self.assertEqual(response.status_code, 404)
 
             if rating_type[0] == PROFESSOR_R:
                 post_context = {
@@ -351,7 +352,7 @@ class VoteCourseTest(TestCase):
                     "rating_type": rating_type[0],
                     "url": "/course/" + course.slug,
                     }
-                response = self.client.post('/vote_course', post_context)
+                response = self.client.post('/rate_course', post_context)
                 self.assertEqual(response.status_code, 404)
 
                 post_context = {
@@ -361,7 +362,7 @@ class VoteCourseTest(TestCase):
                     "url": "/course/" + course.slug,
                     "profname": "NOT A PROFESSORS NAME"
                     }
-                response = self.client.post('/vote_course', post_context)
+                response = self.client.post('/rate_course', post_context)
                 self.assertEqual(response.status_code, 404)
 
 """ TODO: Also test for bad requests to login_required views """

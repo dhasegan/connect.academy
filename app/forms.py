@@ -3,7 +3,7 @@ from django import forms
 from app.course_info import *
 from app.models import *
 
-class VoteCourseForm(forms.Form):
+class RateCourseForm(forms.Form):
     course_id = forms.CharField()
     rating_value = forms.CharField()
     rating_type = forms.CharField()
@@ -11,11 +11,13 @@ class VoteCourseForm(forms.Form):
     profname = forms.CharField(required=False)
 
     def clean(self):
-        cleaned_data = super(VoteCourseForm, self).clean()
+        cleaned_data = super(RateCourseForm, self).clean()
 
         try:
             rvalue = float(cleaned_data.get("rating_value"))
         except:
+            raise forms.ValidationError("Rating value is not valid!")
+        if not (rvalue >= RATING_MIN and rvalue <= RATING_MAX):
             raise forms.ValidationError("Rating value is not valid!")
         cleaned_data['rating_value'] = rvalue
 
