@@ -21,14 +21,14 @@ class WelcomePageTest(TestCase):
         self.client = Client()
 
     def test_entry_pages(self):
-        response = self.client.get('/')
+        response = self.client.get('/', follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get('/welcome')
+        response = self.client.get('/welcome', follow=True)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.post('/')
+        response = self.client.post('/', follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.post('/welcome')
+        response = self.client.post('/welcome', follow=True)
         self.assertEqual(response.status_code, 200)
 
 class LoginActionTest(TestCase):
@@ -42,9 +42,9 @@ class LoginActionTest(TestCase):
         self.client = Client(enforce_csrf_checks=False)
 
     def test_entry_pages(self):
-        response = self.client.get('/login')
+        response = self.client.get('/login', follow=True)
         self.assertEqual(response.status_code, 404)
-        response = self.client.post('/login')
+        response = self.client.post('/login', follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_logging(self):
@@ -64,7 +64,7 @@ class LoginActionTest(TestCase):
         response = self.client.post('/login', {
             'username': '000000',
             'password': '1234'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 200)
         # Bad password
         users = jUser.objects.all()
@@ -73,7 +73,7 @@ class LoginActionTest(TestCase):
         response = self.client.post('/login', {
             'username': user.username,
             'password': '4321'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_bad_request(self):
@@ -84,25 +84,25 @@ class LoginActionTest(TestCase):
         response = self.client.post('/login', {
             'usrname': user.username,
             'password': '1234'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 404)
         # Bad password name
         response = self.client.post('/login', {
             'username': user.username,
             'paswd': '1234'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 404)
         # Bad request type
         response = self.client.get('/login', {
             'username': user.username,
             'password': '1234'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 404)
         # Bad both username and password
         response = self.client.get('/login', {
             'usr': user.username,
             'pwsd': '1234'
-        })
+        }, follow=True)
         self.assertEqual(response.status_code, 404)
 
 
@@ -116,11 +116,11 @@ class HomePageTest(TestCase):
         self.client.login(username=user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/home')
+        response = self.client.get('/home', follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_proper_context(self):
-        response = self.client.get('/home')
+        response = self.client.get('/home', follow=True)
         self.assertTrue("page" in response.context and response.context["page"] != "")
         self.assertEquals(response.context["page"], "home")
         self.assertTrue("courses" in  response.context)
@@ -133,7 +133,7 @@ class HomePageTest(TestCase):
                 self.assertEqual(profs[i].name, course["profs"][i].name)
 
     def test_sorted_by_rating(self):
-        response = self.client.get('/home')
+        response = self.client.get('/home', follow=True)
         self.assertTrue("courses" in  response.context)
         self.assertEquals( len(response.context["courses"]), self.nr_courses )
         courses = response.context["courses"]
@@ -154,13 +154,13 @@ class CoursePageTest(TestCase):
     def test_entry_pages(self):
         courses = Course.objects.all()
         for course in courses:
-            response = self.client.get('/course/' + course.slug)
+            response = self.client.get('/course/' + course.slug, follow=True)
             self.assertEqual(response.status_code, 200)
 
     def test_proper_context(self):
         courses = Course.objects.all()
         for course in courses:
-            response = self.client.get('/course/' + course.slug)
+            response = self.client.get('/course/' + course.slug, follow=True)
             self.assertTrue("page" in response.context and response.context["page"] != "")
             self.assertEquals(response.context["page"], "course")
             self.assertTrue("course" in response.context)
@@ -186,11 +186,11 @@ class AllCommentsPageTest(TestCase):
         self.client.login(username=user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/all_comments')
+        response = self.client.get('/all_comments', follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_proper_context(self):
-        response = self.client.get('/all_comments')
+        response = self.client.get('/all_comments', follow=True)
         self.assertTrue("page" in response.context and response.context["page"] != "")
         self.assertEquals(response.context["page"], "all_comments")
         self.assertTrue("comments" in response.context)
@@ -206,9 +206,9 @@ class SubmitCommentTest(TestCase):
         self.client.login(username=user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/submit_comment')
+        response = self.client.get('/submit_comment', follow=True)
         self.assertEqual(response.status_code, 404)
-        response = self.client.post('/submit_comment')
+        response = self.client.post('/submit_comment', follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_posting_comment(self):
@@ -221,11 +221,11 @@ class SubmitCommentTest(TestCase):
             })
         self.assertEqual(response.status_code, 302)
 
+        comms = Comment.objects.all()
+        self.assertEquals( len(comms), self.nr_comments + 1 )
         comm = Comment.objects.filter( comment=comment_text )
         self.assertEquals( len(comm), 1 )
         self.assertEquals(comm[0].course, course)
-        comms = Comment.objects.all()
-        self.assertEquals( len(comms), self.nr_comments + 1 )
 
     def test_bad_request(self):
         course = random.choice( Course.objects.all() )
@@ -234,20 +234,20 @@ class SubmitCommentTest(TestCase):
         response = self.client.post('/submit_comment', {
             "comment": comment_text,
             "url": "/course/" + course.slug,
-            })
+            }, follow=True)
         self.assertEqual(response.status_code, 404)
 
         response = self.client.post('/submit_comment', {
             "course_id": course.id,
             "url": "/course/" + course.slug,
-            })
+            }, follow=True)
         self.assertEqual(response.status_code, 404)
 
         response = self.client.post('/submit_comment', {
             "course_id": course.id,
             "comment": "",
             "url": "/course/" + course.slug,
-            })
+            }, follow=True)
         self.assertEqual(response.status_code, 404)
 
         # TODO: If the number of characters is too high
@@ -265,9 +265,9 @@ class RateCourseTest(TestCase):
         self.client.login(username=self.user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/rate_course')
+        response = self.client.get('/rate_course', follow=True)
         self.assertEqual(response.status_code, 404)
-        response = self.client.post('/rate_course')
+        response = self.client.post('/rate_course', follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_rating_course(self):
@@ -300,17 +300,14 @@ class RateCourseTest(TestCase):
             course = random.choice( Course.objects.all() )
             rating = random.randint(1,5)\
 
-            """ bad request like bad rating or bad type or missing sutff, missing prof """
-
-
             post_context = {
                 "rating_value": rating,
                 "rating_type": rating_type[0],
-                "url": "/course/" + course.slug, # Should be removed after refactoring
+                "url": "/course/" + course.slug,
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/rate_course', post_context)
+            response = self.client.post('/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
             post_context = {
@@ -320,7 +317,7 @@ class RateCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/rate_course', post_context)
+            response = self.client.post('/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
             post_context = {
@@ -331,7 +328,7 @@ class RateCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/rate_course', post_context)
+            response = self.client.post('/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
             post_context = {
@@ -342,7 +339,7 @@ class RateCourseTest(TestCase):
                 }
             if rating_type[0] == PROFESSOR_R:
                 post_context['profname'] = random.choice(course.instructors.all()).name
-            response = self.client.post('/rate_course', post_context)
+            response = self.client.post('/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
             if rating_type[0] == PROFESSOR_R:
@@ -352,7 +349,7 @@ class RateCourseTest(TestCase):
                     "rating_type": rating_type[0],
                     "url": "/course/" + course.slug,
                     }
-                response = self.client.post('/rate_course', post_context)
+                response = self.client.post('/rate_course', post_context, follow=True)
                 self.assertEqual(response.status_code, 404)
 
                 post_context = {
@@ -362,10 +359,8 @@ class RateCourseTest(TestCase):
                     "url": "/course/" + course.slug,
                     "profname": "NOT A PROFESSORS NAME"
                     }
-                response = self.client.post('/rate_course', post_context)
+                response = self.client.post('/rate_course', post_context, follow=True)
                 self.assertEqual(response.status_code, 404)
-
-""" TODO: Also test for bad requests to login_required views """
 
 class PopulatorTest(TestCase):
     def test_empty_db(self):
