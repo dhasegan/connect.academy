@@ -12,7 +12,13 @@ class Populator:
         self.words = open(word_file).read().splitlines()
 
     def random_word(self):
-        return random.choice(self.words).decode("utf-8", "ignore").replace("'", "")
+        while True:
+            try:
+                word = random.choice(self.words).decode("utf-8", "ignore").replace("'", "")
+                if len(word) > 2:
+                    return word
+            except UnicodeError:
+                continue
 
     def add_university(self):
         while (True):

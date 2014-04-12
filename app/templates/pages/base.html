@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Connect.Academy</title>
+    <title>Link.Academy</title>
     <link rel="shortcut icon" href="{{ STATIC_URL }}/ju_favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Courses at Jacobs University">
@@ -11,8 +11,22 @@
     <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
   </head>
   <body>
-  {% include 'objects/navbar.html' %} 
-    <div class="container" id="container">
+    <div class="container">
+      {% include 'objects/navbar.html' %}
+      
+      {% if error %}
+      <div class="alert alert-danger">
+          {{ error | safe}}
+      </div>
+      {% endif %}
+
+      {% if success %}
+      <div class="alert alert-success">
+          {{ success | safe}}
+      </div>
+      {% endif %}
+
+
       <div class="main-content">
         {% if user_auth and not user_auth.is_active %}
             

@@ -15,6 +15,9 @@ class Professor(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+RATING_MIN = 1
+RATING_MAX = 5
+
 class Rating(models.Model):
     user = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')

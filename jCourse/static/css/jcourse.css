@@ -279,3 +279,54 @@ body {
     -moz-border-radius: 6px 0 6px 6px;
     border-radius: 6px 0 6px 6px;
 }
+
+/************Manage Account ***************/
+
+#username_form{
+    padding-top: 30px;
+    
+}
+
+#name_form{
+    padding-top: 30px;
+}
+
+#password_form{
+    padding-top: 30px;
+}
+
+#change_username_button{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;   
+}
+
+#change_password_button{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#change_name_button{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#manage_account_container{
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;   
+}
+
+#username_header{
+    padding-top: 20px;
+}
+
+#password_header{
+    padding-top: 60px;   
+}
+
+#name_header{
+    padding-top: 60px;
+}

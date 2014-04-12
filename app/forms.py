@@ -3,7 +3,7 @@ from django import forms
 from app.course_info import *
 from app.models import *
 
-class VoteCourseForm(forms.Form):
+class RateCourseForm(forms.Form):
     course_id = forms.CharField()
     rating_value = forms.CharField()
     rating_type = forms.CharField()
@@ -11,11 +11,13 @@ class VoteCourseForm(forms.Form):
     profname = forms.CharField(required=False)
 
     def clean(self):
-        cleaned_data = super(VoteCourseForm, self).clean()
+        cleaned_data = super(RateCourseForm, self).clean()
 
         try:
             rvalue = float(cleaned_data.get("rating_value"))
         except:
+            raise forms.ValidationError("Rating value is not valid!")
+        if not (rvalue >= RATING_MIN and rvalue <= RATING_MAX):
             raise forms.ValidationError("Rating value is not valid!")
         cleaned_data['rating_value'] = rvalue
 
@@ -69,3 +71,17 @@ class SignupForm(forms.Form):
 
 class EmailConfirmationForm(forms.Form):
     email = forms.EmailField()
+
+class ChangePasswordForm(forms.Form):
+    old_pass = forms.CharField(required = True ,widget=forms.PasswordInput())
+    new_pass = forms.CharField(required = True ,widget=forms.PasswordInput())
+    confirm_new_pass = forms.CharField(required = True , widget=forms.PasswordInput())
+
+class ChangeUsernameForm(forms.Form):
+    new_username = forms.CharField(required = True)
+    password = forms.CharField(required=True,widget= forms.PasswordInput())
+
+class ChangeNameForm(forms.Form):
+    new_fname = forms.CharField(required= True)
+    new_lname = forms.CharField(required= True) # maybe we can omit the required = True of this field ? 
+    password = forms.CharField(required=True,widget=forms.PasswordInput())
