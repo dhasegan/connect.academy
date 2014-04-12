@@ -4,6 +4,71 @@
     padding-bottom: 12px;
 }
 
+.navbar{
+    background-color: #282828;
+}
+
+.navbar-header{
+    padding-left: 100px;
+    float:left;
+}
+
+
+#logo-container{
+    max-width:50px;
+    max-height: 50px;
+    float:left;
+}
+
+
+#logo{
+    position: relative;
+    left:105px;
+    width: 50px;
+}
+
+
+.navbar-default .navbar-brand {
+    color: #FFF;
+    font-weight: bold;
+}
+
+#navBar{
+    padding-right: 100px;
+}
+
+
+
+
+.panel-default>.panel-heading {
+    color: #FFF;
+    background-color: #282828;
+    border-color: #DDD;
+    text-align: center;
+}
+
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #29ABE2;
+}
+
+
+#welcome_page_panel-body{
+    width: 400px;
+    height: 270px;
+}
+
+/* After login */
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+    color: #FFF;
+    background-color: #29ABE2;
+}
+
+
+
 .school-group {
     margin-top: 8px;
 }
@@ -60,7 +125,7 @@
 
 /* Login form */
 .login-form .login-input {
-    max-width: 120px;
+    max-width: 150px;
 }
 
 /******* Course page *********/
@@ -145,12 +210,18 @@
 #home-container {   
    position:relative;
    top:90px;
-
-   
 }
 
+.container{
+    position: relative;
+    padding-top: -60px
+}
+
+
 #home-image{
-    width: 700px;
+    width: 500px;
+    position: relative;;
+    top: 90px
     
 }
 
@@ -158,6 +229,7 @@
     position: relative;
     top:7px;
     right:7px;
+    background-color: #29ABE2
 }
 
 .dropdown-submenu {

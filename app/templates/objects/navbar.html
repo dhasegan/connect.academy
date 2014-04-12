@@ -1,4 +1,10 @@
 <nav class="navbar navbar-default" role="navigation">
+<!-- Added div for logo -->
+<div> 
+  <div class="logo-fixed" id="logo-container">
+    <a href="/welcome?next=/home"><img id="logo" src="{{ STATIC_URL }}images/connect.logo.png"/></a>
+  </div>  
+
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
       <span class="sr-only">Toggle navigation</span>
@@ -8,7 +14,7 @@
     </button>
     <a class="navbar-brand" href="/home">Connect.Academy</a>
   </div>
-
+</div>
   <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
   {% if user_auth %}
     <ul class="nav navbar-nav">
@@ -19,7 +25,7 @@
   
     {% include 'objects/login.html' %}
     {% comment %}
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right" id="login_navbar">
       <li><a href="#">Profile</a></li>
     </ul> 
     {% endcomment %}
