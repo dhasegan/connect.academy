@@ -17,6 +17,8 @@ class VoteCourseForm(forms.Form):
             rvalue = float(cleaned_data.get("rating_value"))
         except:
             raise forms.ValidationError("Rating value is not valid!")
+        if not (rvalue >= RATING_MIN and rvalue <= RATING_MAX):
+            raise forms.ValidationError("Rating value is not valid!")
         cleaned_data['rating_value'] = rvalue
 
         rtype = cleaned_data.get("rating_type")

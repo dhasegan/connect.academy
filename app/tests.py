@@ -221,10 +221,11 @@ class SubmitCommentTest(TestCase):
             })
         self.assertEqual(response.status_code, 302)
 
-        self.assertEquals( len(Comment.objects.all()), self.nr_comments + 1 )
         comm = Comment.objects.filter( comment=comment_text )
         self.assertEquals( len(comm), 1 )
         self.assertEquals(comm[0].course, course)
+        comms = Comment.objects.all()
+        self.assertEquals( len(comms), self.nr_comments + 1 )
 
     def test_bad_request(self):
         course = random.choice( Course.objects.all() )
@@ -333,16 +334,16 @@ class VoteCourseTest(TestCase):
             response = self.client.post('/vote_course', post_context)
             self.assertEqual(response.status_code, 404)
 
-            # post_context = {
-            #     "course_id": course.id,
-            #     "rating_value": 1000,
-            #     "rating_type": rating_type[0],
-            #     "url": "/course/" + course.slug,
-            #     }
-            # if rating_type[0] == PROFESSOR_R:
-            #     post_context['profname'] = random.choice(course.instructors.all()).name
-            # response = self.client.post('/vote_course', post_context)
-            # self.assertEqual(response.status_code, 404)
+            post_context = {
+                "course_id": course.id,
+                "rating_value": 1000,
+                "rating_type": rating_type[0],
+                "url": "/course/" + course.slug,
+                }
+            if rating_type[0] == PROFESSOR_R:
+                post_context['profname'] = random.choice(course.instructors.all()).name
+            response = self.client.post('/vote_course', post_context)
+            self.assertEqual(response.status_code, 404)
 
             if rating_type[0] == PROFESSOR_R:
                 post_context = {
