@@ -74,3 +74,11 @@ class Comment(models.Model):
 class University(models.Model):
     name = models.CharField(max_length=100)
     domain = models.CharField(max_length=100)
+
+
+class WikiPage(models.Model):
+    name = models.CharField(max_length=50,primary_key=True)
+    content = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return str(self.name)
