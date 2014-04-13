@@ -4,51 +4,9 @@ from django.utils.text import slugify
 from django.conf import settings 
 from app.course_info import *
 
-USER_TYPE_STUDENT = 0
-USER_TYPE_INSTRUCTOR = 1
-USER_TYPE_DEPARTMENT_ADMIN = 2
-USER_TYPE_UNIVERSITY_ADMIN = 3
-# USER_TYPE_ADMIN = 4 (for our accounts, when we build an interface for our admins.)
-USER_TYPES = (
-    (USER_TYPE_STUDENT, "student"),
-    (USER_TYPE_INSTRUCTOR, "instructor"),
-    (USER_TYPE_DEPARTMENT_ADMIN, "department_admin"),
-    (USER_TYPE_UNIVERSITY_ADMIN, "university_admin"),
-    #(USER_TYPE_ADMIN, "global_admin")
-)
-
 class jUser(User):
-
-    user_type = models.IntegerField(choices=USER_TYPES,default=USER_TYPE_STUDENT)
     department = models.CharField(max_length=50)
     university = models.ForeignKey('University',default = 1)
-    is_confirmed = models.NullBooleanField(default = False)  # For instructors only 
-                                                             # True if they have been confirmed to be instructors)
-    courses = models.ManyToManyField('Course')
-    
-
-    class Meta:
-        # Permissions associated with users - besides add/change/delete user
-        permissions = (
-            ("crud_students", "Can perform CRUD operations on students"),
-            ("crud_instructors", "Can perform CRUD operations on instructors"),
-            ("crud_department_admins", "Can perform CRUD operations on students"),
-            ("add_university_admins", "Can add new university admins"),
-            ("delete_university_admins", "Can delete university admins"),
-            ("change_university_admins", "Can change university admins"),
-            ("approve_course_student", "Can approve a student's course registration"),
-            ("approve_course_instructor", "Can approve an instructor's request to teach a course")
-        )    
-
-class InstructorCourseRegistration:
-    instructor = models.ForeignKey('jUser')
-    course = models.ForeignKey('Course')
-
-class StudentCourseRegistration:
-    student = models.ForeignKey('jUser')
-    course = models.ForeignKey('Course')
-
-
 
 class Professor(models.Model):
     name = models.CharField(max_length=50)
@@ -114,13 +72,13 @@ class Comment(models.Model):
         return "Comm" + str(self.id)
 
 class University(models.Model):
-    name = models.CharField(max_length=150)
-    domains = models.ManyToManyField('Domain')
-    departments = models.ManyToManyField('Department')
+    name = models.CharField(max_length=100)
+    domain = models.CharField(max_length=100)
 
-class Domain(models.Model):
-    name = models.CharField(max_length=200,unique = True)
 
-class Department(models.Model):
-    name = models.CharField(max_length=200)
+class WikiPage(models.Model):
+    name = models.CharField(max_length=50,primary_key=True)
+    content = models.TextField(blank=True)
 
+    def __unicode__(self):
+        return str(self.name)
