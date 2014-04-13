@@ -161,7 +161,7 @@ def login_action(request):
         users = jUser.objects.filter(username=login_user).count()
         if users == 0:
             # Jacobs University user
-            jacobs = University.objects.filter(domain="jacobs-university.de")[0] 
+            jacobs = University.objects.filter(domains__name="jacobs-university.de")[0] 
             user = jUser.objects.create_user(username=login_user, password=login_pass, university=jacobs)
             user.is_active = False # Account inactive until confirmed
             user.save()
@@ -218,7 +218,7 @@ def send_confirmation(request):
 
             email = form.cleaned_data["email"]
             emailID, domain = email.split('@')
-            universities = University.objects.filter(domain=domain)
+            universities = University.objects.filter(domains__name=domain)
             if len(universities) < 1: 
                 # university not found
                 context["error"] = "Sorry, we don't have any <b>university</b> with the domain of your <b>e-mail address</b>. <br/>"
