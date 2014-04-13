@@ -7,13 +7,18 @@
       <span class="icon-bar"></span>
     </button>
   </div>
-  <div class="container">
-  <a class="navbar-brand" href="/home">Connect.Academy</a>
+  <div class="container" id="navbar_container">
+  <div>
+  <a href="/home" ><img id="navbar_logo" src="{{ STATIC_URL }}images/connect.logo.png"/></a>
+  </div>
+  <div>
+  <a class="navbar-brand" id="navbar-brand" href="/home"><b>Connect</b></a>
+  </div>
   <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
   {% if user_auth %}
     <ul class="nav navbar-nav">
-      <li {% if page == 'home' %} class="active" {% endif %}><a href="/home">All courses</a></li>
-      <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="/all_comments">All comments</a></li>
+      <li {% if page == 'home' %} class="active" {% endif %}><a href="/home"><b>All courses</b></a></li>
+      <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="/all_comments"> <b>All comments</b></a></li>
     </ul>
   {% endif %}
   

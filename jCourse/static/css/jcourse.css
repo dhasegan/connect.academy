@@ -1,5 +1,102 @@
+#body_image{
+    background-image: url(project_papper.png);
+    background-repeat:repeat;
+}
 
+#main_content_container{
+    padding-top: 100px;
+}
+
+
+
+/*********************************/
+/********* NavBar **************/
+
+.navbar{
+    position: fixed;
+    width: 100%;
+    z-index:10;
+    background-color: #282828;
+}
+
+
+#navbar_logo{
+    float:left;
+    width: 40px;
+    padding-top:6px;
+    padding-right: 6px;
+}
+
+
+.navbar-default .navbar-nav>li>a {
+color: #FFF;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+    color: #FFF;
+    background-color: #29ABE2;
+    font-weight: bold;
+}
+
+
+
+.navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+color: #FFF;
+background-color: #3276B1;
+font-weight: bold;
+}
+
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+    color: #FFF;
+    background-color: #29ABE2;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+color: #29ABE2;
+font-weight: bold;
+}
+
+
+.navbar>.container .navbar-brand {
+    color: #29ABE2;
+    font-family:"OCR-A Extended", Georgia, Serif;
+}
+
+
+/****** DropDown Menu ************/
+
+
+.dropdown-menu {
+    position: absolute;
+    top: 140%;
+    left: 0;
+    z-index: 100;
+    min-width: 160px;
+    padding: 5px 0;
+    margin-right: 4px;
+    font-size: 14px;
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+}
+
+.dropdown-menu>li>a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    line-height: 1.428571429;
+    color: #282828;
+}
+
+
+/*********************************/
 /********* Main page ***********/
+
 .course-block-wrapper {
     padding-bottom: 12px;
 }
@@ -46,7 +143,11 @@
     margin-top: 12px;
 }
 
+
+/*********************************/
 /* Credit slider */
+
+
 #credit-slider .ui-slider-range {
     background: #729fcf;
 }
@@ -58,12 +159,12 @@
     margin-top: 15px;
 }
 
-/* Login form */
-.login-form .login-input {
-    max-width: 120px;
-}
 
+
+
+/*********************************/
 /******* Course page *********/
+
 .course-details .course-brief-detail-wrapper {
     margin-top: 10px;
 }
@@ -76,7 +177,11 @@
     margin-top: 4px;
 }
 
+
+
+/*********************************/
 /* Comments */
+
 .comments .comment-submit {
     resize: vertical;
 }
@@ -93,7 +198,12 @@
     float: right;
 }
 
+
+
+/*********************************/
 /* Ratings */
+
+
 .ratings {
     margin-top: 8px;
 }
@@ -111,7 +221,12 @@
     color: #EDDA74;
 }
 
+
+
+/*********************************/
 /******* All Comments page *******/
+
+
 .comments-page .comments-display hr {
     margin-bottom: 12px;
 }
@@ -124,7 +239,61 @@
     float: right;
 }
 
-/******* Welcome page **********/
+
+
+
+/*********************************/
+/********* Welcome_page*********/
+
+/* Login form */
+
+.login-form .login-input {
+    max-width: 120px;
+}
+
+
+#campusnet-popover{
+    color: #29ABE2;
+}
+
+#login_fields{
+    padding-top: 4px;
+}
+
+#login_id{
+    max-width: 170px;
+    max-height: 27px;
+}
+
+#login_password{
+    max-height: 27px;
+    margin-right: 15px;
+}
+
+#home-container{
+    padding-top: 10px;
+}
+
+
+
+
+
+/************************************/
+/******** Register Panel ************/
+
+
+#register_panel-body{
+    padding-top: 75px;
+}
+
+
+#register_panel-heading{
+    background-color: #282828;
+    color: #FFF;
+    text-align: center;
+    border-radius: 0px;
+}
+
 
 .centered-form{
     margin-top: 60px;
@@ -145,14 +314,12 @@
 #home-container {   
    position:relative;
    top:90px;
-
-   
 }
 
 #home-image{
     width: 700px;
-    
 }
+
 
 #dLabel{
     position: relative;
@@ -160,68 +327,12 @@
     right:7px;
 }
 
-.dropdown-submenu {
-    position: relative;
-}
 
-.dropdown-submenu>.dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -6px;
-    margin-left: -1px;
-    -webkit-border-radius: 0 6px 6px 6px;
-    -moz-border-radius: 0 6px 6px;
-    border-radius: 0 6px 6px 6px;
-}
 
-.dropdown-submenu:hover>.dropdown-menu {
-    display: block;
-}
 
-.dropdown-submenu>a:after {
-    display: block;
-    content: " ";
-    float: right;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-    border-width: 5px 0 5px 5px;
-    border-left-color: #ccc;
-    margin-top: 5px;
-    margin-right: -10px;
-}
-
-.dropdown-submenu:hover>a:after {
-    border-left-color: #fff;
-}
-
-.dropdown-submenu.pull-left {
-    float: none;
-}
-
-.dropdown-submenu.pull-left>.dropdown-menu {
-    left: -100%;
-    margin-left: 10px;
-    -webkit-border-radius: 6px 0 6px 6px;
-    -moz-border-radius: 6px 0 6px 6px;
-    border-radius: 6px 0 6px 6px;
-}
-
+/*********************************/
 /************Manage Account ***************/
 
-#username_form{
-    padding-top: 30px;
-    
-}
-
-#name_form{
-    padding-top: 30px;
-}
-
-#password_form{
-    padding-top: 30px;
-}
 
 #change_username_button{
     margin-left: auto;
@@ -244,22 +355,23 @@
 #manage_account_container{
     margin-left: auto;
     margin-right: auto;
-    width: 50%;   
-}
-
-#username_header{
-    padding-top: 20px;
+    width: 50%;
+    height: 80%;
+    padding-top: -25px;
 }
 
 #password_header{
-    padding-top: 60px;   
+    padding-top: 25px;   
 }
 
 #name_header{
-    padding-top: 60px;
+    padding-top: 25px;
 }
 
+
+/*********************************/
 /********STUDENT PROFILE************/
+
 .glyphicon {  
     margin-bottom: 10px;
     margin-right: 10px;
@@ -273,4 +385,128 @@
 #profile_sidebar{
     width: 1000px;
     float:left;
+}
+
+
+
+/*********************************/
+/********** Button display ************/ 
+
+.btn-primary {
+    color: #FFF;
+    background-color: #29ABE2;
+    border-color: #29ABE2;
+    font-weight: bold;
+    border-radius:0px;
+}
+
+/*  Course Filter (UG, Graduate, Both)   */
+
+#study_groups_button{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right:auto; 
+    margin-left:auto;
+}
+
+
+/* credit slider _ sidebar */
+#credit-slider .ui-slider-range {
+    background: #29ABE2;
+
+}
+
+#credit-slider .ui-slider-handle {
+    background: #29ABE2;
+    border-radius: 0px;
+    border-color: #FFF
+}
+
+.panel {
+    margin-bottom: 20px;
+    background-color: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 0px;
+    -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.badge.course-rating {
+    margin-top: 2px;
+    background-color: #29ABE2;
+    border-radius: 0px;
+}
+
+/*  Submit buttons */
+.btn-default, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    color: #FFF;
+    background-color: #29ABE2;
+    border-color: #29ABE2;
+    border-radius: 0px;
+}
+
+.btn-default:hover{
+    color: #FFF;
+    background-color: #357EBD;
+    border-color: #357EBD;
+    border-radius: 0px;
+}
+
+#search_courses{
+    border-radius: 0px;
+}
+
+#slider-handle-0 {
+     border-radius: 0px;   
+     text-align: center;
+}
+
+#slider-handle-1 {
+    border-radius: 0px;
+    text-align: center;
+}
+
+.login-form .login-input {
+max-width: 120px;
+border-radius: 0px;
+}
+
+#login_button{
+    height: 27px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.btn-block{
+    border-radius: 0px;
+}
+
+.input-sm {
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0px;
+    text-align: center;
+}
+
+
+/* Credits per course */
+.badge.course-credits {
+    background-color: #282828;
+    border-radius: 0px;
+}
+
+
+
+/********* ALERTS ************/
+
+#alert_email_registration{
+    width: 50%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
 }

@@ -10,10 +10,10 @@
     <link href="{{ STATIC_URL }}css/jcourse.css" rel="stylesheet">
     <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
   </head>
-  <body>
-    {% include 'objects/navbar.html' %}
-      
-    <div class="container">
+  <body id = "body_image">
+
+  {% include 'objects/navbar.html' %}
+      <div class="container" id="main_content_container">
       
       {% if error %}
       <div class="alert alert-danger">
@@ -21,12 +21,6 @@
       </div>
       {% endif %}
 
-      {% if warning %}
-      <div class="alert alert-warning">
-          {{ warning | safe}}
-      </div>
-      {%endif%}
-      
       {% if success %}
       <div class="alert alert-success">
           {{ success | safe}}
