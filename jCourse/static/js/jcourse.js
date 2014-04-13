@@ -214,5 +214,43 @@ $(function() {
     }
 
     // Tooltip for CampusNet
-    $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'})
+    $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'});
+
+
+
+    $("#email").blur(function(){
+        var email_address = this.value;
+        $.get('/university_by_email', {email: email_address},function(data,status) {
+            if (data == "NotFound") {
+                $("#university-name").empty();
+                $('#error-not-found').html("University Not Found");
+            }
+            else {
+                // university found
+                $("#error-not-found").empty();
+                $('#university-name').html(data);
+            }
+        });
+    });
+
+    $("#is_instructor").click(function(){
+        var university_name = $("#university-name").text();
+        if (this.checked) {
+            $.get('/departments_by_university_name', {name: university_name},function(data,status) {
+                if (data == "NotFound") {
+                    $('#departments').empty();
+                }
+                else {
+                    // university found
+                    $('#departments').html(data);
+                }
+            });
+        }
+        else {
+            $('#departments').empty();
+        }
+
+            
+    });
+
 });

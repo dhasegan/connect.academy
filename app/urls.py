@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^manage_account$','app.views.manage_account',name='manage_account'),
     url(r'^password_change_action$','app.views.password_change_action', name='password_change_action'),
     url(r'^username_change_action$','app.views.username_change_action', name='username_change_action'),
-    url(r'^name_change_action$','app.views.name_change_action',name='name_change_action')
-    
+    url(r'^name_change_action$','app.views.name_change_action',name='name_change_action'),
+    url(r'^university_by_email\.*$','app.views.university_by_email',name='university_by_email'),
+    url(r'^departments_by_university_name\.*$','app.views.departments_by_university_name',name='departments_by_university_name')
 )

@@ -66,6 +66,8 @@ class SignupForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
     password_confirmation = forms.CharField(widget=forms.PasswordInput())  # password confirmation field
+    is_instructor = forms.BooleanField(required=False)
+    department = forms.IntegerField(required = False)
     class Meta:
         model = jUser
 

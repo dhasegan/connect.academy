@@ -297,12 +297,14 @@ def signup_action(request):
     fname = form.cleaned_data["fname"]
     lname = form.cleaned_data["lname"]
     is_instructor = form.cleaned_data["is_instructor"]
+    department_id = form.cleaned_data["department"]
     emailID, domain = email.split("@")
 
     if is_instructor:
         user_type = USER_TYPE_INSTRUCTOR
     else:
         user_type = USER_TYPE_STUDENT
+           
 
 
     # Check if username or email exists
@@ -322,7 +324,7 @@ def signup_action(request):
         return render(request, "pages/welcome_page.html",context)
 
     # Check if we know the domain of the e-mail address
-    universities = University.objects.filter(domain__name=domain)
+    universities = University.objects.filter(domains__name=domain)
     if len(universities) < 1: # not found
         context["error"] = "Sorry, we don't have a <b>university</b> with the domain of your <b>e-mail address</b>. Please check again soon.<br/>"
         return render(request,"pages/welcome_page.html", context)
@@ -334,10 +336,19 @@ def signup_action(request):
     # create user
     
     if (password_confirmation == password): # passwords match
+
         user = jUser.objects.create_user(username=username, user_type=user_type ,password=password,email=email,university=university,
             first_name=fname, last_name=lname)
-        user.is_active = False
         
+        if department_id:
+            department = Department.objects.filter(id=department_id)[0]
+            if department and len(department.name) > 0:
+                department.save()
+                user.departments.add(department)
+                
+
+        user.is_active = False
+    
         #save new user
         user.save()       
 
@@ -361,12 +372,17 @@ def signup_action(request):
 # This function takes an e-mail address and returns a HTTP Response with the name of the university that has the
 # domain of the e-mail address. If it is not found, it returns HttpResponse("NotFound")
 # It will be used to send AJAX requests from the welcome page during signup
-def universityByEmail(request):
+def university_by_email(request):
+    
     if request.method != "GET":
         raise Http404
 
     email = request.GET["email"]
-    _, domain = email.split("@")
+    try:
+        _, domain = email.split("@")
+    except Exception as e:
+        return HttpResponse("NotFound")
+
 
     universities = University.objects.filter(domains__name = domain)
 
@@ -377,6 +393,30 @@ def universityByEmail(request):
     return HttpResponse(university.name)
 
 
+# Takes the name of the university in the GET parameters (the key is 'name') and returns a <select> element filled
+# with all the departments of that university as <option> elements
+# To be used by the jQuery on welcome page (registration form)
+def departments_by_university_name(request):
+    if request.method != "GET":
+        raise Http404
+
+    name = request.GET["name"]
+
+    departments = Department.objects.filter(university__name = name).order_by('name')
+
+    if len(departments) < 1:
+        return HttpResponse("<select class='form-control'><option value=''>Department</option></select>")
+
+    return_string = """<select class='form-control' name = 'department'>
+        <option value=''>Department</option>"""
+    for department in departments:
+        name = department.name
+        d_id = department.id
+        option = "<option value=%d> %s </option>" % (d_id, name)
+        return_string += option
+    return_string += "</select>"
+
+    return HttpResponse(return_string)
 
 @login_required
 def profile(request,username):
