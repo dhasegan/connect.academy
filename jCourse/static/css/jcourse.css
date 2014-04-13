@@ -274,7 +274,14 @@ font-weight: bold;
     padding-top: 10px;
 }
 
-
+#university-name {
+    color:green;
+    font-size:11px;
+}
+#error-not-found {
+    color:red;
+    font-size:11px;
+}
 
 
 
