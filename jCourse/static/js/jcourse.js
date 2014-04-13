@@ -214,5 +214,5 @@ $(function() {
     }
 
     // Tooltip for CampusNet
-    $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'})
+    $("#campusnet-popover").tooltip({title: 'If you are a Jacobs University student, you can log in with your campus net credentials !'})
 });

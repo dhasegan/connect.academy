@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Link.Academy</title>
+    <title>Connect.Academy</title>
     <link rel="shortcut icon" href="{{ STATIC_URL }}/ju_favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Courses at Jacobs University">
@@ -10,9 +10,10 @@
     <link href="{{ STATIC_URL }}css/jcourse.css" rel="stylesheet">
     <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
   </head>
-  <body>
-    <div class="container">
-      {% include 'objects/navbar.html' %}
+  <body id = "body_image">
+
+  {% include 'objects/navbar.html' %}
+      <div class="container" id="main_content_container">
       
       {% if error %}
       <div class="alert alert-danger">
