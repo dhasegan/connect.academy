@@ -7,8 +7,8 @@
             <form method="post" action="/username_change_action" id="username_form">
             {%csrf_token%}
     		<input type="text" name="new_username" id="new_username" class="form-control input-sm" placeholder="New Username" required>
-            <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required>
-            <input type="submit" value="Change Username" id="change_username_button" class="btn btn-info btn-block"/>
+            <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" autocomplete="off" required>
+            <input type="submit" value="Change Username" id="change_username_button" class="btn btn-info btn-block" autocomplete="off"/>
             </form>
             </div>
 
@@ -18,8 +18,8 @@
             {%csrf_token%}
     		<input type="password" name="old_pass" id="old_password" class="form-control input-sm" placeholder="Old Password" required>
             <input type="password" name="new_pass" id="new_password" class="form-control input-sm" placeholder="New Password" required>
-            <input type="password" name="confirm_new_pass" id="confirm_new_pass" class="form-control input-sm" placeholder="Confirm	New Password" required>
-            <input type="submit" value="Change Password" id="change_password_button"class="btn btn-info btn-block"/>
+            <input type="password" name="confirm_new_pass" id="confirm_new_pass" class="form-control input-sm" placeholder="Confirm	New Password" autocomplete="off" required>
+            <input  type="submit" value="Change Password" id="change_password_button"class="btn btn-info btn-block" autocomplete="off"/>
         </form>
     </div>
 
@@ -29,8 +29,8 @@
             {%csrf_token%}
     		<input type="text" name="new_fname" id="new_fname" class="form-control input-sm" placeholder="New First Name" required>
             <input type="text" name="new_lname" id="new_lname" class="form-control input-sm" placeholder="New Last Name" required>
-            <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required>
-            <input type="submit" value="Change Name" id="change_name_button" 
+            <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" autocomplete="off" required>
+            <input type="submit" value="Change Name" id="change_name_button" autocomplete="off"
             class="btn btn-info btn-block"/>
         </form>
     </div>
