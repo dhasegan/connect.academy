@@ -1,6 +1,5 @@
 from django import forms
 
-from app.course_info import *
 from app.models import *
 
 class LoginForm(forms.Form):

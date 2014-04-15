@@ -2,7 +2,7 @@
 
 <div class="panel panel-default comments">
     <div class="panel-body">
-        <form role="form" action="{% url 'submit_comment' %}" method="post">
+        <form role="form" action="{% url 'submit_comment' course.slug %}" method="post">
             <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
             <input type="hidden" name="course_id" value="{{course.id}}">
             {% csrf_token %}

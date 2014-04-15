@@ -13,5 +13,5 @@ urlpatterns = patterns('app.views',
 urlpatterns += patterns('',
     url(r'^', include('app.auth.urls')),
     url(r'^', include('app.profile.urls')),
-    url(r'^', include('app.course.urls')),
+    url(r'^course/(?P<slug>[\w-]+)/', include('app.course.urls')),
 )

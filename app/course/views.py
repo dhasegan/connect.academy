@@ -8,6 +8,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import RequestContext
+from django.views.decorators.http import require_GET, require_POST
 from app.helpers import *
 import hashlib
 import string
@@ -23,6 +24,7 @@ from app.context_processor import *
 from app.course.forms import *
 from app.campusnet_login import *
 
+@require_GET
 @login_required
 def course_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
@@ -34,13 +36,37 @@ def course_page(request, slug):
 
     return render(request, "pages/course.html", context)
 
-
+@require_GET
 @login_required
-def rate_course(request):
-
-    context = {}
-    if request.method != 'POST':
+def get_course_image(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    if not course.image:
         raise Http404
+
+    content_type = guess_type(course.image.name)
+    return HttpResponse(course.image, mimetype=content_type)
+
+@require_POST
+@login_required
+def submit_comment(request, slug):
+
+    form = SubmitCommentForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    course = form.cleaned_data['course']
+
+    comment_text = form.cleaned_data['comment']
+    comment = Comment(course= course, comment= comment_text)
+    comment.save()
+
+    return redirect(form.cleaned_data['url'])
+
+@require_POST
+@login_required
+def rate_course(request, slug):
+    context = {}
+
     user = get_object_or_404(jUser, id=request.user.id)
 
     form = RateCourseForm(request.POST)
@@ -70,33 +96,5 @@ def rate_course(request):
             rating = ratings[0]
             rating.rating = rating_value
             rating.save()
-
-    return redirect(form.cleaned_data['url'])
-
-
-@login_required
-def get_course_image(request, slug):
-    course = get_object_or_404(Course, slug=slug)
-    if not course.image:
-        raise Http404
-
-    content_type = guess_type(course.image.name)
-    return HttpResponse(course.image, mimetype=content_type)
-
-
-@login_required
-def submit_comment(request):
-    if request.method != 'POST':
-        raise Http404
-
-    form = SubmitCommentForm(request.POST)
-    if not form.is_valid():
-        raise Http404
-
-    course = form.cleaned_data['course']
-
-    comment_text = form.cleaned_data['comment']
-    comment = Comment(course= course, comment= comment_text)
-    comment.save()
 
     return redirect(form.cleaned_data['url'])
