@@ -1,4 +1,4 @@
-# Django settings for jCourse project.
+# Django settings for academy project.
 
 from os import environ, path
 import boto
@@ -10,7 +10,7 @@ EMAIL_PORT = 25
 #Authentication Backends
 AUTHENTICATION_BACKENDS = ('app.helpers.jUserBackend',)
 
-DEBUG = environ.get('JCOURSE_DEBUG_STATE', 'True') == 'True'
+DEBUG = environ.get('ACADEMY_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -23,13 +23,13 @@ PROJECT_ROOT = path.realpath(path.dirname(__file__)) + '/'
 
 DATABASES = {
     'default': {
-        'ENGINE': environ.get('JCOURSE_DATABASE_BACKEND', 'django.db.backends.sqlite3'),
-        'NAME': environ.get('JCOURSE_DATABASE_NAME', PROJECT_ROOT + 'db/database.db'),
-        'USER': environ.get('JCOURSE_DATABASE_USER', ''),
-        'PASSWORD': environ.get('JCOURSE_DATABASE_PASSWORD', ''),
-        'HOST': environ.get('JCOURSE_DATABASE_HOST', ''),
-        'PORT': environ.get('JCOURSE_DATABASE_PORT', ''),
-        'TEST_NAME': environ.get('JCOURSE_DATABASE_TEST_NAME', PROJECT_ROOT + 'db/test_database.db'),
+        'ENGINE': environ.get('ACADEMY_DATABASE_BACKEND', 'django.db.backends.sqlite3'),
+        'NAME': environ.get('ACADEMY_DATABASE_NAME', PROJECT_ROOT + 'db/database.db'),
+        'USER': environ.get('ACADEMY_DATABASE_USER', ''),
+        'PASSWORD': environ.get('ACADEMY_DATABASE_PASSWORD', ''),
+        'HOST': environ.get('ACADEMY_DATABASE_HOST', ''),
+        'PORT': environ.get('ACADEMY_DATABASE_PORT', ''),
+        'TEST_NAME': environ.get('ACADEMY_DATABASE_TEST_NAME', PROJECT_ROOT + 'db/test_database.db'),
     }
 }
 
@@ -98,7 +98,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = environ.get('JCOURSE_SECRET_KEY', '^vix^ohv5hl+w9yv(o!1-b#$54vm_p$12s(a7iiz14u*c&gs@1')
+SECRET_KEY = environ.get('ACADEMY_SECRET_KEY', '^vix^ohv5hl+w9yv(o!1-b#$54vm_p$12s(a7iiz14u*c&gs@1')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -117,10 +117,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'jCourse.urls'
+ROOT_URLCONF = 'academy.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'jCourse.wsgi.application'
+WSGI_APPLICATION = 'academy.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -186,9 +186,9 @@ LOGGING = {
 
 ########################## Media files setup on AWS
 # Setup AWS
-AWS_ACCESS_KEY_ID = environ.get('JCOURSE_AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = environ.get('JCOURSE_AWS_SECRET_ACCESS_KEY', '')
-AWS_STORAGE_BUCKET_NAME = 'jcourse'
+AWS_ACCESS_KEY_ID = environ.get('ACADEMY_AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = environ.get('ACADEMY_AWS_SECRET_ACCESS_KEY', '')
+AWS_STORAGE_BUCKET_NAME = 'academy'
 AWS_PRELOAD_METADATA = True
 
 # Connect to s3 only in production
