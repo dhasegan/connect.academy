@@ -1,8 +1,9 @@
-from app.models import *
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Q
+
+from app.models import *
 
 
 def send_email_confirmation(user, host):

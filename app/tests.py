@@ -1,13 +1,10 @@
-# Helpers
 import random
 
-# Project specific
-from app.models import *
-from app.populator import Populator
-
-# Test specifics
 from django.test import TestCase
 from django.test.client import Client
+
+from app.models import *
+from app.populator import Populator
 
 
 class WelcomePageTest(TestCase):

@@ -1,17 +1,13 @@
-# Shortcuts
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
-from app.helpers import *
 
-# App Models
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
-from app.forms import *
-from app.campusnet_login import *
+from app.helpers import *
 
 
 def welcome(request):

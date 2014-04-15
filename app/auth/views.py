@@ -1,4 +1,3 @@
-# Shortcuts
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
@@ -6,14 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.views.decorators.http import require_GET, require_POST
-from app.helpers import *
 
-# App Models
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
+from app.helpers import *
 from app.auth.forms import *
-from app.campusnet_login import *
+from app.auth.campusnet_login import *
 
 @require_POST
 def login_action(request):
@@ -62,8 +60,7 @@ def login_action(request):
 
 @login_required
 def logout_action(request):
-    if request.user:
-        user = request.user
+
     logout(request)
     return redirect('/')
 

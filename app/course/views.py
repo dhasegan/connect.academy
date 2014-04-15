@@ -1,4 +1,8 @@
-# Shortcuts
+from mimetypes import guess_type
+import hashlib
+import string
+import random
+
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
@@ -9,20 +13,12 @@ from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
-from app.helpers import *
-import hashlib
-import string
-import random
 
-# Mimetypes for images
-from mimetypes import guess_type
-
-# App Models
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
 from app.course.forms import *
-from app.campusnet_login import *
+from app.helpers import *
 
 
 @require_GET

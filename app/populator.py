@@ -132,7 +132,7 @@ class Populator:
                     rat_type = rating_type[0]
                     rater = user
                     break
-        if rater == None:
+        if rater is None:
             return False
 
         rating = random.randint(1, 5)

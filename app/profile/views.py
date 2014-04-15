@@ -1,4 +1,3 @@
-# Shortcuts
 from django.core.context_processors import csrf
 from django.shortcuts import render
 from django.http import Http404
@@ -6,14 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
 from django.template.loader import render_to_string
-from app.helpers import *
 
-# App Models
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
 from app.profile.forms import *
-from app.campusnet_login import *
+from app.helpers import *
 
 
 @require_GET
