@@ -10,35 +10,14 @@
     <link href="{{ STATIC_URL }}css/jcourse.css" rel="stylesheet">
     <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
   </head>
-  <body id = "body_image">
+  <body id="body_image">
 
   {% include 'objects/navbar.html' %}
-      <div class="container" id="main_content_container">
+    <div class="container" id="main_content_container">
       
-      {% if error %}
-      <div class="alert alert-danger">
-          {{ error | safe}}
-      </div>
-      {% endif %}
-
-      {% if success %}
-      <div class="alert alert-success">
-          {{ success | safe}}
-      </div>
-      {% endif %}
-
+      {% include 'objects/notifications/alerts.html' %}
 
       <div class="main-content">
-        {% if user_auth and not user_auth.is_active %}
-            
-        <div class="alert alert-danger">
-            {% if user_auth.email and user_auth.email != "" %}
-              Your account is not yet activated. Please check your email and open the confirmation link that we have sent you. <a href="/send_confirmation"> Resend confirmation link </a>
-            {% else %}
-              Your account is not yet activated. Click <a href="/send_confirmation">here</a> to activate it.
-            {% endif %}
-        </div>
-        {%endif%}
         {% block content %}
         {% endblock %}
       </div>

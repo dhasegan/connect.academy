@@ -8,6 +8,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import RequestContext
+from django.views.decorators.http import require_GET, require_POST
 from app.helpers import *
 import hashlib
 import string
@@ -19,20 +20,19 @@ from mimetypes import guess_type
 # App Models
 from app.models import *
 from app.course_info import *
-from app.context_processor import *
+from app.context_processors import *
 from app.auth.forms import *
 from app.campusnet_login import *
 
+@require_POST
 def login_action(request):
     context = {}
-    if request.method != 'POST':
-        raise Http404
 
     form = LoginForm(request.POST)
     if not form.is_valid():
         raise Http404
     
-    #login_user is the username OR email of the user attempting login.
+    # login_user is the username OR email of the user attempting login.
     login_user = form.cleaned_data['username']
     login_pass = form.cleaned_data['password']
     
@@ -41,15 +41,13 @@ def login_action(request):
     if user is not None:
         # Found user
         login(request,user)
-        context['user_auth']= user 
         return redirect("/home")
     
     
     if not login_success(login_user, login_pass):
-        #user not found neither on our database nor on campusnet
+        # user not found neither on our database nor on campusnet
         context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
         context['error'] += "If you don't have an account, you may be able to register below.<br/>"
-        
         return render(request, "pages/welcome_page.html", context)
     else:
         # campusnet confirmed
@@ -65,16 +63,11 @@ def login_action(request):
     
     if user is not None:
         login(request, user)
-        context['user_auth']=user
-        return redirect("home")
+        return redirect("/home")
         
-    else:
-        context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
-        context['error'] += "If you don't have an account, you may be able to register below.<br/>"
-        return render(request, "pages/welcome_page.html", context)
-    
-    raise Http404
-
+    context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
+    context['error'] += "If you don't have an account, you may be able to register below.<br/>"
+    return render(request, "pages/welcome_page.html", context)
 
 @login_required
 def logout_action(request):
@@ -89,9 +82,6 @@ def send_confirmation(request):
     context = {
         "page": "send_confirmation",
     }
-    context.update(csrf(request))
-    context["user_auth"] = user_authenticated(request)
-    
     user = request.user
     
     if user.email and len(user.email) > 0:
@@ -162,13 +152,12 @@ def delete_user(request,username,confirmation):
     context["success"] = "User successfully deleted. <br/>"
     return render(request,"pages/welcome_page.html", context)
 
+@require_POST
 def signup_action(request):
     context = context = {
         "page": "signup_action",
     }
     context.update(csrf(request))
-    if request.method != 'POST':
-        raise Http404
 
     form = SignupForm(request.POST)
     if not form.is_valid():
@@ -242,7 +231,6 @@ def signup_action(request):
             login(request, auth_user)
             # it needs to be request.user, not auth_user. 
             send_email_confirmation(request.user,request.get_host())
-            context["user_auth"] = auth_user
             if 'login' in request.META.get('HTTP_REFERER'):
                 return redirect('/')
             return redirect(request.META.get('HTTP_REFERER'))

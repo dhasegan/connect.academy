@@ -3,9 +3,6 @@ from django import forms
 from app.course_info import *
 from app.models import *
 
-class EmailConfirmationForm(forms.Form):
-    email = forms.EmailField()
-
 class ChangePasswordForm(forms.Form):
     old_pass = forms.CharField(required = True ,widget=forms.PasswordInput())
     new_pass = forms.CharField(required = True ,widget=forms.PasswordInput())

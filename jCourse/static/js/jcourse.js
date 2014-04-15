@@ -149,6 +149,9 @@ $(function() {
     $("#slider-handle-1").val( creditValues[creditValues.length - 1] )
     majorCheckboxHandle();
 
+    // Activate Alerts
+    $(".dismissable-alert").alert();
+
     // Course page JS
     $('.rating-stars').raty( {
         starOn: '/static/images/star-on.png',

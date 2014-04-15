@@ -8,6 +8,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import RequestContext
+from django.views.decorators.http import require_GET, require_POST
 from app.helpers import *
 import hashlib
 import string
@@ -19,27 +20,25 @@ from mimetypes import guess_type
 # App Models
 from app.models import *
 from app.course_info import *
-from app.context_processor import *
+from app.context_processors import *
 from app.forms import *
 from app.campusnet_login import *
 
 def welcome(request):
+    if request.user and request.user.is_authenticated():
+        return redirect('/home')
+
     context = {
         "page": "welcome",
     }
-    if user_authenticated(request):
-        context['user_auth'] = request.user
-        return redirect('/home')
-
     return render(request,"pages/welcome_page.html",context)
 
 @login_required
 def home(request):
     context = {
         "page": "home",
-        'user_auth': user_authenticated(request)
     }
-    # Get courses
+
     courses = Course.objects.all()
     context = dict(context.items() + course_timeline_context(courses).items())
     return render(request, "pages/home.html", context)
@@ -48,7 +47,6 @@ def home(request):
 def all_comments(request):
     context = {
         'page': 'all_comments',
-        'user_auth': user_authenticated(request)
     }
     context['comments'] = Comment.objects.all()
 

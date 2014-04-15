@@ -1,0 +1,20 @@
+{% if success %}
+    <div class="alert alert-success dismissable-alert fade in">
+        {{ success | safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+{% endif %}
+
+{% if warning %}
+    <div class="alert alert-warning dismissable-alert fade in">
+        {{ warning | safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+{% endif %}
+
+{% if error %}
+    <div class="alert alert-danger dismissable-alert fade in">
+        {{ error | safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+{% endif %}

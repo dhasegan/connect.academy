@@ -1,4 +1,4 @@
-    {% if not user_auth %}
+{% if not user_auth %}
 
     <form class="navbar-form navbar-right login-form" id="login_fields" method="post" action="/login">
         {% csrf_token %}

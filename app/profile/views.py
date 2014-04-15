@@ -8,6 +8,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import RequestContext
+from django.views.decorators.http import require_GET, require_POST
+from django.template.loader import render_to_string
 from app.helpers import *
 import hashlib
 import string
@@ -19,16 +21,15 @@ from mimetypes import guess_type
 # App Models
 from app.models import *
 from app.course_info import *
-from app.context_processor import *
+from app.context_processors import *
 from app.profile.forms import *
 from app.campusnet_login import *
 
-
+@require_GET
 @login_required
 def profile(request,username):
     # stub for profile view
     context = {'page': 'profile'}
-    context['user_auth'] = user_authenticated(request)
     user = jUser.objects.filter(username=username)
     if user:
         user = user[0] 
@@ -36,25 +37,21 @@ def profile(request,username):
 
     return render(request,"pages/profile.html",context)
 
-
+@require_GET
 @login_required
 def manage_account(request):
-
-    context = {'page':'home'}
-    context['user_auth'] = user_authenticated(request)
-
+    context = {
+        'page': 'manage_account'
+    }
     return render(request,"pages/user_account.html",context)
 
-
+@require_POST
 @login_required
 def password_change_action(request):
-    
-    context = {'page':'manage_account'}
-    context['user_auth'] = user_authenticated(request)
+    context = {
+        'page': 'manage_account'
+    }
     context.update(csrf(request))
-
-    if request.method!='POST':
-        raise Http404
 
     form = ChangePasswordForm(request.POST)
     
@@ -69,30 +66,27 @@ def password_change_action(request):
     user = authenticate(username = user.username, password = old_password)
 
     if not user:
-        context['error'] = 'Your <b>password</b> is <b>incorrect</b>. Please check your password and try again.'
+        context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(request,"pages/user_account.html",context)
 
     if new_password != confirm_pass:
-        context['error'] = 'Your <b>passwords</b> do <b>not match</b>. Please check your passwords and try again.'
+        context['error'] = render_to_string('objects/notifications/profile/incorrect_passwords.html', {})
         return render(request,"pages/user_account.html",context)
 
     #everything went fine
 
     user.set_password(new_password)
     user.save()
-    context['success'] = 'Your <b>password</b> has been changed <b>successfully</b> !'
-
+    context['success'] = render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "password" })
 
     return render(request,"pages/user_account.html",context)
 
+@require_POST
 @login_required
 def username_change_action(request):
-    context = {'page':'manage_account'}
-    context['user_auth'] = user_authenticated(request)
-    context.update(csrf(request))
-
-    if request.method!='POST':
-        raise Http404
+    context = {
+        'page': 'manage_account'
+    }
 
     form = ChangeUsernameForm(request.POST)
 
@@ -106,7 +100,7 @@ def username_change_action(request):
     user = authenticate(username=user.username, password = password)
 
     if not user:
-        context['error'] = 'Your <b>password</b> is <b>incorrect</b>. Please check your password and try again.'
+        context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(request,"pages/user_account.html",context)
 
     #proceed and change the username.
@@ -114,18 +108,16 @@ def username_change_action(request):
     user.username = new_username
     user.save()
 
-    context['success'] = 'Your <b>username</b> has been changed <b> successfully</b> !'
+    context['success'] = render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "username" })
 
     return render(request,"pages/user_account.html",context)
 
+@require_POST
 @login_required
 def name_change_action(request):
-    context = {'page':'manage_account'}
-    context['user_auth'] = user_authenticated(request)
-    context.update(csrf(request))
-
-    if request.method!='POST':
-        raise Http404
+    context = {
+        'page':'manage_account'
+    }
 
     form = ChangeNameForm(request.POST)
 
@@ -140,7 +132,7 @@ def name_change_action(request):
     user = authenticate(username = user.username , password = password)
 
     if not user:
-        context['error'] = 'Your <b>password</b> is <b>incorrect</b>. Please check your password and try again. '
+        context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(context,"pages/user_account.html",context)
 
     #proceed and change the name
@@ -149,7 +141,7 @@ def name_change_action(request):
     user.last_name = new_lname
     user.save()
 
-    context['success']='Your <b>first</b> and <b>last</b> name have been changed <b>successfully</b> !'
+    context['success']= render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "first and last name" })
     
     return render(request,"pages/user_account.html",context)
 

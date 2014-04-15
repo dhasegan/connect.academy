@@ -20,7 +20,7 @@ from mimetypes import guess_type
 # App Models
 from app.models import *
 from app.course_info import *
-from app.context_processor import *
+from app.context_processors import *
 from app.course.forms import *
 from app.campusnet_login import *
 
@@ -30,7 +30,6 @@ def course_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     context = {
         "page": "course",
-        'user_auth': user_authenticated(request)
     }
     context = dict(context.items() + course_page_context(request, course).items())
 

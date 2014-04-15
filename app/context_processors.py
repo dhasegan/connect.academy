@@ -1,11 +1,20 @@
+from django.template.loader import render_to_string
 
 from app.models import *
 from app.course_info import *
 
 def user_authenticated(request):
+    context = {}
     if request.user and request.user.is_authenticated():
-        return request.user
-    return False
+        user = request.user
+        context["user_auth"] = user
+        if not user.is_active:
+            if not user.email or user.email == "":
+                context['warning'] = render_to_string('objects/notifications/auth/email_not_set.html', {})
+            else:
+                context['warning'] = render_to_string('objects/notifications/auth/email_not_activated.html', {})
+
+    return context
 
 def course_timeline_context(courses):
     context = {}
