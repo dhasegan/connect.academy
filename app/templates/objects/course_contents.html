@@ -20,7 +20,7 @@
     <div class="col-md-7 course-brief-detail-wrapper">
         {% if course.course_id %}
             <div class="course-brief-detail">
-                    <strong> Course ID: </strong> 
+                    <strong> Course ID: </strong>
                     <span class="content">
                         {{ course.course_id }}
                     </span>
@@ -28,7 +28,7 @@
         {% endif %}
         {% if course.credits %}
             <div class="course-brief-detail">
-                    <strong> Credits: </strong> 
+                    <strong> Credits: </strong>
                     <span class="content">
                         {{ course.credits }}
                     </span>
@@ -36,7 +36,7 @@
         {% endif %}
         {% if course.participants %}
             <div class="course-brief-detail">
-                    <strong> Min. | Max. participants: </strong> 
+                    <strong> Min. | Max. participants: </strong>
                     <span class="content">
                         {{ course.participants }}
                     </span>
@@ -44,7 +44,7 @@
         {% endif %}
         {% if course.abbreviation %}
             <div class="course-brief-detail">
-                    <strong> Abbreviation: </strong> 
+                    <strong> Abbreviation: </strong>
                     <span class="content">
                         {{ course.abbreviation }}
                     </span>
@@ -52,7 +52,7 @@
         {% endif %}
         {% if course_type %}
             <div class="course-brief-detail">
-                    <strong> Course Type: </strong> 
+                    <strong> Course Type: </strong>
                     <span class="content">
                         {{ course_type }}
                     </span>
@@ -65,10 +65,10 @@
 
 {% if course.instructors %}
 <div class="course-detail">
-    <strong> Instructors: </strong> 
+    <strong> Instructors: </strong>
     <div class="content">
         {% for prof in instructors %}
-            {{ prof.name }}; 
+            {{ prof.name }};
         {% endfor %}
     </div>
 </div>
@@ -76,7 +76,7 @@
 
 {% if course.description %}
 <div class="course-detail">
-    <strong> Description: </strong> 
+    <strong> Description: </strong>
     <div class="content">
         {{ course.description|linebreaks }}
     </div>
@@ -85,7 +85,7 @@
 
 {% if course.additional_info %}
 <div class="course-detail">
-    <strong> Additional information: </strong> 
+    <strong> Additional information: </strong>
     <div class="content">
         {{ course.additional_info }}
     </div>
@@ -94,7 +94,7 @@
 
 {% if course.grades %}
 <div class="course-detail">
-    <strong> Grade breakdown: </strong> 
+    <strong> Grade breakdown: </strong>
     <div class="content">
         {{ course.grades }}
     </div>
@@ -103,7 +103,7 @@
 
 {% if course.grades_info %}
 <div class="course-detail">
-    <strong> Additional Information about grades: </strong> 
+    <strong> Additional Information about grades: </strong>
     <div class="content">
         {{ course.grades_info }}
     </div>
@@ -112,7 +112,7 @@
 
 {% if course.hours_per_week %}
 <div class="course-detail">
-    <strong> Hours per week: </strong> 
+    <strong> Hours per week: </strong>
     <span class="content">
         {{ course.hours_per_week }}
     </span>
@@ -121,7 +121,7 @@
 
 {% if course.catalogue %}
 <div class="course-detail">
-    <strong> Catalogue: </strong> 
+    <strong> Catalogue: </strong>
     <span class="content">
         {{ course.catalogue }}
     </span>

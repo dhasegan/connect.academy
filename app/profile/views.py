@@ -1,22 +1,12 @@
 # Shortcuts
 from django.core.context_processors import csrf
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
-from django.http import Http404, HttpResponse
+from django.shortcuts import render
+from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.tokens import default_token_generator
-from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
-from django.template import RequestContext
+from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
 from django.template.loader import render_to_string
 from app.helpers import *
-import hashlib
-import string
-import random
-
-# Mimetypes for images
-from mimetypes import guess_type
 
 # App Models
 from app.models import *
@@ -25,17 +15,19 @@ from app.context_processors import *
 from app.profile.forms import *
 from app.campusnet_login import *
 
+
 @require_GET
 @login_required
-def profile(request,username):
+def profile(request, username):
     # stub for profile view
     context = {'page': 'profile'}
     user = jUser.objects.filter(username=username)
     if user:
-        user = user[0] 
+        user = user[0]
         context['user'] = user
 
-    return render(request,"pages/profile.html",context)
+    return render(request, "pages/profile.html", context)
+
 
 @require_GET
 @login_required
@@ -43,7 +35,8 @@ def manage_account(request):
     context = {
         'page': 'manage_account'
     }
-    return render(request,"pages/user_account.html",context)
+    return render(request, "pages/user_account.html", context)
+
 
 @require_POST
 @login_required
@@ -54,7 +47,7 @@ def password_change_action(request):
     context.update(csrf(request))
 
     form = ChangePasswordForm(request.POST)
-    
+
     if not form.is_valid():
         raise Http404
 
@@ -63,23 +56,24 @@ def password_change_action(request):
     confirm_pass = form.cleaned_data['confirm_new_pass']
 
     user = request.user
-    user = authenticate(username = user.username, password = old_password)
+    user = authenticate(username=user.username, password=old_password)
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(request,"pages/user_account.html",context)
+        return render(request, "pages/user_account.html", context)
 
     if new_password != confirm_pass:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_passwords.html', {})
-        return render(request,"pages/user_account.html",context)
+        return render(request, "pages/user_account.html", context)
 
-    #everything went fine
+    # everything went fine
 
     user.set_password(new_password)
     user.save()
-    context['success'] = render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "password" })
+    context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "password"})
 
-    return render(request,"pages/user_account.html",context)
+    return render(request, "pages/user_account.html", context)
+
 
 @require_POST
 @login_required
@@ -97,26 +91,27 @@ def username_change_action(request):
     password = form.cleaned_data['password']
 
     user = request.user
-    user = authenticate(username=user.username, password = password)
+    user = authenticate(username=user.username, password=password)
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(request,"pages/user_account.html",context)
+        return render(request, "pages/user_account.html", context)
 
-    #proceed and change the username.
+    # proceed and change the username.
 
     user.username = new_username
     user.save()
 
-    context['success'] = render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "username" })
+    context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "username"})
 
-    return render(request,"pages/user_account.html",context)
+    return render(request, "pages/user_account.html", context)
+
 
 @require_POST
 @login_required
 def name_change_action(request):
     context = {
-        'page':'manage_account'
+        'page': 'manage_account'
     }
 
     form = ChangeNameForm(request.POST)
@@ -129,19 +124,18 @@ def name_change_action(request):
     password = form.cleaned_data['password']
 
     user = request.user
-    user = authenticate(username = user.username , password = password)
+    user = authenticate(username=user.username, password=password)
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(context,"pages/user_account.html",context)
+        return render(context, "pages/user_account.html", context)
 
-    #proceed and change the name
-    
+    # proceed and change the name
+
     user.first_name = new_fname
     user.last_name = new_lname
     user.save()
 
-    context['success']= render_to_string('objects/notifications/profile/changed_object.html',{ 'changed_object': "first and last name" })
-    
-    return render(request,"pages/user_account.html",context)
+    context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "first and last name"})
 
+    return render(request, "pages/user_account.html", context)

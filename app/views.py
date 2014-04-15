@@ -1,21 +1,10 @@
 # Shortcuts
-from django.core.context_processors import csrf
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.tokens import default_token_generator
-from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from app.helpers import *
-import hashlib
-import string
-import random
-
-# Mimetypes for images
-from mimetypes import guess_type
 
 # App Models
 from app.models import *
@@ -24,6 +13,7 @@ from app.context_processors import *
 from app.forms import *
 from app.campusnet_login import *
 
+
 def welcome(request):
     if request.user and request.user.is_authenticated():
         return redirect('/home')
@@ -31,7 +21,8 @@ def welcome(request):
     context = {
         "page": "welcome",
     }
-    return render(request,"pages/welcome_page.html",context)
+    return render(request, "pages/welcome_page.html", context)
+
 
 @login_required
 def home(request):
@@ -42,6 +33,7 @@ def home(request):
     courses = Course.objects.all()
     context = dict(context.items() + course_timeline_context(courses).items())
     return render(request, "pages/home.html", context)
+
 
 @login_required
 def all_comments(request):
@@ -56,10 +48,8 @@ def all_comments(request):
 # This function takes an e-mail address and returns a HTTP Response with the name of the university that has the
 # domain of the e-mail address. If it is not found, it returns HttpResponse("NotFound")
 # It will be used to send AJAX requests from the welcome page during signup
+@require_GET
 def university_by_email(request):
-    
-    if request.method != "GET":
-        raise Http404
 
     email = request.GET["email"]
     try:
@@ -67,8 +57,7 @@ def university_by_email(request):
     except Exception as e:
         return HttpResponse("NotFound")
 
-
-    universities = University.objects.filter(domains__name = domain)
+    universities = University.objects.filter(domains__name=domain)
 
     if len(universities) < 1:
         return HttpResponse("NotFound")
@@ -86,7 +75,7 @@ def departments_by_university_name(request):
 
     name = request.GET["name"]
 
-    departments = Department.objects.filter(university__name = name).order_by('name')
+    departments = Department.objects.filter(university__name=name).order_by('name')
 
     if len(departments) < 1:
         return HttpResponse("<select class='form-control'><option value=''>Department</option></select>")

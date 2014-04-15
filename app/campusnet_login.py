@@ -2,7 +2,7 @@ import sys
 import os
 
 from twill import commands
-from hashlib import md5
+
 
 def login_success(login_user, login_pass):
     # Get rid of ugly console logging

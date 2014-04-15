@@ -3,7 +3,7 @@
     <form class="navbar-form navbar-right login-form" id="login_fields" method="post" action="/login">
         {% csrf_token %}
 
-        <span id="campusnet-popover" class="glyphicon glyphicon-info-sign" 
+        <span id="campusnet-popover" class="glyphicon glyphicon-info-sign"
         data-container="body" data-toggle="popover" data-placement="bottom"></span>
 
         <div class="form-group" id="username_login">
@@ -24,13 +24,13 @@
                 {{ user_auth.first_name }}
                 {% else %}
                 {{ user_auth.username }}
-                {% endif %} 
+                {% endif %}
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu multi-level" id="dropdown_menu_profile"role="menu" aria-labelledby="dropdownMenu">
                 <li><a href="/profile/{{user_auth.username}}">My profile </a></li>
                 <li><a href="/manage_account">Manage Account</a></li>
-                <li><a href="/logout">Logout</a></li> 
+                <li><a href="/logout">Logout</a></li>
             </ul>
                 </li>
             </ul>

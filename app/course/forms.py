@@ -3,6 +3,7 @@ from django import forms
 from app.course_info import *
 from app.models import *
 
+
 class RateCourseForm(forms.Form):
     course_id = forms.CharField()
     rating_value = forms.CharField()
@@ -22,7 +23,7 @@ class RateCourseForm(forms.Form):
         cleaned_data['rating_value'] = rvalue
 
         rtype = cleaned_data.get("rating_type")
-        if not rtype in dict(RATING_TYPES):
+        if rtype not in dict(RATING_TYPES):
             raise forms.ValidationError("Not a valid rating type!")
 
         courses = Course.objects.filter(id=cleaned_data.get("course_id"))
@@ -40,6 +41,7 @@ class RateCourseForm(forms.Form):
 
         return cleaned_data
 
+
 class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
     comment = forms.CharField()
@@ -54,4 +56,3 @@ class SubmitCommentForm(forms.Form):
         cleaned_data['course'] = courses[0]
 
         return cleaned_data
-

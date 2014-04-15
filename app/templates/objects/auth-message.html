@@ -1,9 +1,0 @@
-{% if user_auth and not user_auth.is_active %}
-    <div class="alert alert-danger">
-        {% if user_auth.email and user_auth.email != "" %}
-            
-        {% else %}
-            Your account is not yet activated. Click <a href="/send_confirmation">here</a> to activate it.
-        {% endif %}
-    </div>
-{% endif %}

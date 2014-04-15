@@ -24,6 +24,7 @@ from app.context_processors import *
 from app.course.forms import *
 from app.campusnet_login import *
 
+
 @require_GET
 @login_required
 def course_page(request, slug):
@@ -35,6 +36,7 @@ def course_page(request, slug):
 
     return render(request, "pages/course.html", context)
 
+
 @require_GET
 @login_required
 def get_course_image(request, slug):
@@ -44,6 +46,7 @@ def get_course_image(request, slug):
 
     content_type = guess_type(course.image.name)
     return HttpResponse(course.image, mimetype=content_type)
+
 
 @require_POST
 @login_required
@@ -56,10 +59,11 @@ def submit_comment(request, slug):
     course = form.cleaned_data['course']
 
     comment_text = form.cleaned_data['comment']
-    comment = Comment(course= course, comment= comment_text)
+    comment = Comment(course=course, comment=comment_text)
     comment.save()
 
     return redirect(form.cleaned_data['url'])
+
 
 @require_POST
 @login_required
@@ -77,9 +81,9 @@ def rate_course(request, slug):
     rating_type = form.cleaned_data['rating_type']
 
     if rating_type != PROFESSOR_R:
-        ratings = Rating.objects.filter(user= user, course= course, rating_type= rating_type)
+        ratings = Rating.objects.filter(user=user, course=course, rating_type=rating_type)
         if len(ratings) == 0:
-            rating = Rating(user= user, course= course, rating= rating_value, rating_type= rating_type)
+            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type)
             rating.save()
         else:
             rating = ratings[0]
@@ -87,9 +91,9 @@ def rate_course(request, slug):
             rating.save()
     else:
         prof = form.cleaned_data['prof']
-        ratings = Professor_Rating.objects.filter(user= user, course= course, rating_type= rating_type, prof=prof)
+        ratings = Professor_Rating.objects.filter(user=user, course=course, rating_type=rating_type, prof=prof)
         if len(ratings) == 0:
-            rating = Professor_Rating(user= user, course= course, rating= rating_value, rating_type= rating_type, prof=prof)
+            rating = Professor_Rating(user=user, course=course, rating=rating_value, rating_type=rating_type, prof=prof)
             rating.save()
         else:
             rating = ratings[0]
