@@ -25,8 +25,9 @@ class Populator:
             name = self.random_word().capitalize() + " University"
             if len(University.objects.filter(name = name)) > 0:
                 continue
-            domain = name.lower().replace(" ", ".") + ".edu"
-            University.objects.create(name=name, domain=domain)
+            # domain = name.lower().replace(" ", ".") + ".edu"
+            # University.objects.create(name=name, domain=domain)
+            University.objects.create(name=name)
             break
 
     def populate_universities(self, count):
@@ -44,7 +45,8 @@ class Populator:
             univ = univs[ random.randrange(len(univs)) ]
             active = True
             password = "1234"
-            email = username + "@" + univ.domain
+            domain = univ.name.lower().replace(" ", ".") + ".edu"
+            email = username + "@" + domain
             user = jUser.objects.create_user(username=username, password=password,
                 email=email, first_name=fname, last_name=lname)
             if random.random() < 0.05:
