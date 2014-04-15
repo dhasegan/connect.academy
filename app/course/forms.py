@@ -55,35 +55,3 @@ class SubmitCommentForm(forms.Form):
 
         return cleaned_data
 
-class LoginForm(forms.Form):
-    username = forms.CharField(required=True)
-    password = forms.CharField(required=True)
-
-class SignupForm(forms.Form):
-    fname = forms.CharField()
-    lname = forms.CharField()
-    email = forms.EmailField()
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput())
-    password_confirmation = forms.CharField(widget=forms.PasswordInput())  # password confirmation field
-    is_instructor = forms.BooleanField(required=False)
-    department = forms.IntegerField(required = False)
-    class Meta:
-        model = jUser
-
-class EmailConfirmationForm(forms.Form):
-    email = forms.EmailField()
-
-class ChangePasswordForm(forms.Form):
-    old_pass = forms.CharField(required = True ,widget=forms.PasswordInput())
-    new_pass = forms.CharField(required = True ,widget=forms.PasswordInput())
-    confirm_new_pass = forms.CharField(required = True , widget=forms.PasswordInput())
-
-class ChangeUsernameForm(forms.Form):
-    new_username = forms.CharField(required = True)
-    password = forms.CharField(required=True,widget= forms.PasswordInput())
-
-class ChangeNameForm(forms.Form):
-    new_fname = forms.CharField(required= True)
-    new_lname = forms.CharField(required= True) # maybe we can omit the required = True of this field ? 
-    password = forms.CharField(required=True,widget=forms.PasswordInput())
