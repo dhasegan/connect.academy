@@ -60,7 +60,7 @@ def password_change_action(request):
         return render(request, "pages/user_account.html", context)
 
     if new_password != confirm_pass:
-        context['error'] = render_to_string('objects/notifications/profile/incorrect_passwords.html', {})
+        context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(request, "pages/user_account.html", context)
 
     # everything went fine
