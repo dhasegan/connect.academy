@@ -76,6 +76,7 @@ def resend_confirmation_email(request):
     send_email_confirmation(request, user)
     return HttpResponse()
 
+
 @require_http_methods(["POST", "GET"])
 @login_required
 def set_email(request):
@@ -84,37 +85,25 @@ def set_email(request):
     }
     user = request.user
 
-    if not user.email:
-        if request.method == "GET":
-            return render(request, "pages/set_email.html", context)
+    if user.email:
+        return redirect("/home")
 
-        # We don't have the user's e-mail address.
-        form = EmailConfirmationForm(request.POST)
-        if not form.is_valid():
-            raise Http404
+    if request.method == "GET":
+        return render(request, "pages/set_email.html", context)
 
-        email = form.cleaned_data["email"]
-        # The e-mail address is posted
-        if jUser.objects.filter(email=email).count() > 0:
-            context["error"] = "A user with that <b>e-mail address</b> already exists."
-            return render(request, "pages/set_email.html", context)
+    form = EmailConfirmationForm(request.POST)
+    if not form.is_valid():
+        context['error'] = form.non_field_errors
+        return render(request, "pages/set_email.html", context)
 
-        emailID, domain = email.split('@')
-        universities = University.objects.filter(domains__name=domain)
-        if len(universities) < 1:
-            # University not found
-            context["error"] = "Sorry, we don't have any <b>university</b> with the domain of your <b>e-mail address</b>. <br/>"
-            context["error"] += "Please check if you made any errors or come back soon."
-            return render(request, "pages/set_email.html", context)
-        else:
-            university = universities[0]
-            user = request.user
-            user.university = university
-            user.email = email
-            user.save()
-            send_email_confirmation(request, user)
-            return redirect("/home")
+    email = form.cleaned_data["email"]
+    university = form.cleaned_data["university"]
 
+    user.university = university
+    user.email = email
+    user.save()
+
+    send_email_confirmation(request, user)
     return redirect("/home")
 
 
