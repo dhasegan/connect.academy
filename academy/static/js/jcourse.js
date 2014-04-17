@@ -151,6 +151,10 @@ $(function() {
 
     // Activate Alerts
     $(".dismissable-alert").alert();
+    // Email confirmation link
+    $(".email-confirmation-link").click( function() {
+        $.get($(this).attr("src"));
+    });
 
     // Course page JS
     $('.rating-stars').raty( {

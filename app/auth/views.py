@@ -1,10 +1,10 @@
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from app.models import *
 from app.course_info import *
@@ -12,6 +12,7 @@ from app.context_processors import *
 from app.helpers import *
 from app.auth.forms import *
 from app.auth.campusnet_login import *
+
 
 @require_POST
 def login_action(request):
@@ -64,62 +65,61 @@ def logout_action(request):
     logout(request)
     return redirect('/')
 
-# Sends a confirmation e-mail to the user currently logged in (if e-mail is available)
 
-
+@require_GET
 @login_required
-def send_confirmation(request):
+def resend_confirmation_email(request):
+    user = request.user
+    if not user.email:
+        raise Http404
+
+    send_email_confirmation(request, user)
+    return HttpResponse()
+
+@require_http_methods(["POST", "GET"])
+@login_required
+def set_email(request):
     context = {
-        "page": "send_confirmation",
+        "page": "set_email",
     }
     user = request.user
 
-    if user.email and len(user.email) > 0:
-        # The user already has an e-mail address
+    if not user.email:
+        if request.method == "GET":
+            return render(request, "pages/set_email.html", context)
 
-        send_email_confirmation(request, user)
-        return redirect("/home")
-    else:
         # We don't have the user's e-mail address.
-        if request.method == "POST" and request.POST["email"]:
-            # The e-mail address is posted
-            if jUser.objects.filter(email=request.POST["email"]).count() > 0:
-                context["error"] = "A user with that <b>e-mail address</b> already exists."
-                return render(request, "pages/send_confirmation.html", context)
+        form = EmailConfirmationForm(request.POST)
+        if not form.is_valid():
+            raise Http404
 
-            form = EmailConfirmationForm(request.POST)
-            if not form.is_valid():
-                raise Http404
+        email = form.cleaned_data["email"]
+        # The e-mail address is posted
+        if jUser.objects.filter(email=email).count() > 0:
+            context["error"] = "A user with that <b>e-mail address</b> already exists."
+            return render(request, "pages/set_email.html", context)
 
-            email = form.cleaned_data["email"]
-            emailID, domain = email.split('@')
-            universities = University.objects.filter(domains__name=domain)
-            if len(universities) < 1:
-                # university not found
-                context["error"] = "Sorry, we don't have any <b>university</b> with the domain of your <b>e-mail address</b>. <br/>"
-                context["error"] += "Please check if you made any errors or come back soon."
-                return render(request, "pages/send_confirmation.html", context)
-            else:
-                # university found
-                university = universities[0]
-                # We recognize the university
-                user = request.user
-                user.university = university
-                user.email = email
-                user.save()
-                send_email_confirmation(request, user)
-                return redirect("/home")
+        emailID, domain = email.split('@')
+        universities = University.objects.filter(domains__name=domain)
+        if len(universities) < 1:
+            # University not found
+            context["error"] = "Sorry, we don't have any <b>university</b> with the domain of your <b>e-mail address</b>. <br/>"
+            context["error"] += "Please check if you made any errors or come back soon."
+            return render(request, "pages/set_email.html", context)
         else:
-            # e-mail is not posted
-            return render(request, "pages/send_confirmation.html", context)
+            university = universities[0]
+            user = request.user
+            user.university = university
+            user.email = email
+            user.save()
+            send_email_confirmation(request, user)
+            return redirect("/home")
 
-    raise Http404  # Should never reach this line
-
-# takes the username and the confirmation hash
+    return redirect("/home")
 
 
 def validate_user(request, username, confirmation):
-
+    # Validate user based on username and confirmation hash
     user = get_object_or_404(jUser, username=username)
 
     if not default_token_generator.check_token(user, confirmation):
@@ -130,11 +130,10 @@ def validate_user(request, username, confirmation):
 
     return redirect("/")
 
-# If a user receives a confirmation e-mail, but they didn't sign up, they can delete their account by following
-# the delete link. This is the view associated with the delete URL.
-
 
 def delete_user(request, username, confirmation):
+    # If a user receives a confirmation e-mail, but they didn't sign up, they can delete their account by following
+    # the delete link.
     context = {
         "page": "delete"
     }
