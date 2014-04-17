@@ -77,7 +77,7 @@ def send_confirmation(request):
     if user.email and len(user.email) > 0:
         # The user already has an e-mail address
 
-        send_email_confirmation(user, request.get_host())
+        send_email_confirmation(request, user)
         return redirect("/home")
     else:
         # We don't have the user's e-mail address.
@@ -107,7 +107,7 @@ def send_confirmation(request):
                 user.university = university
                 user.email = email
                 user.save()
-                send_email_confirmation(user, request.get_host())
+                send_email_confirmation(request, user)
                 return redirect("/home")
         else:
             # e-mail is not posted
@@ -220,7 +220,7 @@ def signup_action(request):
         if auth_user is not None:
             login(request, auth_user)
             # it needs to be request.user, not auth_user.
-            send_email_confirmation(request.user, request.get_host())
+            send_email_confirmation(request, request.user)
             if 'login' in request.META.get('HTTP_REFERER'):
                 return redirect('/')
             return redirect(request.META.get('HTTP_REFERER'))

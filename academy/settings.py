@@ -3,10 +3,6 @@
 from os import environ, path
 import boto
 
-#E-mail:
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
-
 #Authentication Backends
 AUTHENTICATION_BACKENDS = ('app.helpers.jUserBackend',)
 
@@ -183,6 +179,11 @@ LOGGING = {
         },
     }
 }
+
+# Email settings
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 
 ########################## Media files setup on AWS
 # Setup AWS

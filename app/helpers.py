@@ -1,32 +1,30 @@
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.http import HttpRequest
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Q
+from django.template.loader import render_to_string
 
 from app.models import *
 
 
-def send_email_confirmation(user, host):
-    fname = user.first_name
-    email = user.email
-    confirmation_hash = default_token_generator.make_token(user)
-    confirmation_link = ("http://%s%s" % (host, reverse('confirmation', args=(user.username, confirmation_hash))))
-    delete_link = ("http://%s%s" % (host, reverse('delete', args=(user.username, confirmation_hash))))
-    if len(fname) == 0:
-        fname = user.username
-    message = "Dear " + fname + ",\r\n"
-    message += "Thank you for registering with Connect.Academy!\r\n"
-    message += "An account has been created with this e-mail address. \r\n"
-    message += "Please confirm your account by entering the following URL in the address bar:\r\n\r\n"
-    message += confirmation_link + "\r\n\r\n"
-    message += "If you did not register with Link.Academy, you can ignore this message, in which case "
-    message += "we will delete the account in 3 days. If you wish to delete the account now, you can enter "
-    message += "the following URL in the address bar:\r\n\r\n"
-    message += delete_link + "\r\n\r\n"
-    message += "Greetings,\r\n"
-    message += "The Connect.academy Team.\r\n"
+def send_email_confirmation(request, user):
 
-    send_mail("Link.academy Account Confirmation", message, "Link.Academy <noreply@link-academy.com>", [email], fail_silently=False)
+    fname = user.first_name
+    if not fname:
+        fname = user.username
+    confirmation_hash = default_token_generator.make_token(user)
+    confirmation_link = request.build_absolute_uri( reverse('confirmation', args=(user.username, confirmation_hash)) )
+    delete_link = request.build_absolute_uri( reverse('delete', args=(user.username, confirmation_hash)) )
+
+    context = {
+        'fname': fname,
+        'confirmation_link': confirmation_link,
+        'delete_link': delete_link
+    }
+    message = render_to_string("emails/require_confirmation.html", context)
+
+    send_mail("Connect.Academy Account Confirmation", message, "Link.Academy <noreply@link-academy.com>", [user.email], fail_silently=False)
 
 
 class jUserBackend(object):
