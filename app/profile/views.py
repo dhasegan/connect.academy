@@ -10,7 +10,6 @@ from app.models import *
 from app.course_info import *
 from app.context_processors import *
 from app.profile.forms import *
-from app.helpers import *
 
 
 @require_GET

@@ -11,8 +11,8 @@ from django.db import IntegrityError
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
-from app.helpers import *
 from app.auth.forms import *
+from app.auth.helpers import *
 from app.auth.specific_login import get_university
 
 

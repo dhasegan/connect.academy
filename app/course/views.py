@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 
@@ -18,7 +17,6 @@ from app.models import *
 from app.course_info import *
 from app.context_processors import *
 from app.course.forms import *
-from app.helpers import *
 
 
 @require_GET
