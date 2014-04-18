@@ -25,7 +25,7 @@ def get_university(username, password):
         commands.submit('3')
         login_result = commands.show()
 
-        if login_result.find('Wrong username or password') == -1:
+        if login_result.find('Wrong username or password') == -1 and login_result.find('Access denied') == -1:
             sys.stdout = out
             university_context = {
                 "name": university["name"],

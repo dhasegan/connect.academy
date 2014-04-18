@@ -4,7 +4,7 @@ from app.models import *
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(required=True)
+    user_auth = forms.CharField(required=True)
     password = forms.CharField(required=True)
 
 

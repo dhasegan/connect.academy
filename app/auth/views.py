@@ -25,7 +25,7 @@ def login_action(request):
         raise Http404
 
     # login_user is the username OR email of the user attempting login.
-    login_user = form.cleaned_data['username']
+    login_user = form.cleaned_data['user_auth']
     login_pass = form.cleaned_data['password']
 
     # Using jUserBackend, which also tries to find a match for the email address.
@@ -47,7 +47,7 @@ def login_action(request):
             user = authenticate(username=login_user, password=login_pass)
 
         if not auth_univ or user is None:
-            # user not found neither on our database nor on campusnet
+            # User not found neither on our database nor on campusnet
             context['error'] = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
             return render(request, "pages/welcome_page.html", context)
 
