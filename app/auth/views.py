@@ -5,13 +5,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.defaults import server_error
+from django.db import IntegrityError
 
 from app.models import *
 from app.course_info import *
 from app.context_processors import *
 from app.helpers import *
 from app.auth.forms import *
-from app.auth.campusnet_login import *
+from app.auth.specific_login import get_university
 
 
 @require_POST
@@ -28,35 +30,29 @@ def login_action(request):
 
     # Using jUserBackend, which also tries to find a match for the email address.
     user = authenticate(username=login_user, password=login_pass)
-    if user is not None:
-        # Found user
-        login(request, user)
-        return redirect("/home")
+    if user is None:
+        auth_univ = get_university(login_user, login_pass)
+        if auth_univ:
+            users = jUser.objects.filter(username=login_user)
+            if not users:
+                universities = University.objects.filter(domains__name=auth_univ["domain"])
+                if not universities:
+                    raise IntegrityError
+                university = universities[0]
 
-    if not login_success(login_user, login_pass):
-        # user not found neither on our database nor on campusnet
-        context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
-        context['error'] += "If you don't have an account, you may be able to register below."
-        return render(request, "pages/welcome_page.html", context)
-    else:
-        # campusnet confirmed
-        users = jUser.objects.filter(username=login_user).count()
-        if users == 0:
-            # Jacobs University user
-            jacobs = University.objects.filter(domains__name="jacobs-university.de")[0]
-            user = jUser.objects.create_user(username=login_user, password=login_pass, university=jacobs)
-            user.is_active = False  # Account inactive until confirmed
-            user.save()
+                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university)
+                user.is_active = False  # Account inactive until confirmed
+                user.save()
 
-    user = authenticate(username=login_user, password=login_pass)
+            user = authenticate(username=login_user, password=login_pass)
 
-    if user is not None:
-        login(request, user)
-        return redirect("/home")
+        if not auth_univ or user is None:
+            # user not found neither on our database nor on campusnet
+            context['error'] = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
+            return render(request, "pages/welcome_page.html", context)
 
-    context['error'] = "The <b>username/email</b> or <b>password</b> is incorrect. Please try again.<br/>"
-    context['error'] += "If you don't have an account, you may be able to register below."
-    return render(request, "pages/welcome_page.html", context)
+    login(request, user)
+    return redirect("/home")
 
 
 @login_required
