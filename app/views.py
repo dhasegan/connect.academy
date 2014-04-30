@@ -47,41 +47,49 @@ def all_comments(request):
 def university_by_email(request):
 
     email = request.GET["email"]
+
+    if jUser.objects.filter(email=email).count() > 0:
+        return HttpResponse("Exists")
+
     try:
         _, domain = email.split("@")
-    except Exception as e:
+    except ValueError as e:
         return HttpResponse("NotFound")
 
     universities = University.objects.filter(domains__name=domain)
 
-    if len(universities) < 1:
+
+    if not universities:
         return HttpResponse("NotFound")
+    else:
+        university = universities[0]
+        return HttpResponse(university.name)
 
-    university = universities[0]
-    return HttpResponse(university.name)
+@require_GET
+def check_username(request):
+    username = request.GET["username"]
+    if username == "":
+        return HttpResponse("Username is too short")
+    if jUser.objects.filter(username = username).count() > 0:
+        return HttpResponse("Username exists")
+    else:
+        return HttpResponse("OK")
 
+@require_GET
+def validate_registration(request):
+    username = request.GET['username']
+    email = request.GET['email']
 
-# Takes the name of the university in the GET parameters (the key is 'name') and returns a <select> element filled
-# with all the departments of that university as <option> elements
-# To be used by the jQuery on welcome page (registration form)
-def departments_by_university_name(request):
-    if request.method != "GET":
-        raise Http404
+    try:
+        _,domain = email.split('@')
+    except ValueError:
+        return HttpResponse("Error")
 
-    name = request.GET["name"]
-
-    departments = Department.objects.filter(university__name=name).order_by('name')
-
-    if len(departments) < 1:
-        return HttpResponse("<select class='form-control'><option value=''>Department</option></select>")
-
-    return_string = """<select class='form-control' name = 'department'>
-        <option value=''>Department</option>"""
-    for department in departments:
-        name = department.name
-        d_id = department.id
-        option = "<option value=%d> %s </option>" % (d_id, name)
-        return_string += option
-    return_string += "</select>"
-
-    return HttpResponse(return_string)
+    if jUser.objects.filter(email=email).count() > 0:
+        return HttpResponse("Error")
+    elif jUser.objects.filter(username=username).count() > 0:
+        return HttpResponse("Error")
+    elif University.objects.filter(domains__name = domain).count() == 0:
+        return HttpResponse("Error")
+    else:
+        return HttpResponse("OK")

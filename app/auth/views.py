@@ -139,8 +139,10 @@ def signup_action(request):
     context.update(csrf(request))
 
     form = SignupForm(request.POST)
+
     if not form.is_valid():
-        raise Http404
+        context['error'] = form.non_field_errors
+        return render(request, "pages/welcome_page.html", context)
 
     username = form.cleaned_data["username"]
     password = form.cleaned_data["password"]
@@ -149,68 +151,23 @@ def signup_action(request):
     fname = form.cleaned_data["fname"]
     lname = form.cleaned_data["lname"]
     is_instructor = form.cleaned_data["is_instructor"]
-    department_id = form.cleaned_data["department"]
-    emailID, domain = email.split("@")
+    university = form.cleaned_data["university"]
 
     if is_instructor:
         user_type = USER_TYPE_INSTRUCTOR
     else:
         user_type = USER_TYPE_STUDENT
 
-    # Check if username or email exists
-    users_same_name = jUser.objects.filter(username=username).count()
-    users_same_email = jUser.objects.filter(email=email).count()
-    error = False  # No error
-    if users_same_name > 0:
-        context["error"] = "Sorry, that <b>username</b> is taken. Please try a different one. <br/>"
-        error = True
-    if users_same_email > 0:
-        if "error" in context:
-            context["error"] += "A user with that <b>e-mail address</b> already exists. If you already have an account, you can log in on the panel above.<br/>"
-        else:
-            context["error"] = "A user with that <b>e-mail address</b> already exists. If you already have an account, you can log in on the panel above.<br/>"
-
-    if "error" in context:
-        return render(request, "pages/welcome_page.html", context)
-
-    # Check if we know the domain of the e-mail address
-    universities = University.objects.filter(domains__name=domain)
-    if len(universities) < 1:  # not found
-        context["error"] = "Sorry, we don't have a <b>university</b> with the domain of your <b>e-mail address</b>. Please check again soon.<br/>"
-        return render(request, "pages/welcome_page.html", context)
-
-    # university found
-    university = universities[0]
-
-    # create user
-    if (password_confirmation == password):  # passwords match
-
-        user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
+    user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
                                          first_name=fname, last_name=lname)
+    user.is_active = False # not active until e-mail address is confirmed
+    user.save()
 
-        if department_id:
-            department = Department.objects.filter(id=department_id)[0]
-            if department and len(department.name) > 0:
-                department.save()
-                user.departments.add(department)
+    # Authenticate user
+    auth_user = authenticate(username=username, password=password)
+    if auth_user is not None:
+        login(request, auth_user)
+        send_email_confirmation(request, request.user)
+    
+    return redirect('/')
 
-        user.is_active = False
-
-        # save new user
-        user.save()
-
-        # Authenticate user
-        auth_user = authenticate(username=username, password=password)
-        if auth_user is not None:
-            login(request, auth_user)
-            # it needs to be request.user, not auth_user.
-            send_email_confirmation(request, request.user)
-            if 'login' in request.META.get('HTTP_REFERER'):
-                return redirect('/')
-            return redirect(request.META.get('HTTP_REFERER'))
-    else:  # passwords don't match
-        if "error" in context:
-            context["error"] += "Your <b>passwords</b> don't match. Please try again. <br/>"
-        else:
-            context["error"] = "Your <b>passwords</b> don't match. Please try again. <br/>"
-            return render(request, "pages/welcome_page.html", context)

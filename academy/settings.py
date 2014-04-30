@@ -4,7 +4,7 @@ from os import environ, path
 import boto
 
 #Authentication Backends
-AUTHENTICATION_BACKENDS = ('app.helpers.jUserBackend',)
+AUTHENTICATION_BACKENDS = ('app.auth.helpers.jUserBackend',)
 
 DEBUG = environ.get('ACADEMY_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG

@@ -1,106 +1,111 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-
+from django.conf import settings 
 from app.course_info import *
+
+
+
+
+
+
+###########################################################################
+####################### User Related Models ###############################
+###########################################################################
+
 
 USER_TYPE_STUDENT = 0
 USER_TYPE_INSTRUCTOR = 1
-USER_TYPE_DEPARTMENT_ADMIN = 2
-USER_TYPE_UNIVERSITY_ADMIN = 3
-# USER_TYPE_ADMIN = 4 (for our accounts, when we build an interface for our admins.)
+USER_TYPE_ADMIN = 2 # The administator of at least 1 category, who is not a professor
+
 USER_TYPES = (
     (USER_TYPE_STUDENT, "student"),
     (USER_TYPE_INSTRUCTOR, "instructor"),
-    (USER_TYPE_DEPARTMENT_ADMIN, "department_admin"),
-    (USER_TYPE_UNIVERSITY_ADMIN, "university_admin"),
-    # (USER_TYPE_ADMIN, "global_admin")
+    (USER_TYPE_ADMIN, "admin")
 )
-
 
 class jUser(User):
 
-    user_type = models.IntegerField(choices=USER_TYPES, default=USER_TYPE_STUDENT)
-    departments = models.ManyToManyField('Department', null=True, blank=True)
-    university = models.ForeignKey('University', default=1)
-    is_confirmed = models.NullBooleanField(default=False)   # For instructors only
-                                                            # True if they have been confirmed to be instructors)
-    courses = models.ManyToManyField('Course')
+    user_type = models.IntegerField(choices=USER_TYPES,default=USER_TYPE_STUDENT)
+    university = models.ForeignKey('University',null = True) 
+    
+    # For instructors only 
+    # True if they have been confirmed to be instructors)
+    is_confirmed = models.NullBooleanField(default = False)
+    # Courses the user is enrolled to
+    courses_enrolled = models.ManyToManyField('Course', related_name='students', 
+                                               through = 'StudentCourseRegistration')
 
-    class Meta:
-        # Permissions associated with users - besides add/change/delete user
-        permissions = (
-            ("crud_students", "Can perform CRUD operations on students"),
-            ("crud_instructors", "Can perform CRUD operations on instructors"),
-            ("crud_department_admins", "Can perform CRUD operations on students"),
-            ("add_university_admins", "Can add new university admins"),
-            ("delete_university_admins", "Can delete university admins"),
-            ("change_university_admins", "Can change university admins"),
-            ("approve_course_student", "Can approve a student's course registration"),
-            ("approve_course_instructor", "Can approve an instructor's request to teach a course")
-        )
+    # courses the user is managing (i.e: if they're instructors)
+    courses_managed = models.ManyToManyField('Course', related_name='instructors',
+                                              through = 'InstructorCourseRegistration')
 
+    # may turn out useful - this might also need approval,
+    # so we may have to create another table to handle the ManyToMany relation
+    majors = models.ManyToManyField('Major', related_name = 'students')
 
-class InstructorCourseRegistration:
-    instructor = models.ForeignKey('jUser')
-    course = models.ForeignKey('Course')
+    # !! 
+    # Relations declared in other models define the following:
+    #    categories_managed: (<juser>.categories_managed.all() returns all categories that have <juser> 
+    #    as an admin)
 
-
-class StudentCourseRegistration:
+class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
+    is_approved = models.BooleanField(default = False) # True if registration is approved
 
-
-class Professor(models.Model):
-    name = models.CharField(max_length=50)
-    department = models.CharField(max_length=50, blank=True, null=True)
-
-    def __unicode__(self):
-        return str(self.name)
-
-RATING_MIN = 1
-RATING_MAX = 5
-
-
-class Rating(models.Model):
-    user = models.ForeignKey('jUser')
+class InstructorCourseRegistration(models.Model):
+    instructor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
-    rating = models.FloatField()
-    rating_type = models.CharField(max_length=3,
-                                   choices=RATING_TYPES,
-                                   default=OVERALL_R)
-
-    def __unicode__(self):
-        return str(self.rating)
+    is_approved = models.BooleanField(default = False) # True if registration is approved
 
 
-class Professor_Rating(Rating):
-    prof = models.ForeignKey('Professor')
 
-    def __unicode__(self):
-        return "Rating " + str(self.prof.name)
 
+
+
+
+
+
+###########################################################################
+################# University/Course Related Models ########################
+###########################################################################
+
+COURSE_TYPE_UG = 0
+COURSE_TYPE_GRAD = 1
+COURSE_TYPES = (
+    (COURSE_TYPE_UG,"Undergraduate"),
+    (COURSE_TYPE_GRAD, "Graduate")
+)
+
+class Major(models.Model):
+    # We could use this later to add more functionality, 
+    # we can add major requirements, courses etc.
+    name = models.CharField(max_length = 200)
+    abbreviation = models.CharField(max_length=10, blank = True, null=True)
+    # !!
+    # Relations declared in other models define the following:
+    #    courses: (<major>.courses.all() returns all courses of <major>) 
+    #    students: (<major>.students.all() returns all students of <major>)
 
 class Course(models.Model):
-    course_id = models.CharField(max_length=10)
-    course_type = models.CharField(max_length=3,
-                                   choices=COURSE_TYPES,
-                                   default=LECTURE)
+    course_id = models.IntegerField()
     name = models.CharField(max_length=200)
-    instructors = models.ManyToManyField('Professor')
+    course_type = models.IntegerField(choices=COURSE_TYPES, default = COURSE_TYPE_UG)
     credits = models.FloatField()
-    description = models.CharField(max_length=5000, blank=True, null=True)
+    description = models.CharField(max_length=5000, blank=True, null = True)
     additional_info = models.CharField(max_length=5000, blank=True, null=True)
-    sections_info = models.CharField(max_length=5000, blank=True, null=True)
-    catalogue = models.CharField(max_length=300)  # Create separate divisions
-    grades = models.CharField(max_length=1000, blank=True, null=True)
-    grades_info = models.CharField(max_length=5000, blank=True, null=True)
     abbreviation = models.CharField(max_length=50, blank=True, null=True)
-    participants = models.CharField(max_length=10, blank=True, null=True)
-    hours_per_week = models.CharField(max_length=10, blank=True, null=True)
-
     slug = models.SlugField(max_length=200)
     image = models.ImageField(upload_to='courses')
+    university = models.ForeignKey('University', related_name = 'courses')
+    category = models.ForeignKey('Category', related_name = 'courses')
+    tags = models.ManyToManyField('Tag',related_name='courses')
+    majors = models.ManyToManyField('Major', related_name='courses')
+    # !!
+    # Relations declared in other models define the following:
+    #   instructors (<course>.instructors.all() returns all instructors of <course>)
+    #   students    (<course>.students.all()    returns all students    of <course>)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -110,6 +115,113 @@ class Course(models.Model):
         return str(self.name)
 
 
+
+class Tag(models.Model):
+    # Besides name, we might need to add more fancy things to tags (we can group them etc)
+    name = models.CharField(max_length = 100)
+    # !!
+    # Relations declared in other models define the following:
+    #   courses (<tag>.courses.all() returns all courses of that have <tag>)
+
+
+
+class University(models.Model):
+    name = models.CharField(max_length=150)
+    # Relations declared in other models define the following:
+    #   domains (<university>.domains.all() returns all domains of a university)
+    #   courses (<university>.courses.all() returns all courses of a university)
+
+
+
+class Category(models.Model):
+    parent = models.ForeignKey('self',null = True) # Parent category
+    level = models.IntegerField(null=True) # The level in which the category is positioned in the tree
+    name = models.CharField(max_length = 150)
+    abbreviation = models.CharField(max_length = 10)
+    admins = models.ManyToManyField('jUser', related_name = 'categories_managed')
+    # !!
+    # Relations declared in other models define the following:
+    #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
+    
+    def getAdmins(self):
+        # Gets the "closest" administrators of a category. 
+        admins = self.admins.all()
+        if len(admins) > 0:
+            return admins
+        elif self.parent != None: # if not root
+            return self.parent.getAdmins()
+        else:
+            return None
+
+    def getAllAdmins(self):
+        # get all people with administrator rights of this category
+        # (i.e: including admins of parent categories)
+        admins = self.admins.all()
+        if self.parent != None:
+            admins += self.parent.getAllAdmins()
+        return admins
+
+
+    def getAllCourses(self):
+        # Gets all the courses that are descendants of this category
+        allcourses = self.courses.all()
+        children = Category.objects.filter(parent__id = self.id)
+        for child in children:
+            allcourses += child.getAllCourses()
+
+        return allcourses
+
+    def __unicode__(self):
+        return str(self.name)
+
+class Domain(models.Model):
+    name = models.CharField(max_length=200,unique = True)
+    university = models.ForeignKey('University', related_name='domains')
+
+
+class WikiPage(models.Model):
+    name = models.CharField(max_length=50,primary_key=True)
+    content = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return str(self.name)
+
+
+
+
+
+
+
+
+###########################################################################
+####################### Posts, Ratings, Comments ##########################
+###########################################################################
+
+RATING_MIN = 1
+RATING_MAX = 5
+OVERALL_R = 'ALL'
+WORKLOAD_R = 'WKL'
+DIFFICULTY_R = 'DIF'
+PROFESSOR_R = 'PRF'
+RATING_TYPES = (
+    (OVERALL_R, 'Overall'),
+    (WORKLOAD_R, 'Workload'),
+    (DIFFICULTY_R, 'Difficulty'),
+    (PROFESSOR_R, 'Professor')
+)
+
+
+class Rating(models.Model):
+    user = models.ForeignKey('jUser')
+    course = models.ForeignKey('Course')
+    rating = models.FloatField()
+    rating_type = models.CharField( max_length=3,
+                                    choices=RATING_TYPES,
+                                    default=OVERALL_R)
+
+    def __unicode__(self):
+        return str(self.rating)
+
 class Comment(models.Model):
     course = models.ForeignKey('Course')
     comment = models.CharField(max_length=1000)
@@ -117,25 +229,3 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return "Comm" + str(self.id)
-
-
-class University(models.Model):
-    name = models.CharField(max_length=150)
-    domains = models.ManyToManyField('Domain')
-    departments = models.ManyToManyField('Department')
-
-
-class Domain(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-
-
-class Department(models.Model):
-    name = models.CharField(max_length=200)
-
-
-class WikiPage(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    content = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return str(self.name)

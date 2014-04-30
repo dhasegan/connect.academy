@@ -21,47 +21,43 @@ def user_authenticated(request):
 def course_timeline_context(courses):
     context = {}
 
-    categories = MAJOR_TYPES
-
     courses = sorted(courses, key=lambda x: x.name)
-
     # Add the courses to the context
     allcourses = []
     for course in courses:
-        noSchoolCatalogue = course.catalogue \
-            .replace('School of Humanities and Social Sciences', 'SHSS') \
-            .replace('School of Engineering and Science', 'SES') \
-            .replace('Language Courses', 'Language') \
-            .replace('Undergraduate Level Courses', 'UnderGrad') \
-            .replace('Graduate Level Courses', 'Grad')
-
-        major = ""
-        school = ""
-        studies = "UG" if " Undergraduate Level Courses" in course.catalogue else ("Grad" if " Graduate Level Courses" in course.catalogue else "")
-
-        ratings = Rating.objects.filter(course=course, rating_type=OVERALL_R)
+        
+        studies = ""
+        if course.course_type == COURSE_TYPE_UG:
+            studies = "UG"
+        elif course.course_type == COURSE_TYPE_GRAD:
+            studies = "GRAD"
+        
+        ratings = Rating.objects.filter(course= course, rating_type=OVERALL_R)
         if (len(ratings) == 0):
             overall_rating = None
-        else:
-            overall_rating = sum([cur.rating for cur in ratings]) / len(ratings)
+        else:   
+            overall_rating = sum([cur.rating for cur in ratings])/len(ratings)
 
-        for m in categories:
-            if m[1] in noSchoolCatalogue:
-                major = m[0]
-                school = m[2]
         allcourses.append({
             'course': course,
-            'profs': course.instructors.all(),
-            'major': major,
-            'school': school,
+            'instructors': course.instructors.all(),
+            'majors': course.majors.all(),
+            'category': course.category,
+            'university': course.university,
             'studies': studies,
-            'catalogue': noSchoolCatalogue,
             'overall_rating': overall_rating
         })
-    allcourses = sorted(allcourses, key=lambda x: x['overall_rating'], reverse=True)
+    allcourses = sorted(allcourses, key=lambda x:x['overall_rating'], reverse=True)
     context['courses'] = allcourses
 
-    context['categories'] = categories
+    category = course.category
+    course_path = category.name
+    while (category.parent is not None):
+        course_path = "%s > %s" % (category.parent.name, course_path)
+        category = category.parent
+
+
+    context['course_path'] = course_path
 
     return context
 

@@ -224,40 +224,90 @@ $(function() {
     $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'});
 
 
-
     $("#email").blur(function(){
         var email_address = this.value;
         $.get('/university_by_email', {email: email_address},function(data,status) {
             if (data == "NotFound") {
-                $("#university-name").empty();
-                $('#error-not-found').html("University Not Found");
+                $("#email-ok").empty();
+                $('#email-error').html("University Not Found");
+            }
+            else if (data == "Exists") {
+                $("#email-ok").empty();
+                $('#email-error').html("E-mail address exists");
             }
             else {
                 // university found
-                $("#error-not-found").empty();
-                $('#university-name').html(data);
+                $("#email-error").empty();
+                $('#email-ok').html(data);
             }
         });
     });
 
-    $("#is_instructor").click(function(){
-        var university_name = $("#university-name").text();
-        if (this.checked) {
-            $.get('/departments_by_university_name', {name: university_name},function(data,status) {
-                if (data == "NotFound") {
-                    $('#departments').empty();
-                }
-                else {
-                    // university found
-                    $('#departments').html(data);
-                }
-            });
-        }
-        else {
-            $('#departments').empty();
-        }
+    $("#username").blur(function() {
+        var username = this.value;
+        $.get('/check_username', {username: username}, function(data,status) {
+            if (data == "OK") {
+                $("#username-error").empty();
+                $("#username-ok").html("Username OK");
+            }
+            else {
+                $("#username-ok").empty();
+                $("#username-error").html(data);
+            }
 
-            
+        });
     });
 
+    $("#password, #password_confirmation").keyup(function() {
+        var password = $("#password").val();
+        var password_confirmation = $("#password_confirmation").val();
+
+        if (password.length < 6) {
+            $("#password-ok").empty();
+            $("#password-error").html("Password is too short");
+        }
+        else {
+            $("#password-ok").html("Password ok");
+            $("#password-error").empty();
+        }
+
+
+        if (password_confirmation == password) {
+            $("#password_confirmation-ok").html("Passwords match");
+            $("#password_confirmation-error").empty();
+        }
+        else {
+            $("#password_confirmation-ok").empty();
+            $("#password_confirmation-error").html("Passwords do not match");
+        }
+    });
+    
+
+
+    $("#registration_form").submit(function(event) {
+        var form = this;
+        var fname = $("#fname").val();
+        var lname = $("#lname").val();
+        var password = $("#password").val();
+        var password_confirmation = $("#password_confirmation").val();
+        var username = $("#username").val();
+        var email = $("#email").val();
+        event.preventDefault();
+
+        if (fname.length < 1 || lname.length < 1) {
+            return false;
+        }
+
+        if (password.length < 6 || password != password_confirmation) {
+            return false;
+        }
+
+        $.get('/validate_registration', {email: email, username:username},function(data,status) {
+            if (data == "OK") {
+                form.submit();
+            }
+        });  
+
+    });
 });
+

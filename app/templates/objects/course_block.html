@@ -30,12 +30,9 @@
 
 
                 <div class="course-instructors">
-                    {% for prof in course.profs|slice:":3" %}
-                        {{ prof.name }};
+                    {% for instructor in course.instructors %}
+                       <a href="/profile/{{instructor.username}}">{{ instructor.first_name }} {{ instructor.last_name }}</a>;
                     {% endfor %}
-                    {% if course.profs|length > 3 %}
-                        ...
-                    {% endif %}
                 </div>
 
                 <div class="course-rating">
@@ -43,7 +40,7 @@
                 </div>
 
                 <p class="course-catalog text-muted">
-                    {{ course.catalogue }}
+                    {{ course_path }}
                 </p>
             </div>
         </div>

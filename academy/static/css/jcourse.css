@@ -274,15 +274,6 @@ font-weight: bold;
     padding-top: 10px;
 }
 
-#university-name {
-    color:green;
-    font-size:11px;
-}
-#error-not-found {
-    color:red;
-    font-size:11px;
-}
-
 
 
 /************************************/
@@ -334,7 +325,14 @@ font-weight: bold;
     right:7px;
 }
 
-
+.validation-ok {
+    color:green;
+    font-size:11px;
+}
+.validation-error {
+    color:red;
+    font-size:11px;
+}
 
 
 /*********************************/
