@@ -40,11 +40,16 @@ def all_comments(request):
     return render(request, 'pages/comments.html', context)
 
 
-# This function takes an e-mail address and returns a HTTP Response with the name of the university that has the
-# domain of the e-mail address. If it is not found, it returns HttpResponse("NotFound")
-# It will be used to send AJAX requests from the welcome page during signup
+
 @require_GET
 def university_by_email(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# during user registration to confirm that the e-mail address (in the GET parameters)
+# is available and valid.
+# It returns a HTTP response with:
+#   The name of the university (taken by the domain of the e-mail address) if it is found
+#   "Exists" if a user with that e-mail address already exists
+#   "NotFound" if a university with that domain is not found
 
     email = request.GET["email"]
 
@@ -67,9 +72,15 @@ def university_by_email(request):
 
 @require_GET
 def check_username(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# to check if the username (from the registration form) is valid 
+# It returns:
+#   "Username is required" if the username is empty
+#   "Username exists" if a user with that username exists
+#   "OK" if the username is available
     username = request.GET["username"]
     if username == "":
-        return HttpResponse("Username is too short")
+        return HttpResponse("Username is required")
     if jUser.objects.filter(username = username).count() > 0:
         return HttpResponse("Username exists")
     else:
@@ -77,6 +88,11 @@ def check_username(request):
 
 @require_GET
 def validate_registration(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# to validate the username and the e-mail address on form submission
+# It returns:
+#   "Error" if the username or e-mail address are not valid
+#   "OK" if they are both valid.
     username = request.GET['username']
     email = request.GET['email']
 
