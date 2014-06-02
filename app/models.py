@@ -24,6 +24,7 @@ USER_TYPES = (
     (USER_TYPE_ADMIN, "admin")
 )
 
+# Inheriting from Base Class 'User'
 class jUser(User):
 
     user_type = models.IntegerField(choices=USER_TYPES,default=USER_TYPE_STUDENT)
@@ -229,3 +230,9 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return "Comm" + str(self.id)
+
+
+###########################################################################
+####################### Questions, Answers ################################
+###########################################################################
+

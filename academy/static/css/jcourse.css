@@ -1,4 +1,5 @@
 #body_image{
+    /*background-color:#F7F7FF;*/
     background-image: url(project_papper.png);
     background-repeat:repeat;
 }
@@ -12,7 +13,7 @@
 /*********************************/
 /********* NavBar **************/
 
-.navbar{
+.navbar-custom-header{
     position: fixed;
     width: 100%;
     z-index:10;
@@ -28,11 +29,11 @@
 }
 
 
-.navbar-default .navbar-nav>li>a {
+.navbar-custom-header .navbar-nav>li>a {
 color: #FFF;
 }
 
-.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+.navbar-custom-header .navbar-nav>.active>a, .navbar-custom-header .navbar-nav>.active>a:hover, .navbar-custom-header .navbar-nav>.active>a:focus {
     color: #FFF;
     background-color: #29ABE2;
     font-weight: bold;
@@ -40,7 +41,7 @@ color: #FFF;
 
 
 
-.navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+.navbar-nav>.open>a:hover, .navbar-custom-header .navbar-nav>.open>a:focus {
 color: #FFF;
 background-color: #3276B1;
 font-weight: bold;
@@ -52,16 +53,19 @@ font-weight: bold;
     background-color: #29ABE2;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+.navbar-custom-header .navbar-nav>li>a:hover, .navbar-custom-header .navbar-nav>li>a:focus {
 color: #29ABE2;
 font-weight: bold;
 }
 
 
-.navbar>.container .navbar-brand {
+.navbar-custom-header>.container .navbar-brand {
     color: #29ABE2;
     font-family:"OCR-A Extended", Georgia, Serif;
 }
+
+.navbar-custom-footer.navbar-nav > li > a {padding-top:5px !important; padding-bottom:5px !important;}
+.navbar-custom-footer {min-height:32px !important}
 
 
 /****** DropDown Menu ************/

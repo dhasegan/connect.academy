@@ -67,7 +67,8 @@ def course_page_context(request, course):
     context['course'] = course
 
     course_types = dict(COURSE_TYPES)
-    context['course_type'] = course_types[course.course_type]
+    # Course type seems to be not working?
+    # context['course_type'] = course_types[course.course_type]
     context['instructors'] = course.instructors.all()
 
     context['ratings'] = []
