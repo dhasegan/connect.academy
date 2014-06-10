@@ -6,4 +6,8 @@ local_settings.py
 venv/
 staticfiles/
 app/migrations/
+<<<<<<< Updated upstream
 academy/db/database.db
+=======
+academy/db/
+>>>>>>> Stashed changes
