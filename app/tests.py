@@ -378,7 +378,6 @@ class PopulatorTest(TestCase):
         self.assertEqual(len(University.objects.all()), 0)
         self.assertEqual(len(Professor.objects.all()), 0)
         self.assertEqual(len(Rating.objects.all()), 0)
-        self.assertEqual(len(Professor_Rating.objects.all()), 0)
         self.assertEqual(len(Course.objects.all()), 0)
         self.assertEqual(len(Comment.objects.all()), 0)
         self.assertEqual(len(Rating.objects.all()), 0)

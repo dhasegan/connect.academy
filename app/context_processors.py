@@ -97,7 +97,7 @@ def course_page_context(request, course):
         else:
             professors = course.professors.all()
             for prof in professors:
-                profratings = Professor_Rating.objects.filter(course=course, prof=prof)
+                profratings = Rating.objects.filter(course=course, professor=prof)
                 if len(profratings) > 0:
                     profrating = sum([cur.rating for cur in profratings]) / len(profratings)
                 else:
@@ -105,7 +105,7 @@ def course_page_context(request, course):
                 specific_rating = {
                     'score': profrating,
                     'count': len(profratings),
-                    'prof': prof.name
+                    'prof': prof.first_name + " " + prof.last_name
                 }
                 if request.user.is_authenticated():
                     users = jUser.objects.filter(id=request.user.id)

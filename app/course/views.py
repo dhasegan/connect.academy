@@ -85,9 +85,9 @@ def rate_course(request, slug):
             rating.save()
     else:
         prof = form.cleaned_data['prof']
-        ratings = Professor_Rating.objects.filter(user=user, course=course, rating_type=rating_type, prof=prof)
+        ratings = Rating.objects.filter(user=user, course=course, rating_type=rating_type, professor=prof)
         if len(ratings) == 0:
-            rating = Professor_Rating(user=user, course=course, rating=rating_value, rating_type=rating_type, prof=prof)
+            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type, professor=prof)
             rating.save()
         else:
             rating = ratings[0]
