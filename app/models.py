@@ -117,10 +117,13 @@ class Course(models.Model):
     category = models.ForeignKey('Category', related_name = 'courses')
     tags = models.ManyToManyField('Tag',related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
+    prerequisites = models.ManyToManyField('self',related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
-    #   professors (<course>.professors.all() returns all professors of <course>)
-    #   students    (<course>.students.all()    returns all students of <course>)
+    #   instructors (<course>.instructors.all() returns all instructors of <course>)
+    #   students    (<course>.students.all()    returns all students    of <course>)
+    #   next_courses (<course>.next_courses.all() returns all courses that have
+    #   <course> as a prerequisite)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
