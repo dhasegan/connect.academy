@@ -6,7 +6,7 @@
                     {% if rating.type != 'Professor' %}
                         {{ rating.type }}:
                     {% else %}
-                        {{ rating.prof }}:
+                        {{ rating.professor.first_name }} {{ rating.professor.last_name }}:
                     {% endif %}
                 </div>
                 <div class="col-md-2">
@@ -32,7 +32,7 @@
                 <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
                 <input type="hidden" name="old_score" value="{% if rating.my_score %} {{ rating.my_score }} {% endif %}">
                 {% if rating.type == 'Professor' %}
-                    <input type="hidden" name="profname" value="{{ rating.prof }}">
+                    <input type="hidden" name="profname" value="{{ rating.professor.username }}">
                 {% endif %}
 
                 {% if user_auth %}
