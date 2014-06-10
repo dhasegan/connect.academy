@@ -49,16 +49,27 @@ class jUser(User):
     # Relations declared in other models define the following:
     #    categories_managed: (<juser>.categories_managed.all() returns all categories that have <juser> 
     #    as an admin)
+    #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
+    #    downvoted: (<juser>.upvoted.all() returns all comments that <juser> downvoted)
+
+    def __unicode__(self):
+        return str(self.name)
 
 class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
     is_approved = models.BooleanField(default = False) # True if registration is approved
 
+    def __unicode__(self):
+        return "Register" + str(self.student)
+
 class InstructorCourseRegistration(models.Model):
     instructor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
     is_approved = models.BooleanField(default = False) # True if registration is approved
+
+    def __unicode__(self):
+        return "Register" + str(self.instructor)
 
 
 
@@ -88,6 +99,9 @@ class Major(models.Model):
     # Relations declared in other models define the following:
     #    courses: (<major>.courses.all() returns all courses of <major>) 
     #    students: (<major>.students.all() returns all students of <major>)
+
+    def __unicode__(self):
+        return str(self.name)
 
 class Course(models.Model):
     course_id = models.IntegerField()
@@ -124,6 +138,9 @@ class Tag(models.Model):
     # Relations declared in other models define the following:
     #   courses (<tag>.courses.all() returns all courses of that have <tag>)
 
+    def __unicode__(self):
+        return str(self.name)
+
 
 
 class University(models.Model):
@@ -131,6 +148,9 @@ class University(models.Model):
     # Relations declared in other models define the following:
     #   domains (<university>.domains.all() returns all domains of a university)
     #   courses (<university>.courses.all() returns all courses of a university)
+
+    def __unicode__(self):
+        return str(self.name)
 
 
 
@@ -176,8 +196,12 @@ class Category(models.Model):
         return str(self.name)
 
 class Domain(models.Model):
+    # University Domain
     name = models.CharField(max_length=200,unique = True)
     university = models.ForeignKey('University', related_name='domains')
+
+    def __unicode__(self):
+        return str(self.name)
 
 
 class WikiPage(models.Model):
@@ -213,26 +237,29 @@ RATING_TYPES = (
 
 
 class Rating(models.Model):
-    user = models.ForeignKey('jUser')
+    user = models.ForeignKey('jUser', related_name='rated')
     course = models.ForeignKey('Course')
     rating = models.FloatField()
     rating_type = models.CharField( max_length=3,
                                     choices=RATING_TYPES,
                                     default=OVERALL_R)
+    professor = models.ForeignKey('jUser', related_name='been_rated', null=True, blank=True)
 
     def __unicode__(self):
         return str(self.rating)
 
 class Comment(models.Model):
     course = models.ForeignKey('Course')
-    comment = models.CharField(max_length=1000)
+    comment = models.CharField(max_length=5000)
     datetime = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
-        return "Comm" + str(self.id)
+    posted_by = models.ForeignKey('jUser', null=True)
+    upvoted_by = models.ManyToManyField('jUser', related_name='upvoted')
+    downvoted_by = models.ManyToManyField('jUser', related_name='downvoted')
 
+    def __unicode__(self):
+        return str(self.comment)
 
 ###########################################################################
 ####################### Questions, Answers ################################
 ###########################################################################
-

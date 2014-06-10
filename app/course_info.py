@@ -1,18 +1,18 @@
 
-LECTURE = 'LEC'
-SEMINAR = 'SEM'
-PROJECT = 'PRJ'
-WORKSHOP = 'WKS'
-LAB = 'LAB'
-UNKNOWN = 'UNK'
-COURSE_TYPES = (
-    (LECTURE, 'Lecture'),
-    (SEMINAR, 'Seminar'),
-    (PROJECT, 'Project'),
-    (WORKSHOP, 'APS Workshop'),
-    (LAB, 'Lab'),
-    (UNKNOWN, 'Unknown')
-)
+# LECTURE = 'LEC'
+# SEMINAR = 'SEM'
+# PROJECT = 'PRJ'
+# WORKSHOP = 'WKS'
+# LAB = 'LAB'
+# UNKNOWN = 'UNK'
+# COURSE_TYPES = (
+#     (LECTURE, 'Lecture'),
+#     (SEMINAR, 'Seminar'),
+#     (PROJECT, 'Project'),
+#     (WORKSHOP, 'APS Workshop'),
+#     (LAB, 'Lab'),
+#     (UNKNOWN, 'Unknown')
+# )
 
 OVERALL_R = 'ALL'
 WORKLOAD_R = 'WKL'

@@ -38,26 +38,24 @@ def course_timeline_context(courses):
         else:   
             overall_rating = sum([cur.rating for cur in ratings])/len(ratings)
 
+        category = course.category
+        course_path = category.name
+        while (category.parent is not None):
+            course_path = "%s > %s" % (category.parent.name, course_path)
+            category = category.parent
+
         allcourses.append({
             'course': course,
             'instructors': course.instructors.all(),
             'majors': course.majors.all(),
             'category': course.category,
+            'course_path': course_path,
             'university': course.university,
             'studies': studies,
             'overall_rating': overall_rating
         })
     allcourses = sorted(allcourses, key=lambda x:x['overall_rating'], reverse=True)
     context['courses'] = allcourses
-
-    category = course.category
-    course_path = category.name
-    while (category.parent is not None):
-        course_path = "%s > %s" % (category.parent.name, course_path)
-        category = category.parent
-
-
-    context['course_path'] = course_path
 
     return context
 

@@ -8,10 +8,10 @@ $(function() {
     // ga('create', 'UA-47744399-1', 'jcourse.herokuapp.com');
     // ga('send', 'pageview');
 
-    // // For lazy loading images
-    // $("img.course-image").lazyload({
-    //     effect : "fadeIn"
-    // });
+    // For lazy loading images
+    $("img.course-image").lazyload({
+        effect : "fadeIn"
+    });
 
     indexCourses = function(btn_studies) {
         var courses = $('.panel-course');
