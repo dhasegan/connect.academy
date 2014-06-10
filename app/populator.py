@@ -86,7 +86,39 @@ class Populator:
         for i in range(count):
             self.add_juser(USER_TYPE_PROFESSOR)
 
-    def add_course(self):
+    def add_category(self):
+        while True:
+            categories = Category.objects.all()
+            parent = None
+            level = 0
+            name = "Connect.Academy"
+            abbreviation = "connect"
+            if len(categories):
+                parent = random.choice(categories)
+                level = parent.level + 1
+                fname = self.random_word().capitalize()
+                lname = self.random_word().capitalize()
+                name = fname + " " + lname
+                abbreviation = fname[0:min(len(fname),4)] + lname[0:min(len(lname),4)]
+            category = Category(parent=parent, name=name, level=level, abbreviation=abbreviation)
+            category.save()
+            break
+
+    def populate_categories(self, count):
+        for i in range(count):
+            self.add_category()
+
+    def add_course(self, leaf_categories=None):
+        if not leaf_categories:
+            leaf_categories = []
+            for category in categories:
+                is_leaf = True
+                for checking_category in categories:
+                    if checking_category.parent == category:
+                        is_leaf = False
+                if is_leaf:
+                    leaf_categories.append( category )
+
         while True:
             course_id = random.randint(100000, 999999)
             name = self.random_word() + " " + self.random_word() + " " + self.random_word()
@@ -95,27 +127,33 @@ class Populator:
             description = ""
             for i in range(0, random.randint(10, 20)):
                 description = description + self.random_word() + " "
-            catalogue = ""
-            for i in range(0, 3):
-                description = description + self.random_word() + " > "
+            category = random.choice( leaf_categories )
 
             # Add additional description
-            # Add better catalogue
             # Add all other fields
             course = Course(course_id=course_id, course_type=course_type, name=name,
-                            credits=credits, description=description, catalogue=catalogue)
+                            credits=credits, description=description, category=category)
             course.save()
 
-            total_nr_professors = len(jUser.objects.all())
-            nr_professors = random.randint(1, min(2, total_nr_professors))
+            professors = list(jUser.objects.filter(course_type=USER_TYPE_PROFESSOR))
+            professors = random.shuffle(professors)
+            nr_professors = random.randint(1, 4)
             for i in range(nr_professors):
-                professor = random.choice(Professor.objects.all())
-                course.professors.add(professor)
+                course.professors.add(professors[i])
             break
 
     def populate_courses(self, count):
+        leaf_categories = []
+        for category in categories:
+            is_leaf = True
+            for checking_category in categories:
+                if checking_category.parent == category:
+                    is_leaf = False
+            if is_leaf:
+                leaf_categories.append( category )
+
         for i in range(count):
-            self.add_course()
+            self.add_course(leaf_categories)
 
     def add_comment(self, course):
         comment = ""
