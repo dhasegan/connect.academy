@@ -168,7 +168,7 @@ class Populator:
 
     def add_comment(self, course):
         comment = ""
-        for i in range(random.randint(10, 30)):
+        for i in range(random.randint(10, 300)):
             comment = comment + self.random_word() + " "
         commObj = Comment(comment=comment, course=course)
         commObj.save()
@@ -193,7 +193,9 @@ class Populator:
                     rat_type = rating_type[0]
                     rater = user
                     break
-        if rater is None:
+            if rater:
+                break
+        if not rater:
             return False
 
         rating = random.randint(1, 5)
@@ -202,7 +204,7 @@ class Populator:
             rat.save()
         else:
             prof = random.choice(course.professors.all())
-            rat = Professor_Rating(user=rater, course=course, rating=rating, rating_type=rat_type, prof=prof)
+            rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type, professor=prof)
             rat.save()
         return True
 
@@ -216,30 +218,33 @@ class Populator:
             while not self.add_rating(course):
                 pass
 
-    def check_dependencies(self, nr_universities=0, nr_users=0,
+    def check_dependencies(self, nr_universities=0, nr_students=0, nr_categories=0,
                            nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
         if nr_universities + len(University.objects.all()) <= 0 \
-            and (nr_users > 0 or nr_courses > 0):
+            and (nr_students > 0 or nr_courses > 0):
             raise RuntimeError("Not enough universities in the DB")
+        if nr_courses > 0 and nr_categories + len(Category.objects.all()) < 2:
+            raise RuntimeError("Not enough categories in the DB")
         if nr_courses + len(Course.objects.all()) > 0 \
-            and (nr_professors + len(Professor.objects.all()) <= 0):
+            and (nr_professors + len(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR)) <= 0):
             raise RuntimeError("Not enough professors in the DB")
         if nr_comments + len(Comment.objects.all()) > 0 \
             and (nr_courses + len(Course.objects.all()) <= 0):
             raise RuntimeError("Not enough courses in the DB")
         if nr_ratings + len(Rating.objects.all()) > (nr_courses + len(Course.objects.all())) * \
-            (nr_users + len(jUser.objects.all())) * len(RATING_TYPES):
+            (nr_students + len(jUser.objects.all())) * len(RATING_TYPES):
             raise RuntimeError("Not enough courses and/or users in the DB")
 
-    def populate_database(self, nr_universities=0, nr_users=0,
+    def populate_database(self, nr_universities=0, nr_students=0, nr_categories=0,
                           nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
 
-        self.check_dependencies(nr_universities=nr_universities, nr_users=nr_users,
+        self.check_dependencies(nr_universities=nr_universities, nr_students=nr_students, nr_categories=nr_categories,
                                 nr_professors=nr_professors, nr_courses=nr_courses, nr_comments=nr_comments,
                                 nr_ratings=nr_ratings)
         self.populate_universities(nr_universities)
-        self.populate_users(nr_users)
+        self.populate_students(nr_students)
         self.populate_professors(nr_professors)
+        self.populate_categories(nr_categories)
         self.populate_courses(nr_courses)
         self.populate_comments(nr_comments)
         self.populate_ratings(nr_ratings)
