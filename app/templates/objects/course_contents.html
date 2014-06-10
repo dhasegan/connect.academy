@@ -67,8 +67,8 @@
 <div class="course-detail">
     <strong> professors: </strong>
     <div class="content">
-        {% for prof in professors %}
-            {{ prof.name }};
+        {% for juser in professors %}
+            {% include 'objects/user_link.html' %};
         {% endfor %}
     </div>
 </div>

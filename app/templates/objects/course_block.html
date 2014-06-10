@@ -30,8 +30,8 @@
 
 
                 <div class="course-professors">
-                    {% for professor in course.professors %}
-                       <a href="/profile/{{professor.username}}">{{ professor.first_name }} {{ professor.last_name }}</a>;
+                    {% for juser in course.professors %}
+                        {% include 'objects/user_link.html' %};
                     {% endfor %}
                 </div>
 
