@@ -53,7 +53,7 @@ class jUser(User):
     #    downvoted: (<juser>.upvoted.all() returns all comments that <juser> downvoted)
 
     def __unicode__(self):
-        return str(self.name)
+        return str(self.username)
 
 class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')

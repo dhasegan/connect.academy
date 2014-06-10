@@ -110,6 +110,7 @@ class Populator:
 
     def add_course(self, leaf_categories=None):
         if not leaf_categories:
+            categories = Category.objects.all()
             leaf_categories = []
             for category in categories:
                 is_leaf = True
@@ -128,21 +129,31 @@ class Populator:
             for i in range(0, random.randint(10, 20)):
                 description = description + self.random_word() + " "
             category = random.choice( leaf_categories )
+            universities = University.objects.all()
+            if not universities:
+                self.add_university()
+            universities = University.objects.all()
+            university = random.choice(universities)
 
             # Add additional description
             # Add all other fields
             course = Course(course_id=course_id, course_type=course_type, name=name,
-                            credits=credits, description=description, category=category)
+                            credits=credits, description=description, category=category,
+                            university=university)
             course.save()
 
-            professors = list(jUser.objects.filter(course_type=USER_TYPE_PROFESSOR))
-            professors = random.shuffle(professors)
-            nr_professors = random.randint(1, 4)
+            professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR))
+            if not professors:
+                self.populate_professors(1)
+            random.shuffle(professors)
+            nr_professors = random.randint(1, 3)
             for i in range(nr_professors):
-                course.professors.add(professors[i])
+                pcr = ProfessorCourseRegistration(professor=professors[i], course=course)
+                pcr.save()
             break
 
     def populate_courses(self, count):
+        categories = Category.objects.all()
         leaf_categories = []
         for category in categories:
             is_leaf = True
