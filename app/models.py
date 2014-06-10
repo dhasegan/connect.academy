@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
 from app.course_info import *
-
+from datetime import *
 
 
 
@@ -163,6 +163,7 @@ class Category(models.Model):
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
     admins = models.ManyToManyField('jUser', related_name = 'categories_managed')
+    cr_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category')
     # !!
     # Relations declared in other models define the following:
     #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
@@ -215,8 +216,20 @@ class WikiPage(models.Model):
         return str(self.name)
 
 
+class Deadline(models.Model):
+    start = models.DateTimeField(auto_now=True)
+    end = models.DateTimeField()
 
-
+class CourseRegistrationDeadline(Deadline):
+    def is_open(self):
+        now = datetime.now()
+        if now >= self.start and now < self.end:
+            return True
+        else:
+            return False
+    # !!
+    # Relations declared in other models define the following:
+    # category: <courseregistrationdeadline>.category is the category this registration deadline is for
 
 
 
