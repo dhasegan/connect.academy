@@ -34,7 +34,7 @@ class RateCourseForm(forms.Form):
         if rtype == PROFESSOR_R:
             if not 'profname' in cleaned_data:
                 raise forms.ValidationError("There is no professor name for the form!")
-            profs = Professor.objects.filter(name=cleaned_data['profname'])
+            profs = jUser.objects.filter(username=cleaned_data['profname'])
             if len(profs) != 1:
                 raise forms.ValidationError("Not a valid number of professors with this professor name!")
             cleaned_data['prof'] = profs[0]

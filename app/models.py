@@ -120,7 +120,7 @@ class Course(models.Model):
     prerequisites = models.ManyToManyField('self',related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
-    #   instructors (<course>.instructors.all() returns all instructors of <course>)
+    #   professors (<course>.professor.all() returns all professors of <course>)
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #   <course> as a prerequisite)

@@ -105,7 +105,7 @@ def course_page_context(request, course):
                 specific_rating = {
                     'score': profrating,
                     'count': len(profratings),
-                    'prof': prof.first_name + " " + prof.last_name
+                    'professor': prof,
                 }
                 if request.user.is_authenticated():
                     users = jUser.objects.filter(id=request.user.id)
