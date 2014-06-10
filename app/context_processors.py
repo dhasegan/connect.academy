@@ -46,7 +46,7 @@ def course_timeline_context(courses):
 
         allcourses.append({
             'course': course,
-            'instructors': course.instructors.all(),
+            'professors': course.professors.all(),
             'majors': course.majors.all(),
             'category': course.category,
             'course_path': course_path,
@@ -67,7 +67,7 @@ def course_page_context(request, course):
     course_types = dict(COURSE_TYPES)
     # Course type seems to be not working?
     # context['course_type'] = course_types[course.course_type]
-    context['instructors'] = course.instructors.all()
+    context['professors'] = course.professors.all()
 
     context['ratings'] = []
     allratings = Rating.objects.filter(course=course)
@@ -95,7 +95,7 @@ def course_page_context(request, course):
         if rating_type[1] != 'Professor':
             context['ratings'].append(dict(context_rating.items() + specific_rating.items()))
         else:
-            professors = course.instructors.all()
+            professors = course.professors.all()
             for prof in professors:
                 profratings = Professor_Rating.objects.filter(course=course, prof=prof)
                 if len(profratings) > 0:

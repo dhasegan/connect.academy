@@ -150,10 +150,10 @@ def signup_action(request):
     email = form.cleaned_data["email"]
     fname = form.cleaned_data["fname"]
     lname = form.cleaned_data["lname"]
-    is_instructor = form.cleaned_data["is_instructor"]
+    is_professor = form.cleaned_data["is_professor"]
     university = form.cleaned_data["university"]
 
-    if is_instructor:
+    if is_professor:
         user_type = USER_TYPE_INSTRUCTOR
     else:
         user_type = USER_TYPE_STUDENT

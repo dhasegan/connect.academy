@@ -15,31 +15,31 @@ from app.course_info import *
 
 
 USER_TYPE_STUDENT = 0
-USER_TYPE_INSTRUCTOR = 1
+USER_TYPE_PROFESSOR = 1
 USER_TYPE_ADMIN = 2 # The administator of at least 1 category, who is not a professor
 
 USER_TYPES = (
     (USER_TYPE_STUDENT, "student"),
-    (USER_TYPE_INSTRUCTOR, "instructor"),
+    (USER_TYPE_PROFESSOR, "professor"),
     (USER_TYPE_ADMIN, "admin")
 )
 
 # Inheriting from Base Class 'User'
 class jUser(User):
 
-    user_type = models.IntegerField(choices=USER_TYPES,default=USER_TYPE_STUDENT)
+    user_type = models.IntegerField(choices=USER_TYPES, default=USER_TYPE_STUDENT)
     university = models.ForeignKey('University',null = True) 
     
-    # For instructors only 
-    # True if they have been confirmed to be instructors)
+    # For professors only 
+    # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)
     # Courses the user is enrolled to
     courses_enrolled = models.ManyToManyField('Course', related_name='students', 
                                                through = 'StudentCourseRegistration')
 
-    # courses the user is managing (i.e: if they're instructors)
-    courses_managed = models.ManyToManyField('Course', related_name='instructors',
-                                              through = 'InstructorCourseRegistration')
+    # courses the user is managing (i.e: if they're professors)
+    courses_managed = models.ManyToManyField('Course', related_name='professors',
+                                              through = 'ProfessorCourseRegistration')
 
     # may turn out useful - this might also need approval,
     # so we may have to create another table to handle the ManyToMany relation
@@ -63,13 +63,13 @@ class StudentCourseRegistration(models.Model):
     def __unicode__(self):
         return "Register" + str(self.student)
 
-class InstructorCourseRegistration(models.Model):
-    instructor = models.ForeignKey('jUser')
+class ProfessorCourseRegistration(models.Model):
+    professor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
     is_approved = models.BooleanField(default = False) # True if registration is approved
 
     def __unicode__(self):
-        return "Register" + str(self.instructor)
+        return "Register" + str(self.professor)
 
 
 
@@ -119,8 +119,8 @@ class Course(models.Model):
     majors = models.ManyToManyField('Major', related_name='courses')
     # !!
     # Relations declared in other models define the following:
-    #   instructors (<course>.instructors.all() returns all instructors of <course>)
-    #   students    (<course>.students.all()    returns all students    of <course>)
+    #   professors (<course>.professors.all() returns all professors of <course>)
+    #   students    (<course>.students.all()    returns all students of <course>)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

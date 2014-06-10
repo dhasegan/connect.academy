@@ -127,7 +127,7 @@ class HomePageTest(TestCase):
         self.assertEquals(len(response.context["courses"]), self.nr_courses)
         courses = response.context["courses"]
         for course in courses:
-            profs = list(course["course"].instructors.all())
+            profs = list(course["course"].professors.all())
             self.assertEquals(len(profs), len(course["profs"]))
             for i in range(len(profs)):
                 self.assertEqual(profs[i].name, course["profs"][i].name)
@@ -168,11 +168,11 @@ class CoursePageTest(TestCase):
             self.assertTrue("course" in response.context)
             self.assertEquals(course, response.context['course'])
 
-            self.assertTrue("instructors" in response.context)
-            profs = list(course.instructors.all())
-            self.assertEquals(len(profs), len(response.context["instructors"]))
+            self.assertTrue("professors" in response.context)
+            profs = list(course.professors.all())
+            self.assertEquals(len(profs), len(response.context["professors"]))
             for i in range(len(profs)):
-                self.assertEqual(profs[i].name, response.context["instructors"][i].name)
+                self.assertEqual(profs[i].name, response.context["professors"][i].name)
 
             self.assertTrue("comments" in response.context)
             comments = Comment.objects.filter(course=course)
@@ -289,7 +289,7 @@ class RateCourseTest(TestCase):
                 "url": "/course/" + course.slug,  # Should be removed after refactoring
             }
             if rating_type[0] == PROFESSOR_R:
-                post_context['profname'] = random.choice(course.instructors.all()).name
+                post_context['profname'] = random.choice(course.professors.all()).name
             response = self.client.post('/course/' + course.slug + '/rate_course', post_context)
             self.assertEqual(response.status_code, 302)
 
@@ -314,7 +314,7 @@ class RateCourseTest(TestCase):
                 "url": "/course/" + course.slug,
             }
             if rating_type[0] == PROFESSOR_R:
-                post_context['profname'] = random.choice(course.instructors.all()).name
+                post_context['profname'] = random.choice(course.professors.all()).name
             response = self.client.post('/course/' + course.slug + '/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
@@ -324,7 +324,7 @@ class RateCourseTest(TestCase):
                 "url": "/course/" + course.slug,
             }
             if rating_type[0] == PROFESSOR_R:
-                post_context['profname'] = random.choice(course.instructors.all()).name
+                post_context['profname'] = random.choice(course.professors.all()).name
             response = self.client.post('/course/' + course.slug + '/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
@@ -335,7 +335,7 @@ class RateCourseTest(TestCase):
                 "url": "/course/" + course.slug,
             }
             if rating_type[0] == PROFESSOR_R:
-                post_context['profname'] = random.choice(course.instructors.all()).name
+                post_context['profname'] = random.choice(course.professors.all()).name
             response = self.client.post('/course/' + course.slug + '/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 
@@ -346,7 +346,7 @@ class RateCourseTest(TestCase):
                 "url": "/course/" + course.slug,
             }
             if rating_type[0] == PROFESSOR_R:
-                post_context['profname'] = random.choice(course.instructors.all()).name
+                post_context['profname'] = random.choice(course.professors.all()).name
             response = self.client.post('/course/' + course.slug + '/rate_course', post_context, follow=True)
             self.assertEqual(response.status_code, 404)
 

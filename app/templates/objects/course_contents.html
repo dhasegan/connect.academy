@@ -63,11 +63,11 @@
 
 {% include 'objects/course_ratings.html' %}
 
-{% if course.instructors %}
+{% if course.professors %}
 <div class="course-detail">
-    <strong> Instructors: </strong>
+    <strong> professors: </strong>
     <div class="content">
-        {% for prof in instructors %}
+        {% for prof in professors %}
             {{ prof.name }};
         {% endfor %}
     </div>

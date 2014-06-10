@@ -3,6 +3,21 @@ import random
 from app.models import *
 
 
+class JacobsPopulator:
+
+    """ Class to populate the test database with Jacobs needed data """
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def populate():
+        uni = University(name="Jacobs University Bremen")
+        uni.save()
+        dom = Domain(name="jacobs-university.de", university=uni)
+        dom.save()
+
+
 class Populator:
 
     """ Class to populate the test database """
@@ -25,16 +40,17 @@ class Populator:
             name = self.random_word().capitalize() + " University"
             if len(University.objects.filter(name=name)) > 0:
                 continue
-            # domain = name.lower().replace(" ", ".") + ".edu"
-            # University.objects.create(name=name, domain=domain)
-            University.objects.create(name=name)
+            univ = University.objects.create(name=name)
+
+            domain = name.lower().replace(" ", ".") + ".edu"
+            Domain.objects.create(name=domain, university=univ)
             break
 
     def populate_universities(self, count):
         for i in range(count):
             self.add_university()
 
-    def add_user(self):
+    def add_juser(self, user_type=None):
         while True:
             fname = self.random_word().capitalize()
             lname = self.random_word().capitalize()
@@ -45,38 +61,34 @@ class Populator:
             univ = univs[random.randrange(len(univs))]
             active = True
             password = "1234"
-            domain = univ.name.lower().replace(" ", ".") + ".edu"
-            email = username + "@" + domain
+            domain = univ.domains.all()[0]
+            email = username + "@" + domain.name
+            if user_type == None:
+                user_type = random.choice( list(USER_TYPES) )[0]
             user = jUser.objects.create_user(username=username, password=password,
-                                             email=email, first_name=fname, last_name=lname)
-            if random.random() < 0.05:
-                user.is_active = False
-                user.save()
+                                             email=email, first_name=fname, last_name=lname,
+                                             user_type=user_type)
             break
 
-    def populate_users(self, count):
+    def populate_jusers(self, count):
         for i in range(count):
-            self.add_user()
+            self.add_juser()
 
-    def add_professor(self):
-        while True:
-            name = self.random_word().capitalize() + self.random_word().capitalize()
-            if len(Professor.objects.filter(name=name)) > 0:
-                continue
-            department = self.random_word().capitalize() + " Science"
-            prof = Professor(name=name, department=department)
-            prof.save()
-            break
+    def populate_students(self, count):
+        for i in range(count):
+            self.add_juser(USER_TYPE_STUDENT)
+
+    def populate_admins(self, count):
+        for i in range(count):
+            self.add_juser(USER_TYPE_ADMIN)
 
     def populate_professors(self, count):
         for i in range(count):
-            self.add_professor()
+            self.add_juser(USER_TYPE_PROFESSOR)
 
     def add_course(self):
         while True:
             course_id = random.randint(100000, 999999)
-            if len(Course.objects.filter(course_id=course_id)) > 0:
-                continue
             name = self.random_word() + " " + self.random_word() + " " + self.random_word()
             course_type = random.choice(list(COURSE_TYPES))[0]
             credits = random.randint(1, 10)
@@ -94,11 +106,11 @@ class Populator:
                             credits=credits, description=description, catalogue=catalogue)
             course.save()
 
-            total_nr_instructors = len(Professor.objects.all())
-            nr_instructors = random.randint(1, min(2, total_nr_instructors))
-            for i in range(nr_instructors):
-                instructor = random.choice(Professor.objects.all())
-                course.instructors.add(instructor)
+            total_nr_professors = len(jUser.objects.all())
+            nr_professors = random.randint(1, min(2, total_nr_professors))
+            for i in range(nr_professors):
+                professor = random.choice(Professor.objects.all())
+                course.professors.add(professor)
             break
 
     def populate_courses(self, count):
@@ -140,7 +152,7 @@ class Populator:
             rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type)
             rat.save()
         else:
-            prof = random.choice(course.instructors.all())
+            prof = random.choice(course.professors.all())
             rat = Professor_Rating(user=rater, course=course, rating=rating, rating_type=rat_type, prof=prof)
             rat.save()
         return True

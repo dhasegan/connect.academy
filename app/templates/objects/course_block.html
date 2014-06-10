@@ -29,9 +29,9 @@
             <div class="col-md-8 course-details">
 
 
-                <div class="course-instructors">
-                    {% for instructor in course.instructors %}
-                       <a href="/profile/{{instructor.username}}">{{ instructor.first_name }} {{ instructor.last_name }}</a>;
+                <div class="course-professors">
+                    {% for professor in course.professors %}
+                       <a href="/profile/{{professor.username}}">{{ professor.first_name }} {{ professor.last_name }}</a>;
                     {% endfor %}
                 </div>
 
