@@ -114,32 +114,32 @@ font-weight: bold;
     max-height: 100px;
 }
 
-.course-block-wrapper .panel-course .panel-body {
-    min-height: 195px;
-}
-
 .course-name {
     font-size: 18px;
 }
-.panel-body .course-credits {
+.panel-heading .course-credits {
     float: right;
 }
 
-.panel-body .course-rating {
+.panel-heading .course-rating {
     float: right;
 }
 
-.panel-body .course-rating .yellow-star {
+.panel-heading .course-rating .yellow-star {
     color: #EDDA74;
 }
 
 .badge.course-credits {
-    background-color: #C38EC7;
+    background-color: #92209B;
+    border-radius: 0px;
+    width: 46px;
+    height: 20px;
+    margin-left: 10px;
 }
 
 .badge.course-rating {
-    margin-top: 2px;
-    background-color: #659EC7;
+    background-color: #33424D;
+    border-radius: 0px;
 }
 
 .course-catalog {
@@ -439,12 +439,6 @@ font-weight: bold;
     border-radius: 0px;
     -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-
-.badge.course-rating {
-    margin-top: 2px;
-    background-color: #29ABE2;
-    border-radius: 0px;
 }
 
 /*  Submit buttons */
