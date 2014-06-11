@@ -163,7 +163,7 @@ class Category(models.Model):
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
     admins = models.ManyToManyField('jUser', related_name = 'categories_managed')
-    cr_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category')
+    cr_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category',null=True)
     # !!
     # Relations declared in other models define the following:
     #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
