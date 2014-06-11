@@ -235,7 +235,7 @@ class CourseRegistrationDeadline(Deadline):
 
 
 ###########################################################################
-####################### Posts, Ratings, Comments ##########################
+####################### Reviews, Ratings, Documents #######################
 ###########################################################################
 
 RATING_MIN = 1
@@ -264,9 +264,9 @@ class Rating(models.Model):
     def __unicode__(self):
         return str(self.rating)
 
-class Comment(models.Model):
+class Review(models.Model):
     course = models.ForeignKey('Course')
-    comment = models.CharField(max_length=5000)
+    review = models.CharField(max_length=5000)
     datetime = models.DateTimeField(auto_now=True)
 
     posted_by = models.ForeignKey('jUser', null=True)
@@ -275,6 +275,18 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return str(self.comment)
+
+class CourseDocument(models.Model):
+    name = models.CharField(max_length=200)
+    document = models.FileField(upload_to='course/documents/')
+
+    course = models.ForeignKey('Course')
+    submitter = models.ForeignKey('jUser')
+    submit_time = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.name)
+
 
 ###########################################################################
 ####################### Questions, Answers ################################

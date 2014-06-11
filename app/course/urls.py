@@ -5,4 +5,5 @@ urlpatterns = patterns('app.course.views',
     url(r'^image$', 'get_course_image', name='course_image'),
     url(r'^submit_comment$', 'submit_comment', name='submit_comment'),
     url(r'^rate_course$', 'rate_course', name='rate_course'),
+    url(r'^submit_document$', 'submit_document', name='submit_document')
 )

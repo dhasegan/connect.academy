@@ -58,15 +58,6 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
-MEDIA_ROOT = PROJECT_ROOT + 'media/'
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = '/media/'
-
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -180,24 +171,51 @@ LOGGING = {
     }
 }
 
-# Email settings
+######################## Email settings
+
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 
-########################## Media files setup on AWS
-# Setup AWS
+
+
+######################### Media files
+
+# 2.5MB - 2621440
+# 5MB - 5242880
+# 10MB - 10485760
+# 20MB - 20971520
+# 50MB - 5242880
+# 100MB 104857600
+# 250MB - 214958080
+# 500MB - 429916160
+COURSE_DOCUMENT_MAX_UPLOAD_SIZE = "5242880"
+
+### Development mode
+
+# Library of file storage middleware
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+MEDIA_ROOT = PROJECT_ROOT + 'media/'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+MEDIA_URL = '/media/'
+
+### AWS in production
+
 AWS_ACCESS_KEY_ID = environ.get('ACADEMY_AWS_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = environ.get('ACADEMY_AWS_SECRET_ACCESS_KEY', '')
 AWS_STORAGE_BUCKET_NAME = 'academy'
 AWS_PRELOAD_METADATA = True
 
-# Connect to s3 only in production
+# Connect to s3 in production
 if not DEBUG:
     boto.connect_s3()
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage' if not DEBUG else 'django.core.files.storage.FileSystemStorage'
-MEDIA_URL = 'http://{0}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME) if not DEBUG else '/media/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    MEDIA_URL = 'http://{0}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME)
 
 ########################## South library configuration
+
 SOUTH_TESTS_MIGRATE = False

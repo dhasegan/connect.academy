@@ -1,4 +1,5 @@
 from django import forms
+from django.template.defaultfilters import filesizeformat
 
 from app.course_info import *
 from app.models import *
@@ -42,13 +43,13 @@ class RateCourseForm(forms.Form):
         return cleaned_data
 
 
-class SubmitCommentForm(forms.Form):
+class SubmitReviewForm(forms.Form):
     course_id = forms.CharField()
     comment = forms.CharField()
     url = forms.CharField()
 
     def clean(self):
-        cleaned_data = super(SubmitCommentForm, self).clean()
+        cleaned_data = super(SubmitReviewForm, self).clean()
 
         courses = Course.objects.filter(id=cleaned_data.get("course_id"))
         if len(courses) != 1:
@@ -56,3 +57,26 @@ class SubmitCommentForm(forms.Form):
         cleaned_data['course'] = courses[0]
 
         return cleaned_data
+
+class SubmitDocumentForm(forms.Form):
+    name = forms.CharField()
+    document = forms.FileField()
+    course_id = forms.CharField()
+    url = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(SubmitDocumentForm, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        return cleaned_data
+
+    def clean_document(self):
+        content = self.cleaned_data['document']
+        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        return content

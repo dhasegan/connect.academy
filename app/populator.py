@@ -168,9 +168,9 @@ class Populator:
 
     def add_comment(self, course):
         comment = ""
-        for i in range(random.randint(10, 300)):
+        for i in range(random.randint(10, 100)):
             comment = comment + self.random_word() + " "
-        commObj = Comment(comment=comment, course=course)
+        commObj = Review(comment=comment, course=course)
         commObj.save()
 
     def populate_comments(self, count):
@@ -219,7 +219,7 @@ class Populator:
                 pass
 
     def check_dependencies(self, nr_universities=0, nr_students=0, nr_categories=0,
-                           nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
+                           nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0):
         if nr_universities + len(University.objects.all()) <= 0 \
             and (nr_students > 0 or nr_courses > 0):
             raise RuntimeError("Not enough universities in the DB")
@@ -228,7 +228,7 @@ class Populator:
         if nr_courses + len(Course.objects.all()) > 0 \
             and (nr_professors + len(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR)) <= 0):
             raise RuntimeError("Not enough professors in the DB")
-        if nr_comments + len(Comment.objects.all()) > 0 \
+        if nr_reviews + len(Review.objects.all()) > 0 \
             and (nr_courses + len(Course.objects.all()) <= 0):
             raise RuntimeError("Not enough courses in the DB")
         if nr_ratings + len(Rating.objects.all()) > (nr_courses + len(Course.objects.all())) * \
@@ -236,15 +236,15 @@ class Populator:
             raise RuntimeError("Not enough courses and/or users in the DB")
 
     def populate_database(self, nr_universities=0, nr_students=0, nr_categories=0,
-                          nr_professors=0, nr_courses=0, nr_comments=0, nr_ratings=0):
+                          nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0):
 
         self.check_dependencies(nr_universities=nr_universities, nr_students=nr_students, nr_categories=nr_categories,
-                                nr_professors=nr_professors, nr_courses=nr_courses, nr_comments=nr_comments,
+                                nr_professors=nr_professors, nr_courses=nr_courses, nr_reviews=nr_reviews,
                                 nr_ratings=nr_ratings)
         self.populate_universities(nr_universities)
         self.populate_students(nr_students)
         self.populate_professors(nr_professors)
         self.populate_categories(nr_categories)
         self.populate_courses(nr_courses)
-        self.populate_comments(nr_comments)
+        self.populate_comments(nr_reviews)
         self.populate_ratings(nr_ratings)

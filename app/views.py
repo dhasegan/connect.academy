@@ -41,7 +41,7 @@ def all_comments(request):
     context = {
         'page': 'all_comments',
     }
-    context['comments'] = Comment.objects.all()
+    context['comments'] = Review.objects.all()
 
     return render(request, 'pages/comments.html', context)
 

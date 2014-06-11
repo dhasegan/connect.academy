@@ -175,11 +175,11 @@ class CoursePageTest(TestCase):
                 self.assertEqual(profs[i].name, response.context["professors"][i].name)
 
             self.assertTrue("comments" in response.context)
-            comments = Comment.objects.filter(course=course)
+            comments = Review.objects.filter(course=course)
             self.assertEquals(len(comments), len(response.context["comments"]))
 
 
-class AllCommentsPageTest(TestCase):
+class AllReviewsPageTest(TestCase):
 
     def setUp(self):
         self.nr_comments = 50
@@ -201,7 +201,7 @@ class AllCommentsPageTest(TestCase):
         self.assertEquals(len(response.context["comments"]), self.nr_comments)
 
 
-class SubmitCommentTest(TestCase):
+class SubmitReviewTest(TestCase):
 
     def setUp(self):
         self.nr_comments = 5
@@ -219,7 +219,7 @@ class SubmitCommentTest(TestCase):
 
     def test_posting_comment(self):
         course = random.choice(Course.objects.all())
-        comment_text = "Comment text to be inserted"
+        comment_text = "Review text to be inserted"
         response = self.client.post('/course/' + course.slug + '/submit_comment', {
             "course_id": course.id,
             "comment": comment_text,
@@ -227,15 +227,15 @@ class SubmitCommentTest(TestCase):
         })
         self.assertEqual(response.status_code, 302)
 
-        comms = Comment.objects.all()
+        comms = Review.objects.all()
         self.assertEquals(len(comms), self.nr_comments + 1)
-        comm = Comment.objects.filter(comment=comment_text)
+        comm = Review.objects.filter(comment=comment_text)
         self.assertEquals(len(comm), 1)
         self.assertEquals(comm[0].course, course)
 
     def test_bad_request(self):
         course = random.choice(Course.objects.all())
-        comment_text = "Comment text to be inserted"
+        comment_text = "Review text to be inserted"
 
         response = self.client.post('/course/' + course.slug + '/submit_comment', {
             "comment": comment_text,
@@ -379,7 +379,7 @@ class PopulatorTest(TestCase):
         self.assertEqual(len(Professor.objects.all()), 0)
         self.assertEqual(len(Rating.objects.all()), 0)
         self.assertEqual(len(Course.objects.all()), 0)
-        self.assertEqual(len(Comment.objects.all()), 0)
+        self.assertEqual(len(Review.objects.all()), 0)
         self.assertEqual(len(Rating.objects.all()), 0)
 
     def test_populate_db(self):
@@ -397,5 +397,5 @@ class PopulatorTest(TestCase):
         self.assertEqual(len(jUser.objects.all()), nr_users)
         self.assertEqual(len(Professor.objects.all()), nr_professors)
         self.assertEqual(len(Course.objects.all()), nr_courses)
-        self.assertEqual(len(Comment.objects.all()), nr_comments)
+        self.assertEqual(len(Review.objects.all()), nr_comments)
         self.assertEqual(len(Rating.objects.all()), nr_ratings)

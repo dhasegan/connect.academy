@@ -65,7 +65,7 @@
 
 {% if course.professors %}
 <div class="course-detail">
-    <strong> professors: </strong>
+    <strong> Professors: </strong>
     <div class="content">
         {% for juser in professors %}
             {% include 'objects/user_link.html' %};
@@ -73,6 +73,12 @@
     </div>
 </div>
 {% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        {% include 'objects/course_documents.html' %}
+    </div>
+</div>
 
 {% if course.description %}
 <div class="course-detail">

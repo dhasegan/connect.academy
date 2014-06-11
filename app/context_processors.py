@@ -116,7 +116,15 @@ def course_page_context(request, course):
                             specific_rating['my_score'] = my_ratings[0].rating
                 context['ratings'].append(dict(context_rating.items() + specific_rating.items()))
 
-    comments = Comment.objects.filter(course=course)
-    context['comments'] = comments
+    reviews = Review.objects.filter(course=course)
+    context['comments'] = reviews
+
+
+    if request.user.is_authenticated():
+        user = jUser.objects.filter(id=request.user.id)[0]
+        context['can_upload_docs'] = user in course.professors.all()
+
+        course_docs = CourseDocument.objects.filter(course=course)
+        context['documents'] = course_docs
 
     return context

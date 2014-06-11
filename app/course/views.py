@@ -95,3 +95,25 @@ def rate_course(request, slug):
             rating.save()
 
     return redirect(form.cleaned_data['url'])
+
+@require_POST
+@login_required
+def submit_document(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = SubmitDocumentForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        raise Http404
+
+    if not user in form.cleaned_data['course'].professors.all():
+        raise Http404
+
+    docfile = form.cleaned_data['document']
+    course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
+        course=form.cleaned_data['course'], submitter=user)
+    course_document.save()
+
+    return redirect(form.cleaned_data['url'])
