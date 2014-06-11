@@ -53,7 +53,7 @@ def submit_comment(request, slug):
     course = form.cleaned_data['course']
 
     comment_text = form.cleaned_data['comment']
-    comment = Comment(course=course, comment=comment_text)
+    comment = Review(course=course, review=comment_text)
     comment.save()
 
     return redirect(form.cleaned_data['url'])

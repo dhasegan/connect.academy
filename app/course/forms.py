@@ -43,13 +43,13 @@ class RateCourseForm(forms.Form):
         return cleaned_data
 
 
-class SubmitReviewForm(forms.Form):
+class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
     comment = forms.CharField()
     url = forms.CharField()
 
     def clean(self):
-        cleaned_data = super(SubmitReviewForm, self).clean()
+        cleaned_data = super(SubmitCommentForm, self).clean()
 
         courses = Course.objects.filter(id=cleaned_data.get("course_id"))
         if len(courses) != 1:
