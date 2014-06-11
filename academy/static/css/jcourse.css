@@ -8,8 +8,6 @@
     padding-top: 100px;
 }
 
-
-
 /*********************************/
 /********* NavBar **************/
 
@@ -168,6 +166,11 @@ font-weight: bold;
 
 /*********************************/
 /******* Course page *********/
+
+.course-details .course-contents .course-image {
+    max-width: 150px;
+    max-height: 150px;
+}
 
 .course-details .course-brief-detail-wrapper {
     margin-top: 10px;

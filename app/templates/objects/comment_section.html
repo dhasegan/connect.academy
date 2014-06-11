@@ -1,6 +1,9 @@
 {% load humanize %}
 
 <div class="panel panel-default comments">
+    <div class="panel-heading panel-heading-title">
+        Reviews
+    </div>
     <div class="panel-body">
         <form role="form" action="{% url 'submit_comment' course.slug %}" method="post">
             <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
