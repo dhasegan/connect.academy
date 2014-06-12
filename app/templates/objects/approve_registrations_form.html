@@ -1,0 +1,28 @@
+{% if course.students|length > 0 %} 
+  <form method="POST" action="/approve_student_registrations">
+      {% csrf_token %}
+      <div class='pull-left list-approve'>
+      
+          <ul>
+            {% for student in course.students %}
+              {% if not student.is_approved %}
+              <li> 
+                  <input type='checkbox' name='student-{{student.student.id}}'> 
+                  <a target='_blank' href='/profile/{{student.student.username}}'> {{student.student.first_name}} {{student.student.last_name}} 
+                  </a> 
+              </li> 
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <input type='hidden' name='course' value='{{course.course.id}}'/>
+      </div>
+
+      <div class='pull-right'> 
+        <input class='btn btn-primary' value='Approve Registrations' type='submit'/>
+      </div>
+  </form>
+      
+      {% else %}
+          <h3> There are no pending registrations for this course. </h3>
+      {% endif %} 
+   

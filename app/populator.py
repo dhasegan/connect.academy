@@ -89,7 +89,7 @@ class Populator:
             add_juser_jack()
             count -= 1
         for i in range(count):
-            self.add_juser()
+            self.add_juser() 
 
     def populate_students(self, count):
         for i in range(count):

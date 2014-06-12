@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="row">
+        <div id="myModal{{course.course.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+ 
+                <div class="modal-header">
+                    <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
+                    <h4 class="modal-title" id="myModalLabel{{course.course.id}}">Are you sure you want to register for this course?</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>{{course.course.name}}</h4>
+                    <p>{{course.course.description}}</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary">Save changes</button>
+                </div>
+                </div>
+ 
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+</div><!-- /.modal -->
+    
+<a data-toggle="modal" href="#myModal{{course.course.id}}" class="btn btn-primary">Register</a>
+    </div>
+</div>

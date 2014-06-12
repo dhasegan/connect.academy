@@ -32,7 +32,7 @@ def home(request):
     }
 
     courses = Course.objects.all()
-    context = dict(context.items() + course_timeline_context(courses).items())
+    context = dict(context.items() + course_timeline_context(courses,request.user).items())
     return render(request, "pages/home.html", context)
 
 

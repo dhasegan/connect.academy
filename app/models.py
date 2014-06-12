@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
 from app.course_info import *
-from datetime import *
+from datetime import * #datetime
+import pytz # timezones
 
 
 
@@ -163,12 +164,13 @@ class Category(models.Model):
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
     admins = models.ManyToManyField('jUser', related_name = 'categories_managed')
+    #course registration deadline
     cr_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category',null=True)
     # !!
     # Relations declared in other models define the following:
     #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
     
-    def getAdmins(self):
+    def get_admins(self):
         # Gets the "closest" administrators of a category. 
         admins = self.admins.all()
         if len(admins) > 0:
@@ -178,7 +180,7 @@ class Category(models.Model):
         else:
             return None
 
-    def getAllAdmins(self):
+    def get_all_admins(self):
         # get all people with administrator rights of this category
         # (i.e: including admins of parent categories)
         admins = self.admins.all()
@@ -187,7 +189,7 @@ class Category(models.Model):
         return admins
 
 
-    def getAllCourses(self):
+    def get_all_courses(self):
         # Gets all the courses that are descendants of this category
         allcourses = self.courses.all()
         children = Category.objects.filter(parent__id = self.id)
@@ -195,6 +197,16 @@ class Category(models.Model):
             allcourses += child.getAllCourses()
 
         return allcourses
+
+    # finds the course registration deadline for this category (by climbing up to the root of the tree
+    # until a category with a deadline is found)
+    def get_cr_deadline(self):
+        cat = self
+        while cat.cr_deadline is None:
+            cat = cat.parent
+            if cat == None:
+                return None
+        return cat.cr_deadline
 
     def __unicode__(self):
         return str(self.name)
@@ -221,8 +233,9 @@ class Deadline(models.Model):
     end = models.DateTimeField()
 
 class CourseRegistrationDeadline(Deadline):
+    # need to change the field above to non-nullable.
     def is_open(self):
-        now = datetime.now()
+        now = pytz.utc.localize(datetime.now())  #using utc as reference time zone
         if now >= self.start and now < self.end:
             return True
         else:

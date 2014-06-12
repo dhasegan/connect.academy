@@ -18,7 +18,7 @@ def user_authenticated(request):
     return context
 
 
-def course_timeline_context(courses):
+def course_timeline_context(courses,user):
     context = {}
 
     courses = sorted(courses, key=lambda x: x.name)
@@ -44,6 +44,15 @@ def course_timeline_context(courses):
             course_path = "%s > %s" % (category.parent.name, course_path)
             category = category.parent
 
+        registration_open = True
+
+        cat = course.category
+        registration = cat.get_cr_deadline()
+        if registration is None or not registration.is_open():
+            registration_open = False
+        if course.university != user.university or user.user_type != USER_TYPE_STUDENT:
+            registration_open = False
+
         allcourses.append({
             'course': course,
             'professors': course.professors.all(),
@@ -52,7 +61,8 @@ def course_timeline_context(courses):
             'course_path': course_path,
             'university': course.university,
             'studies': studies,
-            'overall_rating': overall_rating
+            'overall_rating': overall_rating,
+            'registration_open': registration_open
         })
     allcourses = sorted(allcourses, key=lambda x:x['overall_rating'], reverse=True)
     context['courses'] = allcourses

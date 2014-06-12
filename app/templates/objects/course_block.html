@@ -47,6 +47,9 @@
                 <p class="course-catalog text-muted">
                     {{ course.course_path }}
                 </p>
+                {% if course.registration_open %}
+                    {% include 'objects/confirm_registration.html' %}
+                {% endif%}
             </div>
         </div>
     </div>
