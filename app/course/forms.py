@@ -81,3 +81,24 @@ class SubmitDocumentForm(forms.Form):
             raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
         return content
+
+class VoteReviewForm(forms.Form):
+    review_id = forms.CharField()
+    vote_type = forms.CharField()
+    url = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(VoteReviewForm, self).clean()
+
+        reviews = Review.objects.filter(id=cleaned_data.get("review_id"))
+        if len(reviews) != 1:
+            raise forms.ValidationError("Not a valid number of reviews with this review_id!")
+        cleaned_data['review'] = reviews[0]
+
+        return cleaned_data
+
+    def clean_vote_type(self):
+        vtype = self.cleaned_data['vote_type']
+        if not vtype in ['upvote', 'downvote']:
+            raise forms.ValidationError("Wrong vote type!")
+        return vtype

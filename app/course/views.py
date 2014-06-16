@@ -125,4 +125,23 @@ def submit_document(request, slug):
 @require_POST
 @login_required
 def vote_review(request, slug):
-    raise Http404
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = VoteReviewForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    review = form.cleaned_data['review']
+    votes = review.upvoted_by.filter(username=user.username) | review.downvoted_by.filter(username=user.username)
+    if votes:
+        raise Http404
+
+    if form.cleaned_data['vote_type'] == "upvote":
+        review.upvoted_by.add(user)
+    if form.cleaned_data['vote_type'] == "downvote":
+        review.downvoted_by.add(user)
+
+    return redirect(form.cleaned_data['url'])

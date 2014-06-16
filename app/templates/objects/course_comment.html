@@ -34,16 +34,16 @@
                     <div class="rate-content">
                         <small> Helpful?
                             <form class="comment-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
-                                <input type="hidden" name="comment_id" value="{{comment.comment.id}}">
-                                <input type="hidden" name="type" value="upvote">
+                                <input type="hidden" name="review_id" value="{{comment.comment.id}}">
+                                <input type="hidden" name="vote_type" value="upvote">
                                 <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-default btn-xs">Yes</button>
                             </form>
 
                             <form class="comment-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
-                                <input type="hidden" name="comment_id" value="{{comment.comment.id}}">
-                                <input type="hidden" name="type" value="downvote">
+                                <input type="hidden" name="review_id" value="{{comment.comment.id}}">
+                                <input type="hidden" name="vote_type" value="downvote">
                                 <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-default btn-xs">No</button>
