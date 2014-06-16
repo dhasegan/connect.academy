@@ -205,7 +205,17 @@ font-weight: bold;
     float: right;
 }
 
+.comments .comment-rate {
+    overflow: hidden;
+}
 
+.comments .comment-rate .rate-content {
+    float: right;
+}
+
+.comments .comment-rate .comment-rate-form {
+    display: inline;
+}
 
 /*********************************/
 /* Ratings */

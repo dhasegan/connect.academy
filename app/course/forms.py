@@ -47,6 +47,7 @@ class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
     comment = forms.CharField()
     url = forms.CharField()
+    anonymous = forms.BooleanField(required=False)
 
     def clean(self):
         cleaned_data = super(SubmitCommentForm, self).clean()

@@ -2,7 +2,7 @@ from django.template.loader import render_to_string
 
 from app.models import *
 from app.course_info import *
-
+from app.ratings import *
 
 def user_authenticated(request):
     context = {}
@@ -116,9 +116,14 @@ def course_page_context(request, course):
                             specific_rating['my_score'] = my_ratings[0].rating
                 context['ratings'].append(dict(context_rating.items() + specific_rating.items()))
 
-    reviews = Review.objects.filter(course=course)
-    context['comments'] = reviews
+    current_user = None
+    if request.user.is_authenticated():
+        current_user = jUser.objects.get(id=request.user.id)
 
+    comments = Review.objects.filter(course=course)
+    context['comments'] = []
+    for comment in comments:
+        context['comments'].append( review_context(comment, request, current_user) )
 
     if request.user.is_authenticated():
         user = jUser.objects.filter(id=request.user.id)[0]
@@ -128,3 +133,33 @@ def course_page_context(request, course):
         context['documents'] = course_docs
 
     return context
+
+def review_context(comment, request, current_user):
+    context_comment = {
+        'comment': comment
+    }
+
+    upvotes = comment.upvoted_by.all().count()
+    downvotes = comment.downvoted_by.all().count()
+    # Add a +1 to upvotes to fix the ratings score
+    context_comment['rating'] = comment_rating(upvotes+1, downvotes)
+    if upvotes + downvotes > 0:
+        context_comment['score'] = str(upvotes) + "/" + str(upvotes + downvotes)
+    if (upvotes + 1) * 2 < downvotes:
+        print "dont show"
+        context_comment['dont_show'] = True
+
+    already_voted = False
+    if current_user:
+        users_votes = comment.upvoted_by.filter(id=current_user.id).count() + \
+            comment.downvoted_by.filter(id=current_user.id).count()
+        if users_votes:
+            already_voted = True
+    context_comment['should_vote'] = not already_voted
+
+    if not comment.anonymous:
+        context_comment['posted_by'] = comment.posted_by
+
+
+    return context_comment
+

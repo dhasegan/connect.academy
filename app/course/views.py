@@ -50,11 +50,15 @@ def submit_comment(request, slug):
     if not form.is_valid():
         raise Http404
 
+    user = get_object_or_404(jUser, id=request.user.id)
+
     course = form.cleaned_data['course']
 
     comment_text = form.cleaned_data['comment']
-    comment = Review(course=course, review=comment_text)
+    comment = Review(course=course, review=comment_text, posted_by=user,
+        anonymous=form.cleaned_data['anonymous'])
     comment.save()
+    comment.upvoted_by.add(user)
 
     return redirect(form.cleaned_data['url'])
 
@@ -117,3 +121,8 @@ def submit_document(request, slug):
     course_document.save()
 
     return redirect(form.cleaned_data['url'])
+
+@require_POST
+@login_required
+def vote_review(request, slug):
+    raise Http404

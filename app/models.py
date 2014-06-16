@@ -269,12 +269,14 @@ class Review(models.Model):
     review = models.CharField(max_length=5000)
     datetime = models.DateTimeField(auto_now=True)
 
-    posted_by = models.ForeignKey('jUser', null=True)
+    posted_by = models.ForeignKey('jUser', related_name='posted')
+    anonymous = models.BooleanField(default=False)
+
     upvoted_by = models.ManyToManyField('jUser', related_name='upvoted')
     downvoted_by = models.ManyToManyField('jUser', related_name='downvoted')
 
     def __unicode__(self):
-        return str(self.comment)
+        return str(self.review)
 
 class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
