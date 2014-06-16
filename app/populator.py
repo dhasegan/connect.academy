@@ -64,13 +64,30 @@ class Populator:
             domain = univ.domains.all()[0]
             email = username + "@" + domain.name
             if user_type == None:
-                user_type = random.choice( list(USER_TYPES) )[0]
+                user_type = random.choice(list(USER_TYPES))[0]
             user = jUser.objects.create_user(username=username, password=password,
                                              email=email, first_name=fname, last_name=lname,
                                              user_type=user_type)
             break
 
+    def add_juser_jack(self):
+        fname = "Jack"
+        lname = "Jacobson"
+        username = "jack"
+        univ = random.choice(list(University.objects.all()))
+        active = True
+        password = "1234"
+        domain = univ.domains.all()[0]
+        email = username + "@" + domain.name
+        user_type = random.choice(list(USER_TYPES))[0]
+        user = jUser.objects.create_user(username=username, password=password,
+                                         email=email, first_name=fname, last_name=lname,
+                                         user_type=user_type)
+
     def populate_jusers(self, count):
+        if jUser.objects.filter(username="jack").count() == 0:
+            add_juser_jack()
+            count -= 1
         for i in range(count):
             self.add_juser()
 
@@ -99,7 +116,7 @@ class Populator:
                 fname = self.random_word().capitalize()
                 lname = self.random_word().capitalize()
                 name = fname + " " + lname
-                abbreviation = fname[0:min(len(fname),4)] + lname[0:min(len(lname),4)]
+                abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
             category = Category(parent=parent, name=name, level=level, abbreviation=abbreviation)
             category.save()
             break
@@ -118,7 +135,7 @@ class Populator:
                     if checking_category.parent == category:
                         is_leaf = False
                 if is_leaf:
-                    leaf_categories.append( category )
+                    leaf_categories.append(category)
 
         while True:
             course_id = random.randint(100000, 999999)
@@ -128,7 +145,7 @@ class Populator:
             description = ""
             for i in range(0, random.randint(10, 20)):
                 description = description + self.random_word() + " "
-            category = random.choice( leaf_categories )
+            category = random.choice(leaf_categories)
             universities = University.objects.all()
             if not universities:
                 self.add_university()
@@ -161,7 +178,7 @@ class Populator:
                 if checking_category.parent == category:
                     is_leaf = False
             if is_leaf:
-                leaf_categories.append( category )
+                leaf_categories.append(category)
 
         for i in range(count):
             self.add_course(leaf_categories)
@@ -170,7 +187,7 @@ class Populator:
         comment = ""
         for i in range(random.randint(10, 100)):
             comment = comment + self.random_word() + " "
-        commObj = Review(comment=comment, course=course)
+        commObj = Review(review=comment, course=course)
         commObj.save()
 
     def populate_comments(self, count):
