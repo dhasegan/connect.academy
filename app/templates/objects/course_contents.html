@@ -77,6 +77,12 @@
     </div>
     {% endif %}
 
+    {% if registration_status >= 0 %}
+        {% with course as jcourse %}
+            {% include 'objects/confirm_registration.html' %}
+        {% endwith %}
+    {% endif %}
+
     <div class="row">
         <div class="col-md-6">
             {% include 'objects/course_documents.html' %}

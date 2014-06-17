@@ -309,5 +309,25 @@ $(function() {
         });  
 
     });
+
+    // Confirm the registration of a student for a course. 
+    $(".confirm_registration").submit(function(event) {
+        var form = $(this);
+        var data = form.serialize();
+        var courseID = $("[name='courseID']", form).val();
+        event.preventDefault();
+        $.ajax({
+            'url': form.attr('action'),
+            'type': "POST",
+            'data': data,
+            'success': function(data) {
+                if (data == "OK") {
+                    $('#register_button' + courseID).text('Pending Registration...'); 
+                    $('#register_button' + courseID).attr('disabled',true);   
+                    $("#registrationModal"+courseID).modal('hide');                   
+                }
+            }
+        });
+    });
 });
 

@@ -437,6 +437,10 @@ font-weight: bold;
 /*********************************/
 /********** Button display ************/ 
 
+.btn {
+    border-radius:0px;
+}
+
 .btn-primary {
     color: #FFF;
     background-color: #29ABE2;
@@ -549,3 +553,87 @@ border-radius: 0px;
     margin-left: auto;
     text-align: center;
 }
+
+/****** SIDEBAR ON My courses page for professors ******/
+.blogShort{ border-bottom:1px solid #ddd;}
+
+.nav-sidebar { 
+    width: 100%;
+    padding: 30px 0; 
+    border-right: 1px solid #ddd;
+    height: 100%;
+}
+
+.nav-sidebar li {
+    background-color: white;
+}
+
+.nav-sidebar a {
+    color: #333;
+    -webkit-transition: all 0.08s linear;
+    -moz-transition: all 0.08s linear;
+    -o-transition: all 0.08s linear;
+    transition: all 0.08s linear;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-sidebar li a:hover {
+    color:white;
+    background-color: #0b56a8;
+}
+
+.nav-sidebar .active a { 
+    cursor: default;
+    background-color:  #29ABE2; 
+    color: #fff; 
+
+}
+.nav-sidebar .active a:hover {
+    background-color: #0b56a8;   
+}
+.nav-sidebar .text-overflow a,
+.nav-sidebar .text-overflow .media-body {
+    white-space: nowrap;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis; 
+}
+
+.btn-blog {
+    color: #ffffff;
+    background-color: #E50000;
+    border-color: #E50000;
+    border-radius:0;
+    margin-bottom:10px
+}
+.btn-blog:hover,
+.btn-blog:focus,
+.btn-blog:active,
+.btn-blog.active,
+.open .dropdown-toggle.btn-blog {
+    color: white;
+    background-color:#0b56a8;
+    border-color: #0b56a8;
+}
+article h2{color:#333333;}
+h2{color:#0b56a8;}
+ .margin10{margin-bottom:10px; margin-right:10px;}
+ 
+ .container .text-style
+{
+  text-align: justify;
+  line-height: 23px;
+  margin: 0 13px 0 0;
+  font-size: 19px;
+}
+
+ul  {
+    list-style-type:none;
+}
+
+
+.list-approve {
+    height:100%;
+    overflow:hidden;
+}
+

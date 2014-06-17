@@ -18,6 +18,7 @@ def user_authenticated(request):
     return context
 
 
+
 def course_timeline_context(courses,user):
     context = {}
 
@@ -44,14 +45,8 @@ def course_timeline_context(courses,user):
             course_path = "%s > %s" % (category.parent.name, course_path)
             category = category.parent
 
-        registration_open = True
-
-        cat = course.category
-        registration = cat.get_cr_deadline()
-        if registration is None or not registration.is_open():
-            registration_open = False
-        if course.university != user.university or user.user_type != USER_TYPE_STUDENT:
-            registration_open = False
+              
+        registration_status = course.get_registration_status(user)
 
         allcourses.append({
             'course': course,
@@ -62,7 +57,7 @@ def course_timeline_context(courses,user):
             'university': course.university,
             'studies': studies,
             'overall_rating': overall_rating,
-            'registration_open': registration_open
+            'registration_status': registration_status
         })
     allcourses = sorted(allcourses, key=lambda x:x['overall_rating'], reverse=True)
     context['courses'] = allcourses
@@ -130,10 +125,33 @@ def course_page_context(request, course):
     if request.user.is_authenticated():
         current_user = jUser.objects.get(id=request.user.id)
 
+
     comments = Review.objects.filter(course=course)
     context['comments'] = []
     for comment in comments:
         context['comments'].append( review_context(comment, request, current_user) )
+
+
+    ### CHECK IF REGISTRATION IS OPEN
+    registration_status = OPEN 
+
+    cat = course.category
+    registration = cat.get_cr_deadline()
+    if registration is None or not registration.is_open():
+        registration_status = CLOSED
+    elif course.university != user.university or user.user_type != USER_TYPE_STUDENT:
+        registration_status = INVALID
+    else:
+        registrations = StudentCourseRegistration.objects.filter(student=user,course=course)
+        if registrations:
+            reg = registrations[0]
+            if reg.is_approved == True:
+                registration_status = REGISTERED
+            else:
+                registration_status = PENDING
+
+    context['registration_status'] = registration_status
+>>>>>>> Course Registrations - needs 30 min more work
 
     if request.user.is_authenticated():
         user = jUser.objects.filter(id=request.user.id)[0]

@@ -152,20 +152,18 @@ def register_course(request, slug):
     context = {
         "page": "register_course"
     }
+    context.update(csrf(request))
     user = request.user
     course = get_object_or_404(Course, slug=slug)
     category = course.category
     registration = category.get_cr_deadline()
     if registration is None or not registration.is_open():
-        return HttpResponse("Registration is not open")
+        return HttpResponse("Registration is not open",context)
     if course.university != user.university or user.user_type != USER_TYPE_STUDENT:
-        return HttpResponse("You cannot register for this course")
-    if user.courses.filter(slug = slug).count() > 0:
-        return HttpResponse("You have already registered for this course")
+        return HttpResponse("You cannot register for this course",context)
+    if user.courses_enrolled.filter(slug = slug).count() > 0:
+        return HttpResponse("You have already registered for this course",context)
 
     course_registration = StudentCourseRegistration(student = user, course = course, is_approved=False)
     course_registration.save()
-    context['success'] =  render_to_string("objects/notifications/auth/course_registration_success.html",
-     {'course_name':course.name})
-
-    return HttpResponse("OK")
+    return HttpResponse("OK",context)

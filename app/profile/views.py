@@ -86,15 +86,16 @@ def username_change_action(request):
     new_username = form.cleaned_data['new_username']
     password = form.cleaned_data['password']
 
-    user = request.user
-    user = authenticate(username=user.username, password=password)
+    user = authenticate(username=request.user.username, password=password)
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(request, "pages/user_account.html", context)
 
     # proceed and change the username.
-
+    if jUser.objects.filter(username=new_username).count() > 0:
+        context['error'] = render_to_string('objects/notifications/profile/username_exists.html', {})
+        return render(request, "pages/user_account.html", context)
     user.username = new_username
     user.save()
 

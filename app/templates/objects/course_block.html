@@ -47,9 +47,15 @@
                 <p class="course-catalog text-muted">
                     {{ course.course_path }}
                 </p>
-                {% if course.registration_open %}
-                    {% include 'objects/confirm_registration.html' %}
+                {% if course.registration_status >= 0 %}
+                    {% with course.registration_status as registration_status %}
+                        {% with course.course as jcourse %}
+                            {%  include 'objects/confirm_registration.html' %}
+                        {% endwith %} 
+                    {% endwith %}       
+                
                 {% endif%}
+
             </div>
         </div>
     </div>

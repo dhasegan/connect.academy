@@ -1,28 +1,44 @@
 <div class="container">
     <div class="row">
-        <div id="myModal{{course.course.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="registrationModal{{jcourse.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
  
                 <div class="modal-header">
                     <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
-                    <h4 class="modal-title" id="myModalLabel{{course.course.id}}">Are you sure you want to register for this course?</h4>
+                    <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>Are you sure you want to register for this course?</b></h3>
                 </div>
                 <div class="modal-body">
-                    <h4>{{course.course.name}}</h4>
-                    <p>{{course.course.description}}</p>
+                    <h4><b>{{jcourse.name}}</b></h4>
+                    <p>{{jcourse.description}}</p>
                 </div>
                 <div class="modal-footer">
                     <div class="btn-group">
-                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary">Save changes</button>
+                    <form action='/course/{{jcourse.slug}}/register' method="POST" class="confirm_registration">
+                        {% csrf_token %}
+                        <input type='hidden' name='courseID' value='{{jcourse.id}}'/>
+                        <button class="btn btn-danger" data-dismiss="modal">No, cancel</button>
+                        <input class="btn btn-primary" type="submit" value="Yes, register" />
+                    </form>
                 </div>
                 </div>
  
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dalog -->
 </div><!-- /.modal -->
-    
-<a data-toggle="modal" href="#myModal{{course.course.id}}" class="btn btn-primary">Register</a>
-    </div>
+
+{% if registration_status == 0 %} <!-- open -->
+    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>Register</a>
+{% elif registration_status == 3 %} <!-- pending -->
+    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration...</b></a>
+{% elif registration_status == 4 %} <!-- registered -->
+    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success" id='register_button{{jcourse.id}}' disabled><b>Registered</b></a>
+
+{% endif %}
+
+
+
+</div>
+
+
 </div>

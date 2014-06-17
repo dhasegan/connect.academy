@@ -18,7 +18,9 @@
       {% if user_auth %}
         <ul class="nav navbar-nav">
           <li {% if page == 'home' %} class="active" {% endif %}><a href="/home"><b>All courses</b></a></li>
+          <li {% if page == 'my_courses' %} class="active" {% endif %}><a href="/my_courses"> <b>My Courses</b></a></li>
           <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="/all_comments"> <b>All comments</b></a></li>
+
         </ul>
       {% endif %}
 

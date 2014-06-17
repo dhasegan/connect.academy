@@ -37,6 +37,39 @@ def home(request):
 
 
 @login_required
+def my_courses(request):
+    context = {
+        'page': 'my_courses',
+        'user_auth': request.user
+    }
+    user = request.user
+    context['courses'] = []
+
+    if user.user_type == USER_TYPE_STUDENT:
+        registrations = StudentCourseRegistration.objects.filter(student=user)
+        for reg in registrations:
+            context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved })
+    
+    elif user.user_type == USER_TYPE_PROFESSOR:
+        registrations = ProfessorCourseRegistration.objects.filter(professor=user)
+        for prof_reg in registrations: # for each professor registration
+            course_dict = {'course':prof_reg.course, 
+                           'is_approved': prof_reg.is_approved }
+            if prof_reg.is_approved:
+                course_dict['students'] = []
+                # for each student registration
+                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course):
+                    course_dict['students'].append({'student': student_reg.student,
+                                                    'is_approved': student_reg.is_approved})
+            context['courses'].append(course_dict)
+        
+    else:
+        raise Http404
+
+    return render(request, "pages/my_courses.html", context)
+
+
+@login_required
 def all_comments(request):
     context = {
         'page': 'all_comments',

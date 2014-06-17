@@ -9,7 +9,7 @@
  *
  */
 
-;(function($) {
+(function($) {
 
   var methods = {
     init: function(settings) {

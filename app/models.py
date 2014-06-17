@@ -84,11 +84,27 @@ class ProfessorCourseRegistration(models.Model):
 ################# University/Course Related Models ########################
 ###########################################################################
 
+# Course types
 COURSE_TYPE_UG = 0
 COURSE_TYPE_GRAD = 1
 COURSE_TYPES = (
     (COURSE_TYPE_UG,"Undergraduate"),
     (COURSE_TYPE_GRAD, "Graduate")
+)
+
+# Registration statuses
+OPEN = 0 # Registration for this course is open
+CLOSED = 1 # Registration for this course is closed
+INVALID = 2 # User is not allowed to register for this course
+PENDING = 3 # Student is registered for this course, but approval is pending
+REGISTERED  = 4 # Student is already registered and approved.
+
+REGISTRATION_STATUSES = (
+    (OPEN, "Open"),
+    (CLOSED, "Closed"),
+    (INVALID, "Invalid"),
+    (PENDING, "Pending"),
+    (REGISTERED, "Registered")
 )
 
 class Major(models.Model):
@@ -125,6 +141,36 @@ class Course(models.Model):
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #   <course> as a prerequisite)
+    
+
+    # gets the registration status of this course for the given user
+    # Registration status is one of the following:
+    #   OPEN       (0): The student can register for the course
+    #   CLOSED     (1): Registration is not open for this course
+    #   INVALID    (2): This particular user is not allowed to register for this course
+    #   PENDING    (3): The student has already registered for this course but the registration
+    #                   is not yet approved 
+    #   REGISTERED (4): The student has already registered for this course and the registration
+    #                   has been approved
+    def get_registration_status(self,user):
+
+        registration_status = OPEN 
+
+        cat = self.category
+        registration = cat.get_cr_deadline()
+        if registration is None or not registration.is_open():
+            registration_status = CLOSED
+        elif self.university != user.university or user.user_type != USER_TYPE_STUDENT:
+            registration_status = INVALID
+        else:
+            registrations = StudentCourseRegistration.objects.filter(student=user,course=self)
+            if registrations:
+                reg = registrations[0]
+                if reg.is_approved == True:
+                    registration_status = REGISTERED
+                else:
+                    registration_status = PENDING
+        return registration_status
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -204,6 +250,7 @@ class Category(models.Model):
         cat = self
         while cat.cr_deadline is None:
             cat = cat.parent
+            print cat.name
             if cat == None:
                 return None
         return cat.cr_deadline
