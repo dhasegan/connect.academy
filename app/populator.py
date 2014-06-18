@@ -67,7 +67,7 @@ class Populator:
                 user_type = random.choice(list(USER_TYPES))[0]
             user = jUser.objects.create_user(username=username, password=password,
                                              email=email, first_name=fname, last_name=lname,
-                                             user_type=user_type)
+                                             user_type=user_type, university=univ)
             break
 
     def add_juser_jack(self):
