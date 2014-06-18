@@ -14,20 +14,6 @@
               {% endif %}
             {% endfor %}
           </ul>
-
-              <li> 
-                  <input type='checkbox' name='{{student.student.id}}' required> 
-                  <a target='_blank' href='/profile/{{student.student.username}}'> {{student.student.first_name}} {{student.student.last_name}} 
-                  </a> 
-                  <div class='col-md-5 pull-right'>
-                    {% if student.is_approved %} 
-                      <p class='text-success'> Registered </p>
-                    {% else %}
-                      <p class='text-warning'> Pending... </p>
-                    {% endif %}
-              </li> 
-            {% endfor %}
-          </ul>
           <input type='hidden' name='course' value='{{course.course.id}}'/>
       </div>
 

@@ -1,3 +1,4 @@
+from django.core.context_processors import csrf
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -58,7 +59,7 @@ def my_courses(request):
             if prof_reg.is_approved:
                 course_dict['students'] = []
                 # for each student registration
-                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course):
+                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course, is_approved=False):
                     course_dict['students'].append({'student': student_reg.student,
                                                     'is_approved': student_reg.is_approved})
             context['courses'].append(course_dict)
@@ -67,6 +68,56 @@ def my_courses(request):
         raise Http404
 
     return render(request, "pages/my_courses.html", context)
+
+
+@login_required
+@require_POST
+def approve_student_registrations(request):
+    context = {
+        'page': 'approve_student_registrations',
+    }
+    context.update(csrf(request))
+
+    #Make sure the logged in user is allowed to approve these registrations
+    user = request.user
+    course_id = request.POST['course']
+    courses = Course.objects.filter(id=course_id)
+    if courses is None:
+        raise Http404
+    else:
+        course = courses[0]
+    registrations = ProfessorCourseRegistration.objects.filter(course=course,professor=user,is_approved=True)
+    if registrations is None:
+        raise Http404
+    
+    # At this point we know that an approved professor of the course 
+    # is attempting to approve sudent registrations
+
+    # Approve each registration
+    for key, val in request.POST.items():
+        if 'student' in key:
+            _,student_id = key.split('-')
+            registrations = StudentCourseRegistration.objects.filter(course_id=course_id,
+                student_id=student_id,
+                is_approved = False)
+            if registrations is not None:
+                registration = registrations[0]
+            else:
+                raise Http404
+
+            # Approve registration
+            if val:
+                registration.is_approved = True
+                registration.save()
+
+    return redirect('/my_courses#tab'+course_id)
+
+
+
+
+
+
+
 
 
 @login_required
@@ -148,3 +199,4 @@ def validate_registration(request):
         return HttpResponse("Error")
     else:
         return HttpResponse("OK")
+
