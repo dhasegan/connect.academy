@@ -151,7 +151,6 @@ def course_page_context(request, course):
                 registration_status = PENDING
 
     context['registration_status'] = registration_status
->>>>>>> Course Registrations - needs 30 min more work
 
     if request.user.is_authenticated():
         user = jUser.objects.filter(id=request.user.id)[0]
