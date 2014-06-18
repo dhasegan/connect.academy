@@ -250,7 +250,6 @@ class Category(models.Model):
         cat = self
         while cat.cr_deadline is None:
             cat = cat.parent
-            print cat.name
             if cat == None:
                 return None
         return cat.cr_deadline
