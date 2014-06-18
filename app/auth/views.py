@@ -9,7 +9,6 @@ from django.views.defaults import server_error
 from django.db import IntegrityError
 
 from app.models import *
-from app.course_info import *
 from app.context_processors import *
 from app.auth.forms import *
 from app.auth.helpers import *

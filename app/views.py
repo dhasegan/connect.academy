@@ -6,7 +6,6 @@ from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 
 from app.models import *
-from app.course_info import *
 from app.context_processors import *
 
 

@@ -1,7 +1,6 @@
 from django import forms
 from django.template.defaultfilters import filesizeformat
 
-from app.course_info import *
 from app.models import *
 
 

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
-from app.course_info import *
 from datetime import * #datetime
 import pytz # timezones
 

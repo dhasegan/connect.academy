@@ -1,7 +1,6 @@
 from django.template.loader import render_to_string
 
 from app.models import *
-from app.course_info import *
 from app.ratings import *
 
 def user_authenticated(request):
