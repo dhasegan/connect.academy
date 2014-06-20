@@ -158,6 +158,7 @@ def course_page_context(request, course):
         # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
 
         context['documents'] = course.coursedocument_set.all()
+        context['homework'] = course.coursehomeworkrequest_set.all()
 
     return context
 

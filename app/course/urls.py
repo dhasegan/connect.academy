@@ -6,6 +6,7 @@ urlpatterns = patterns('app.course.views',
     url(r'^submit_comment$', 'submit_comment', name='submit_comment'),
     url(r'^rate_course$', 'rate_course', name='rate_course'),
     url(r'^submit_document$', 'submit_document', name='submit_document'),
+    url(r'^submit_homework_request$', 'submit_homework_request', name='submit_homework_request'),
     url(r'^vote_review$', 'vote_review', name='vote_review'),
     url(r'^register$', 'register_course', name= 'register_course'),
 )

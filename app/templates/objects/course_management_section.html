@@ -65,9 +65,8 @@
                 {% if course.is_approved %}
                     <div class="row">
                         <div class="col-md-6">
-                            Homework
                             {% with course.homework as homework %}
-                                {% include 'objects/course_homwork.html' %}
+                                {% include 'objects/course_homework.html' %}
                             {% endwith %}
                         </div>
 

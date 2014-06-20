@@ -1,4 +1,4 @@
-<form class="form" class="homework-form" action="{% url 'submit_document' course.slug %}" method="post" enctype="multipart/form-data">
+<form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post">
     {% csrf_token %}
 
     <div class="form-group">
@@ -13,8 +13,8 @@
 
     <div class="form-group">
         <label for="homeworkStart{{course.id}}">Start</label>
-        <div class='input-group date homework-start-datetime'>
-            <input type='text' class="form-control homework-datetime-input" id="homeworkStart{{course.id}}" />
+        <div class='input-group date homework-start-datetime' data-date-format="DD/MM/YYYY HH:mm">
+            <input type='text' class="form-control homework-datetime-input" name="start" id="homeworkStart{{course.id}}" />
             <span class="input-group-addon homework-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -23,8 +23,8 @@
 
     <div class="form-group">
         <label for="homeworkDeadline{{course.id}}">Deadline</label>
-        <div class='input-group date homework-deadline-datetime'>
-            <input type='text' class="form-control homework-datetime-input" id="homeworkDeadline{{course.id}}" />
+        <div class='input-group date homework-deadline-datetime' data-date-format="DD/MM/YYYY HH:mm">
+            <input type='text' class="form-control homework-datetime-input" name="deadline" id="homeworkDeadline{{course.id}}" />
             <span class="input-group-addon homework-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>

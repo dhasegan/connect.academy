@@ -1,0 +1,19 @@
+{% if homework %}
+    <div class="course-detail">
+        <strong> Homework: </strong>
+        <div class="content">
+            <ul>
+                {% for hw in homework %}
+                    <li>
+                        <span class="h4 text-primary"> {{ hw.name }} </span>
+                        {% if hw.description %}
+                            <small> {{ hw.description }} </small>
+                        {% endif %}
+                        <span class="text-danger"> due {{ hw.deadline.end }} </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+

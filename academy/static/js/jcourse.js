@@ -314,12 +314,14 @@ $(function() {
     $('.homework-start-datetime').datetimepicker({
         defaultDate: moment().startOf("hour"),
         minDate: moment(),
-        maxDate: moment().add("years", 1)
+        maxDate: moment().add("years", 1),
+        pick12HourFormat: false
     });
     $('.homework-deadline-datetime').datetimepicker({
         defaultDate: moment().add("weeks", 1).endOf("day"),
         minDate: moment(),
-        maxDate: moment().add("years", 1)
+        maxDate: moment().add("years", 1),
+        pick12HourFormat: false
     });
     $('.homework-datetime-input').click(function() {
         var $parent = $(this.parentNode);

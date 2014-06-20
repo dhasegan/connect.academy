@@ -85,10 +85,11 @@ class SubmitDocumentForm(forms.Form):
 class SubmitHomeworkRequestForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(required=False)
+    start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    
     course_id = forms.CharField()
     url = forms.CharField()
-    start = forms.DateTimeField()
-    end = forms.DateTimeField()
 
     def clean(self):
         cleaned_data = super(SubmitHomeworkRequestForm, self).clean()

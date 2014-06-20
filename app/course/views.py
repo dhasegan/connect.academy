@@ -136,10 +136,11 @@ def submit_homework_request(request, slug):
     if not user in form.cleaned_data['course'].professors.all():
         raise Http404
 
-    docfile = form.cleaned_data['document']
-    course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
-        description=form.cleaned_data['description'], course=form.cleaned_data['course'], submitter=user)
-    course_document.save()
+    deadline = Deadline(start=form.cleaned_data['start'], end=form.cleaned_data['deadline'])
+    deadline.save()
+    homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
+        course=form.cleaned_data['course'], submitter=user, deadline=deadline)
+    homework_request.save()
 
     return redirect(form.cleaned_data['url'])
 

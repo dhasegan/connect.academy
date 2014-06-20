@@ -348,13 +348,18 @@ class CourseDocument(models.Model):
     def __unicode__(self):
         return str(self.name)
 
-class CourseHomework(models.Model):
+class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     deadline = models.ForeignKey('Deadline')
 
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
+
+    def delete(self, *args, **kwargs):
+        deadline = self.deadline
+        super(CourseHomeworkRequest, self).save(*args, **kwargs)
+        deadline.delete()
 
     def __unicode__(self):
         return str(self.name)

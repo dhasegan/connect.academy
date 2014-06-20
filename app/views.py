@@ -65,6 +65,7 @@ def my_courses(request):
                     else:
                         course_dict['students']['pending'].append(student_reg.student)
                 course_dict['documents'] = prof_reg.course.coursedocument_set.all()
+                course_dict['homework'] = prof_reg.course.coursehomeworkrequest_set.all()
             context['courses'].append(course_dict)
         
     else:
