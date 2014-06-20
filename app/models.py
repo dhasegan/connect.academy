@@ -274,7 +274,7 @@ class WikiPage(models.Model):
 
 
 class Deadline(models.Model):
-    start = models.DateTimeField(auto_now=True)
+    start = models.DateTimeField(default=pytz.utc.localize(datetime.now()))
     end = models.DateTimeField()
 
 class CourseRegistrationDeadline(Deadline):
