@@ -138,13 +138,15 @@ def course_page_context(request, course):
     registration = cat.get_cr_deadline()
     if registration is None or not registration.is_open():
         registration_status = CLOSED
-    elif course.university != user.university or user.user_type != USER_TYPE_STUDENT:
+    elif course.university != user.university or\
+           user.user_type != USER_TYPE_STUDENT or\
+            not user.is_active:
         registration_status = INVALID
     else:
         registrations = StudentCourseRegistration.objects.filter(student=user,course=course)
         if registrations:
             reg = registrations[0]
-            if reg.is_approved == True:
+            if reg.is_approved:
                 registration_status = REGISTERED
             else:
                 registration_status = PENDING

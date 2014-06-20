@@ -329,5 +329,60 @@ $(function() {
             }
         });
     });
+
+    $(".send-mass-email-form").submit(function(event) {
+        var form = $(this);
+        var data = form.serialize();
+        var courseID = $("#course",form).val();
+        var success_div_id = "email-success" + courseID;
+        var error_div_id = "email-error" + courseID;
+        event.preventDefault();
+        var checkedAtLeastOne = false;
+        $('input[type="checkbox"]',form).each(function() {
+            if ($(this).is(":checked")) {
+                checkedAtLeastOne = true;
+            }
+        });
+        if (checkedAtLeastOne) {
+            $.ajax({
+                'url': form.attr('action'),
+                'type': 'POST',
+                'data': data,
+                'success': function(data) {
+                    if (data == "OK") {
+                        $('.email-success',form).show();
+                        $('.email-success',form).html('Your email was sent!');
+                        $('.email-success',form).delay(2000).fadeOut(300);
+                    }
+                    else {
+                        $('.email-error',form).show();
+                        $('.email-error',form).html(data);
+                        $('.email-error',form).delay(3000).fadeOut(300);
+                    }
+                }
+            });
+        }
+        else {
+            $('.email-error',form).show();
+            $('.email-error',form).html("Please select at least one recepient.");
+            $('.email-error',form).delay(2000).fadeOut(300);
+        }
+    });
+
+    $('.selectAll').click(function(event) {   
+        if(this.checked) {
+        // Iterate each checkbox
+            $(this).parent().parent().find("input[type='checkbox']").each(function() {
+                this.checked = true;                        
+            });
+        }
+        else {
+            $(this).parent().parent().find("input[type='checkbox']").each(function() {
+                this.checked = false;                        
+            });
+        }
+
+
+});
 });
 

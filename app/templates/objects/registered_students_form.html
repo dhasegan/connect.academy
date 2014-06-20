@@ -1,0 +1,33 @@
+{% if course.students.registered|length > 0 %} 
+  <form method="POST" class='send-mass-email-form' action="/send_mass_email">
+      {% csrf_token %}
+      <div class='pull-left list-approve'>
+      
+          <ul>
+              <li>
+                  <input type='checkbox' class='selectAll'/> Select All
+              </li>
+            {% for student in course.students.registered %}
+              <li> 
+                  <input type='checkbox' name='user-{{student.id}}'> 
+                  <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
+                  </a> 
+              </li> 
+            {% endfor %}
+          </ul>
+          <input type='hidden' name='course' value='{{course.course.id}}'/>
+      </div>
+
+      <div class='pull-right'> 
+        <input type='text' class='form-control' name='subject' placeholder='Subject'/> <br/>
+        <textarea class="form-control" rows="10" cols='40' max-length="5000" placeholder="Email Body" name="email" required></textarea><br/>
+        <input class='btn btn-primary' value='Send email' type='submit'/> 
+        <div  class='email-success text-success'> </div> 
+        <div  class='email-error text-danger'> </div>
+      </div>
+  </form>
+      
+      {% else %}
+          <h3> There are no pending registrations for this course. </h3>
+      {% endif %} 
+   

@@ -634,6 +634,5 @@ ul  {
 
 .list-approve {
     height:100%;
-    overflow:hidden;
+    overflow:auto;
 }
-

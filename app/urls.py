@@ -11,7 +11,7 @@ urlpatterns = patterns('app.views',
     url(r'^check_username\.*$', 'check_username', name='check_username'),
     url(r'^validate_registration\.*$', 'validate_registration', name='check_password'),
     url(r'^approve_student_registrations$', 'approve_student_registrations', name='approve_student_registrations'),
-
+    url(r'^send_mass_email$','send_mass_email',name='send_mass_email'),
 )
 
 urlpatterns += patterns('',

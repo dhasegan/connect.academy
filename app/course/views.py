@@ -158,7 +158,7 @@ def register_course(request, slug):
     registration = category.get_cr_deadline()
     if registration is None or not registration.is_open():
         return HttpResponse("Registration is not open",context)
-    if course.university != user.university or user.user_type != USER_TYPE_STUDENT:
+    if course.university != user.university or user.user_type != USER_TYPE_STUDENT or not user.is_active:
         return HttpResponse("You cannot register for this course",context)
     if user.courses_enrolled.filter(slug = slug).count() > 0:
         return HttpResponse("You have already registered for this course",context)

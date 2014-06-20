@@ -3,7 +3,7 @@
     <nav class="nav-sidebar">
   		<ul class="nav tabs">
           {% for course in courses %}
-            <li>
+            <li {% if forloop.counter == 1 %} class="active" {% endif %}>
               <a href="#tab{{course.course.id}}" data-toggle="tab">{{course.course.name}}
                 {% if not course.is_approved %} <br/> <small class='text-danger'> Pending Confirmation </small> {% endif %}
               </a> 
@@ -16,7 +16,7 @@
 <!-- tab content -->
   <div class="tab-content">
   {% for course in courses %}
-    {% include 'objects/approve_students_registration.html' %}
+    {% include 'objects/course_management_section.html' %}
   {% endfor %}
 
   </div>

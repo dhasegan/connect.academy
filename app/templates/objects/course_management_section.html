@@ -1,0 +1,60 @@
+<div class="tab-pane text-style panel panel-default col-sm-8 {% if forloop.counter == 1 %} active {% endif %}" id="tab{{course.course.id}}">
+
+    <h2 class='panel-heading'><a href='course/{{course.course.slug}}'> {{course.course.name}} </a> </h2>
+    	
+    	<ul class="nav nav-tabs">
+		  <li class="active">
+		  	<a href="#pending{{course.course.id}}" data-toggle="tab">Pending Registrations</a>
+		  </li>
+		  <li>
+		  	<a href="#registered{{course.course.id}}" data-toggle="tab">Registered Students</a>
+		  </li>
+		  <li>
+		  	<a href="#documents{{course.course.id}}" data-toggle="tab">Upload Documents</a>
+		  </li>
+		  <!--
+		   <li>
+		  	<a href="#some-other-tab{{course.course.id}}" data-toggle="tab">Upload Documents</a>
+		  </li>
+		  -->
+		</ul>
+ 
+<!-- Tab panes -->
+		<div class="tab-content">
+			  <div class="tab-pane active" id="pending{{course.course.id}}">
+			  	{% if course.is_approved %}
+	              {% include 'objects/pending_registrations_form.html' %}
+	            {% else %}
+	              <h3> You cannot approve students' registrations until you are confirmed as a professor of this course  </h3>
+	            {% endif %}  
+			  </div>
+			  <div class="tab-pane" id="registered{{course.course.id}}">
+			  	{% if course.is_approved %}
+			  		{% include 'objects/registered_students_form.html' %}
+			  	{% else %}
+			  		<h3> You cannot see registered students until you are confirmed as a professor of this course  </h3>
+			  	{% endif %}
+
+			  </div>
+			  <div class="tab-pane" id="documents{{course.course.id}}"> 
+			  	{% if course.is_approved %}
+			  		Upload Documents
+			  	{% else %}
+			  		<h3> You cannot upload documents until you are confirmed as a professor of this course  </h3>
+			  	{% endif %}
+			  </div>
+			<!--
+			 <div class="tab-pane" id="some-other-tab{{course.course.id}}"> (Note that tab href and content id must agree)
+			  	Upload Documents
+			  </div>
+			-->
+		</div>
+
+
+
+            
+        
+
+</div>
+
+  

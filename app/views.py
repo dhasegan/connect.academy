@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
+from django.core.mail import send_mail
 
 from app.models import *
 from app.context_processors import *
@@ -56,11 +57,13 @@ def my_courses(request):
             course_dict = {'course':prof_reg.course, 
                            'is_approved': prof_reg.is_approved }
             if prof_reg.is_approved:
-                course_dict['students'] = []
+                course_dict['students'] = {'registered': [], 'pending': []}
                 # for each student registration
-                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course, is_approved=False):
-                    course_dict['students'].append({'student': student_reg.student,
-                                                    'is_approved': student_reg.is_approved})
+                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course):
+                    if student_reg.is_approved:
+                        course_dict['students']['registered'].append(student_reg.student)
+                    else:
+                        course_dict['students']['pending'].append(student_reg.student)
             context['courses'].append(course_dict)
         
     else:
@@ -109,9 +112,38 @@ def approve_student_registrations(request):
                 registration.is_approved = True
                 registration.save()
 
-    return redirect('/my_courses#tab'+course_id)
+    return redirect('/my_courses')
 
 
+@require_POST
+@login_required
+def send_mass_email(request):
+    context = {
+        'page': 'send_mass_email',
+        'user_auth': request.user
+    }
+    context.update(csrf(request))
+
+    #Make sure the logged in user is allowed to approve these registrations
+    user = request.user
+    subject = request.POST['subject']
+    body = request.POST['email']
+    to = []
+    sender = "%s %s <%s>" % (user.first_name, user.last_name, user.email)
+    for key, val in request.POST.items():
+        if 'user' in key:
+            _,user_id = key.split('-')
+            users = jUser.objects.filter(id=user_id)
+            if users is not None and val: #if user exists (users is not None) and checkbox was checked (val)
+                email = users[0].email
+                to.append(email)
+    
+
+    if len(to) > 0:
+        send_mail(subject, body, sender, to, fail_silently=False)
+        return HttpResponse("OK")
+    else:
+        return HttpResponse("Please select at least one recepient.")
 
 
 
