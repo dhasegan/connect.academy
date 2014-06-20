@@ -187,7 +187,9 @@ class Populator:
         comment = ""
         for i in range(random.randint(10, 100)):
             comment = comment + self.random_word() + " "
-        commObj = Review(review=comment, course=course)
+        poster = random.choice( jUser.objects.all() )
+        anonymous = random.random() < 0.2
+        commObj = Review(review=comment, course=course, posted_by=poster)
         commObj.save()
 
     def populate_comments(self, count):
