@@ -116,7 +116,7 @@ def submit_document(request, slug):
 
     docfile = form.cleaned_data['document']
     course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
-        course=form.cleaned_data['course'], submitter=user)
+        description=form.cleaned_data['description'], course=form.cleaned_data['course'], submitter=user)
     course_document.save()
 
     return redirect(form.cleaned_data['url'])

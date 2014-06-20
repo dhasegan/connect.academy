@@ -51,6 +51,8 @@ class Populator:
             self.add_university()
 
     def add_juser(self, user_type=None):
+        if jUser.objects.filter(username="jack").count() == 0:
+            self.add_juser_jack(user_type)
         while True:
             fname = self.random_word().capitalize()
             lname = self.random_word().capitalize()
@@ -70,7 +72,7 @@ class Populator:
                                              user_type=user_type, university=univ)
             break
 
-    def add_juser_jack(self):
+    def add_juser_jack(self, user_type=None):
         fname = "Jack"
         lname = "Jacobson"
         username = "jack"
@@ -79,15 +81,13 @@ class Populator:
         password = "1234"
         domain = univ.domains.all()[0]
         email = username + "@" + domain.name
-        user_type = random.choice(list(USER_TYPES))[0]
+        if user_type == None:
+            user_type = random.choice(list(USER_TYPES))[0]
         user = jUser.objects.create_user(username=username, password=password,
                                          email=email, first_name=fname, last_name=lname,
-                                         user_type=user_type)
+                                         user_type=user_type, university=univ)
 
     def populate_jusers(self, count):
-        if jUser.objects.filter(username="jack").count() == 0:
-            add_juser_jack()
-            count -= 1
         for i in range(count):
             self.add_juser() 
 

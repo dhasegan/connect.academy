@@ -338,6 +338,7 @@ class Review(models.Model):
 
 class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
+    description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
 
     course = models.ForeignKey('Course')

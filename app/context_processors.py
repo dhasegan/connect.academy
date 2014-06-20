@@ -155,10 +155,9 @@ def course_page_context(request, course):
 
     if request.user.is_authenticated():
         user = jUser.objects.filter(id=request.user.id)[0]
-        context['can_upload_docs'] = user in course.professors.all()
+        # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
 
-        course_docs = CourseDocument.objects.filter(course=course)
-        context['documents'] = course_docs
+        context['documents'] = course.coursedocument_set.all()
 
     return context
 

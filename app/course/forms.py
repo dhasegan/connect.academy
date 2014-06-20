@@ -61,6 +61,7 @@ class SubmitCommentForm(forms.Form):
 class SubmitDocumentForm(forms.Form):
     name = forms.CharField()
     document = forms.FileField()
+    description = forms.CharField(required=False)
     course_id = forms.CharField()
     url = forms.CharField()
 
