@@ -417,10 +417,11 @@ font-weight: bold;
 /*********************************/
 /********STUDENT PROFILE************/
 
-.glyphicon {  
+/* THIS BREAKS ALL THE GLYPHICONS >>> COMMENTED OUT
+.glyphicon {
     margin-bottom: 10px;
     margin-right: 10px;
-}
+}*/
 
 #profile_details{
     width: 50%;

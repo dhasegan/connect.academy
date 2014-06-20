@@ -82,6 +82,24 @@ class SubmitDocumentForm(forms.Form):
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
         return content
 
+class SubmitHomeworkRequestForm(forms.Form):
+    name = forms.CharField()
+    description = forms.CharField(required=False)
+    course_id = forms.CharField()
+    url = forms.CharField()
+    start = forms.DateTimeField()
+    end = forms.DateTimeField()
+
+    def clean(self):
+        cleaned_data = super(SubmitHomeworkRequestForm, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        return cleaned_data
+
 class VoteReviewForm(forms.Form):
     review_id = forms.CharField()
     vote_type = forms.CharField()

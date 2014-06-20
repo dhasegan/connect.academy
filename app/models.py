@@ -293,7 +293,7 @@ class CourseRegistrationDeadline(Deadline):
 
 
 ###########################################################################
-####################### Reviews, Ratings, Documents #######################
+####################### Reviews, Ratings, Documents, Homework #############
 ###########################################################################
 
 RATING_MIN = 1
@@ -344,6 +344,17 @@ class CourseDocument(models.Model):
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.name)
+
+class CourseHomework(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=1000, null=True, blank=True)
+    deadline = models.ForeignKey('Deadline')
+
+    course = models.ForeignKey('Course')
+    submitter = models.ForeignKey('jUser')
 
     def __unicode__(self):
         return str(self.name)

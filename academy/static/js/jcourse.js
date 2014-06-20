@@ -310,6 +310,23 @@ $(function() {
 
     });
 
+    // Datetimepicker
+    $('.homework-start-datetime').datetimepicker({
+        defaultDate: moment().startOf("hour"),
+        minDate: moment(),
+        maxDate: moment().add("years", 1)
+    });
+    $('.homework-deadline-datetime').datetimepicker({
+        defaultDate: moment().add("weeks", 1).endOf("day"),
+        minDate: moment(),
+        maxDate: moment().add("years", 1)
+    });
+    $('.homework-datetime-input').click(function() {
+        var $parent = $(this.parentNode);
+        var $button = $parent.find(".homework-datetime-button");
+        $button.parent().data("DateTimePicker").show();
+    });
+
     // Confirm the registration of a student for a course. 
     $(".confirm_registration").submit(function(event) {
         var form = $(this);

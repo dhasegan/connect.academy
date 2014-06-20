@@ -1,0 +1,40 @@
+<form class="form" class="homework-form" action="{% url 'submit_document' course.slug %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="homeworkName{{course.id}}">Homework Name</label>
+        <small> (Example: Homework1, Project1, ... ) </small>
+        <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" required>
+    </div>
+    <div class="form-group">
+        <label for="homeworkDescription{{course.id}}">Description (optional)</label>
+        <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="homeworkStart{{course.id}}">Start</label>
+        <div class='input-group date homework-start-datetime'>
+            <input type='text' class="form-control homework-datetime-input" id="homeworkStart{{course.id}}" />
+            <span class="input-group-addon homework-datetime-button">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="homeworkDeadline{{course.id}}">Deadline</label>
+        <div class='input-group date homework-deadline-datetime'>
+            <input type='text' class="form-control homework-datetime-input" id="homeworkDeadline{{course.id}}" />
+            <span class="input-group-addon homework-datetime-button">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div>
+
+
+
+    <input type="hidden" name="course_id" value="{{ course.id }}">
+    <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
+
+    <input class="btn btn-default" type="submit" value="Request" />
+</form>
