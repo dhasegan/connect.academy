@@ -4,14 +4,14 @@
 
             <div class="modal-header">
                 <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
-                <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>{% if previous_submissions %}Resubmit{% else %}Submit{% endif %} homework</b></h3>
+                <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>{% if hw.previous_submission %}Resubmit{% else %}Submit{% endif %} homework</b></h3>
             </div>
 
             <form class="form" action='/course/{{course.slug}}/submit_homework' method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="modal-body">
-                    {% if previous_submission %}
+                    {% if hw.previous_submission %}
                         <div class="text-muted">
                             Resubmitting a homework will overwrite previous submissions.
                         </div>
@@ -48,5 +48,5 @@
     </div><!-- /.modal-dalog -->
 </div><!-- /.modal -->
 
-<button class="btn {% if not previous_submissions %} btn-primary {% else %} btn-default {% endif %}"
-data-toggle="modal" href="#submitHomework{{hw.homework.id}}"  id='submitHomeworkButton{{hw.homework.id}}'>{% if previous_submissions %}Resubmit{% else %}Submit{% endif %} Homework</button>
+<button class="btn {% if not hw.previous_submission %} btn-primary {% else %} btn-default {% endif %}"
+data-toggle="modal" href="#submitHomework{{hw.homework.id}}"  id='submitHomeworkButton{{hw.homework.id}}'>{% if hw.previous_submission %}Resubmit{% else %}Submit{% endif %} Homework</button>

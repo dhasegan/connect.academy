@@ -140,9 +140,15 @@ def submit_homework(request, slug):
     if not (registration_status == REGISTERED or registration_status == PENDING):
         raise Http404
 
+    homework_request = form.cleaned_data['homework_request']
+
+    previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request)
+    for prev_hw in previous_homework:
+        prev_hw.delete()
+
     docfile = form.cleaned_data['document']
     course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
-        submitter=user, homework_request=form.cleaned_data['homework_request'])
+        submitter=user, homework_request=homework_request)
     course_homework.save()
 
     return redirect(form.cleaned_data['url'])

@@ -168,7 +168,10 @@ def course_page_context(request, course):
             can_submit_homework = False
             if hw.deadline.start < current_time and current_time < hw.deadline.end:
                 can_submit_homework = True
-            homework_submission = CourseHomeworkSubmission.objects.filter(course=course, submitter=user)
+            homework_submission = None
+            homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=hw)
+            if homework_submissions:
+                homework_submission = homework_submissions[0]
 
             context['homework'].append({
                 "homework": hw,
