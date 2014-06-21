@@ -2,6 +2,7 @@ from mimetypes import guess_type
 import hashlib
 import string
 import random
+import datetime
 
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
@@ -136,7 +137,11 @@ def submit_homework_request(request, slug):
     if not user in form.cleaned_data['course'].professors.all():
         raise Http404
 
-    deadline = Deadline(start=form.cleaned_data['start'], end=form.cleaned_data['deadline'])
+    timezone_minutes = timedelta(minutes=form.cleaned_data['timezone'])
+    start_time = form.cleaned_data['start'] + timezone_minutes
+    end_time = form.cleaned_data['deadline'] + timezone_minutes
+
+    deadline = Deadline(start=start_time, end=end_time)
     deadline.save()
     homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
         course=form.cleaned_data['course'], submitter=user, deadline=deadline)

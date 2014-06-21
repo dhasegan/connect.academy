@@ -31,7 +31,11 @@
         </div>
     </div>
 
+    <div class="form-group text-muted"> (times are in the local timezone) </div>
+    {% comment %} >>> Say it is in UTC timezone if it is not provided <<< {% endcomment %}
 
+
+    <input type="hidden" name="timezone" value="">
 
     <input type="hidden" name="course_id" value="{{ course.id }}">
     <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">

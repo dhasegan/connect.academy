@@ -87,6 +87,7 @@ class SubmitHomeworkRequestForm(forms.Form):
     description = forms.CharField(required=False)
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    timezone = forms.IntegerField()
     
     course_id = forms.CharField()
     url = forms.CharField()
@@ -100,6 +101,12 @@ class SubmitHomeworkRequestForm(forms.Form):
         cleaned_data['course'] = courses[0]
 
         return cleaned_data
+
+    def clean_timezone(self):
+        tz = self.cleaned_data['timezone']
+        if tz == None or tz == "":
+            tz = 0
+        return tz
 
 class VoteReviewForm(forms.Form):
     review_id = forms.CharField()
