@@ -1,19 +1,18 @@
-<div class="container">
-    <div class="row">
-        <div id="registrationModal{{jcourse.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-     
-                    <div class="modal-header">
-                        <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
-                        <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>Are you sure you want to register for this course?</b></h3>
-                    </div>
-                    <div class="modal-body">
-                        <h4><b>{{jcourse.name}}</b></h4>
-                        <p>{{jcourse.description}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="btn-group">
+<div class="row">
+    <div id="registrationModal{{jcourse.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+ 
+                <div class="modal-header">
+                    <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
+                    <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>Are you sure you want to register for this course?</b></h3>
+                </div>
+                <div class="modal-body">
+                    <h4><b>{{jcourse.name}}</b></h4>
+                    <p>{{jcourse.description}}</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
                         <form action='/course/{{jcourse.slug}}/register' method="POST" class="confirm_registration">
                             {% csrf_token %}
                             <input type='hidden' name='courseID' value='{{jcourse.id}}'/>
@@ -21,19 +20,18 @@
                             <input class="btn btn-primary" type="submit" value="Yes, register" />
                         </form>
                     </div>
-                    </div>
-     
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dalog -->
-        </div><!-- /.modal -->
+                </div>
+ 
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
 
-        {% if registration_status == 0 %} <!-- open -->
-            <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>Register</a>
-        {% elif registration_status == 3 %} <!-- pending -->
-            <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration</b></a>
-        {% elif registration_status == 4 %} <!-- registered -->
-            <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success" id='register_button{{jcourse.id}}' disabled><b>Registered</b></a>
+    {% if registration_status == 0 %} <!-- open -->
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>Register</a>
+    {% elif registration_status == 3 %} <!-- pending -->
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration</b></a>
+    {% elif registration_status == 4 %} <!-- registered -->
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success" id='register_button{{jcourse.id}}' disabled><b>Registered</b></a>
 
-        {% endif %}
-    </div>
+    {% endif %}
 </div>
