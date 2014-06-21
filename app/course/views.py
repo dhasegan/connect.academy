@@ -122,6 +122,32 @@ def submit_document(request, slug):
 
     return redirect(form.cleaned_data['url'])
 
+
+@require_POST
+@login_required
+def submit_homework(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = SubmitHomeworkForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        raise Http404
+
+    course = form.cleaned_data['course']
+    registration_status = course.get_registration_status(user)
+    if not (registration_status == REGISTERED or registration_status == PENDING):
+        raise Http404
+
+    docfile = form.cleaned_data['document']
+    course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
+        submitter=user, homework_request=form.cleaned_data['homework_request'])
+    course_homework.save()
+
+    return redirect(form.cleaned_data['url'])
+
+
 @require_POST
 @login_required
 def submit_homework_request(request, slug):

@@ -1,0 +1,21 @@
+{% if homework %}
+    <div class="course-detail">
+        <strong> Homework due: </strong>
+        <div class="content">
+            {% for hw in homework %}
+                <div class="homework_content">
+                    <div class="h4 text-primary"> {{ hw.homework.name }} </div>
+                    {% if hw.homework.description %}
+                        <p class="text-muted"> {{ hw.homework.description }} </p>
+                    {% endif %}
+                    <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
+                    <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> </div>
+                    {% if hw.can_submit %}
+                        {% include "objects/course_homework_submit.html" %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+

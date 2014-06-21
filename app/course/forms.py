@@ -82,6 +82,37 @@ class SubmitDocumentForm(forms.Form):
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
         return content
 
+class SubmitHomeworkForm(forms.Form):
+    document = forms.FileField()
+    course_id = forms.CharField()
+    homework_request_id = forms.CharField()
+    url = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(SubmitHomeworkForm, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        homework_requests = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("homework_request_id"))
+        if len(homework_requests) != 1:
+            raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
+        cleaned_data['homework_request'] = homework_requests[0]
+
+        if not homework_requests[0].course == courses[0]:
+            raise forms.ValidationError("Integration error!")
+
+        return cleaned_data
+
+    def clean_document(self):
+        content = self.cleaned_data['document']
+        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        return content
+
 class SubmitHomeworkRequestForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(required=False)

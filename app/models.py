@@ -61,7 +61,7 @@ class StudentCourseRegistration(models.Model):
     is_approved = models.BooleanField(default = False) # True if registration is approved
 
     def __unicode__(self):
-        return "Register" + str(self.student)
+        return str(self.student)
 
 class ProfessorCourseRegistration(models.Model):
     professor = models.ForeignKey('jUser')
@@ -69,7 +69,7 @@ class ProfessorCourseRegistration(models.Model):
     is_approved = models.BooleanField(default = False) # True if registration is approved
 
     def __unicode__(self):
-        return "Register" + str(self.professor)
+        return str(self.professor)
 
 
 
@@ -364,6 +364,21 @@ class CourseHomeworkRequest(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+class CourseHomeworkSubmission(models.Model):
+    homework_request = models.ForeignKey('CourseHomeworkRequest')
+    document = models.FileField(upload_to='course/homework/')
+
+    course = models.ForeignKey('Course')
+    submitter = models.ForeignKey('jUser')
+    submit_time = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=200)
+
+    def save(self, *args, **kwargs):
+        self.name = slugify(self.submitter.first_name + "-" + self.submitter.last_name + "-" + self.homework_request.name)
+        super(CourseHomeworkSubmission, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return str(self.name)
 
 ###########################################################################
 ####################### Questions, Answers ################################

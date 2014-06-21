@@ -153,12 +153,28 @@ def course_page_context(request, course):
 
     context['registration_status'] = registration_status
 
-    if request.user.is_authenticated():
-        user = jUser.objects.filter(id=request.user.id)[0]
+    current_time = pytz.utc.localize(datetime.now())
+
+    # Show documents and homework only if the user is registered or pending registration
+    if registration_status == REGISTERED or registration_status == PENDING:
         # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
+        user = jUser.objects.filter(id=request.user.id)[0]
 
         context['documents'] = course.coursedocument_set.all()
-        context['homework'] = course.coursehomeworkrequest_set.all()
+
+        context['homework'] = []
+        all_homework = course.coursehomeworkrequest_set.all()
+        for hw in all_homework:
+            can_submit_homework = False
+            if hw.deadline.start < current_time and current_time < hw.deadline.end:
+                can_submit_homework = True
+            homework_submission = CourseHomeworkSubmission.objects.filter(course=course, submitter=user)
+
+            context['homework'].append({
+                "homework": hw,
+                "can_submit": can_submit_homework,
+                "previous_submission": homework_submission
+            })
 
     return context
 
