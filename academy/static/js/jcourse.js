@@ -787,10 +787,7 @@ jQuery( document ).ready(function( $ ) {
                     $('.text-danger',form).show();
                     $('.text-danger',form).html(message);
                     $('.text-danger',form).delay(4000).fadeOut(400);
-                }
-
-                
-                       
+                }            
             }
         });
     });

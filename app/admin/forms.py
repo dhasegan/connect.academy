@@ -158,7 +158,7 @@ class NewSubcatForm(CategoryForm):
 		parent_cat = Category.objects.get(id=self.cleaned_data['cat_id'])
 		new_cat = Category.objects.create(name=self.cleaned_data['name'],
 										  abbreviation=self.cleaned_data['abbrev'],
-										  parent=parent_cat)
+										  parent=parent_cat, university=parent_cat.university)
 		return_dict = {}
 		if new_cat is not None:
 			new_cat.save()
