@@ -1,0 +1,39 @@
+<div class='category-forms'>
+    <h4> Category Name: </h4>
+    <form action="admin_form_action" method="POST" id="edit-category-form">
+        {% csrf_token %}
+        <input type='hidden' name='form_type' value='edit_category'/>
+        <div class='form-group'>
+            <input type='text' name='name' class='form-control' placeholder='Category Name' required/>
+            <input type='hidden' name='cat_id'/>
+        </div>
+        <div class='text text-success'>
+        </div>
+        <div class='text text-warning'>
+        </div>
+        <div class='text text-danger'>
+        </div>
+        <input type='submit' class='btn btn-primary' value="Save"/>
+    </form>
+
+    <h4>Administrators:</h4>
+    <div class="row">
+        <ul id="admins-form-container">
+        </ul>
+    </div>
+    <form action="admin_form_action" method="POST" id="delete-category-form">
+        {% csrf_token %}
+        <input type='hidden' name='form_type' value='delete_category'/>
+        <input type="hidden" name="cat_id"/>
+        <div class="form-group">
+            <input type='checkbox'  name='delete_all' title='Delete all categories in this subtree' style='float:left;'/>  Delete all 
+            <input type="submit" class="btn btn-danger" name="delete-category" style="float:right;" value="Delete Category" >
+        </div>
+        <div class='text text-success'>
+        </div>
+        <div class='text text-warning'>
+        </div>
+        <div class='text text-danger'>
+        </div>
+    </form>
+</div>

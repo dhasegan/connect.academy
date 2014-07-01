@@ -1,0 +1,29 @@
+
+
+#center-container {
+    height:620px;
+}
+
+#left-container, #right-container {
+    max-height: 620px;
+}
+
+.category-forms, .course-forms {
+    display:none;
+}
+
+
+#infovis {
+    position:relative;
+    width:100%;
+    height:100%;
+    margin:auto;
+    overflow:hidden;
+    background-color: white;
+}
+
+#log {
+    text-align:center;
+    color: #29ABE2;
+    font-weight: bold;
+}

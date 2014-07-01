@@ -7,10 +7,10 @@
 
         <ul class="nav nav-tabs">
             <li class="active">
-                <a href="#pending{{course.course.id}}" data-toggle="tab">Pending Registrations</a>
+                <a href="#pending{{course.course.id}}" data-toggle="tab">Pending Registrations ({{course.students.pending|length}})</a>
             </li>
             <li>
-                <a href="#registered{{course.course.id}}" data-toggle="tab">Registered Students</a>
+                <a href="#registered{{course.course.id}}" data-toggle="tab">Registered Students ({{course.students.registered|length}})</a>
             </li>
             <li>
                 <a href="#documents{{course.course.id}}" data-toggle="tab">Upload Documents</a>

@@ -641,3 +641,16 @@ ul  {
     height:100%;
     overflow:auto;
 }
+
+form input.text-button-red {
+    background:none!important;
+    border: 1px solid;
+    padding:0!important;
+    /*border is optional*/
+
+}
+
+form input.text-button-red:hover {
+    cursor:pointer;
+    text-decoration: underline;
+};

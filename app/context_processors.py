@@ -25,7 +25,8 @@ def course_timeline_context(courses,user):
     # Add the courses to the context
     allcourses = []
     for course in courses:
-        
+        if course.category is None:
+            continue
         studies = ""
         if course.course_type == COURSE_TYPE_UG:
             studies = "UG"

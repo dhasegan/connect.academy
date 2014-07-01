@@ -130,7 +130,7 @@ class Course(models.Model):
     slug = models.SlugField(max_length=200)
     image = models.ImageField(upload_to='courses')
     university = models.ForeignKey('University', related_name = 'courses')
-    category = models.ForeignKey('Category', related_name = 'courses')
+    category = models.ForeignKey('Category', null=True, default=None, related_name = 'courses')
     tags = models.ManyToManyField('Tag',related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
     prerequisites = models.ManyToManyField('self',related_name='next_courses')
@@ -204,7 +204,7 @@ class University(models.Model):
 
 
 class Category(models.Model):
-    parent = models.ForeignKey('self',null = True) # Parent category
+    parent = models.ForeignKey('self',null = True, related_name = 'children') # Parent category
     level = models.IntegerField(null=True) # The level in which the category is positioned in the tree
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
@@ -214,32 +214,32 @@ class Category(models.Model):
     # !!
     # Relations declared in other models define the following:
     #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
-    
+    #   children (<category>.children.all() returns all child categories of <category>)    
     def get_admins(self):
         # Gets the "closest" administrators of a category. 
         admins = self.admins.all()
         if len(admins) > 0:
             return admins
         elif self.parent != None: # if not root
-            return self.parent.getAdmins()
+            return self.parent.get_admins()
         else:
             return None
 
     def get_all_admins(self):
         # get all people with administrator rights of this category
         # (i.e: including admins of parent categories)
-        admins = self.admins.all()
+        admins = list(self.admins.all())
         if self.parent != None:
-            admins += self.parent.getAllAdmins()
+            admins += self.parent.get_all_admins()
         return admins
 
 
     def get_all_courses(self):
         # Gets all the courses that are descendants of this category
-        allcourses = self.courses.all()
+        allcourses = list(self.courses.all())
         children = Category.objects.filter(parent__id = self.id)
         for child in children:
-            allcourses += child.getAllCourses()
+            allcourses += list(child.get_all_courses())
 
         return allcourses
 
@@ -252,6 +252,72 @@ class Category(models.Model):
             if cat == None:
                 return None
         return cat.cr_deadline
+
+    # gets the subtree that has this category in the root. The tree is returned as a dictionary,
+    # such that when converted to JSON, it follows the specifications to build a Spacetree with 
+    # Infoviz (the javascript visualization tool)
+    def get_subtree(self):
+        tree = {
+            'id' : "category-" + str(self.id),
+            'name' : self.name,
+            'data' : {
+                'type': 'category', # category or course
+                'admins': []
+            },
+            'children' : []
+        }
+        admins = self.get_all_admins()
+        if admins is not None:
+            for admin in admins:
+                tree['data']['admins'].append({
+                    'first_name': admin.first_name,
+                    'last_name': admin.last_name,
+                    'username': admin.username,
+                    'id': admin.id,
+                    'own_admin': admin in self.admins.all()
+
+                })
+
+
+        children = self.children.all()
+        courses = self.courses.all()
+
+        for child in children:
+            subtree = child.get_subtree()
+            tree['children'].append(subtree)
+
+        for course in courses: 
+            course_dict = {
+                'id': "course-" + str(course.id),
+                'name' : course.name,
+                'data' : {
+                    'type' : 'course',
+                    'professors': []
+                },
+                'children' : []
+            }
+            for prof in course.professors.all():
+                course_dict['data']['professors'].append({
+                    'first_name': prof.first_name,
+                    'last_name': prof.last_name,
+                    'username': prof.username,
+                    'id': prof.id
+                })
+                tree['children'].append(course_dict)
+
+        return tree
+
+        # returns all categories that are descendats of this one together with this category
+        # this is useful to list the categories in the admin page
+    def get_descendants(self):
+        descendants = list(self.children.all())
+        for cat in descendants:
+            descendants2 = list(cat.get_descendants())
+            for desc in descendants2:
+                if not desc in descendants:
+                    descendants.append(desc)
+        return descendants
+
 
     def __unicode__(self):
         return str(self.name)

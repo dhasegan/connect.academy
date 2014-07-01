@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Course Categories</title>
+<link rel="shortcut icon" href="{{ STATIC_URL }}/ju_favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Courses at Jacobs University">
+<meta name="author" content="jTeam">
+<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="{{ STATIC_URL }}css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="{{ STATIC_URL }}css/jcourse.css" rel="stylesheet">
+<link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
+<!-- CSS Files -->
+<link type="text/css" href="{{ STATIC_URL }}css/Jit/base.css" rel="stylesheet" />
+<link type="text/css" href="{{ STATIC_URL }}css/Jit/Spacetree.css" rel="stylesheet" />
+
+<!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
+
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/Jit/jit.js"></script>
+
+
+
+{% include 'objects/category_tree_script.html' %}
+<!-- Example File -->
+<!--<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/Jit/Spacetree/example1.js"></script> -->
+</head>
+
+<body onload="init();" id="body_image">
+    {% include 'objects/navbar.html' %}
+    <div class="container" id="main_content_container">
+        {% include 'objects/notifications/alerts.html' %}
+
+        <div class="main-content">
+            <div class="row">
+                <div id="left-container" class="panel panel-default col-md-3">
+                    <div class="text">
+                    </div>
+                    {% include 'objects/category_forms_left.html' %}
+                    {% include 'objects/course_forms_left.html' %}
+                    <div id="id-list"></div>        
+                </div>
+
+                <div id="center-container" class="col-md-6">
+                    <div id="infovis" class='panel panel-default' >
+                        <div id="log"></div>
+
+                    </div>    
+                </div>
+
+                <div id="right-container" class="panel panel-default col-md-3">
+                    {% include 'objects/category_forms_right.html' %}
+                    {% include 'objects/course_forms_right.html' %}
+                </div>
+                  
+            </div>
+        </div>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ STATIC_URL }}js/jquery.raty.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.lazyload.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/moment-with-langs.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Include jcourse Javascript -->
+    <script src="{{ STATIC_URL }}js/jcourse.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+</body>
+</html>
