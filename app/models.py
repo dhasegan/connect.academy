@@ -55,6 +55,11 @@ class jUser(User):
     def __unicode__(self):
         return str(self.username)
 
+    def is_professor_of(self, course):
+        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
+        return registration and registration[0].is_approved
+
+
 class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
@@ -139,7 +144,8 @@ class Course(models.Model):
     #   professors (<course>.professor.all() returns all professors of <course>)
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
-    #   <course> as a prerequisite)
+    #                 <course> as a prerequisite)
+    #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
     
 
     # gets the registration status of this course for the given user
@@ -393,11 +399,11 @@ class Review(models.Model):
     review = models.CharField(max_length=5000)
     datetime = models.DateTimeField(auto_now=True)
 
-    posted_by = models.ForeignKey('jUser', related_name='posted')
+    posted_by = models.ForeignKey('jUser', related_name='reviews_posted')
     anonymous = models.BooleanField(default=False)
 
-    upvoted_by = models.ManyToManyField('jUser', related_name='upvoted')
-    downvoted_by = models.ManyToManyField('jUser', related_name='downvoted')
+    upvoted_by = models.ManyToManyField('jUser', related_name='review_upvoted')
+    downvoted_by = models.ManyToManyField('jUser', related_name='review_downvoted')
 
     def __unicode__(self):
         return str(self.review)
@@ -447,5 +453,70 @@ class CourseHomeworkSubmission(models.Model):
         return str(self.name)
 
 ###########################################################################
-####################### Questions, Answers ################################
+############################ Forums, Wikis ################################
 ###########################################################################
+
+
+# Course types
+FORUM_TYPE_COURSE = 0
+FORUM_TYPE_TOPIC = 1
+FORUM_TYPE_HOMEWORK = 2
+FORUM_TYPES = (
+    (FORUM_TYPE_COURSE,"Course"),
+    (FORUM_TYPE_TOPIC, "Topic"),
+    (FORUM_TYPE_HOMEWORK, "Homework")
+)
+
+class Forum(models.Model):
+    forum_type = models.IntegerField(choices=FORUM_TYPES, default=FORUM_TYPE_COURSE)
+
+    def __unicode__(self):
+        return dict(FORUM_TYPES)[forum_type]
+
+class ForumCourse(Forum):
+    course = models.ForeignKey('Course')
+
+    def __unicode__(self):
+        return str(course)
+
+class ForumHomework(Forum):
+    homework_request = models.ForeignKey('CourseHomeworkRequest')
+
+    def __unicode__(self):
+        return str(homework_request)
+
+class ForumTopic(Forum):
+    course = models.ForeignKey('Course')    
+    # TODO
+
+    def __unicode__(self):
+        return str(course)
+
+class ForumQuestion(models.Model):
+    name = models.CharField(max_length=250)
+    forum = models.ForeignKey('Forum')
+    text = models.CharField(max_length=5000)
+    datetime = models.DateTimeField(auto_now=True)
+
+    posted_by = models.ForeignKey('jUser', related_name='question_posted')
+    anonymous = models.BooleanField(default=False)
+
+    upvoted_by = models.ManyToManyField('jUser', related_name='question_upvoted')
+    downvoted_by = models.ManyToManyField('jUser', related_name='question_downvoted')
+
+    def __unicode__(self):
+        return name
+
+class ForumAnswer(models.Model):
+    forum = models.ForeignKey('Forum')
+    description = models.CharField(max_length=5000)
+    datetime = models.DateTimeField(auto_now=True)
+
+    posted_by = models.ForeignKey('jUser', related_name='answer_posted')
+    anonymous = models.BooleanField(default=False)
+
+    upvoted_by = models.ManyToManyField('jUser', related_name='answer_upvoted')
+    downvoted_by = models.ManyToManyField('jUser', related_name='answer_downvoted')
+
+    def __unicode__(self):
+        return str(description)

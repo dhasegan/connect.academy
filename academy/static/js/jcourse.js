@@ -247,6 +247,28 @@ jQuery( document ).ready(function( $ ) {
         tz.val( moment().zone() )
     });
 
+    function SubmitFormAjax(event, form, successFunction, errorFunction) {
+        event.preventDefault();
+        $.ajax({
+            type: form.method,
+            url: form.action,
+            data: $(form).serialize(),
+            success: successFunction,
+            error: errorFunction
+        });
+    };
+
+    // Forum register form
+    $('.forumcourseregistration-form').submit(function(event) {
+        SubmitFormAjax(event, this,
+            function(result) {
+                $(".forum-management").html(result.html)
+            }, 
+            function(jqXHR, textStatus, errorThrown) {
+                $(".forum-management").html(textStatus)
+            }
+        );
+    });
 
     $("#email").blur(function(){
         var email_address = this.value;
@@ -330,7 +352,7 @@ jQuery( document ).ready(function( $ ) {
             if (data == "OK") {
                 form.submit();
             }
-        });  
+        });
 
     });
 

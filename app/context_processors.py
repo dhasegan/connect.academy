@@ -180,6 +180,12 @@ def course_page_context(request, course):
                 "previous_submission": homework_submission
             })
 
+        context['forum'] = None
+        forums = course.forumcourse_set.all()
+        if forums.count() == 1:
+            context['forum'] = forums[0]
+
+
     return context
 
 def review_context(comment, request, current_user):

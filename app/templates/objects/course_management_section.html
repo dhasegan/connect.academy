@@ -18,6 +18,9 @@
             <li>
                 <a href="#homework{{course.course.id}}" data-toggle="tab">Homework</a>
             </li>
+            <li>
+                <a href="#forum{{course.course.id}}" data-toggle="tab">Forum</a>
+            </li>
         </ul>
 
         <!-- Tab panes -->
@@ -77,7 +80,26 @@
                         </div>
                     </div>
                 {% else %}
-                    <p class="h3"> You ask for homework until you are confirmed as a professor of this course </p>
+                    <p class="h3"> You cannot ask for homework until you are confirmed as a professor of this course </p>
+                {% endif %}
+            </div>
+
+
+            <div class="tab-pane" id="forum{{course.course.id}}">
+                {% if course.is_approved %}
+                    {% if course.forum %}
+                        {% include "objects/forum/forum_management.html" %}
+                    {% else %}
+                        <div class="forum-management">
+                            <p class="h3"> There is no forum for this course. </p>
+                            <form class="form forumcourseregistration-form" action="{% url 'forum_course_registration' course.course.slug %}" method="post">
+                                {% csrf_token %}
+                                <input class="btn btn-default" type="submit" value="Start a forum" />
+                            </form>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p class="h3"> You cannot manage the forum until you are confirmed as a professor of this course </p>
                 {% endif %}
             </div>
 
