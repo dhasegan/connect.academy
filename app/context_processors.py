@@ -217,3 +217,19 @@ def review_context(comment, request, current_user):
 
     return context_comment
 
+def forum_context(forum, current_user):
+    context_forum = {
+        "forum": forum,
+        "course": forum.course,
+        "user": current_user
+    }
+
+    context_forum['posts'] = []
+    posts = ForumPost.objects.filter(forum=forum)
+    for post in posts:
+        context_forum['posts'].append({
+            'question': post,
+            'answers': ForumAnswer.objects.filter(post=post, parent_answer=None)
+        })
+
+    return context_forum

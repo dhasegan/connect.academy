@@ -477,25 +477,25 @@ class ForumCourse(Forum):
     course = models.ForeignKey('Course')
 
     def __unicode__(self):
-        return str(course)
+        return str(self.course)
 
 class ForumHomework(Forum):
     homework_request = models.ForeignKey('CourseHomeworkRequest')
 
     def __unicode__(self):
-        return str(homework_request)
+        return str(self.homework_request)
 
 class ForumTopic(Forum):
     course = models.ForeignKey('Course')    
     # TODO
 
     def __unicode__(self):
-        return str(course)
+        return str(self.course)
 
-class ForumQuestion(models.Model):
+class ForumPost(models.Model):
     name = models.CharField(max_length=250)
     forum = models.ForeignKey('Forum')
-    text = models.CharField(max_length=5000)
+    text = models.CharField(max_length=5000, blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
 
     posted_by = models.ForeignKey('jUser', related_name='question_posted')
@@ -505,12 +505,14 @@ class ForumQuestion(models.Model):
     downvoted_by = models.ManyToManyField('jUser', related_name='question_downvoted')
 
     def __unicode__(self):
-        return name
+        return self.name
 
 class ForumAnswer(models.Model):
-    forum = models.ForeignKey('Forum')
-    description = models.CharField(max_length=5000)
+    post = models.ForeignKey('ForumPost')
+    text = models.CharField(max_length=5000)
     datetime = models.DateTimeField(auto_now=True)
+
+    parent_answer = models.ForeignKey('ForumAnswer', null=True, blank=True)
 
     posted_by = models.ForeignKey('jUser', related_name='answer_posted')
     anonymous = models.BooleanField(default=False)
@@ -519,4 +521,4 @@ class ForumAnswer(models.Model):
     downvoted_by = models.ManyToManyField('jUser', related_name='answer_downvoted')
 
     def __unicode__(self):
-        return str(description)
+        return self.text

@@ -1,0 +1,38 @@
+<div class="tab-content">
+    {% for post in posts %}
+        <div class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}" id="answers{{post.question.id}}">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{ post.question }}
+                    <div class="answer-btn pull-right">
+                        <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#askquestion{{post.question.id}}">
+                            <button type="submit" class="btn-xs btn-success">Answer</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div id="askquestion{{post.question.id}}" class="collapse">
+                        {% with parent as post.question %}
+                        {% with parent_type as "question" %}
+                            {% include 'objects/forum/new_answer.html' %}
+                        {% endwith %}
+                        {% endwith %}
+                        <hr>
+                    </div>
+
+                    <div class="tab-content">
+                        {% for answer in post.answers %}
+                            {{ answer.text }}
+                        {% endfor %}
+                        {% if post.answers|length == 0 %}
+                            <div class="no-posts">
+                                There are no answers yet.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
