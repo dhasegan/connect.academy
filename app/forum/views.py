@@ -47,8 +47,13 @@ def course_registration(request, slug):
     forum = ForumCourse(forum_type=FORUM_TYPE_COURSE, course=course)
     forum.save()
 
+    context = {
+        'course': {
+            'course': course
+        }
+    }
     response_data = {}
-    response_data['html'] = render_to_string("objects/forum/forum_management.html", {})
+    response_data['html'] = render_to_string("objects/forum/forum_management.html", context)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @require_http_methods(["GET", "POST"])
