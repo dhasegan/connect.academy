@@ -270,6 +270,34 @@ jQuery( document ).ready(function( $ ) {
         );
     });
 
+    // Get reply form for forum answer reply
+    $('.forumcourseregistration-form').submit(function(event) {
+        SubmitFormAjax(event, this,
+            function(result) {
+                $(".forum-management").html(result.html)
+            }, 
+            function(jqXHR, textStatus, errorThrown) {
+                $(".forum-management").html(textStatus)
+            }
+        );
+    });
+
+    $('.getreplyform-link').click(function(event) {
+        event.preventDefault();
+        var $link = $(this);
+        var $reply_form = $link.parents('.answer-footer').find('.reply-form');
+        if (!($reply_form.hasClass('active'))) {
+            $.ajax({
+                type: "get",
+                url: this.href,
+                success: function(response) {
+                    $reply_form.html(response.html).slideDown();
+                    $reply_form.addClass('active')
+                }
+            })
+        }
+    });
+
     $("#email").blur(function(){
         var email_address = this.value;
         $.get('/university_by_email', {email: email_address},function(data,status) {

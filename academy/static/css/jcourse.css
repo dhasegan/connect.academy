@@ -413,6 +413,28 @@ font-weight: bold;
     padding-top: 25px;
 }
 
+/*********************************/
+/******* Forums pages ************/
+
+.answers-tabs .best-answers .answer-box {
+    border: 1px;
+    border-style: solid;
+    margin: 8px 4px;
+}
+
+.answers-tabs .best-answers .answer-box .answer-body p {
+    margin-bottom: 0px;
+}
+
+.answers-tabs .best-answers .answer-box .answer-box-contents {
+    margin-left: 8px;
+}
+
+.answers-tabs .best-answers .answer-box .answer-footer .reply-form {
+    display: none;
+}
+
+
 
 /*********************************/
 /********STUDENT PROFILE************/
@@ -573,6 +595,7 @@ border-radius: 0px;
     background-color: white;
 }
 
+/*  BAAAAAAAAAAAAD! ALL THIS IS SO BAD! DELETE! */
 .nav-sidebar a {
     color: #333;
     -webkit-transition: all 0.08s linear;
@@ -603,6 +626,7 @@ border-radius: 0px;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis; 
 }
+
 
 .btn-blog {
     color: #ffffff;

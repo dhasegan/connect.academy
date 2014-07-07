@@ -1,0 +1,33 @@
+{% load humanize %}
+
+<div class="answer-box">
+    <div class="answer-box-contents">
+        <div class="answer-header">
+            <small class="text-muted">
+                Posted by {% if not answer.answer.anonymous %} {% with answer.answer.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} Anonymous {% endif %}.
+                {{ answer.answer.datetime|naturaltime }}
+            </small>
+            <span class="text-muted pull-right">
+                
+            </span>
+        </div>
+        <div class="answer-body">
+            {{ answer.answer.text|linebreaks }}
+        </div>
+        <div class="answer-footer">
+            {% block reply_form %}
+                <small class="text-muted">
+                    <a class="getreplyform-link" href="{% url 'forum_reply_form' answer.answer.id %}"> Reply </a>
+                </small>
+                <div class="reply-form">
+                </div>
+            {% endblock reply_form %}
+        </div>
+
+        <div class="answer-children">
+            {% block child_answers %}
+                {% include 'objects/forum/child_answers.html' %}
+            {% endblock child_answers %}
+        </div>
+    </div>
+</div>

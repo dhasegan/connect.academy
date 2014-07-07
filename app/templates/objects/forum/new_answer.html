@@ -1,12 +1,12 @@
 <form role="form" method="post" action="{% url 'forum_new_answer' course.slug %}">
     {% csrf_token %}
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div class="form-group">
                 <textarea type="text" class="form-control" id="postdesc-input" name="text" rows="3" max-length="5000" placeholder="Type in your answer"></textarea>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <button type="submit" class="btn btn-default">Submit</button>
 
             <div class="checkbox">
@@ -16,7 +16,7 @@
             </div>
 
             <input type="hidden" name="forum_id" value="{{ forum.id }}">
-            <input type="hidden" name="post_id" value="{{ post.question.id }}">
+            <input type="hidden" name="post_id" value="{{ question.id }}">
             {% if parent_answer %}
                 <input type="hidden" name="parent_answer_id" value="{{ parent_answer.id }}">
             {% endif %}

@@ -40,7 +40,7 @@ class SubmitForumAnswer(forms.Form):
         cleaned_data['post'] = posts[0]
 
         if posts[0].forum != forums[0]:
-            raise forms.ValidationError("The question is not part of the correct forum!")
+            raise forms.ValidationError("The post is not part of the correct forum!")
 
         answer_id = cleaned_data.get("parent_answer_id")
         if answer_id:
@@ -49,7 +49,7 @@ class SubmitForumAnswer(forms.Form):
                 raise forms.ValidationError("Not a valid number of answers with this post_id!")
             cleaned_data['parent_answer'] = answers[0]
 
-            if answers[0].question != posts[0]:
-                raise forms.ValidationError("The answer you are replying to is not part of the correct question!")
+            if answers[0].post != posts[0]:
+                raise forms.ValidationError("The answer you are replying to is not part of the correct post!")
 
         return cleaned_data

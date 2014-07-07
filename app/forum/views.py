@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404, render_to_resp
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.template import Context, Template, RequestContext
 
 
 from app.models import *
@@ -32,7 +33,7 @@ def forum_course(request, slug):
 
 @require_POST
 @login_required
-def forum_course_registration(request, slug):
+def course_registration(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
@@ -52,7 +53,7 @@ def forum_course_registration(request, slug):
 
 @require_http_methods(["GET", "POST"])
 @login_required
-def forum_new_post(request, slug):
+def new_post(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
     context = {
@@ -87,7 +88,7 @@ def forum_new_post(request, slug):
 
 @require_POST
 @login_required
-def forum_new_answer(request, slug):
+def new_answer(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
@@ -104,6 +105,7 @@ def forum_new_answer(request, slug):
 
     # user permissions to post:
     # everyone is allowed
+
     parent_answer = None
     if 'parent_answer' in form.cleaned_data and form.cleaned_data['parent_answer']:
         parent_answer = form.cleaned_data['parent_answer']
@@ -113,3 +115,23 @@ def forum_new_answer(request, slug):
     answer.save()
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
+
+@require_GET
+@login_required
+def reply_form(request, answer_id):
+    answer = get_object_or_404(ForumAnswer, id=answer_id)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    post = answer.post
+    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    context = {
+        'parent_answer': answer,
+        'question': post,
+        'forum': forum,
+        'course': forum.course
+    }
+
+    response_data = {
+        'html': render_to_string("objects/forum/new_answer.html", RequestContext(request, context))
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
