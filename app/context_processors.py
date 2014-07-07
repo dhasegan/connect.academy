@@ -157,7 +157,8 @@ def course_page_context(request, course):
     current_time = pytz.utc.localize(datetime.now())
 
     # Show documents and homework only if the user is registered or pending registration
-    if registration_status == REGISTERED or registration_status == PENDING:
+    if registration_status == REGISTERED or registration_status == PENDING \
+            or current_user.is_professor_of(course):
         # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
         user = jUser.objects.filter(id=request.user.id)[0]
 

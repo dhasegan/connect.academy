@@ -88,6 +88,13 @@
 
     {% include 'objects/course_homework_student.html' %}
 
+    {% if forum %}
+        <a href="{% url 'forum_course' course.slug %}">
+            <button class="btn btn-default">Forum page</button>
+        </a>
+    {% endif %}
+
+
     {% if course.description %}
     <div class="course-detail">
         <strong> Description: </strong>
