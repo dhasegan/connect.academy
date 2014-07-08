@@ -219,7 +219,7 @@ def review_context(comment, request, current_user):
 
 ################## Forum Contexts ######################
 
-def forum_child_answer_context(post, answer):
+def forum_child_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
         'child_answers': []
@@ -233,27 +233,36 @@ def forum_child_answer_context(post, answer):
         count += 1
     context['children'] = count
 
+    all_upvotes = answer.upvoted_by.all()
+    context['upvotes'] = len(all_upvotes)
+    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
     return context
 
-def forum_answer_context(post, answer):
+def forum_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
         'child_answers': []
     }
     child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
     for child in child_answers:
-        context['child_answers'].append(forum_child_answer_context(post, child))
+        context['child_answers'].append(forum_child_answer_context(post, child, current_user))
 
+    all_upvotes = answer.upvoted_by.all()
+    context['upvotes'] = len(all_upvotes)
+    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
     return context
 
-def forum_post_context(post):
+def forum_post_context(post, current_user):
     answers_context = []
     answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
     for answer in answers:
-        answers_context.append( forum_answer_context(post, answer) )
+        answers_context.append( forum_answer_context(post, answer, current_user) )
+    all_upvotes = post.upvoted_by.all()
     return {
         'question': post,
-        'answers': answers_context
+        'answers': answers_context,
+        'upvotes': len(all_upvotes),
+        'voted': len(all_upvotes.filter(id=current_user.id)) > 0
     }
 
 def forum_context(forum, current_user):
@@ -266,36 +275,44 @@ def forum_context(forum, current_user):
     context_forum['posts'] = []
     posts = ForumPost.objects.filter(forum=forum)
     for post in posts:
-        context_forum['posts'].append(forum_post_context(post))
+        context_forum['posts'].append(forum_post_context(post, current_user))
 
     return context_forum
 
-def forum_discussion_answer_context(answer):
-    return {
+def forum_discussion_answer_context(answer, current_user):
+    context = {
         'answer': answer, 
         'child_answers': []
     }
 
-def forum_discussion_post_context(post, answer1, answer2):
-    discussion_answers = [forum_discussion_answer_context(answer1),\
-        forum_discussion_answer_context(answer2)]
+    all_upvotes = answer.upvoted_by.all()
+    context['upvotes'] = len(all_upvotes)
+    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
+    return context
+
+def forum_discussion_post_context(post, answer1, answer2, current_user):
+    discussion_answers = [forum_discussion_answer_context(answer1, current_user),\
+        forum_discussion_answer_context(answer2, current_user)]
     answer = answer2
     while True:
         child_answers = answer.forumanswer_set.all()
         if not child_answers:
             break
         answer = child_answers[0]
-        discussion_answers.append(forum_discussion_answer_context(answer))
+        discussion_answers.append(forum_discussion_answer_context(answer, current_user))
+    all_upvotes = post.upvoted_by.all()
     return {
         'question': post,
-        'answers': discussion_answers
+        'answers': discussion_answers,
+        'upvotes': len(all_upvotes),
+        'voted': len(all_upvotes.filter(id=current_user.id)) > 0
     }
 
 
-def forum_discussion_context(forum, post, answer):
+def forum_discussion_context(forum, post, answer, current_user):
     parent_answer = answer.parent_answer
     return {
-        'post': forum_discussion_post_context(post, parent_answer, answer),
+        'post': forum_discussion_post_context(post, parent_answer, answer, current_user),
         'forum': forum, 
         'course': forum.course,
         'discussion_answer_id': answer.id

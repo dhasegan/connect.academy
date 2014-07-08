@@ -4,6 +4,9 @@
     <div class="answer-box-contents">
         <div class="answer-header">
             <small class="text-muted">
+                <span id="upvote_answer_{{ answer.answer.id }}">
+                    {% include 'objects/forum/upvote_answer.html' %}
+                </span>
                 Posted by {% if not answer.answer.anonymous %} {% with answer.answer.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} Anonymous {% endif %}.
                 {{ answer.answer.datetime|naturaltime }}
             </small>

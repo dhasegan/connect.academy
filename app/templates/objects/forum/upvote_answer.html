@@ -1,0 +1,8 @@
+<form class="upvote-answer-form form-inline" role="form" action="{% url 'upvote_answer' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="answer_id" value="{{ answer.answer.id }}">
+
+    <button type="submit" class="btn {% if answer.voted %} btn-primary {% endif %} btn-xs">
+        <span class="glyphicon glyphicon-thumbs-up"></span> {% if answer.upvotes %} {{ answer.upvotes }} {% else %} 0 {% endif %}
+    </button>
+</form>

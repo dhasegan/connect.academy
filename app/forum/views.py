@@ -119,11 +119,11 @@ def new_answer(request, slug):
     answer.save()
 
     if 'discussion_answer' in form.cleaned_data and form.cleaned_data['discussion_answer']:
-        context = forum_discussion_context(forums[0], form.cleaned_data['post'], form.cleaned_data['discussion_answer'])
+        context = forum_discussion_context(forums[0], form.cleaned_data['post'], form.cleaned_data['discussion_answer'], user)
         template_filename = "objects/forum/discussion.html"
     else:
         context['forum'] = forums[0]
-        context['post'] = forum_post_context(form.cleaned_data['post'])
+        context['post'] = forum_post_context(form.cleaned_data['post'], user)
         template_filename = "objects/forum/answers.html"
 
     response_data = {
@@ -168,12 +168,11 @@ def discussion(request, answer_id):
 
     post = answer.post
     forum = get_object_or_404(ForumCourse, id=post.forum.id)
-    context = forum_discussion_context(forum, post, answer)
+    context = forum_discussion_context(forum, post, answer, user)
 
     response_data = {
         'html': render_to_string("objects/forum/discussion.html", RequestContext(request, context))
     }
-
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @require_GET
@@ -186,12 +185,69 @@ def answers(request, post_id):
     context = {
         'course': forum.course,
         'forum': forum,
-        'post': forum_post_context(post)
+        'post': forum_post_context(post, user)
     }
 
 
     response_data = {
         'html': render_to_string("objects/forum/answers.html", RequestContext(request, context))
     }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+@require_POST
+@login_required
+def upvote_post(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = UpvotePost(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    post = form.cleaned_data['post']
+    voted = len(post.upvoted_by.filter(id=user.id)) > 0
+    if not voted:
+        post.upvoted_by.add(user)
+    else:
+        post.upvoted_by.remove(user)
+
+    context = {
+        'post': {
+            'question': post,
+            'upvotes': len(post.upvoted_by.all()),
+            'voted': not voted
+        }
+    }
+    response_data = {
+        'html': render_to_string('objects/forum/upvote_post.html', RequestContext(request, context)),
+        'id_selector': '#upvote_post_' + str(post.id)
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@require_POST
+@login_required
+def upvote_answer(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = UpvoteAnswer(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    answer = form.cleaned_data['answer']
+    voted = len(answer.upvoted_by.filter(id=user.id)) > 0
+    if not voted:
+        answer.upvoted_by.add(user)
+    else:
+        answer.upvoted_by.remove(user)
+
+    context = {
+        'answer': {
+            'answer': answer,
+            'upvotes': len(answer.upvoted_by.all()),
+            'voted': not voted
+        }
+    }
+    response_data = {
+        'html': render_to_string('objects/forum/upvote_answer.html', RequestContext(request, context)),
+        'id_selector': '#upvote_answer_' + str(answer.id)
+    }
     return HttpResponse(json.dumps(response_data), content_type="application/json")

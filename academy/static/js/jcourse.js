@@ -282,16 +282,16 @@ jQuery( document ).ready(function( $ ) {
         );
     });
 
-    // Post new answer in the forum
-    var onRefreshAnswerTab = function() {
+    // Refresh something in the DOM, relink everything in its subtree
+    var onRefreshAnswerTab = function(SubtreeDOM) {
         // Submit answers ajax
-        $('.forumpostnewanswer-form').submit(function(event) {
+        SubtreeDOM.find('.forumpostnewanswer-form').submit(function(event) {
             SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);
                     $answer_tab.html(result.html);
 
-                    onRefreshAnswerTab();
+                    onRefreshAnswerTab($answer_tab);
                 }, 
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
@@ -299,7 +299,7 @@ jQuery( document ).ready(function( $ ) {
             );
         });
         // Get the reply form ajax
-        $('.getreplyform-link').click(function(event) {
+        SubtreeDOM.find('.getreplyform-link').click(function(event) {
             event.preventDefault();
             var $link = $(this);
             var $reply_form = $link.parents('.answer-footer').find('.reply-form');
@@ -311,13 +311,15 @@ jQuery( document ).ready(function( $ ) {
                         $reply_form.html(response.html).slideDown();
                         $reply_form.addClass('active');
 
-                        onRefreshAnswerTab();
+                        onRefreshAnswerTab($reply_form);
                     }
                 })
             }
         });
         // Get the bestanswers or discussion view ajax
-        ($('.discussion-link').add('.bestanswers-link')).click(function(event) {
+        var $discussions = SubtreeDOM.find('.discussion-link');
+        var $best_answers = SubtreeDOM.find('.bestanswers-link');
+        ($best_answers.add($discussions)).click(function(event) {
             event.preventDefault();
             var $link = $(this);
             var $forum_answers = $link.parents('.forum-answers').parent();
@@ -327,14 +329,27 @@ jQuery( document ).ready(function( $ ) {
                 success: function(response) {
                     $forum_answers.html(response.html).slideDown();
 
-                    onRefreshAnswerTab();
+                    onRefreshAnswerTab($forum_answers);
                 }
             })
         });
+        // Upvote posts and answers
+        var $upvote_posts = SubtreeDOM.find('.upvote-post-form');
+        var $upvote_answers = SubtreeDOM.find('.upvote-answer-form');
+        ($upvote_posts.add($upvote_answers)).click(function(event) {
+            SubmitFormAjax(event, this,
+                function(result) {
+                    $(result.id_selector).html(result.html);
 
-
+                    onRefreshAnswerTab($(result.id_selector));
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            );
+        });
     };
-    onRefreshAnswerTab();
+    onRefreshAnswerTab($('html'));
 
 
     $("#email").blur(function(){

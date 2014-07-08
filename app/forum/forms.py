@@ -70,3 +70,30 @@ class SubmitForumAnswer(forms.Form):
                 raise forms.ValidationError("The discussion answer is not an answer that should have its discussion page!")
 
         return cleaned_data
+
+class UpvotePost(forms.Form):
+    post_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(UpvotePost, self).clean()
+
+        posts = ForumPost.objects.filter(id=cleaned_data.get("post_id"))
+        if len(posts) != 1:
+            raise forms.ValidationError("Not a valid number of posts with this post_id!")
+        cleaned_data['post'] = posts[0]
+
+        return cleaned_data
+
+
+class UpvoteAnswer(forms.Form):
+    answer_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(UpvoteAnswer, self).clean()
+
+        answers = ForumAnswer.objects.filter(id=cleaned_data.get("answer_id"))
+        if len(answers) != 1:
+            raise forms.ValidationError("Not a valid number of answers with this answer_id!")
+        cleaned_data['answer'] = answers[0]
+
+        return cleaned_data

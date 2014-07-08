@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             {{ post.question.name }}
-            
+
             {% block answer_question_button %}
                 <div class="answer-btn pull-right">
                     <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
@@ -18,6 +18,9 @@
             {% block post_details %}
                 <div class="post-details">
                     <div class="post-header text-muted">
+                        <span id="upvote_post_{{ post.question.id }}">
+                            {% include 'objects/forum/upvote_post.html' %}
+                        </span>
                         Posted by
                         {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
                         {% else %}

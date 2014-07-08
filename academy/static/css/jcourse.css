@@ -437,6 +437,14 @@ font-weight: bold;
     display: none;
 }
 
+.forum-answers .post-details .post-header .upvote-post-form {
+    display: inline;
+}
+
+.answers-tabs .best-answers .answer-box .answer-header .upvote-answer-form,
+.answers-tabs .discussion-answers .answer-box .answer-header .upvote-answer-form  {
+    display: inline;
+}
 
 
 /*********************************/
