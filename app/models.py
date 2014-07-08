@@ -471,7 +471,7 @@ class Forum(models.Model):
     forum_type = models.IntegerField(choices=FORUM_TYPES, default=FORUM_TYPE_COURSE)
 
     def __unicode__(self):
-        return dict(FORUM_TYPES)[forum_type]
+        return dict(FORUM_TYPES)[self.forum_type]
 
 class ForumCourse(Forum):
     course = models.ForeignKey('Course')

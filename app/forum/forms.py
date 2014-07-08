@@ -26,6 +26,8 @@ class SubmitForumAnswer(forms.Form):
 
     anonymous = forms.BooleanField(required=False)
 
+    discussion_answer_id = forms.CharField(required=False)
+
     def clean(self):
         cleaned_data = super(SubmitForumAnswer, self).clean()
 
@@ -51,5 +53,20 @@ class SubmitForumAnswer(forms.Form):
 
             if answers[0].post != posts[0]:
                 raise forms.ValidationError("The answer you are replying to is not part of the correct post!")
+
+        discussion_answer_id = cleaned_data.get("discussion_answer_id")
+        if discussion_answer_id:
+            discussion_answers = ForumAnswer.objects.filter(id=discussion_answer_id)
+            if len(discussion_answers) != 1:
+                raise forms.ValidationError("Not a valid number of discussion answers with this discussion_answer_id!")
+            discussion_answer = discussion_answers[0]
+            cleaned_data['discussion_answer'] = discussion_answer
+
+            if discussion_answer.post != posts[0]:
+                raise forms.ValidationError("The answer you are discussing about is not part of the correct post!")
+
+            parent_answer = discussion_answer.parent_answer
+            if not parent_answer or parent_answer.parent_answer:
+                raise forms.ValidationError("The discussion answer is not an answer that should have its discussion page!")
 
         return cleaned_data

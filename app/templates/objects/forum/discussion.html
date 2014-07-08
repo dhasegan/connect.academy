@@ -1,0 +1,23 @@
+{% extends 'objects/forum/answers.html' %}
+
+{% block answer_question_button %}
+{% endblock answer_question_button %}
+
+{% block answer_question_form %}
+{% endblock answer_question_form %}
+
+
+{% block all_answers %}
+<!-- TODO: REPLACE BEST-answers -->
+    <div class="tab-content discussion-answers">
+        <strong> Discussion on the reply: </strong>
+        {% for answer in post.answers %}
+            {% include 'objects/forum/discussion_answer.html' %}
+        {% endfor %}
+        {% with post.answers|last as parent_answer %}
+        {% with post.question as question %}
+            {% include 'objects/forum/new_answer.html' %}
+        {% endwith %}
+        {% endwith %}
+    </div>
+{% endblock all_answers %}

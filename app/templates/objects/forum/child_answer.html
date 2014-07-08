@@ -2,7 +2,7 @@
 
 {% block reply_form %}
     <small class="text-muted">
-        <a class="" href="#"> Start Discussion </a>
+        <a class="discussion-link" href="{% url 'forum_discussion' answer.answer.id %}"> {% if not answer.children > 2 %} Start Discussion {% else %} View Ongoing Discussion ({{ answer.children }}) {% endif %} </a>
     </small>
 {% endblock reply_form %}
 

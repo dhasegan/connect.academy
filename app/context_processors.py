@@ -217,6 +217,45 @@ def review_context(comment, request, current_user):
 
     return context_comment
 
+################## Forum Contexts ######################
+
+def forum_child_answer_context(post, answer):
+    context = {
+        'answer': answer,
+        'child_answers': []
+    }
+    count = 2
+    while True:
+        child_answers = answer.forumanswer_set.all()
+        if not child_answers:
+            break
+        answer = child_answers[0]
+        count += 1
+    context['children'] = count
+
+    return context
+
+def forum_answer_context(post, answer):
+    context = {
+        'answer': answer,
+        'child_answers': []
+    }
+    child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
+    for child in child_answers:
+        context['child_answers'].append(forum_child_answer_context(post, child))
+
+    return context
+
+def forum_post_context(post):
+    answers_context = []
+    answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
+    for answer in answers:
+        answers_context.append( forum_answer_context(post, answer) )
+    return {
+        'question': post,
+        'answers': answers_context
+    }
+
 def forum_context(forum, current_user):
     context_forum = {
         "forum": forum,
@@ -231,23 +270,33 @@ def forum_context(forum, current_user):
 
     return context_forum
 
-def forum_post_context(post):
-    answers_context = []
-    answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
-    for answer in answers:
-        answers_context.append( forum_answer_context(post, answer) )
+def forum_discussion_answer_context(answer):
     return {
-        'question': post,
-        'answers': answers_context
-    }
-
-def forum_answer_context(post, answer):
-    context = {
-        'answer': answer,
+        'answer': answer, 
         'child_answers': []
     }
-    child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
-    for child in child_answers:
-        context['child_answers'].append(forum_answer_context(post, child))
 
-    return context
+def forum_discussion_post_context(post, answer1, answer2):
+    discussion_answers = [forum_discussion_answer_context(answer1),\
+        forum_discussion_answer_context(answer2)]
+    answer = answer2
+    while True:
+        child_answers = answer.forumanswer_set.all()
+        if not child_answers:
+            break
+        answer = child_answers[0]
+        discussion_answers.append(forum_discussion_answer_context(answer))
+    return {
+        'question': post,
+        'answers': discussion_answers
+    }
+
+
+def forum_discussion_context(forum, post, answer):
+    parent_answer = answer.parent_answer
+    return {
+        'post': forum_discussion_post_context(post, parent_answer, answer),
+        'forum': forum, 
+        'course': forum.course,
+        'discussion_answer_id': answer.id
+    }

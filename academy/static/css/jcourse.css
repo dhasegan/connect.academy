@@ -416,17 +416,20 @@ font-weight: bold;
 /*********************************/
 /******* Forums pages ************/
 
-.answers-tabs .best-answers .answer-box {
+.answers-tabs .best-answers .answer-box,
+.answers-tabs .discussion-answers .answer-box {
     border: 1px;
     border-style: solid;
     margin: 8px 4px;
 }
 
-.answers-tabs .best-answers .answer-box .answer-body p {
+.answers-tabs .best-answers .answer-box .answer-body p,
+.answers-tabs .discussion-answers .answer-box .answer-body p {
     margin-bottom: 0px;
 }
 
-.answers-tabs .best-answers .answer-box .answer-box-contents {
+.answers-tabs .best-answers .answer-box .answer-box-contents,
+.answers-tabs .discussion-answers .answer-box .answer-box-contents {
     margin-left: 8px;
 }
 

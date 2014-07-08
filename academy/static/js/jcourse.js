@@ -316,6 +316,21 @@ jQuery( document ).ready(function( $ ) {
                 })
             }
         });
+        // Get the discussion view ajax
+        $('.discussion-link').click(function(event) {
+            event.preventDefault();
+            var $link = $(this);
+            var $forum_answers = $link.parents('.forum-answers').parent();
+            $.ajax({
+                type: "get",
+                url: this.href,
+                success: function(response) {
+                    $forum_answers.html(response.html).slideDown();
+
+                    onRefreshAnswerTab();
+                }
+            })
+        });
     };
     onRefreshAnswerTab();
 

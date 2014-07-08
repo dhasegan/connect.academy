@@ -118,10 +118,16 @@ def new_answer(request, slug):
                          parent_answer=parent_answer, posted_by=user, anonymous=form.cleaned_data['anonymous'])
     answer.save()
 
-    context['forum'] = forums[0]
-    context['post'] = forum_post_context(form.cleaned_data['post'])
+    if 'discussion_answer' in form.cleaned_data and form.cleaned_data['discussion_answer']:
+        context = forum_discussion_context(forums[0], form.cleaned_data['post'], form.cleaned_data['discussion_answer'])
+        template_filename = "objects/forum/discussion.html"
+    else:
+        context['forum'] = forums[0]
+        context['post'] = forum_post_context(form.cleaned_data['post'])
+        template_filename = "objects/forum/answers.html"
+
     response_data = {
-        'html': render_to_string("objects/forum/answers.html", RequestContext(request, context)),
+        'html': render_to_string(template_filename, RequestContext(request, context)),
         'id_selector': '#answers' + str(form.cleaned_data['post'].id)
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
@@ -135,7 +141,10 @@ def reply_form(request, answer_id):
     post = answer.post
     forum = get_object_or_404(ForumCourse, id=post.forum.id)
     context = {
-        'parent_answer': answer,
+        'parent_answer': {
+            'answer': answer,
+            'child_answers': []
+        },
         'question': post,
         'forum': forum,
         'course': forum.course
@@ -144,4 +153,25 @@ def reply_form(request, answer_id):
     response_data = {
         'html': render_to_string("objects/forum/new_answer.html", RequestContext(request, context))
     }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@require_GET
+@login_required
+def discussion(request, answer_id):
+    answer = get_object_or_404(ForumAnswer, id=answer_id)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    # Check if answer is exactly the second reply of a post
+    parent_answer = answer.parent_answer
+    if not parent_answer or parent_answer.parent_answer:
+        raise Http404
+
+    post = answer.post
+    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    context = forum_discussion_context(forum, post, answer)
+
+    response_data = {
+        'html': render_to_string("objects/forum/discussion.html", RequestContext(request, context))
+    }
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
