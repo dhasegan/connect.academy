@@ -282,6 +282,19 @@ jQuery( document ).ready(function( $ ) {
         );
     });
 
+    // Post new answer in the forum
+    $('.forumpostnewanswer-form').submit(function(event) {
+        SubmitFormAjax(event, this,
+            function(result) {
+                var $answer_tab = $(result.id_selector);
+                $answer_tab.html(result.html);
+            }, 
+            function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus)
+            }
+        );
+    });
+
     $('.getreplyform-link').click(function(event) {
         event.preventDefault();
         var $link = $(this);

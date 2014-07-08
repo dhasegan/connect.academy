@@ -217,17 +217,6 @@ def review_context(comment, request, current_user):
 
     return context_comment
 
-def forum_answer_context(post, answer):
-    context = {
-        'answer': answer,
-        'child_answers': []
-    }
-    child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
-    for child in child_answers:
-        context['child_answers'].append(forum_answer_context(post, child))
-
-    return context
-
 def forum_context(forum, current_user):
     context_forum = {
         "forum": forum,
@@ -238,13 +227,27 @@ def forum_context(forum, current_user):
     context_forum['posts'] = []
     posts = ForumPost.objects.filter(forum=forum)
     for post in posts:
-        answers_context = []
-        answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
-        for answer in answers:
-            answers_context.append( forum_answer_context(forum, answer) )
-        context_forum['posts'].append({
-            'question': post,
-            'answers': answers_context
-        })
+        context_forum['posts'].append(forum_post_context(post))
 
     return context_forum
+
+def forum_post_context(post):
+    answers_context = []
+    answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
+    for answer in answers:
+        answers_context.append( forum_answer_context(post, answer) )
+    return {
+        'question': post,
+        'answers': answers_context
+    }
+
+def forum_answer_context(post, answer):
+    context = {
+        'answer': answer,
+        'child_answers': []
+    }
+    child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
+    for child in child_answers:
+        context['child_answers'].append(forum_answer_context(post, child))
+
+    return context

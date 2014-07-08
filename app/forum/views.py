@@ -102,7 +102,6 @@ def new_answer(request, slug):
     forums = course.forumcourse_set.all()
     if not forums.count():
         raise Http404
-    context['forum'] = forums[0]
     
     form = SubmitForumAnswer(request.POST)
     if not form.is_valid():
@@ -119,7 +118,12 @@ def new_answer(request, slug):
                          parent_answer=parent_answer, posted_by=user, anonymous=form.cleaned_data['anonymous'])
     answer.save()
 
-    return redirect("app.forum.views.forum_course", slug=course.slug)
+    context['post'] = forum_post_context(form.cleaned_data['post'])
+    response_data = {
+        'html': render_to_string("objects/forum/answers.html", context),
+        'id_selector': '#answers' + str(form.cleaned_data['post'].id)
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @require_GET
 @login_required
