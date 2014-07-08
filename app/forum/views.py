@@ -175,3 +175,23 @@ def discussion(request, answer_id):
     }
 
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@require_GET
+@login_required
+def answers(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    context = {
+        'course': forum.course,
+        'forum': forum,
+        'post': forum_post_context(post)
+    }
+
+
+    response_data = {
+        'html': render_to_string("objects/forum/answers.html", RequestContext(request, context))
+    }
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")

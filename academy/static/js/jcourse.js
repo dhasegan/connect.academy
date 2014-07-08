@@ -316,8 +316,8 @@ jQuery( document ).ready(function( $ ) {
                 })
             }
         });
-        // Get the discussion view ajax
-        $('.discussion-link').click(function(event) {
+        // Get the bestanswers or discussion view ajax
+        ($('.discussion-link').add('.bestanswers-link')).click(function(event) {
             event.preventDefault();
             var $link = $(this);
             var $forum_answers = $link.parents('.forum-answers').parent();
@@ -331,6 +331,8 @@ jQuery( document ).ready(function( $ ) {
                 }
             })
         });
+
+
     };
     onRefreshAnswerTab();
 
