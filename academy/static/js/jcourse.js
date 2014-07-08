@@ -283,33 +283,42 @@ jQuery( document ).ready(function( $ ) {
     });
 
     // Post new answer in the forum
-    $('.forumpostnewanswer-form').submit(function(event) {
-        SubmitFormAjax(event, this,
-            function(result) {
-                var $answer_tab = $(result.id_selector);
-                $answer_tab.html(result.html);
-            }, 
-            function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus)
-            }
-        );
-    });
+    var onRefreshAnswerTab = function() {
+        // Submit answers ajax
+        $('.forumpostnewanswer-form').submit(function(event) {
+            SubmitFormAjax(event, this,
+                function(result) {
+                    var $answer_tab = $(result.id_selector);
+                    $answer_tab.html(result.html);
 
-    $('.getreplyform-link').click(function(event) {
-        event.preventDefault();
-        var $link = $(this);
-        var $reply_form = $link.parents('.answer-footer').find('.reply-form');
-        if (!($reply_form.hasClass('active'))) {
-            $.ajax({
-                type: "get",
-                url: this.href,
-                success: function(response) {
-                    $reply_form.html(response.html).slideDown();
-                    $reply_form.addClass('active')
+                    onRefreshAnswerTab();
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus)
                 }
-            })
-        }
-    });
+            );
+        });
+        // Get the reply form ajax
+        $('.getreplyform-link').click(function(event) {
+            event.preventDefault();
+            var $link = $(this);
+            var $reply_form = $link.parents('.answer-footer').find('.reply-form');
+            if (!($reply_form.hasClass('active'))) {
+                $.ajax({
+                    type: "get",
+                    url: this.href,
+                    success: function(response) {
+                        $reply_form.html(response.html).slideDown();
+                        $reply_form.addClass('active');
+
+                        onRefreshAnswerTab();
+                    }
+                })
+            }
+        });
+    };
+    onRefreshAnswerTab();
+
 
     $("#email").blur(function(){
         var email_address = this.value;

@@ -53,7 +53,7 @@ def course_registration(request, slug):
         }
     }
     response_data = {}
-    response_data['html'] = render_to_string("objects/forum/forum_management.html", context)
+    response_data['html'] = render_to_string("objects/forum/forum_management.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @require_http_methods(["GET", "POST"])
@@ -118,9 +118,10 @@ def new_answer(request, slug):
                          parent_answer=parent_answer, posted_by=user, anonymous=form.cleaned_data['anonymous'])
     answer.save()
 
+    context['forum'] = forums[0]
     context['post'] = forum_post_context(form.cleaned_data['post'])
     response_data = {
-        'html': render_to_string("objects/forum/answers.html", context),
+        'html': render_to_string("objects/forum/answers.html", RequestContext(request, context)),
         'id_selector': '#answers' + str(form.cleaned_data['post'].id)
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
