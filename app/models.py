@@ -97,18 +97,16 @@ COURSE_TYPES = (
 )
 
 # Registration statuses
-OPEN = 0 # Registration for this course is open
-CLOSED = 1 # Registration for this course is closed
-INVALID = 2 # User is not allowed to register for this course
-PENDING = 3 # Student is registered for this course, but approval is pending
-REGISTERED  = 4 # Student is already registered and approved.
+COURSE_REGISTRATION_OPEN = 0 # The user can register for this course
+COURSE_REGISTRATION_PENDING = 1 # Registration for this course is pending approval
+COURSE_REGISTRATION_REGISTERED = 2 # User is registered for this course
+COURSE_REGISTRATION_NOT_ALLOWED = 3 # User is not allowed to register for this course
 
 REGISTRATION_STATUSES = (
-    (OPEN, "Open"),
-    (CLOSED, "Closed"),
-    (INVALID, "Invalid"),
-    (PENDING, "Pending"),
-    (REGISTERED, "Registered")
+    (COURSE_REGISTRATION_OPEN, "Open"),
+    (COURSE_REGISTRATION_PENDING, "Pending"),
+    (COURSE_REGISTRATION_REGISTERED, "Registered"),
+    (COURSE_REGISTRATION_NOT_ALLOWED, "Not_Allowed")
 )
 
 class Major(models.Model):
@@ -150,32 +148,47 @@ class Course(models.Model):
 
     # gets the registration status of this course for the given user
     # Registration status is one of the following:
-    #   OPEN       (0): The student can register for the course
-    #   CLOSED     (1): Registration is not open for this course
-    #   INVALID    (2): This particular user is not allowed to register for this course
-    #   PENDING    (3): The student has already registered for this course but the registration
-    #                   is not yet approved 
-    #   REGISTERED (4): The student has already registered for this course and the registration
-    #                   has been approved
+    #   COURSE_REGISTRATION_OPEN       (0): The student can register for the course
+    #   COURSE_REGISTRATION_PENDING     (1): Registration is pending approval
+    #   COURSE_REGISTRATION_REGISTERED    (2): User is registered for the course
+    #   COURSE_REGISTRATION_NOT_ALLOWED     (3): User is not allowed to register for the course
+
     def get_registration_status(self,user):
-
-        registration_status = OPEN 
-
-        cat = self.category
-        registration = cat.get_cr_deadline()
-        if registration is None or not registration.is_open():
-            registration_status = CLOSED
-        elif self.university != user.university or user.user_type != USER_TYPE_STUDENT:
-            registration_status = INVALID
+        registration = None
+        if user.user_type == USER_TYPE_STUDENT:
+            try:
+                registration = StudentCourseRegistration.objects.get(student=user, course = self)
+            except exception:
+                pass
+        elif user.user_type == USER_TYPE_PROFESSOR:
+            try:
+                registration = ProfessorCourseRegistration.objects.get(professor = user, course = self)
+            except Exception:
+                pass
         else:
-            registrations = StudentCourseRegistration.objects.filter(student=user,course=self)
-            if registrations:
-                reg = registrations[0]
-                if reg.is_approved == True:
-                    registration_status = REGISTERED
-                else:
-                    registration_status = PENDING
-        return registration_status
+            return COURSE_REGISTRATION_NOT_ALLOWED # Not a user, not a professor
+
+        if registration is None:
+            if user.university == self.university and user.is_active:
+                return COURSE_REGISTRATION_OPEN
+            else:
+                return COURSE_REGISTRATION_NOT_ALLOWED
+        else:
+            if registration.is_approved:
+                return COURSE_REGISTRATION_REGISTERED
+            else:
+                return COURSE_REGISTRATION_PENDING
+
+        return None # This line will never be reached
+
+        
+
+    def get_cr_deadline(self):
+        category = self.category
+        if category is not None:
+            return category.get_cr_deadline()
+        else:
+            return None
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -252,12 +265,12 @@ class Category(models.Model):
     # finds the course registration deadline for this category (by climbing up to the root of the tree
     # until a category with a deadline is found)
     def get_cr_deadline(self):
-        cat = self
-        while cat.cr_deadline is None:
-            cat = cat.parent
-            if cat == None:
-                return None
-        return cat.cr_deadline
+        if self.cr_deadline is not None:
+            return self.cr_deadline
+        elif self.parent is not None:
+            return self.parent.get_cr_deadline()
+        else:
+            return None
 
     # gets the subtree that has this category in the root. The tree is returned as a dictionary,
     # such that when converted to JSON, it follows the specifications to build a Spacetree with 

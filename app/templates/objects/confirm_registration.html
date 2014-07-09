@@ -25,11 +25,21 @@
     </div><!-- /.modal-dalog -->
 </div><!-- /.modal -->
 
-{% if registration_status == 0 %} <!-- open -->
-    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>Register</a>
-{% elif registration_status == 3 %} <!-- pending -->
-    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration</b></a>
-{% elif registration_status == 4 %} <!-- registered -->
+{% if registration_open or user_auth.user_type == 1 %}
+    {% if registration_status == 0 %} <!-- open -->
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>
+            {% if user_auth.user_type == 0 %} <!-- Student -->
+                Register
+            {% elif user_auth.user_type == 1 %} <!-- Professor -->
+                I am teaching this course
+            {% endif %}
+        </a>
+    {% elif registration_status == 1 %} <!-- pending -->
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration</b></a>
+    {% endif %}
+{% endif %}
+
+{% if registration_status == 2 %} <!-- registered -->
     <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success" id='register_button{{jcourse.id}}' disabled><b>Registered</b></a>
 
 {% endif %}

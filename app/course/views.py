@@ -215,15 +215,40 @@ def register_course(request, slug):
     context.update(csrf(request))
     user = request.user
     course = get_object_or_404(Course, slug=slug)
-    category = course.category
-    registration = category.get_cr_deadline()
-    if registration is None or not registration.is_open():
-        return HttpResponse("Registration is not open",context)
-    if course.university != user.university or user.user_type != USER_TYPE_STUDENT or not user.is_active:
-        return HttpResponse("You cannot register for this course",context)
-    if user.courses_enrolled.filter(slug = slug).count() > 0:
-        return HttpResponse("You have already registered for this course",context)
+    cr_deadline = course.get_cr_deadline()
+    registration_status = course.get_registration_status(user)
+    registration_open = cr_deadline.is_open() if cr_deadline is not None else False
+    
+    if user.user_type == USER_TYPE_STUDENT:
+        if registration_open:
+            if registration_status == COURSE_REGISTRATION_OPEN:
+                course_registration = StudentCourseRegistration(student = user, 
+                                                                course = course, 
+                                                                is_approved=False)
+                course_registration.save()
+                return HttpResponse("OK",context)
+            elif registration_status in [COURSE_REGISTRATION_PENDING, COURSE_REGISTRATION_REGISTERED]:
+                return HttpResponse("You have already registered for this course.",context)
+            elif registration_status == COURSE_REGISTRATION_NOT_ALLOWED:
+                return HttpResponse("You are not allowed to register for this course")
+        else:
+            return HttpResponse("Course registration period is not open.")
+    elif user.user_type == USER_TYPE_PROFESSOR:
+        if registration_status == COURSE_REGISTRATION_OPEN:
+                course_registration = ProfessorCourseRegistration(professor = user, 
+                                                                  course = course, 
+                                                                  is_approved=False)
+                course_registration.save()
+                return HttpResponse("OK",context)
+        elif registration_status in [COURSE_REGISTRATION_PENDING, COURSE_REGISTRATION_REGISTERED]:
+            return HttpResponse("You have already registered for this course.",context)
+        elif registration_status == COURSE_REGISTRATION_NOT_ALLOWED:
+            return HttpResponse("You are not allowed to register for this course.")
+    else: 
+        return HttpResponse("You are not allowed to register for this course.")
 
-    course_registration = StudentCourseRegistration(student = user, course = course, is_approved=False)
-    course_registration.save()
-    return HttpResponse("OK",context)
+
+
+
+
+    
