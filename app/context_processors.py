@@ -219,23 +219,36 @@ def review_context(comment, request, current_user):
 
 ################## Forum Contexts ######################
 
+def forum_vote_context(obj, current_user):
+    # obj is either post or answer
+    context = {}
+
+    all_upvotes = obj.upvoted_by.all()
+    nr_upvotes = all_upvotes.count()
+    time_diff = pytz.utc.localize(datetime.now()) - obj.datetime
+    context['upvotes'] = nr_upvotes
+    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
+    context['rating'] = forum_post_rating(nr_upvotes, time_diff.total_seconds())
+
+    return context
+
+
 def forum_child_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
         'child_answers': []
     }
     count = 2
+    child_answer = answer
     while True:
-        child_answers = answer.forumanswer_set.all()
+        child_answers = child_answer.forumanswer_set.all()
         if not child_answers:
             break
-        answer = child_answers[0]
+        child_answer = child_answers[0]
         count += 1
     context['children'] = count
 
-    all_upvotes = answer.upvoted_by.all()
-    context['upvotes'] = len(all_upvotes)
-    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
+    context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
 def forum_answer_context(post, answer, current_user):
@@ -247,9 +260,7 @@ def forum_answer_context(post, answer, current_user):
     for child in child_answers:
         context['child_answers'].append(forum_child_answer_context(post, child, current_user))
 
-    all_upvotes = answer.upvoted_by.all()
-    context['upvotes'] = len(all_upvotes)
-    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
+    context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
 def forum_post_context(post, current_user):
@@ -257,13 +268,12 @@ def forum_post_context(post, current_user):
     answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
     for answer in answers:
         answers_context.append( forum_answer_context(post, answer, current_user) )
-    all_upvotes = post.upvoted_by.all()
-    return {
+    context = {
         'question': post,
         'answers': answers_context,
-        'upvotes': len(all_upvotes),
-        'voted': len(all_upvotes.filter(id=current_user.id)) > 0
     }
+    context = dict(context.items() + forum_vote_context(post, current_user).items())
+    return context
 
 def forum_context(forum, current_user):
     context_forum = {
@@ -285,9 +295,7 @@ def forum_discussion_answer_context(answer, current_user):
         'child_answers': []
     }
 
-    all_upvotes = answer.upvoted_by.all()
-    context['upvotes'] = len(all_upvotes)
-    context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
+    context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
 def forum_discussion_post_context(post, answer1, answer2, current_user):
@@ -300,13 +308,13 @@ def forum_discussion_post_context(post, answer1, answer2, current_user):
             break
         answer = child_answers[0]
         discussion_answers.append(forum_discussion_answer_context(answer, current_user))
-    all_upvotes = post.upvoted_by.all()
-    return {
+
+    context =  {
         'question': post,
         'answers': discussion_answers,
-        'upvotes': len(all_upvotes),
-        'voted': len(all_upvotes.filter(id=current_user.id)) > 0
     }
+    context = dict(context.items() + forum_vote_context(post, current_user).items())
+    return context
 
 
 def forum_discussion_context(forum, post, answer, current_user):

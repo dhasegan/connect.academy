@@ -230,3 +230,9 @@ VALID_TIME_INPUTS = ['%d/%m/%Y %H:%M:%S',    # '25/10/2006 14:30:59'
                     '%d/%m/%y %H:%M',        # '25/10/06 14:30'
                     '%d/%m/%y'               # '25/10/06 14:30'
                     ]
+
+### Forum post rankings settings
+# Higher judgement means higher thresholds for merit and age
+
+MERIT_JUDGEMENT = 4
+AGE_JUDGEMENT = 300000

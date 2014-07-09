@@ -1,6 +1,6 @@
 {% if answer.child_answers|length > 0 %}
     <div class="child-answers">
-        {% for child_answer in answer.child_answers %}
+        {% for child_answer in answer.child_answers|dictsortreversed:"rating" %}
             {% with child_answer as answer %}
                 {% include 'objects/forum/child_answer.html' %}
             {% endwith %}

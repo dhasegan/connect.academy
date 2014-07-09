@@ -49,7 +49,7 @@
             {% block all_answers %}
                 <div class="tab-content best-answers">
                     <strong> Best Answers: </strong>
-                    {% for answer in post.answers %}
+                    {% for answer in post.answers|dictsortreversed:"rating" %}
                         {% include 'objects/forum/answer.html' %}
                     {% endfor %}
                     {% if post.answers|length == 0 %}
