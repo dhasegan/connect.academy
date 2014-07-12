@@ -349,15 +349,6 @@ class Domain(models.Model):
     def __unicode__(self):
         return str(self.name)
 
-
-class WikiPage(models.Model):
-    name = models.CharField(max_length=50,primary_key=True)
-    content = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return str(self.name)
-
-
 class Deadline(models.Model):
     start = models.DateTimeField(default=pytz.utc.localize(datetime.now()))
     end = models.DateTimeField()
@@ -535,3 +526,16 @@ class ForumAnswer(models.Model):
 
     def __unicode__(self):
         return self.text
+
+class WikiPage(models.Model):
+    course = models.ForeignKey('Course',null=True,related_name='wiki')
+    title = models.CharField(max_length=50)
+    content = models.TextField(blank=True)
+    last_modified_by = models.ForeignKey('jUser',null=True)
+    last_modified_on = models.DateTimeField(null=True)
+    
+    def __unicode__(self):
+        return str(self.title)
+
+#register with reversion together with the course and last_modified_on field 
+#also register Course and jUser 

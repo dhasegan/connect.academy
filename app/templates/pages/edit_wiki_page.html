@@ -1,0 +1,24 @@
+{% extends "pages/base.html" %}
+{% load humanize %}
+{% block content %}
+	<form class="form-horizontal" method="POST" role="form" action='save_wiki_page'>
+
+		{% csrf_token %}
+  		
+  		<div class="form-group">
+    		<div class="col-sm-10">
+      			<textarea class="form-control" id="title" name="title" rows="1">{{title|safe}}</textarea>
+    		</div>
+  		</div>
+  		<div class="form-group">
+    		<div class="col-sm-10">
+      			<textarea class="form-control" id="content" name="content" rows="20">{{content|safe}}</textarea>
+    		</div>
+  		</div>
+  		<div class="form-group">
+  		
+    		<button type="submit" class="btn btn-default">Save</button>
+     	</div>
+	</form>
+
+{% endblock %}

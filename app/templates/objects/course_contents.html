@@ -148,6 +148,23 @@
         </span>
     </div>
     {% endif %}
+    
+
+    <hr/>
+    
+    <div class="course-detail">
+        <strong> Wiki: </strong>
+        <div class="content">
+            {% if course.wiki.all %}
+                {% with course.wiki.all.0 as wiki and course.slug as slug%}
+                    {% include "objects/course_wiki.html" %}
+                {% endwith %}
+                
+            {% else %}
+                This course doesn't have a <b> wiki </b> yet. Contribute by <a href="/wiki/{{course.slug}}/edit_wiki_page">creating</a> one.
+            {% endif %}
+        </div>
+    </div>
 
     <!-- sections_info is useless -->
 </div>

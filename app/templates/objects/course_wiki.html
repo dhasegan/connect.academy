@@ -1,0 +1,11 @@
+{% block content %}
+	 
+	<b>{{wiki.title | safe}}</b> 
+	<br/>
+	{{wiki.content| safe}}
+	
+	<hr/>
+	
+	<a href="/wiki/{{slug}}/edit_wiki_page">Edit Wiki</a>
+
+{% endblock %}
