@@ -71,8 +71,11 @@ def save_wiki_page(request,slug):
         
         if title != wikis[0].title or content != wikis[0].content:
         	context['success'] = "Wiki <b> edited</b> successfully."
-        else:
-        	pass
+        else:# if the user does nothing.
+        	context['title'] = title
+    		context['content'] = content
+        	return render(request, "pages/edit_wiki_page.html", context)
+
         wikis[0].title = title
         wikis[0].content = content
         wikis[0].last_modified_on = form.modified_on
