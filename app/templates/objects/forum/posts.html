@@ -1,8 +1,8 @@
 <nav class="nav-sidebar">
     <ul class="nav tabs">
-        {% for post in posts %}
+        {% for post in posts|dictsortreversed:"rating" %}
             <li {% if forloop.counter == 1 %} class="active" {% endif %}>
-                <a href="#answers{{post.question.id}}" role="tab" data-toggle="tab"> {{ post.question.name }} 
+                <a href="#answers{{post.question.id}}" role="tab" data-toggle="tab"> {{ post.question.name }}
                     {% if not post.question.anonymous %}
                         <small class="pull-right text-muted">
                             by {{ post.question.posted_by.last_name }}
