@@ -50,7 +50,7 @@ class jUser(User):
     #    categories_managed: (<juser>.categories_managed.all() returns all categories that have <juser> 
     #    as an admin)
     #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
-    #    downvoted: (<juser>.upvoted.all() returns all comments that <juser> downvoted)
+    #    downvoted: (<juser>.downvoted.all() returns all comments that <juser> downvoted)
 
     def __unicode__(self):
         return str(self.username)
@@ -146,6 +146,8 @@ class Course(models.Model):
     #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
     
 
+
+
     # gets the registration status of this course for the given user
     # Registration status is one of the following:
     #   COURSE_REGISTRATION_OPEN       (0): The student can register for the course
@@ -214,9 +216,9 @@ class Tag(models.Model):
 class University(models.Model):
     name = models.CharField(max_length=150)
     # Relations declared in other models define the following:
-    #   domains (<university>.domains.all() returns all domains of a university)
-    #   courses (<university>.courses.all() returns all courses of a university)
-
+    #   domains (<university>.domains.all() returns all domains of <university>)
+    #   courses (<university>.courses.all() returns all courses of <university>)
+    #   categories (<university>.categories.all() returns all categories of <university>)
     def __unicode__(self):
         return str(self.name)
 
@@ -225,6 +227,7 @@ class University(models.Model):
 class Category(models.Model):
     parent = models.ForeignKey('self',null = True, related_name = 'children') # Parent category
     level = models.IntegerField(null=True) # The level in which the category is positioned in the tree
+    university = models.ForeignKey('University', null=True, related_name='categories')
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
     admins = models.ManyToManyField('jUser', related_name = 'categories_managed')

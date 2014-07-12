@@ -4,7 +4,31 @@ import json
 from app.models import *
 from abc import abstractmethod
 
-# Category management forms
+##############################################################################################
+##############################################################################################
+# Description: The admin management forms are categorized in 2 base classes:
+#	1. CategoryForm (Forms that appear when a category is selected)
+#	2. CourseForm (Forms that appear when a course is selected)
+#
+# All forms of the admin categorory tree page must have a respective Form object
+# that inherits from either one of these 2 base classes. In addition they must
+# should implement 2 methods:
+# 	1. is_allowed(self,user) - Determines whether the user is allowed to submit perform the
+#		action associated with this form. CategoryForm and CourseForm have an implementation
+#		of this method, which takes care of the minimum requirements of the user to have rights
+#		on any category/course.
+#	2. execute_action(self) - Executes the action associated with this form.
+# 
+# Additionally, all Category forms must have an input with key "cat_id" and all Course forms
+# must have an input with key "course_id" which specify the id of the category/course being
+# managed.
+#
+##############################################################################################
+##############################################################################################
+
+#############################################################
+################### Category management forms ###############
+#############################################################
 class CategoryForm(forms.Form):
 	cat_id = forms.IntegerField(required=True)
 	
@@ -302,7 +326,15 @@ class AddCourseForm(CategoryForm):
 
 		return json.dumps(return_dict)
 
-# Course management forms
+
+
+
+
+
+######################################################################
+###################### Course management forms #######################
+######################################################################
+
 class CourseForm(forms.Form):
 	course_id = forms.IntegerField(required=True)
 	
@@ -313,6 +345,10 @@ class CourseForm(forms.Form):
 			return user in category.get_all_admins()
 		else:
 			return category is None
+
+	@abstractmethod
+	def execute_action(self):
+		pass
 
 class NewProfessorForm(CourseForm):
 	professor_id = forms.IntegerField(required=True)

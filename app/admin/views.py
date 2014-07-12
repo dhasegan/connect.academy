@@ -37,9 +37,11 @@ def course_categories(request):
 	context['category_tree'] = json.dumps(category_tree)
 
 
-	
-	potential_admins = jUser.objects.filter(Q(user_type=USER_TYPE_PROFESSOR) |
-									     	Q(user_type=USER_TYPE_ADMIN) )
+	potential_admins = jUser.objects.filter((Q(user_type=USER_TYPE_PROFESSOR) |
+									     	 Q(user_type=USER_TYPE_ADMIN)) 
+											& 
+									     	 Q(university=request.user.university)).order_by(
+									     	 									'first_name')
 	context['potential_admins'] = potential_admins
 
 
@@ -80,6 +82,15 @@ forms = {
 	}
 
 
+####################################################################################
+# Executes an admin form. Each admin form MUST have an input with key "form_type"  #
+# The value of this input must be used as a key in the "forms" dictionary above    #
+# linking to the correct Form object, which must be defined in admins/forms.py.    #
+# Additionally, all Category forms must have an input with key "cat_id" and all    #
+# Course forms must have an input with key "course_id" which specify the id of the #
+# category/course being managed.												   #	
+# See also the documentation on forms.py										   #									
+#################################################################################### 			
 @require_POST
 @login_required
 def admin_form_action(request):
