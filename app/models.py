@@ -158,7 +158,7 @@ class Course(models.Model):
         if user.user_type == USER_TYPE_STUDENT:
             try:
                 registration = StudentCourseRegistration.objects.get(student=user, course = self)
-            except exception:
+            except Exception:
                 pass
         elif user.user_type == USER_TYPE_PROFESSOR:
             try:

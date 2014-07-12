@@ -137,7 +137,7 @@ def submit_homework(request, slug):
 
     course = form.cleaned_data['course']
     registration_status = course.get_registration_status(user)
-    if not (registration_status == REGISTERED or registration_status == PENDING):
+    if registration_status != COURSE_REGISTRATION_REGISTERED:
         raise Http404
 
     homework_request = form.cleaned_data['homework_request']
