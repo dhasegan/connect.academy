@@ -284,10 +284,16 @@ class Category(models.Model):
             'name' : self.name,
             'data' : {
                 'type': 'category', # category or course
-                'admins': []
+                'admins': [],
             },
             'children' : []
         }
+        cr_deadline = self.get_cr_deadline()
+        if cr_deadline is not None and cr_deadline.is_open():
+            tree['data']['cr_deadline'] = "Open until " + str(cr_deadline.end)
+        else:
+            tree['data']['cr_deadline'] = "Closed"
+
         admins = self.get_all_admins()
         if admins is not None:
             for admin in admins:

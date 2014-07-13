@@ -37,6 +37,7 @@ def course_categories(request):
 	context['category_tree'] = json.dumps(category_tree)
 
 
+
 	potential_admins = jUser.objects.filter((Q(user_type=USER_TYPE_PROFESSOR) |
 									     	 Q(user_type=USER_TYPE_ADMIN)) 
 											& 

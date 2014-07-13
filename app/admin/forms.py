@@ -159,6 +159,10 @@ class DeleteCategoryForm(CategoryForm):
 					course.save()
 				for child in category.children.all():
 					child.parent = parent
+					if parent is not None:
+						child.level = parent.level + 1
+					else:
+						child.level = 0
 					child.save()
 				category.delete()
 
@@ -182,7 +186,9 @@ class NewSubcatForm(CategoryForm):
 		parent_cat = Category.objects.get(id=self.cleaned_data['cat_id'])
 		new_cat = Category.objects.create(name=self.cleaned_data['name'],
 										  abbreviation=self.cleaned_data['abbrev'],
-										  parent=parent_cat, university=parent_cat.university)
+										  parent=parent_cat, 
+										  university=parent_cat.university,
+										  level = parent_cat.level + 1)
 		return_dict = {}
 		if new_cat is not None:
 			new_cat.save()
@@ -218,11 +224,24 @@ class MoveCategoryForm(CategoryForm):
 		if category is not None and parent is not None:
 			if parent in category.get_descendants():
 				# if the category is moving to one of it's descendants,
-				# avoid a cycle by moving all of its children to the old_parent
+				# avoid a cycle by moving the direct child
+				# that has new_parent in it's subtree to the old_parent
 				for child in category.children.all():
-					child.parent = old_parent
-					child.save()
+					if parent == child or parent in child.get_descendants():
+						if old_parent is not None:
+							child.parent = old_parent
+							child.level = old_parent.level + 1
+							child.save()
+						else:
+							return_dict = {
+								'status': 'Error',
+								'message': 'You cannot move the root category.'
+							}
+							return json.dumps(return_dict)
+
+						
 				category.parent = parent
+				category.level = parent.level + 1
 				category.save()
 				return_dict = {
 					'status': "OK",
@@ -240,7 +259,9 @@ class MoveCategoryForm(CategoryForm):
 				}
 			else:
 				category.parent = parent
+				category.level = parent.level + 1
 				category.save()
+
 				return_dict = {
 					'status': "OK",
 					'message': "Moved <b>%s</b>" % category.name,
