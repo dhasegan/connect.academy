@@ -52,10 +52,14 @@ def course_timeline_context(courses,user):
         registration_open = False
         if registration is not None:
             registration_open = registration.is_open()
+        
+        professors = []
+        for reg in ProfessorCourseRegistration.objects.filter(course=course,is_approved=True):
+            professors.append(reg.professor)
 
         allcourses.append({
             'course': course,
-            'professors': course.professors.all(),
+            'professors': professors,
             'majors': course.majors.all(),
             'category': course.category,
             'course_path': course_path,

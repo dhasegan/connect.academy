@@ -1,0 +1,22 @@
+{% extends "pages/base.html" %}
+{% load humanize %}
+{% block content %}
+
+<div class="row">
+  <div class="panel panel-default">
+	  <div class = "panel-heading">
+      <h4>Wiki page of <a href="/course/{{course.slug}}/"> {{course.name}} </a></h4>
+
+    </div>
+
+
+    <div class="panel-body">
+  		<div class="content wiki-content">
+      			{{content|safe}}
+  		</div>
+    </div>
+  </div>
+	</div>
+
+
+{% endblock %}

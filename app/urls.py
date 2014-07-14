@@ -20,7 +20,7 @@ urlpatterns += patterns('',
     url(r'^course/(?P<slug>[\w-]+)/', include('app.course.urls')),
     url(r'^admin/', include('app.admin.urls')),
     url(r'^forum/', include('app.forum.urls')),
-    url(r'^wiki/',include('app.wiki.urls')),
+    url(r'^wiki/(?P<slug>[\w-]+)/',include('app.wiki.urls')),
 )
 
 

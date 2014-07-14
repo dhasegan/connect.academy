@@ -686,8 +686,12 @@ jQuery( document ).ready(function( $ ) {
                         var is_descendant = data.data.descendant;
                         if (is_descendant) {
                             category.eachSubnode(function(node) {
-                                st.graph.removeAdjacence(cat_id,node.id);
-                                st.graph.addAdjacence(old_parent,node);
+                                if (parent.isDescendantOf(node.id) ||
+                                    parent.id == node.id) {
+                                    st.graph.removeAdjacence(cat_id,node.id);
+                                    st.graph.addAdjacence(old_parent,node);
+                                }
+
                             });
                         }
                         st.graph.removeAdjacence(old_parent.id,cat_id);
@@ -790,7 +794,5 @@ jQuery( document ).ready(function( $ ) {
                 }            
             }
         });
-    });
-    
-    
+    }); 
 });

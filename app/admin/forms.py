@@ -4,7 +4,31 @@ import json
 from app.models import *
 from abc import abstractmethod
 
-# Category management forms
+##############################################################################################
+##############################################################################################
+# Description: The admin management forms are categorized in 2 base classes:
+#	1. CategoryForm (Forms that appear when a category is selected)
+#	2. CourseForm (Forms that appear when a course is selected)
+#
+# All forms of the admin categorory tree page must have a respective Form object
+# that inherits from either one of these 2 base classes. In addition they must
+# should implement 2 methods:
+# 	1. is_allowed(self,user) - Determines whether the user is allowed to submit perform the
+#		action associated with this form. CategoryForm and CourseForm have an implementation
+#		of this method, which takes care of the minimum requirements of the user to have rights
+#		on any category/course.
+#	2. execute_action(self) - Executes the action associated with this form.
+# 
+# Additionally, all Category forms must have an input with key "cat_id" and all Course forms
+# must have an input with key "course_id" which specify the id of the category/course being
+# managed.
+#
+##############################################################################################
+##############################################################################################
+
+#############################################################
+################### Category management forms ###############
+#############################################################
 class CategoryForm(forms.Form):
 	cat_id = forms.IntegerField(required=True)
 	
@@ -135,6 +159,10 @@ class DeleteCategoryForm(CategoryForm):
 					course.save()
 				for child in category.children.all():
 					child.parent = parent
+					if parent is not None:
+						child.level = parent.level + 1
+					else:
+						child.level = 0
 					child.save()
 				category.delete()
 
@@ -158,7 +186,9 @@ class NewSubcatForm(CategoryForm):
 		parent_cat = Category.objects.get(id=self.cleaned_data['cat_id'])
 		new_cat = Category.objects.create(name=self.cleaned_data['name'],
 										  abbreviation=self.cleaned_data['abbrev'],
-										  parent=parent_cat, university=parent_cat.university)
+										  parent=parent_cat, 
+										  university=parent_cat.university,
+										  level = parent_cat.level + 1)
 		return_dict = {}
 		if new_cat is not None:
 			new_cat.save()
@@ -194,11 +224,24 @@ class MoveCategoryForm(CategoryForm):
 		if category is not None and parent is not None:
 			if parent in category.get_descendants():
 				# if the category is moving to one of it's descendants,
-				# avoid a cycle by moving all of its children to the old_parent
+				# avoid a cycle by moving the direct child
+				# that has new_parent in it's subtree to the old_parent
 				for child in category.children.all():
-					child.parent = old_parent
-					child.save()
+					if parent == child or parent in child.get_descendants():
+						if old_parent is not None:
+							child.parent = old_parent
+							child.level = old_parent.level + 1
+							child.save()
+						else:
+							return_dict = {
+								'status': 'Error',
+								'message': 'You cannot move the root category.'
+							}
+							return json.dumps(return_dict)
+
+						
 				category.parent = parent
+				category.level = parent.level + 1
 				category.save()
 				return_dict = {
 					'status': "OK",
@@ -216,7 +259,9 @@ class MoveCategoryForm(CategoryForm):
 				}
 			else:
 				category.parent = parent
+				category.level = parent.level + 1
 				category.save()
+
 				return_dict = {
 					'status': "OK",
 					'message': "Moved <b>%s</b>" % category.name,
@@ -302,7 +347,15 @@ class AddCourseForm(CategoryForm):
 
 		return json.dumps(return_dict)
 
-# Course management forms
+
+
+
+
+
+######################################################################
+###################### Course management forms #######################
+######################################################################
+
 class CourseForm(forms.Form):
 	course_id = forms.IntegerField(required=True)
 	
@@ -313,6 +366,10 @@ class CourseForm(forms.Form):
 			return user in category.get_all_admins()
 		else:
 			return category is None
+
+	@abstractmethod
+	def execute_action(self):
+		pass
 
 class NewProfessorForm(CourseForm):
 	professor_id = forms.IntegerField(required=True)
