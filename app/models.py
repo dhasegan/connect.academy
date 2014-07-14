@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.conf import settings 
 from datetime import * #datetime
 import pytz # timezones
+import reversion
 
 
 
@@ -50,7 +51,8 @@ class jUser(User):
     #    categories_managed: (<juser>.categories_managed.all() returns all categories that have <juser> 
     #    as an admin)
     #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
-    #    downvoted: (<juser>.upvoted.all() returns all comments that <juser> downvoted)
+    #    downvoted: (<juser>.downvoted.all() returns all comments that <juser> downvoted)
+    #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
 
     def __unicode__(self):
         return str(self.username)
@@ -531,11 +533,22 @@ class WikiPage(models.Model):
     course = models.ForeignKey('Course',null=True,related_name='wiki')
     title = models.CharField(max_length=50)
     content = models.TextField(blank=True)
-    last_modified_by = models.ForeignKey('jUser',null=True)
-    last_modified_on = models.DateTimeField(null=True)
+    modified_by = models.ManyToManyField('jUser',null=True,through='ContributedToWiki',related_name="contributed_to_wiki")
     
     def __unicode__(self):
-        return str(self.title)
+        return str(self.title) + " | " + str(self.content)
+
+class ContributedToWiki(models.Model):
+    user = models.ForeignKey('jUser',null=True)
+    wiki = models.ForeignKey('WikiPage',null=True)
+    modified_on = models.DateTimeField(null=True)
+
+    def __unicode__(self):
+        return self.user.username + self.wiki.title + " on '" + str(self.modified_on)+"'"
 
 #register with reversion together with the course and last_modified_on field 
 #also register Course and jUser 
+reversion.register(WikiPage,follow=['course','modified_by'])
+reversion.register(ContributedToWiki)
+reversion.register(jUser)
+reversion.register(Course)

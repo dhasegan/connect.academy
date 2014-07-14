@@ -10,10 +10,9 @@ class WikiPageForm(forms.Form):
     title = forms.CharField(required=True)
     content = forms.CharField(required=False)
     
-    def __init__(self,user,course,modified_on,*args,**kwargs):
-        self.user = user
-        self.course = course
-        self.modified_on = modified_on
+    def __init__(self,course,modified_on,*args,**kwargs):
+    	self.course = course
+    	self.modified_on = modified_on
         super(WikiPageForm,self).__init__(*args,**kwargs)
 
     

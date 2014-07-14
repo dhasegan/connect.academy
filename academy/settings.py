@@ -139,7 +139,8 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'storages',
     'app',
-    'south'
+    'south',
+    'reversion',
 )
 
 # A sample logging configuration. The only tangible logging
