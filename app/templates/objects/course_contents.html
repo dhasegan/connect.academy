@@ -156,8 +156,8 @@
         <strong> Wiki: </strong>
         <div class="content">
             {% if course.wiki.all %}
-                {% with course.wiki.all.0 as wiki and course.slug as slug%}
-                    {% include "objects/course_wiki.html" %}
+                {% with course.wiki.all.0 as wiki %}
+                    <a href="/wiki/{{course.slug}}/"> Course Wiki </a>
                 {% endwith %}
                 
             {% else %}

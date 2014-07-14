@@ -794,7 +794,5 @@ jQuery( document ).ready(function( $ ) {
                 }            
             }
         });
-    });
-    
-    
+    }); 
 });
