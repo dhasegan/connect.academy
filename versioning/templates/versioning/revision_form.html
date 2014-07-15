@@ -1,0 +1,29 @@
+{% extends "versioning/base.html" %}
+{% load i18n %}
+
+{% block body %}
+    <div>
+      <form id="versioning-revision-form" action="{{ request.path_info }}" method="post">
+        <div>
+            <div>
+                {{ form.non_field_errors }}
+            </div>
+            <div>
+              {% csrf_token %}
+              {% for field in form %}
+                  {% if field.is_hidden %}
+                    {{ field }}
+                  {% else %}
+                    <div class="fieldWrapper">
+                      {{ field.errors }}
+                      <label for="{{ field.label }}">
+                        {{ field.label_tag }}
+                        {% if field.field.required %}<span>*</span>{% endif %}
+                      </label>: 
+                      {{ field }}
+                    </div>
+                  {% endif %}
+              {% endfor %}
+
+            </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "versioning/base.html" %}
+{% load i18n %}
+
+{% block body %}
+                <h2>{% blocktrans with url=content_object.get_absolute_url %}Revisions for <a href="{{ url }}">{{ content_object }}</a>{% endblocktrans %}</h2>
+			    <table id="versioning-revision-list">
+			        <thead>
+				        <tr>
+				            <th scope="col">{% trans 'Revision' %}</th>
+				            <th scope="col">{% trans 'Sha' %}</th>
+				            <th scope="col">{% trans 'Date' %}</th>
+				            <th scope="col">{% trans 'IP-address' %}</th>
+				            <th scope="col">{% trans 'User' %}</th>
+				            <th scope="col">{% trans 'Comment' %}</th>
+				        </tr>
+			        </thead>
+			        <tbody>
+				        {% for revision in object_list %}
+					        <tr>
+					            <th scope="row"><a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">r{{ revision.revision }}</a></th>
+					            <td><a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">{{ revision.sha1 }}</a></td>
+					            <td>{{revision.created_at|date:_("DATETIME_FORMAT")}}</td>
+					            <td>{{ revision.editor_ip }}</td>
+					            <td>
+					            	{% if revision.editor %}
+					            		{{revision.editor.username}}
+					            		{% if revision.user.first_name %} ({{revision.user.first_name}} {{revision.user.last_name}}){% endif %}
+					            	{% endif %}
+					            </td>
+					            <td>{{revision.comment|default:""}}</td>
+					        </tr>
+				        {% endfor %}
+			        </tbody>
+			    </table>
+{% endblock %}

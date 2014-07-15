@@ -187,6 +187,7 @@ def course_page_context(request, course):
 
         # adding context for the wikis
     wikis = course.wiki.all()
+    """
     if len(wikis) == 1:
         wiki = wikis[0]
         edit_info_set = ContributedToWiki.objects.filter(wiki=wiki).order_by('-modified_on')
@@ -196,7 +197,7 @@ def course_page_context(request, course):
             edited_on = edit_info.modified_on
             context['edited_by'] = edited_by
             context['edited_on'] = edited_on
-    
+    """
     return context
 
 def review_context(comment, request, current_user):

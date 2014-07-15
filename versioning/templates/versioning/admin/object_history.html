@@ -1,0 +1,49 @@
+{% extends "admin/object_history.html" %}
+{% load i18n %}
+{% load versioning_tags %}
+
+
+{% block content %}
+    {% revisions_for_object object as action_list %}
+	<div id="content-main">
+	
+		<p>{% blocktrans %}Choose a date from the list below to revert to a previous version of this object.{% endblocktrans %}</p>
+	
+		<div class="module">
+			{% if action_list %}
+			    <table id="change-history">
+			        <thead>
+				        <tr>
+				            <th scope="col">{% trans 'Revision' %}</th>
+				            <th scope="col">{% trans 'Sha' %}</th>
+				            <th scope="col">{% trans 'Date' %}</th>
+				            <th scope="col">{% trans 'IP-address' %}</th>
+				            <th scope="col">{% trans 'User' %}</th>
+				            <th scope="col">{% trans 'Comment' %}</th>
+				        </tr>
+			        </thead>
+			        <tbody>
+				        {% for revision in action_list %}
+					        <tr>
+					            <th scope="row"><a href="{% url 'admin:versioning_revision_change' revision.pk %}">r{{ revision.revision }}</a></th>
+					            <td><a href="{% url 'admin:versioning_revision_change' revision.pk %}">{{ revision.sha1 }}</a></td>
+					            <td>{{revision.created_at|date:_("DATETIME_FORMAT")}}</td>
+					            <td>{{ revision.editor_ip }}</td>
+					            <td>
+					            	{% if revision.editor %}
+					            		{{revision.editor.username}}
+					            		{% if revision.user.first_name %} ({{revision.user.first_name}} {{revision.user.last_name}}){% endif %}
+					            	{% endif %}
+					            </td>
+					            <td>{{revision.comment|default:""}}</td>
+					        </tr>
+				        {% endfor %}
+			        </tbody>
+			    </table>
+			{% else %}
+			    <p>{% trans "This object doesn't have a change history. It probably wasn't added via this admin site." %}</p>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
+

@@ -4,9 +4,7 @@ from django.utils.text import slugify
 from django.conf import settings 
 from datetime import * #datetime
 import pytz # timezones
-import reversion
-
-
+import versioning
 
 
 
@@ -52,10 +50,10 @@ class jUser(User):
     #    as an admin)
     #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
     #    downvoted: (<juser>.downvoted.all() returns all comments that <juser> downvoted)
-<<<<<<< HEAD
+
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
-=======
->>>>>>> cd94bb852829193e10c10961fa261be7adf1ccad
+
+
 
     def __unicode__(self):
         return str(self.username)
@@ -545,11 +543,17 @@ class WikiPage(models.Model):
     course = models.ForeignKey('Course',null=True,related_name='wiki')
     title = models.CharField(max_length=50)
     content = models.TextField(blank=True)
-    modified_by = models.ManyToManyField('jUser',null=True,through='ContributedToWiki',related_name="contributed_to_wiki")
-    
+    last_modified_by = models.ForeignKey('jUser',null=True,related_name="contributed_to_wiki")
+    last_modified_on = models.DateTimeField()
     def __unicode__(self):
         return str(self.title) + " | " + str(self.content)
 
+
+versioning.register(
+    WikiPage,
+    ['title', 'content', 'course', 'last_modified_by','last_modified_on']
+)
+"""
 class ContributedToWiki(models.Model):
     user = models.ForeignKey('jUser',null=True)
     wiki = models.ForeignKey('WikiPage',null=True)
@@ -560,10 +564,5 @@ class ContributedToWiki(models.Model):
 
 #register with reversion together with the course and last_modified_on field 
 #also register Course and jUser 
-<<<<<<< HEAD
-reversion.register(WikiPage,follow=['course','modified_by'])
-reversion.register(ContributedToWiki)
-reversion.register(jUser)
-reversion.register(Course)
-=======
->>>>>>> cd94bb852829193e10c10961fa261be7adf1ccad
+"""
+
