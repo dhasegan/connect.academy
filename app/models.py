@@ -5,6 +5,7 @@ from django.conf import settings
 from datetime import * #datetime
 import pytz # timezones
 import versioning
+from django import forms
 
 
 
@@ -539,30 +540,37 @@ class ForumAnswer(models.Model):
     def __unicode__(self):
         return self.text
 
-class WikiPage(models.Model):
-    course = models.ForeignKey('Course',null=True,related_name='wiki')
-    title = models.CharField(max_length=50)
-    content = models.TextField(blank=True)
-    last_modified_by = models.ForeignKey('jUser',null=True,related_name="contributed_to_wiki")
-    last_modified_on = models.DateTimeField()
+class WikiContributions(models.Model):
+    user = models.ForeignKey('jUser')
+    wiki = models.ForeignKey('WikiPage')
+    modified_on = models.DateTimeField(auto_now=True)
+
     def __unicode__(self):
-        return str(self.title) + " | " + str(self.content)
+        return self.user.username + " " + self.wiki.title + " on '" + str(self.modified_on)+"'"
+
+
+class WikiPage(models.Model):
+    course = models.ForeignKey('Course',related_name='wiki')
+    content = models.TextField()
+    contributors = models.ManyToManyField('jUser',related_name="wiki_contributions", 
+                                    through=WikiContributions)
+    def __unicode__(self):
+        return "Wiki of course " + str(self.course.name)
+
+
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
 
 
 versioning.register(
     WikiPage,
-    ['title', 'content', 'course', 'last_modified_by','last_modified_on']
+    ['content']
 )
-"""
-class ContributedToWiki(models.Model):
-    user = models.ForeignKey('jUser',null=True)
-    wiki = models.ForeignKey('WikiPage',null=True)
-    modified_on = models.DateTimeField(null=True)
 
-    def __unicode__(self):
-        return self.user.username + self.wiki.title + " on '" + str(self.modified_on)+"'"
+
 
 #register with reversion together with the course and last_modified_on field 
 #also register Course and jUser 
-"""
+
 

@@ -1,12 +1,12 @@
 {% extends "pages/base.html" %}
 {% load humanize %}
 {% block content %}
-	<form class="form-horizontal" method="POST" role="form" action='save_wiki_page'>
+  <form class="form-horizontal" method="POST" role="form" action='save_wiki_page'>
 
-		{% csrf_token %}
-  		<div class="row">
+    {% csrf_token %}
+      <div class="row">
         <div class="panel panel-default">
-    		  <div class = "panel-heading">
+          <div class = "panel-heading">
             <h4>Wiki page of <a href="/course/{{slug}}/"> {{course.name}} </a></h4>
             <button type="submit" class="btn btn-default save-wiki">Save</button>
 
@@ -15,12 +15,12 @@
 
           <div class="panel-body">
           {% include 'objects/wiki/wiki_welcome.html' %}
-        		<div class="form-group">
-            			<textarea class="form-control ckeditor"  name="content" rows="40">{{content|safe}}</textarea>
-        		</div>
+            <div class="form-group">
+                  <textarea class="form-control ckeditor"  name="content" rows="40">{{content|safe}}</textarea>
+            </div>
           </div>
         </div>
-     	</div>
-	</form>
+      </div>
+  </form>
 
 {% endblock %}

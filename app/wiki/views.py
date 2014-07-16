@@ -13,8 +13,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
-#from django.db import transaction
-#import reversion
+
+
+# ContentType is needed for version control
+from django.contrib.contenttypes.models import ContentType
+
 
 from app.models import *
 from app.context_processors import *
@@ -51,7 +54,7 @@ def edit_wiki_page(request,slug):
                                                                 is_approved=False).count()
             })
     	
-    return render(request,"pages/edit_wiki_page.html",context)
+    return render(request,"pages/wiki/edit_wiki_page.html",context)
 
     
 
@@ -65,53 +68,57 @@ def save_wiki_page(request,slug):
         "slug": slug,
     }
     context.update(csrf(request))
-    course = Course.objects.get(slug=slug)
+    course = get_object_or_404(Course,slug=slug)
     user = request.user
 
-    if course is not None and user.university != course.university:
-        raise Http404
-
+    # Only users from that university are allowed to edit
+    # wiki pages
     if user.university != course.university:
         raise Http404
 
-    modified_on = datetime.now()
-    form = WikiPageForm(user,course,modified_on,request.POST)
-    
+
+    form = WikiPageForm(request.POST)
     if not form.is_valid():
         raise Http404
 
     content = form.cleaned_data['content']
-    
     wikis = course.wiki.all()
+    if wikis:
+        # update content
+        wiki = wikis[0]
+        wiki.content = content
+        wiki.save()
+        # add student contribution if it doesn't exist
+        # if it exists, change the date
+        contribs = WikiContributions.objects.filter(wiki=wiki,
+                                                user=user)
+        if contribs:
+            # the 'modified_by' field has the auto_now keyword,
+            # so it will be updated automatically when calling save()
+            contribs[0].save()
+        else:
+            WikiContributions.objects.create(wiki=wiki,
+                                             user=user).save()
+        context['success'] = render_to_string('objects/notifications/wiki/wiki_edited.html',{
+            'course_name': course.name
+        })
+    else:
+        wiki = WikiPage.objects.create(course=course,content=content)
+        wiki.save()
+        WikiContributions.objects.create(wiki=wiki,
+                                         user=user).save()
+        context['success'] = render_to_string('objects/notifications/wiki/wiki_created.html',{
+            'course_name': course.name
+        })
 
-    if len(wikis) == 1: #should be 1
-        
-        if content != wikis[0].content:
-        	context['success'] = "Wiki <b> edited</b> successfully."
-        else:# if the user does nothing.
-        	context['course'] = course
-    		context['content'] = content
-        	return render(request, "pages/edit_wiki_page.html", context)
+    context['course'] = course
+    context['content'] = wiki.content
 
-        wikis[0].content = content
-        wikis[0].last_modified_on = form.modified_on
-        wikis[0].user = form.user
-        wikis[0].save()
-        context['course'] = course
-    	context['content'] = wikis[0].content
+
+    return render(request,'pages/wiki/edit_wiki_page.html',context)
+
 
     
-    else:
-    	if len(wikis) == 0:
-        	wiki = WikiPage.objects.create(last_modified_on=form.modified_on, content=content,last_modified_by=form.user,course=form.course)
-        	context['success'] = "Wiki <b> created</b> successfully."
-        	context['course'] = course
-    		context['content'] = content
-    	else: # this shouldn't happen (if we want to have only one wiki per course)
-    		context['error'] = "Whoa ! Apparently there are more wikis for this course " 
-
-	context['page'] = 'edit_wiki_page'
-    return render(request, "pages/edit_wiki_page.html", context)
 
 @login_required
 def revert_wiki_page(request):
@@ -128,7 +135,9 @@ def view_wiki_page(request,slug):
         raise Http404
     else:
         wiki = wikis[0]
-        context['content'] = wiki.content
+        context['wiki'] = wiki
         context['course'] = wiki.course
-
+        wiki_type_id = ContentType.objects.get(app_label="app", model="wikipage").id
+        context['wiki_type_id'] = wiki_type_id
+        
     return render(request,'pages/wiki/view_wiki.html',context)
