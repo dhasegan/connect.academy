@@ -7,7 +7,7 @@
       <div class="row">
         <div class="panel panel-default">
           <div class = "panel-heading">
-            <h4>Wiki page of <a href="/course/{{slug}}/"> {{course.name}} </a></h4>
+            <h4><a href="{% url 'view_wiki_page' course.slug %}">Wiki page</a> of <a href="{% url 'course_page' course.slug %}"> {{course.name}} </a></h4>
             <button type="submit" class="btn btn-default save-wiki">Save</button>
 
           </div>

@@ -2,32 +2,26 @@
 
 <h1>{{course.name}}</h1>
 
-<p>
-	{% if course.image %}
-		<img alt="Course image" height="200" src="{% url 'course_image' course.slug %}" style="float:right" width="200" />
-	{% else %}
-		<img alt="Course image" height="200" src="{{ STATIC_URL }}books.jpg" style="float:right" width="200" />
-	{% endif %}
-</p>
+
 
 <p>{{course.description}}</p>
-
-<ol>
-	<li><a href="#Chapter1">Chapter 1</a></li>
-	<li><a href="#Chapter2">Chapter 2</a></li>
-	<li><a href="#Chapter3">Chapter 3</a></li>
-	<li><a href="#Chapter4">Chapter 4</a></li>
-	<li><a href="#Chapter5">Chapter 5</a></li>
-	<li><a href="#ref">References</a></li>
-</ol>
-
-<h2><a id="Chapter1" name="Chapter1"></a>Chapter 1</h2>
 
 <table align="right" border="1" cellpadding="5" cellspacing="5" style="width:400px">
 	<tbody>
 		<tr>
+			<td colspan="2">
+				<p style="text-align:center">
+					{% if course.image %}
+						<img alt="Course image" height="200" src="{% url 'course_image' course.slug %}" style="float:right" width="200" />
+					{% else %}
+						<img alt="Course image" height="200" src="{{ STATIC_URL }}books.jpg" style="float:right" width="200" />
+					{% endif %}
+				</p>
+			</td>
+		</tr>
+		<tr>
 			<td>Course Name</td>
-			<td><a href="/course/{{course.slug}}/">{{course.name}}</a></td>
+			<td><a href="{% url 'course_page' course.slug %}">{{course.name}}</a></td>
 		</tr>
 		<tr>
 			<td>University</td>
@@ -37,7 +31,7 @@
 			<td>Professors</td>
 			<td> 
 			{% for prof in professors %}
-				<a href="/profile/{{prof.username}}">
+				<a href="{% url 'profile' prof.username %}">
 					{{prof.first_name}} {{prof.last_name}}
 				</a>,&nbsp;
 			{% endfor %}
@@ -49,10 +43,21 @@
 		</tr>
 		<tr>
 			<td>Student Registrations</td>
-			<td>Regfistered: {{registered_students}}, Pending: {{pending_students}}</td>
+			<td>Registered: {{registered_students}}, Pending: {{pending_students}}</td>
 		</tr>
 	</tbody>
 </table>
+
+<ol>
+	<li><a href="#Chapter1">Chapter 1</a></li>
+	<li><a href="#Chapter2">Chapter 2</a></li>
+	<li><a href="#Chapter3">Chapter 3</a></li>
+	<li><a href="#Chapter4">Chapter 4</a></li>
+	<li><a href="#Chapter5">Chapter 5</a></li>
+	<li><a href="#ref">References</a></li>
+</ol>
+
+<h2><a id="Chapter1" name="Chapter1"></a>Chapter 1</h2>
 
 <p>The content of chapter 1 goes here.&nbsp;</p>
 

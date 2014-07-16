@@ -34,6 +34,10 @@ def edit_wiki_page(request,slug):
     }
     course = Course.objects.get(slug=slug)
     wikis = course.wiki.all()
+    user = request.user
+    if user.university != course.university or not user.is_active:
+        raise Http404
+
     if len(wikis) > 0:
     	wiki = wikis[0]
     	context['course'] = course
@@ -73,7 +77,7 @@ def save_wiki_page(request,slug):
 
     # Only users from that university are allowed to edit
     # wiki pages
-    if user.university != course.university:
+    if user.university != course.university or not user.is_active:
         raise Http404
 
 
@@ -131,6 +135,8 @@ def view_wiki_page(request,slug):
     }
     course = get_object_or_404(Course,slug=slug)
     wikis = course.wiki.all()
+    user= request.user
+    context['can_edit_wiki'] = user.university == course.university and user.is_active
     if len(wikis) < 1:
         raise Http404
     else:

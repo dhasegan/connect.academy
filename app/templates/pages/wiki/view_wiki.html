@@ -5,8 +5,10 @@
 <div class="row">
   <div class="panel panel-default">
 	  <div class = "panel-heading">
-      <h4>Wiki page of <a href="/course/{{course.slug}}/"> {{course.name}} </a></h4>
-
+      <h4>Wiki page of <a href="{% url 'course_page' course.slug %}"> {{course.name}} </a></h4>
+      {% if can_edit_wiki %}
+        <a class='btn btn-default' href='{%url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
+      {% endif %}
     </div>
 
 
@@ -14,9 +16,11 @@
   		<div class="content wiki-content">
       			{{wiki.content|safe}}
   		</div>
-      <div class="revision">
-          <a href="/revision_list/{{wiki_type_id}}/{{wiki.id}}">View the list of revisions.</a>
-      </div>
+      {% if can_edit_wiki %}
+        <div class="revision">
+            <a href="{% url 'versioning_revision_list' wiki_type_id wiki.id %}">View the list of revisions.</a>
+        </div>
+      {% endif %}
     </div>
   </div>
 	</div>
