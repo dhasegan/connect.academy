@@ -563,6 +563,9 @@ jQuery( document ).ready(function( $ ) {
                 var status = data.status;
                 var message = data.message;
                 if (status == "OK") {
+                    /**********************************************/
+                    /* No matter which form, show success message */
+                    /**********************************************/
                     $('.text-success',form).show();
                     $('.text-success',form).html(message);
                     $('.text-success',form).delay(4000).fadeOut(400);

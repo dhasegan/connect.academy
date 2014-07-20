@@ -148,7 +148,7 @@ class Course(models.Model):
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #                 <course> as a prerequisite)
     #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
-    
+    #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
 
 
 
@@ -203,7 +203,29 @@ class Course(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+# Model that represents a course topic. Many topics of the same course form the 
+# course's syllabus 
+class CourseTopic(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=500, blank=True)
+    course = models.ForeignKey("Course", related_name="course_topics");
+    
+    # The forum posts that are marked as relevant to this Course Topic
+    forum_posts = models.ManyToManyField('ForumTopic', related_name='course_topics')
 
+    # Relations declared in other models define the following:
+    #    forums (<course_topic>.forums.all() returns all courses forums of  <course_topic>)
+
+
+    class Meta:
+        order_with_respect_to = 'course'
+        # Documentation of this field
+        # https://docs.djangoproject.com/en/dev/ref/models/options/#order-with-respect-to
+        # It basically allows us to change the order of the topics of the same course.
+        # <course>.get_topic_order() returns the primary keys (ids) of the topics of
+        # <course> in the current order
+        # To set the order, call <course>.set_topic_order(ls) where ls is the ordered
+        # list of the primary keys (ids) of the topics.
 
 class Tag(models.Model):
     # Besides name, we might need to add more fancy things to tags (we can group them etc)
@@ -429,6 +451,7 @@ class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
+    course_topic = models.ForeignKey('CourseTopic', null=True)
 
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
@@ -503,7 +526,8 @@ class ForumHomework(Forum):
         return str(self.homework_request)
 
 class ForumTopic(Forum):
-    course = models.ForeignKey('Course')    
+    course_topic = models.ForeignKey('CourseTopic', related_name='forums')    
+    
     # TODO
 
     def __unicode__(self):
@@ -543,7 +567,6 @@ class ForumAnswer(models.Model):
 class WikiContributions(models.Model):
     user = models.ForeignKey('jUser')
     wiki = models.ForeignKey('WikiPage')
-    modified_on = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.user.username + " " + self.wiki.title + " on '" + str(self.modified_on)+"'"
@@ -552,8 +575,7 @@ class WikiContributions(models.Model):
 class WikiPage(models.Model):
     course = models.ForeignKey('Course',related_name='wiki')
     content = models.TextField()
-    contributors = models.ManyToManyField('jUser',related_name="wiki_contributions", 
-                                    through=WikiContributions)
+
     def __unicode__(self):
         return "Wiki of course " + str(self.course.name)
 
@@ -568,9 +590,5 @@ versioning.register(
     ['content']
 )
 
-
-
-#register with reversion together with the course and last_modified_on field 
-#also register Course and jUser 
 
 
