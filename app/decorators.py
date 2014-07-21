@@ -6,6 +6,7 @@ def require_student(view):
 		if request.user is None or request.user.user_type != USER_TYPE_ADMIN:
 			raise Http404
 		return view(request, *args, **kwargs)
+	return decorated
 
 def require_professor(view):
 	def decorated(request, *args, **kwargs):
