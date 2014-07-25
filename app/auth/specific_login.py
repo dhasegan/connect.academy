@@ -1,7 +1,7 @@
 import sys
 import os
 
-from twill import commands
+from twill.commands import go, showforms, formclear, fv, submit
 
 _UNIVERSITY_LOGINS = [
     {
@@ -20,11 +20,11 @@ def get_university(username, password):
     sys.stdout = bin
 
     for university in _UNIVERSITY_LOGINS:
-        commands.go(university["url"])
-        commands.fv('1', 'usrname', username)
-        commands.fv('1', 'pass', password)
-        commands.submit('3')
-        login_result = commands.show()
+        go(university["url"])
+        fv('1', 'usrname', username)
+        fv('1', 'pass', password)
+        submit('3')
+        login_result = showforms()
 
         if login_result.find('Wrong username or password') == -1 and login_result.find('Access denied') == -1:
             sys.stdout = out
