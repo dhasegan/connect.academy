@@ -1,5 +1,5 @@
 Django==1.6.1
-PIL==1.1.7
+Pillow==2.3.0
 South==0.8.4
 argparse==1.2.1
 boto==2.23.0
@@ -12,5 +12,5 @@ psycopg2==2.5.2
 pystache==0.5.3
 pytz==2014.4
 static==1.0.2
-twill==0.9
+twill==1.8.0
 wsgiref==0.1.2
