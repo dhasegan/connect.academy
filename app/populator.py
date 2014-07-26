@@ -1,22 +1,8 @@
 import random
 
+from django.db import IntegrityError
+
 from app.models import *
-
-
-class JacobsPopulator:
-
-    """ Class to populate the test database with Jacobs needed data """
-
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def populate():
-        uni = University(name="Jacobs University Bremen")
-        uni.save()
-        dom = Domain(name="jacobs-university.de", university=uni)
-        dom.save()
-
 
 class Populator:
 
@@ -36,60 +22,60 @@ class Populator:
                 continue
 
     def add_university(self):
-        while (True):
-            name = self.random_word().capitalize() + " University"
+        while True:
+            first_name = self.random_word().capitalize()
+            name = first_name + " University"
             if len(University.objects.filter(name=name)) > 0:
                 continue
-            univ = University.objects.create(name=name)
-
-            domain = name.lower().replace(" ", ".") + ".edu"
-            Domain.objects.create(name=domain, university=univ)
+            abbreviation = "uni" + first_name[0:3]
+            if len(Category.objects.filter(abbreviation=abbreviation)) > 0:
+                continue
             break
+
+        univ = University.objects.create(name=name)
+
+        domain = name.lower().replace(" ", ".") + ".edu"
+        Domain.objects.create(name=domain, university=univ)
+
+        connect = Category.objects.get(name="Connect.Academy")
+        Category.objects.create(parent=connect, level=1, name=name, university=univ, abbreviation=abbreviation)
 
     def populate_universities(self, count):
         for i in range(count):
             self.add_university()
 
-    def add_juser(self, user_type=None):
-        if jUser.objects.filter(username="jack").count() == 0:
-            self.add_juser_jack(user_type)
-        while True:
-            fname = self.random_word().capitalize()
-            lname = self.random_word().capitalize()
-            username = fname[0] + "." + lname.lower()
-            if len(jUser.objects.filter(username=username)) > 0:
-                continue
-            univs = University.objects.all()
-            univ = univs[random.randrange(len(univs))]
-            active = True
-            password = "1234"
-            domain = univ.domains.all()[0]
-            email = username + "@" + domain.name
-            if user_type == None:
-                user_type = random.choice(list(USER_TYPES))[0]
-            user = jUser.objects.create_user(username=username, password=password,
-                                             email=email, first_name=fname, last_name=lname,
-                                             user_type=user_type, university=univ)
-            break
+    def create_username_juser(self, user_type):
+        utype = dict(USER_TYPES)[user_type]
+        nr_utypes = len(jUser.objects.filter(user_type=user_type))
 
-    def add_juser_jack(self, user_type=None):
-        fname = "Jack"
-        lname = "Jacobson"
-        username = "jack"
-        univ = random.choice(list(University.objects.all()))
+        username = utype + str(nr_utypes)
+        while len(jUser.objects.filter(username=username)) > 0:
+            nr_utypes += 1
+            username = utype + str(nr_utypes)
+        return username
+
+    def add_juser(self, user_type=None):
+        if user_type == None:
+            user_type = random.choice(list(USER_TYPES))[0]
+        fname = self.random_word().capitalize()
+        lname = self.random_word().capitalize()
+        username = self.create_username_juser(user_type)
+        univs = University.objects.all()
+        univ = univs[random.randrange(len(univs))]
         active = True
         password = "1234"
         domain = univ.domains.all()[0]
         email = username + "@" + domain.name
-        if user_type == None:
-            user_type = random.choice(list(USER_TYPES))[0]
         user = jUser.objects.create_user(username=username, password=password,
                                          email=email, first_name=fname, last_name=lname,
                                          user_type=user_type, university=univ)
+        if user_type == 1:
+            user.is_confirmed = True
+            user.save()
 
     def populate_jusers(self, count):
         for i in range(count):
-            self.add_juser() 
+            self.add_juser()
 
     def populate_students(self, count):
         for i in range(count):
@@ -104,22 +90,18 @@ class Populator:
             self.add_juser(USER_TYPE_PROFESSOR)
 
     def add_category(self):
-        while True:
-            categories = Category.objects.all()
-            parent = None
-            level = 0
-            name = "Connect.Academy"
-            abbreviation = "connect"
-            if len(categories):
-                parent = random.choice(categories)
-                level = parent.level + 1
-                fname = self.random_word().capitalize()
-                lname = self.random_word().capitalize()
-                name = fname + " " + lname
-                abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
-            category = Category(parent=parent, name=name, level=level, abbreviation=abbreviation)
-            category.save()
-            break
+        categories = Category.objects.filter(level__gte=1)
+        if not len(categories):
+            raise IntegrityError("Please load the initial data fixture!")
+        parent = random.choice(categories)
+        level = parent.level + 1
+        fname = self.random_word().capitalize()
+        lname = self.random_word().capitalize()
+        name = fname + " " + lname
+        abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
+
+        category = Category(parent=parent, name=name, level=level, abbreviation=abbreviation)
+        category.save()
 
     def populate_categories(self, count):
         for i in range(count):
@@ -187,7 +169,7 @@ class Populator:
         comment = ""
         for i in range(random.randint(10, 100)):
             comment = comment + self.random_word() + " "
-        poster = random.choice( jUser.objects.all() )
+        poster = random.choice(jUser.objects.all())
         anonymous = random.random() < 0.2
         commObj = Review(review=comment, course=course, posted_by=poster)
         commObj.save()
