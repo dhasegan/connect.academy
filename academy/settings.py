@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'django.contrib.humanize',
+    'django_extensions',
     'storages',
     'app',
     'versioning',  # Should be after apps with versioned models
@@ -222,6 +223,13 @@ if not DEBUG:
 
 SOUTH_TESTS_MIGRATE = False
 
+########################## Shell plus
+
+SHELL_PLUS = "python"
+SHELL_PLUS_PRE_IMPORTS = (
+    ('app.models', '*'),
+    ('app.populator', '*')
+)
 
 ########################## Other settings
 
