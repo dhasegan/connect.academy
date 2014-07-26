@@ -11,6 +11,7 @@ django-shell-plus==1.1.5
 django-storages==1.1.8
 django-toolbelt==0.0.1
 gunicorn==18.0
+ipython==2.1.0
 lxml==3.3.5
 psycopg2==2.5.2
 pygraphviz==1.2
