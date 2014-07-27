@@ -158,8 +158,8 @@ def signup_action(request):
         user_type = USER_TYPE_STUDENT
 
     user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
-                                         first_name=fname, last_name=lname)
-    user.is_active = False # not active until e-mail address is confirmed
+                                     first_name=fname, last_name=lname)
+    user.is_active = False  # not active until e-mail address is confirmed
     user.save()
 
     # Authenticate user
@@ -167,6 +167,119 @@ def signup_action(request):
     if auth_user is not None:
         login(request, auth_user)
         send_email_confirmation(request, request.user)
-    
+
     return redirect('/')
 
+
+@require_GET
+def university_by_email(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# during user registration to confirm that the e-mail address (in the GET parameters)
+# is available and valid.
+# It returns a HTTP response with:
+#   The name of the university (taken by the domain of the e-mail address) if it is found
+#   "Exists" if a user with that e-mail address already exists
+#   "NotFound" if a university with that domain is not found
+
+    email = request.GET["email"]
+
+    if jUser.objects.filter(email=email).count() > 0:
+        return HttpResponse("Exists")
+
+    try:
+        _, domain = email.split("@")
+    except ValueError as e:
+        return HttpResponse("NotFound")
+
+    universities = University.objects.filter(domains__name=domain)
+
+    if not universities:
+        return HttpResponse("NotFound")
+    else:
+        university = universities[0]
+        return HttpResponse(university.name)
+
+
+@require_GET
+def check_username(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# to check if the username (from the registration form) is valid
+# It returns:
+#   "Username is required" if the username is empty
+#   "Username exists" if a user with that username exists
+#   "OK" if the username is available
+    username = request.GET["username"]
+    if username == "":
+        return HttpResponse("Username is required")
+    if jUser.objects.filter(username=username).count() > 0:
+        return HttpResponse("Username exists")
+    else:
+        return HttpResponse("OK")
+
+
+@require_GET
+def validate_registration(request):
+# This function handles the asynchronous get requests sent by the javascript code,
+# to validate the username and the e-mail address on form submission
+# It returns:
+#   "Error" if the username or e-mail address are not valid
+#   "OK" if they are both valid.
+    username = request.GET['username']
+    email = request.GET['email']
+
+    try:
+        _, domain = email.split('@')
+    except ValueError:
+        return HttpResponse("Error")
+
+    if jUser.objects.filter(email=email).count() > 0:
+        return HttpResponse("Error")
+    elif jUser.objects.filter(username=username).count() > 0:
+        return HttpResponse("Error")
+    elif University.objects.filter(domains__name=domain).count() == 0:
+        return HttpResponse("Error")
+    else:
+        return HttpResponse("OK")
+
+
+@login_required
+@require_POST
+def approve_student_registrations(request):
+    context = {
+        'page': 'approve_student_registrations',
+    }
+    context.update(csrf(request))
+
+    # Make sure the logged in user is allowed to approve these registrations
+    user = request.user
+    course_id = request.POST['course']
+    courses = Course.objects.filter(id=course_id)
+    if courses is None:
+        raise Http404
+    else:
+        course = courses[0]
+    registrations = ProfessorCourseRegistration.objects.filter(course=course, professor=user, is_approved=True)
+    if registrations is None:
+        raise Http404
+
+    # At this point we know that an approved professor of the course
+    # is attempting to approve sudent registrations
+
+    # Approve each registration
+    for key, val in request.POST.items():
+        if 'student' in key:
+            _, student_id = key.split('-')
+            registrations = StudentCourseRegistration.objects.filter(course_id=course_id,
+                                                                     student_id=student_id,
+                                                                     is_approved=False)
+            if registrations is not None:
+                registration = registrations[0]
+            else:
+                raise Http404
+
+            # Approve registration
+            if val:
+                registration.is_approved = True
+                registration.save()
+
+    return redirect('/my_courses')

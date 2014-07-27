@@ -1,5 +1,5 @@
 {% if course.students.registered|length > 0 %} 
-  <form method="POST" class='send-mass-email-form' action="/send_mass_email">
+  <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.course.slug %}">
       {% csrf_token %}
       <div class='pull-left list-approve'>
                         <h4> Send an e-mail to: </h4>

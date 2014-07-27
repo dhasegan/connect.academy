@@ -13,6 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
+from django.core.mail import send_mail
 
 from app.models import *
 from app.context_processors import *
@@ -56,7 +57,7 @@ def submit_comment(request, slug):
 
     comment_text = form.cleaned_data['comment']
     comment = Review(course=course, review=comment_text, posted_by=user,
-        anonymous=form.cleaned_data['anonymous'])
+                     anonymous=form.cleaned_data['anonymous'])
     comment.save()
     comment.upvoted_by.add(user)
 
@@ -100,6 +101,7 @@ def rate_course(request, slug):
 
     return redirect(form.cleaned_data['url'])
 
+
 @require_POST
 @login_required
 def submit_document(request, slug):
@@ -117,7 +119,7 @@ def submit_document(request, slug):
 
     docfile = form.cleaned_data['document']
     course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
-        description=form.cleaned_data['description'], course=form.cleaned_data['course'], submitter=user)
+                                     description=form.cleaned_data['description'], course=form.cleaned_data['course'], submitter=user)
     course_document.save()
 
     return redirect(form.cleaned_data['url'])
@@ -148,7 +150,7 @@ def submit_homework(request, slug):
 
     docfile = form.cleaned_data['document']
     course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
-        submitter=user, homework_request=homework_request)
+                                               submitter=user, homework_request=homework_request)
     course_homework.save()
 
     return redirect(form.cleaned_data['url'])
@@ -176,7 +178,7 @@ def submit_homework_request(request, slug):
     deadline = Deadline(start=start_time, end=end_time)
     deadline.save()
     homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
-        course=form.cleaned_data['course'], submitter=user, deadline=deadline)
+                                             course=form.cleaned_data['course'], submitter=user, deadline=deadline)
     homework_request.save()
 
     return redirect(form.cleaned_data['url'])
@@ -218,37 +220,63 @@ def register_course(request, slug):
     registration_deadline = course.get_registration_deadline()
     registration_status = course.get_registration_status(user)
     registration_open = registration_deadline.is_open() if registration_deadline is not None else False
-    
+
     if user.user_type == USER_TYPE_STUDENT:
         if registration_open:
             if registration_status == COURSE_REGISTRATION_OPEN:
-                course_registration = StudentCourseRegistration(student = user, 
-                                                                course = course, 
+                course_registration = StudentCourseRegistration(student=user,
+                                                                course=course,
                                                                 is_approved=False)
                 course_registration.save()
-                return HttpResponse("OK",context)
+                return HttpResponse("OK", context)
             elif registration_status in [COURSE_REGISTRATION_PENDING, COURSE_REGISTRATION_REGISTERED]:
-                return HttpResponse("You have already registered for this course.",context)
+                return HttpResponse("You have already registered for this course.", context)
             elif registration_status == COURSE_REGISTRATION_NOT_ALLOWED:
                 return HttpResponse("You are not allowed to register for this course")
         else:
             return HttpResponse("Course registration period is not open.")
     elif user.user_type == USER_TYPE_PROFESSOR:
         if registration_status == COURSE_REGISTRATION_OPEN:
-                course_registration = ProfessorCourseRegistration(professor = user, 
-                                                                  course = course, 
+                course_registration = ProfessorCourseRegistration(professor=user,
+                                                                  course=course,
                                                                   is_approved=False)
                 course_registration.save()
-                return HttpResponse("OK",context)
+                return HttpResponse("OK", context)
         elif registration_status in [COURSE_REGISTRATION_PENDING, COURSE_REGISTRATION_REGISTERED]:
-            return HttpResponse("You have already registered for this course.",context)
+            return HttpResponse("You have already registered for this course.", context)
         elif registration_status == COURSE_REGISTRATION_NOT_ALLOWED:
             return HttpResponse("You are not allowed to register for this course.")
-    else: 
+    else:
         return HttpResponse("You are not allowed to register for this course.")
 
 
+@require_POST
+@login_required
+def send_mass_email(request, slug):
+    course = get_object_or_404(Course, slug=slug)
 
+    context = {
+        'page': 'send_mass_email',
+        'user_auth': request.user
+    }
+    context.update(csrf(request))
 
+    # Make sure the logged in user is allowed to approve these registrations
+    user = request.user
+    subject = request.POST['subject']
+    body = request.POST['email']
+    to = []
+    sender = "%s %s <%s>" % (user.first_name, user.last_name, user.email)
+    for key, val in request.POST.items():
+        if 'user' in key:
+            _, user_id = key.split('-')
+            users = jUser.objects.filter(id=user_id)
+            if users is not None and val:  # if user exists (users is not None) and checkbox was checked (val)
+                email = users[0].email
+                to.append(email)
 
-    
+    if len(to) > 0:
+        send_mail(subject, body, sender, to, fail_silently=False)
+        return HttpResponse("OK")
+    else:
+        return HttpResponse("Please select at least one recepient.")

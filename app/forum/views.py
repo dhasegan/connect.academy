@@ -56,6 +56,7 @@ def course_registration(request, slug):
     response_data['html'] = render_to_string("objects/forum/forum_management.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 @require_http_methods(["GET", "POST"])
 @login_required
 def new_post(request, slug):
@@ -74,7 +75,7 @@ def new_post(request, slug):
     # Get request
     if request.method == "GET":
         return render(request, "pages/forum/new_post.html", context)
-    
+
     # Post request
     form = SubmitForumPost(request.POST)
     if not form.is_valid():
@@ -84,8 +85,8 @@ def new_post(request, slug):
     # everyone is allowed
 
     post = ForumPost(name=form.cleaned_data['title'], forum=form.cleaned_data['forum'],
-                    text=form.cleaned_data['description'], posted_by=user,
-                    anonymous=form.cleaned_data['anonymous'])
+                     text=form.cleaned_data['description'], posted_by=user,
+                     anonymous=form.cleaned_data['anonymous'])
     post.save()
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
@@ -102,7 +103,7 @@ def new_answer(request, slug):
     forums = course.forumcourse_set.all()
     if not forums.count():
         raise Http404
-    
+
     form = SubmitForumAnswer(request.POST)
     if not form.is_valid():
         raise Http404
@@ -132,6 +133,7 @@ def new_answer(request, slug):
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 @require_GET
 @login_required
 def reply_form(request, answer_id):
@@ -155,6 +157,7 @@ def reply_form(request, answer_id):
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 @require_GET
 @login_required
 def discussion(request, answer_id):
@@ -175,6 +178,7 @@ def discussion(request, answer_id):
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 @require_GET
 @login_required
 def answers(request, post_id):
@@ -188,11 +192,11 @@ def answers(request, post_id):
         'post': forum_post_context(post, user)
     }
 
-
     response_data = {
         'html': render_to_string("objects/forum/answers.html", RequestContext(request, context))
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
 @require_POST
 @login_required
@@ -222,6 +226,7 @@ def upvote_post(request):
         'id_selector': '#upvote_post_' + str(post.id)
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
 @require_POST
 @login_required
