@@ -51,6 +51,7 @@ class jUser(User):
     #    as an admin)
     #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
     #    downvoted: (<juser>.downvoted.all() returns all comments that <juser> downvoted)
+    #    appointments(<jUser>.appointments.all() returns all the appointments of that <jUser>)
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
 
@@ -149,7 +150,7 @@ class Course(models.Model):
     #                 <course> as a prerequisite)
     #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
-
+    #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
 
 
     # gets the registration status of this course for the given user
@@ -594,4 +595,18 @@ versioning.register(
 )
 
 
+###########################################################################
+############################### Schedule ##################################
+###########################################################################
+
+class Appointment(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    location = models.CharField(max_length=250)
+
+class PersonalAppointment(Appointment):
+    user = models.ForeignKey('jUser',related_name='appointments')
+
+class CourseAppointment(Appointment):
+    course = models.ForeignKey('Course',related_name='appointments')
 

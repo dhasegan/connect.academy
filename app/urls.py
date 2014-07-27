@@ -18,6 +18,7 @@ urlpatterns += patterns('',
     url(r'^forum/', include('app.forum.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('app.wiki.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('versioning.urls')),
+    url(r'^', include('app.schedule.urls')),
 )
 
 
