@@ -1,13 +1,13 @@
 {% block content %}
 	 
-	<b>{{wiki.title | safe}}</b> 
+	<b> {{wiki.title | safe}} </b> 
 	<br/>
 	{{wiki.content| safe}}
 	
 	<hr/>
 	
-	<a href="/wiki/{{slug}}/edit_wiki_page">Edit Wiki</a>
-	<a href="/wiki/{{slug}}/revert_wiki_page">Revert Wiki </a> <br/>
+	<a href="{% url 'edit_wiki_page' course.slug %}">Edit Wiki</a>
+	<a href="{% url 'revert_wiki_page' course.slug %}">Revert Wiki </a> <br/>
 	Last edited by: {{edited_by}} <br/>
 	Last modified on: {{edited_on}}<br/>
 
