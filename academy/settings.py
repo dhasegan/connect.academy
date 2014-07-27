@@ -223,9 +223,9 @@ if not DEBUG:
 
 SOUTH_TESTS_MIGRATE = False
 
-########################## Shell plus
+########################## Django extension config
 
-SHELL_PLUS_PRE_IMPORTS = (
+SHELL_PLUS_POST_IMPORTS = (
     ('app.models', '*'),
     ('app.populator', '*')
 )
