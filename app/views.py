@@ -26,20 +26,20 @@ def about(request):
 
 
 @login_required
-def home(request):
+def explore(request):
     context = {
-        "page": "home",
+        "page": "explore",
     }
 
     courses = Course.objects.all()
     context = dict(context.items() + course_timeline_context(courses,request.user).items())
-    return render(request, "pages/home.html", context)
+    return render(request, "pages/explore.html", context)
 
 
 @login_required
-def my_courses(request):
+def dashboard(request):
     context = {
-        'page': 'my_courses',
+        'page': 'dashboard',
         'user_auth': request.user
     }
     user = request.user
@@ -74,7 +74,7 @@ def my_courses(request):
     else:
         raise Http404
 
-    return render(request, "pages/my_courses.html", context)
+    return render(request, "pages/dashboard.html", context)
 
 @login_required
 def all_comments(request):

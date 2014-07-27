@@ -11,7 +11,7 @@
                     <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
                     <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> </div>
                     {% if hw.can_submit %}
-                        {% include "objects/course_homework_submit.html" %}
+                        {% include "objects/course/homework_submit.html" %}
                     {% endif %}
                 </div>
             {% endfor %}

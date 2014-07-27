@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    {% include 'objects/course_ratings.html' %}
+    {% include 'objects/course/ratings.html' %}
 
     {% if course.professors %}
     <div class="course-detail">
@@ -79,14 +79,14 @@
 
     {% if registration_status >= 0 %}
         {% with course as jcourse %}
-            {% include 'objects/confirm_registration.html' %}
+            {% include 'objects/course/registration.html' %}
         {% endwith %}
     {% endif %}
 
 
-    {% include 'objects/course_documents.html' %}
+    {% include 'objects/course/documents.html' %}
 
-    {% include 'objects/course_homework_student.html' %}
+    {% include 'objects/course/homework_student.html' %}
 
     {% if forum %}
         <a href="{% url 'forum_course' course.slug %}">

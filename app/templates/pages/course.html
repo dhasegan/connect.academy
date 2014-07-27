@@ -1,16 +1,18 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
-    <div class="row">
+    <div class="row course-page-content">
         <div class="col-md-7">
             <div class="panel panel-default course-details">
-                {% include 'objects/course_contents.html' %}
+                {% include 'objects/course/contents.html' %}
             </div>
         </div>
 
         <div class="col-md-5">
-            {% include "objects/ratings_panel.html" %}
-            {% include "objects/comment_section.html" %}
+            <div class="course-sidebar">
+                {% include "objects/course/my_ratings_panel.html" %}
+                {% include "objects/course/reviews_panel.html" %}
+            </div>
         </div>
     </div>
 {% endblock %}

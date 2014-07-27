@@ -36,7 +36,7 @@
         <div class="comments-display">
             {% for comment in comments|dictsort:"rating" reversed %}
                 <hr>
-                {% include "objects/course_comment.html" %}
+                {% include "objects/course/review.html" %}
             {% endfor %}
         </div>
         {% comment %}

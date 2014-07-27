@@ -3,8 +3,11 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('app.views',
     url(r'^welcome$', 'welcome'),
     url(r'^$', 'welcome'),
-    url(r'^home$', 'home', name='home'),
-    url(r'^my_courses$', 'my_courses', name='my_courses'),
+
+    url(r'^home$', 'explore', name='home'),
+    url(r'^explore$', 'explore', name='explore'),
+    url(r'^dashboard$', 'dashboard', name='dashboard'),
+
     url(r'^about$', 'about'),
     url(r'^all_comments$', 'all_comments', name='all_comments'),
 )

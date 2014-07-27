@@ -1,0 +1,12 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+    <div class="row explore-page">
+        <div class="col-md-3">
+            {% include 'objects/explore/search_sidebar.html' %}
+        </div>
+        <div class="col-md-9">
+            {% include 'objects/explore/courses_timeline.html' %}
+        </div>
+    </div>
+{% endblock %}
