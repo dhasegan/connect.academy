@@ -16,9 +16,11 @@ gunicorn==18.0
 ipython==2.1.0
 psycopg2==2.5.2
 pygraphviz==1.2
+pyparsing==2.0.2
 pystache==0.5.3
 pytz==2014.4
 requests==2.3.0
+scss==0.8.73
 six==1.7.3
 static==1.0.2
 wsgiref==0.1.2
