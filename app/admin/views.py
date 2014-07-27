@@ -58,7 +58,7 @@ def course_categories(request):
 		courses += list(cat.get_all_courses())
 	context['courses'] = courses
 
-	return render(request,'pages/Spacetree/category_tree.html',context)
+	return render(request,'pages/admin.html',context)
 
 # The admin forms. 
 #	Key: The value of the 'form_type' input of the form

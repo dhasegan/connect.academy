@@ -1,7 +1,13 @@
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from app.models import *
 from app.ratings import *
+
+def debug(context):
+    return {
+        'DEBUG': settings.DEBUG
+    }
 
 def user_authenticated(request):
     context = {}
