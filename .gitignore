@@ -2,6 +2,7 @@
 *.pot
 *.pyc
 .DS_Store
+.sass-cache
 local_settings.py
 venv/
 staticfiles/

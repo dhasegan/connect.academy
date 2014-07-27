@@ -1,4 +1,4 @@
-$.noConflict();
+jQuery.noConflict();
 jQuery( document ).ready(function( $ ) { 
 
     // For lazy loading images
