@@ -3,8 +3,8 @@
 {% block content %}
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery-week-calendar/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery-week-calendar/jquery.weekcalendar.css' />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.css' />
 <style type='text/css'>
 body {
 	font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
@@ -36,11 +36,11 @@ h1 {
   }
   </style>
 
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery-week-calendar/libs/jquery-1.4.4.min.js'></script>
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery-week-calendar/libs/jquery-ui-1.8.11.custom.min.js'></script>
+  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/libs/jquery-1.4.4.min.js'></script>
+  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/libs/jquery-ui-1.8.11.custom.min.js'></script>
 
-  <script type="text/javascript" src="{{ STATIC_URL }}jquery-week-calendar/libs/date.js"></script>
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery-week-calendar/jquery.weekcalendar.js'></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}jquery_schedule/libs/date.js"></script>
+  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.js'></script>
 
   <script type='text/javascript'>
   var year = new Date().getFullYear();
@@ -111,8 +111,6 @@ h1 {
   });
   </script>
 
-  <h1>Week Calendar Demo</h1>
-
   <p class="description">
     This calendar demonstrates a basic calendar. Events triggered are
     displayed in the message area. Appointments in the past are shaded grey.
@@ -120,6 +118,8 @@ h1 {
     This calendar demonstrates overlapped events with little space on right to
     create new events  (new option <i>"totalEventsWidthPercentInOneColumn"</i>)
   </p>
+
+  {{ courses_enrolled }}
 
   <div id="calendar"></div>
 

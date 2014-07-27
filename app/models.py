@@ -603,6 +603,7 @@ class Appointment(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     location = models.CharField(max_length=250)
+    description = models.CharField(max_length=500, blank=True)
 
 class PersonalAppointment(Appointment):
     user = models.ForeignKey('jUser',related_name='appointments')
