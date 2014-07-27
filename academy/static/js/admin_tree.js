@@ -1,5 +1,4 @@
-<script language='javascript' type='text/javascript'>
-  var labelType, useGradients, nativeTextSupport, animate;
+var labelType, useGradients, nativeTextSupport, animate;
 
 (function() {
   var ua = navigator.userAgent,
@@ -26,9 +25,8 @@ var Log = {
   }
 };
 
-var json = {{ category_tree|safe }};
 var st = null;
-function init(){
+jQuery( document ).ready( function() {
     //init data
     
     //end
@@ -223,8 +221,5 @@ function init(){
     st.geom.translate(new $jit.Complex(-200, 0), "current");
     //emulate a click on the root node.
     st.onClick(st.root);
-    //end
-    
-}
-
-</script>
+    //end   
+});
