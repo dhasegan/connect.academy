@@ -30,7 +30,10 @@ def login_action(request):
     # Using jUserBackend, which also tries to find a match for the email address.
     user = authenticate(username=login_user, password=login_pass)
     if user is None:
-        auth_univ = get_university(login_user, login_pass)
+        # >>>>> NO campusnet logins for now: Revise this code
+        # auth_univ = get_university(login_user, login_pass)
+
+        auth_univ = None
         if auth_univ:
             users = jUser.objects.filter(username=login_user)
             if not users:
@@ -84,12 +87,12 @@ def set_email(request):
         return redirect("/home")
 
     if request.method == "GET":
-        return render(request, "pages/set_email.html", context)
+        return render(request, "pages/auth/set_email.html", context)
 
     form = EmailConfirmationForm(request.POST)
     if not form.is_valid():
         context['error'] = form.non_field_errors
-        return render(request, "pages/set_email.html", context)
+        return render(request, "pages/auth/set_email.html", context)
 
     email = form.cleaned_data["email"]
     university = form.cleaned_data["university"]
@@ -282,4 +285,4 @@ def approve_student_registrations(request):
                 registration.is_approved = True
                 registration.save()
 
-    return redirect('/my_courses')
+    return redirect('/dashboard')

@@ -7,7 +7,7 @@
 	  <div class = "panel-heading">
       <h4>Wiki page of <a href="{% url 'course_page' course.slug %}"> {{course.name}} </a></h4>
       {% if can_edit_wiki %}
-        <a class='btn btn-default' href='{%url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
+        <a class='btn btn-default' href='{% url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
       {% endif %}
     </div>
 

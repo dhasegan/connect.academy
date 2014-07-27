@@ -1,5 +1,7 @@
 {% extends "pages/base.html" %}
+
 {% load humanize %}
+
 {% block content %}
   <form class="form-horizontal" method="POST" role="form" action='save_wiki_page'>
 
@@ -23,4 +25,8 @@
       </div>
   </form>
 
+{% endblock %}
+
+{% block extra_js_includes %}
+  <script type="text/javascript" src="{{ STATIC_URL }}/ckeditor/ckeditor.js"></script>
 {% endblock %}

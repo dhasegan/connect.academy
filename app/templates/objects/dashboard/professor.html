@@ -18,7 +18,7 @@
     <div class="tab-content">
       {% for course in courses %}
         <div class="tab-pane {% if forloop.counter == 1 %} active {% endif %}" id="tab{{course.course.id}}">
-          {% include 'objects/course_management_section.html' %}
+          {% include 'objects/course/management/panel.html' %}
         </div>
       {% endfor %}
     </div>

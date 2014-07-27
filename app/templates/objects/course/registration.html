@@ -21,9 +21,9 @@
                 </div>
             </div>
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dalog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+</div>
 
 {% if registration_open or user_auth.user_type == 1 %}
     {% if registration_status == 0 %} <!-- open -->
@@ -35,11 +35,11 @@
             {% endif %}
         </a>
     {% elif registration_status == 1 %} <!-- pending -->
-        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}' disabled><b>Pending Registration</b></a>
+        <a class="btn btn-primary" disabled><b>Pending Registration</b></a>
     {% endif %}
 {% endif %}
 
 {% if registration_status == 2 %} <!-- registered -->
-    <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success" id='register_button{{jcourse.id}}' disabled><b>Registered</b></a>
+    <a class="btn btn-success" disabled><b>Registered</b></a>
 
 {% endif %}

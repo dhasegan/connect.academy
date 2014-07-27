@@ -30,7 +30,7 @@ def manage_account(request):
     context = {
         'page': 'manage_account'
     }
-    return render(request, "pages/user_account.html", context)
+    return render(request, "pages/auth/user_account.html", context)
 
 
 @require_POST
@@ -55,11 +55,11 @@ def password_change_action(request):
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(request, "pages/user_account.html", context)
+        return render(request, "pages/auth/user_account.html", context)
 
     if new_password != confirm_pass:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(request, "pages/user_account.html", context)
+        return render(request, "pages/auth/user_account.html", context)
 
     # everything went fine
 
@@ -67,7 +67,7 @@ def password_change_action(request):
     user.save()
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "password"})
 
-    return render(request, "pages/user_account.html", context)
+    return render(request, "pages/auth/user_account.html", context)
 
 
 @require_POST
@@ -89,18 +89,18 @@ def username_change_action(request):
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(request, "pages/user_account.html", context)
+        return render(request, "pages/auth/user_account.html", context)
 
     # proceed and change the username.
     if jUser.objects.filter(username=new_username).count() > 0:
         context['error'] = render_to_string('objects/notifications/profile/username_exists.html', {})
-        return render(request, "pages/user_account.html", context)
+        return render(request, "pages/auth/user_account.html", context)
     user.username = new_username
     user.save()
 
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "username"})
 
-    return render(request, "pages/user_account.html", context)
+    return render(request, "pages/auth/user_account.html", context)
 
 
 @require_POST
@@ -124,7 +124,7 @@ def name_change_action(request):
 
     if not user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
-        return render(context, "pages/user_account.html", context)
+        return render(context, "pages/auth/user_account.html", context)
 
     # proceed and change the name
 
@@ -134,4 +134,4 @@ def name_change_action(request):
 
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "first and last name"})
 
-    return render(request, "pages/user_account.html", context)
+    return render(request, "pages/auth/user_account.html", context)

@@ -1,6 +1,7 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
+<div class="forum-new-post-page">
     <div class="panel panel-default">
         <div class="panel-heading">
             <p class="h4">
@@ -11,7 +12,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    {% include 'objects/forum/new_question.html' %}
+                    {% include 'objects/forum/new_post.html' %}
                 </div>
                 <div class="col-md-6">
                     {% comment %}
@@ -21,4 +22,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
