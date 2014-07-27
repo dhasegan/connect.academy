@@ -230,6 +230,77 @@ class Populator:
             while not self.add_rating(course):
                 pass
 
+
+    def populate_forum_post(self, forum):
+        course = forum.course
+        students = course.students.all()
+        posted_by = random.choice(students)
+        name = self.random_word() + " " + self.random_word()
+        text = ""
+        for i in range(random.randint(0,10)):
+            text = text + self.random_word() + " "
+        anon = False
+        if random.random() < 0.1:
+            anon = True
+        ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon)
+
+    def populate_forum_posts(self, count):
+        forums = ForumCourse.objects.all()
+        for i in range(count):
+            forum = random.choice(forums)
+            self.populate_forum_post(forum)
+
+    def populate_forum_answer(self, forum_post):
+        forum = ForumCourse.objects.get(id=forum_post.forum.id)
+        course = forum.course
+        students = course.students.all()
+        posted_by = random.choice(students)
+        text = ""
+        for i in range(random.randint(10,50)):
+            text = text + self.random_word() + " "
+        anon = False
+        if random.random() < 0.1:
+            anon = True
+        parent_answer = None
+        if random.random() < 0.4:
+        # if random.random() < 1:
+            answers = list(ForumAnswer.objects.filter(post=forum_post, parent_answer=None))
+            if random.random() < 0.5:
+                # post to a leaf
+                while len(answers):
+                    parent_answer = random.choice(answers)
+                    answers = list(ForumAnswer.objects.filter(post=forum_post, parent_answer=parent_answer))
+            else:
+                # post a reply
+                if len(answers):
+                    parent_answer = random.choice(answers)
+
+        ForumAnswer.objects.create(post=forum_post, text=text, posted_by=posted_by, anonymous=anon, parent_answer=parent_answer)
+
+    def populate_forum_answers(self, count):
+        forum_posts = ForumPost.objects.all()
+        for i in range(count):
+            forum_post = random.choice(forum_posts)
+            self.populate_forum_answer(forum_post)
+
+    def populate_forum_upvotes_object(self, obj, students):
+        random.shuffle(students)
+        nr_students = len(students)
+        for i in range( random.randint(0, nr_students/2-1) ):
+            obj.upvoted_by.add(students[i])
+
+    def populate_forum_upvotes(self):
+        forums = ForumCourse.objects.all()
+        for forum in forums:
+            course = forum.course
+            students = list(course.students.all())
+            posts = forum.forumpost_set.all()
+            for post in posts:
+                self.populate_forum_upvotes_object(post, students)
+                answers = post.forumanswer_set.all()
+                for answer in answers:
+                    self.populate_forum_upvotes_object(answer, students)
+
     def check_dependencies(self, nr_universities=0, nr_students=0, nr_categories=0,
                            nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0,
                            nr_forum_posts=0, nr_forum_answers=0):
@@ -258,21 +329,77 @@ class Populator:
                           nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0,
                           nr_forum_posts=0, nr_forum_answers=0):
 
+        print "check_dependencies... "
         self.check_dependencies(nr_universities=nr_universities, nr_students=nr_students, nr_categories=nr_categories,
                                 nr_professors=nr_professors, nr_courses=nr_courses, nr_reviews=nr_reviews,
                                 nr_ratings=nr_ratings, nr_forum_posts=nr_forum_posts, nr_forum_answers=nr_forum_answers)
+        print "ok"
+
+        if nr_universities: print "populate_universities... "
         self.populate_universities(nr_universities)
+        if nr_universities: print "ok"
+
+        if nr_students: print "populate_students... "
         self.populate_students(nr_students)
+        print "ok"
+
+        if nr_professors: print "populate_professors... "
         self.populate_professors(nr_professors)
+        if nr_professors: print "ok"
+
+        if nr_categories: print "populate_categories... "
         self.populate_categories(nr_categories)
+        if nr_categories: print "ok"
+
+        if nr_courses: print "populate_courses... "
         self.populate_courses(nr_courses)
-        self.populate_registrations()
+        if nr_courses: print "ok"
+
+        if nr_reviews: print "populate_comments... "
         self.populate_comments(nr_reviews)
+        if nr_reviews: print "ok"
+
+        if nr_ratings: print "populate_ratings... "
         self.populate_ratings(nr_ratings)
-        # self.populate_forum_posts(nr_forum_posts)
-        # self.populate_forum_asnwers(nr_forum_answers)
+        if nr_ratings: print "ok"
+
+        if nr_forum_posts: print "populate_forum_posts... "
+        self.populate_forum_posts(nr_forum_posts)
+        if nr_forum_posts: print "ok"
+
+        if nr_forum_answers: print "populate_forum_answers... "
+        self.populate_forum_answers(nr_forum_answers)
+        if nr_forum_answers: print "ok"
 
     # Populate the database with small sizes
-    def populate_small(self):
-        self.populate_database(nr_universities=2, nr_students=200, nr_categories=20,
+    @staticmethod
+    def populate_small():
+        populator = Populator()
+        populator.populate_database(nr_universities=2, nr_students=200, nr_categories=20,
             nr_professors=20, nr_courses=15, nr_reviews=20, nr_ratings=100)
+
+        print "populate_registrations... "
+        populator.populate_registrations()
+        print "ok"
+
+        populator.populate_database(nr_forum_posts=50, nr_forum_answers=300)
+
+        print "populate_forum_upvotes... "
+        populator.populate_forum_upvotes()
+        print "ok"
+
+    @staticmethod
+    def populate_xsmall():
+        populator = Populator()
+        populator.populate_database(nr_universities=1, nr_students=40, nr_categories=15,
+            nr_professors=10, nr_courses=10, nr_reviews=20, nr_ratings=30)
+
+        print "populate_registrations... "
+        populator.populate_registrations()
+        print "ok"
+
+        populator.populate_database(nr_forum_posts=20, nr_forum_answers=80)
+
+        print "populate_forum_upvotes... "
+        populator.populate_forum_upvotes()
+        print "ok"
