@@ -189,10 +189,10 @@ class Course(models.Model):
 
         
 
-    def get_cr_deadline(self):
+    def get_registration_deadline(self):
         category = self.category
         if category is not None:
-            return category.get_cr_deadline()
+            return category.get_registration_deadline()
         else:
             return None
 
@@ -257,14 +257,18 @@ class Category(models.Model):
     name = models.CharField(max_length = 150)
     abbreviation = models.CharField(max_length = 10)
     admins = models.ManyToManyField('jUser', related_name = 'categories_managed')
-    #course registration deadline
-    cr_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category',null=True)
+
+    # Registration deadline
+    registration_deadline = models.ForeignKey('CourseRegistrationDeadline', related_name = 'category',null=True)
+
     # !!
     # Relations declared in other models define the following:
     #   courses (<category>.courses.all() returns all courses that are direct children of <category>)
     #   children (<category>.children.all() returns all child categories of <category>)    
+
+
+    # get_admins(): Gets the "closest" administrators of a category. 
     def get_admins(self):
-        # Gets the "closest" administrators of a category. 
         admins = self.admins.all()
         if len(admins) > 0:
             return admins
@@ -273,17 +277,17 @@ class Category(models.Model):
         else:
             return None
 
+    # get_all_admins(): Get all people with administrator rights of this category
+    # (i.e: including admins of parent categories)
     def get_all_admins(self):
-        # get all people with administrator rights of this category
-        # (i.e: including admins of parent categories)
         admins = list(self.admins.all())
         if self.parent != None:
             admins += self.parent.get_all_admins()
         return admins
 
 
+    # get_all_courses(): Gets all the courses that are descendants of this category
     def get_all_courses(self):
-        # Gets all the courses that are descendants of this category
         allcourses = list(self.courses.all())
         children = Category.objects.filter(parent__id = self.id)
         for child in children:
@@ -291,17 +295,17 @@ class Category(models.Model):
 
         return allcourses
 
-    # finds the course registration deadline for this category (by climbing up to the root of the tree
-    # until a category with a deadline is found)
-    def get_cr_deadline(self):
-        if self.cr_deadline is not None:
-            return self.cr_deadline
+    # get_registration_deadline(): Finds the course registration deadline for this category
+    # (by climbing up to the root of the tree until a category with a deadline is found)
+    def get_registration_deadline(self):
+        if self.registration_deadline is not None:
+            return self.registration_deadline
         elif self.parent is not None:
-            return self.parent.get_cr_deadline()
+            return self.parent.get_registration_deadline()
         else:
             return None
 
-    # gets the subtree that has this category in the root. The tree is returned as a dictionary,
+    # get_subtree(): Gets the subtree that has this category in the root. The tree is returned as a dictionary,
     # such that when converted to JSON, it follows the specifications to build a Spacetree with 
     # Infoviz (the javascript visualization tool)
     def get_subtree(self):
@@ -314,11 +318,11 @@ class Category(models.Model):
             },
             'children' : []
         }
-        cr_deadline = self.get_cr_deadline()
-        if cr_deadline is not None and cr_deadline.is_open():
-            tree['data']['cr_deadline'] = "Open until " + str(cr_deadline.end)
+        registration_deadline = self.get_registration_deadline()
+        if registration_deadline is not None and registration_deadline.is_open():
+            tree['data']['registration_deadline'] = "Open until " + str(registration_deadline.end)
         else:
-            tree['data']['cr_deadline'] = "Closed"
+            tree['data']['registration_deadline'] = "Closed"
 
         admins = self.get_all_admins()
         if admins is not None:
@@ -361,8 +365,8 @@ class Category(models.Model):
 
         return tree
 
-        # returns all categories that are descendats of this one together with this category
-        # this is useful to list the categories in the admin page
+    # get_descendants(): Returns all categories that are descendats of this one together with this category
+    # this is useful to list the categories in the admin page
     def get_descendants(self):
         descendants = list(self.children.all())
         for cat in descendants:
@@ -371,7 +375,6 @@ class Category(models.Model):
                 if not desc in descendants:
                     descendants.append(desc)
         return descendants
-
 
     def __unicode__(self):
         return str(self.name)

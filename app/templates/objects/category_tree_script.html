@@ -116,7 +116,7 @@ function init(){
                         // update all id fields in the category forms
                         jQuery(".category-forms form input[type='hidden'][name='cat_id']").val(cat_id);
                         // update the course registration deadline
-                        jQuery(".category-forms form small[class='cr_deadline_status']").html(node.data.cr_deadline);
+                        jQuery(".category-forms form small[class='registration_deadline_status']").html(node.data.registration_deadline);
                         // update the list of admins
                         var admins = node.data.admins;
                         var length = admins.length;

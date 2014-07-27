@@ -225,7 +225,6 @@ SOUTH_TESTS_MIGRATE = False
 
 ########################## Shell plus
 
-SHELL_PLUS = "python"
 SHELL_PLUS_PRE_IMPORTS = (
     ('app.models', '*'),
     ('app.populator', '*')

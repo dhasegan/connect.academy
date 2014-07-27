@@ -215,9 +215,9 @@ def register_course(request, slug):
     context.update(csrf(request))
     user = request.user
     course = get_object_or_404(Course, slug=slug)
-    cr_deadline = course.get_cr_deadline()
+    registration_deadline = course.get_registration_deadline()
     registration_status = course.get_registration_status(user)
-    registration_open = cr_deadline.is_open() if cr_deadline is not None else False
+    registration_open = registration_deadline.is_open() if registration_deadline is not None else False
     
     if user.user_type == USER_TYPE_STUDENT:
         if registration_open:

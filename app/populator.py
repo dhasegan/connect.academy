@@ -119,37 +119,36 @@ class Populator:
                 if is_leaf:
                     leaf_categories.append(category)
 
-        while True:
-            course_id = random.randint(100000, 999999)
-            name = self.random_word() + " " + self.random_word() + " " + self.random_word()
-            course_type = random.choice(list(COURSE_TYPES))[0]
-            credits = random.randint(1, 10)
-            description = ""
-            for i in range(0, random.randint(10, 20)):
-                description = description + self.random_word() + " "
-            category = random.choice(leaf_categories)
-            universities = University.objects.all()
-            if not universities:
-                self.add_university()
-            universities = University.objects.all()
-            university = random.choice(universities)
+        course_id = random.randint(100000, 999999)
+        name = self.random_word() + " " + self.random_word() + " " + self.random_word()
+        course_type = random.choice(list(COURSE_TYPES))[0]
+        credits = random.randint(1, 10)
+        description = ""
+        for i in range(0, random.randint(10, 20)):
+            description = description + self.random_word() + " "
+        category = random.choice(leaf_categories)
 
-            # Add additional description
-            # Add all other fields
-            course = Course(course_id=course_id, course_type=course_type, name=name,
-                            credits=credits, description=description, category=category,
-                            university=university)
-            course.save()
+        universities = University.objects.all()
+        university = random.choice(universities)
 
-            professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR))
-            if not professors:
-                self.populate_professors(1)
-            random.shuffle(professors)
-            nr_professors = random.randint(1, 3)
-            for i in range(nr_professors):
-                pcr = ProfessorCourseRegistration(professor=professors[i], course=course)
-                pcr.save()
-            break
+        # Add additional description
+        # Add all other fields
+        course = Course(course_id=course_id, course_type=course_type, name=name,
+                        credits=credits, description=description, category=category,
+                        university=university)
+        course.save()
+
+        professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR, university=university))
+        if not professors:
+            self.populate_professors(1)
+        random.shuffle(professors)
+        nr_professors = random.randint(1, 3)
+        for i in range(nr_professors):
+            pcr = ProfessorCourseRegistration(professor=professors[i], course=course, is_approved=True)
+            pcr.save()
+
+        if random.random() < 0.5:
+            forum = ForumCourse.objects.create(forum_type=FORUM_TYPE_COURSE, course=course)
 
     def populate_courses(self, count):
         categories = Category.objects.all()
@@ -164,6 +163,18 @@ class Populator:
 
         for i in range(count):
             self.add_course(leaf_categories)
+
+    def populate_registrations(self):
+        courses = Course.objects.all()
+        for course in courses:
+            university = course.university
+            students = list(jUser.objects.filter(user_type=USER_TYPE_STUDENT, university=university))
+            nr_students = len(students)
+            nr_registered = int(1.0 * nr_students * random.randint(20,60) / 100.0)
+            random.shuffle(students)
+            for i in range(nr_registered):
+                is_approved = random.random() > 0.1
+                StudentCourseRegistration.objects.create(student=students[i], course=course, is_approved=is_approved)
 
     def add_comment(self, course):
         comment = ""
@@ -220,12 +231,15 @@ class Populator:
                 pass
 
     def check_dependencies(self, nr_universities=0, nr_students=0, nr_categories=0,
-                           nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0):
-        if nr_universities + len(University.objects.all()) <= 0 \
-            and (nr_students > 0 or nr_courses > 0):
-            raise RuntimeError("Not enough universities in the DB")
-        if nr_courses > 0 and nr_categories + len(Category.objects.all()) < 2:
-            raise RuntimeError("Not enough categories in the DB")
+                           nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0,
+                           nr_forum_posts=0, nr_forum_answers=0):
+        if len(University.objects.all()) == 0:
+            raise IntegrityError("Please load the initial data fixture!")
+        if len(Category.objects.all()) < 2:
+            raise IntegrityError("Please load the initial data fixture!")
+        if len(jUser.objects.all()) < 2:
+            raise IntegrityError("Please load the initial data fixture!")
+
         if nr_courses + len(Course.objects.all()) > 0 \
             and (nr_professors + len(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR)) <= 0):
             raise RuntimeError("Not enough professors in the DB")
@@ -235,17 +249,30 @@ class Populator:
         if nr_ratings + len(Rating.objects.all()) > (nr_courses + len(Course.objects.all())) * \
             (nr_students + len(jUser.objects.all())) * len(RATING_TYPES):
             raise RuntimeError("Not enough courses and/or users in the DB")
+        if nr_forum_posts > 0 and nr_courses + len(Course.objects.all()) < 10:
+            raise RuntimeError("Not enough courses in the DB for the forum posts")
+        if nr_forum_answers > 0 and nr_forum_posts + len(ForumPost.objects.all()) <= 0:
+            raise RuntimeError("Not enough forum posts in the DB for the forum answers")
 
     def populate_database(self, nr_universities=0, nr_students=0, nr_categories=0,
-                          nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0):
+                          nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0,
+                          nr_forum_posts=0, nr_forum_answers=0):
 
         self.check_dependencies(nr_universities=nr_universities, nr_students=nr_students, nr_categories=nr_categories,
                                 nr_professors=nr_professors, nr_courses=nr_courses, nr_reviews=nr_reviews,
-                                nr_ratings=nr_ratings)
+                                nr_ratings=nr_ratings, nr_forum_posts=nr_forum_posts, nr_forum_answers=nr_forum_answers)
         self.populate_universities(nr_universities)
         self.populate_students(nr_students)
         self.populate_professors(nr_professors)
         self.populate_categories(nr_categories)
         self.populate_courses(nr_courses)
+        self.populate_registrations()
         self.populate_comments(nr_reviews)
         self.populate_ratings(nr_ratings)
+        # self.populate_forum_posts(nr_forum_posts)
+        # self.populate_forum_asnwers(nr_forum_answers)
+
+    # Populate the database with small sizes
+    def populate_small(self):
+        self.populate_database(nr_universities=2, nr_students=200, nr_categories=20,
+            nr_professors=20, nr_courses=15, nr_reviews=20, nr_ratings=100)

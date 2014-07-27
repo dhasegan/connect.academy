@@ -78,7 +78,7 @@
         "fields": {
             "abbreviation": "connect",
             "admins": [1,2],
-            "cr_deadline": null,
+            "registration_deadline": null,
             "level": 0,
             "name": "Connect.Academy",
             "parent": null,
@@ -91,7 +91,7 @@
         "fields": {
             "abbreviation": "jacobs",
             "admins": [],
-            "cr_deadline": null,
+            "registration_deadline": null,
             "level": 1,
             "name": "Jacobs University Bremen",
             "parent": 1,

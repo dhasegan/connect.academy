@@ -47,7 +47,7 @@ def course_timeline_context(courses,user):
 
               
         registration_status = course.get_registration_status(user)
-        registration = course.get_cr_deadline() # course registration deadline
+        registration = course.get_registration_deadline() # course registration deadline
         ### Is course registration open?
         registration_open = False
         if registration is not None:
@@ -144,7 +144,7 @@ def course_page_context(request, course):
 
     ### User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(request.user)
-    registration_deadline = course.get_cr_deadline() # course registration deadline
+    registration_deadline = course.get_registration_deadline() # course registration deadline
 
     ### Is course registration open?
     registration_open = False
