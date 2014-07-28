@@ -72,3 +72,69 @@ $course-credits-badge-color:        #92209B;
 }
 
 // Course page
+$course-img-max-size:           150px;
+
+.course-page {
+    .course-details {
+        .course-contents {
+            .course-image {
+                max-height: $course-img-max-size;
+                max-width: $course-img-max-size;
+            }
+        }
+        .course-brief-detail-wrapper { 
+            margin-top: 10px;
+            .course-brief-detail {
+                margin-top: 4px;
+            }
+        }
+        .course-detail {
+            margin-top: 16px;
+        }
+
+        .agg-ratings {
+            .rating {
+                .rating-nrs {
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+
+    .course-sidebar {
+        .ratings {
+            hr {
+                margin-top: 6px;
+                margin-bottom: 6px;
+            }
+        }
+        .reviews-panel {
+            .review-submit {
+                resize: vertical;
+            }
+
+            .reviews-display {
+                 hr {
+                    margin-bottom: 12px;
+                }
+                .review {
+                    .review-datetime {
+                        float: right;
+                    }
+                    .review-text {
+                        margin-top: 6px;
+                    }
+                    .review-rate {
+                        overflow: hidden;
+                        .rate-content {
+                            float: right;
+                        }
+                        .review-rate-form {
+                            display: inline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
