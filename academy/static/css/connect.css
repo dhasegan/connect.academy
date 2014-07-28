@@ -71,7 +71,7 @@
   padding-top: 75px; }
   .welcome-page .register-sidebar .register-panel .register-heading {
     background-color: #282828;
-    color: #FFF;
+    color: white;
     text-align: center; }
   .welcome-page .register-sidebar .register-panel .validation-ok {
     color: #5cb85c;
@@ -79,3 +79,18 @@
   .welcome-page .register-sidebar .register-panel .validation-error {
     color: #d9534f;
     font-size: 11px; }
+
+.forum-page .forum-bar .new-post-btn {
+  margin-right: 8px; }
+.forum-page .answers-tabs .answer-box {
+  border: 1px;
+  border-style: solid;
+  margin: 8px 4px; }
+  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form {
+    display: inline; }
+  .forum-page .answers-tabs .answer-box .answer-body p {
+    margin-bottom: 0px; }
+  .forum-page .answers-tabs .answer-box .answer-box-contents {
+    margin-left: 8px; }
+.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
+  display: none; }

@@ -173,7 +173,7 @@ $register-validation-font-size:     11px;
         .register-panel {
             .register-heading {
                 background-color: $register-panel-heading-color;
-                color: #FFF;
+                color: white;
                 text-align: center;
             }
             .validation-ok {
@@ -184,6 +184,41 @@ $register-validation-font-size:     11px;
                 color: $brand-danger;
                 font-size: $register-validation-font-size;
             }
+        }
+    }
+}
+
+// Forum page
+
+.forum-page {
+    .forum-bar {
+        .new-post-btn {
+            margin-right: 8px;
+        }
+    }
+
+    .answers-tabs {
+        .answer-box {
+            border: 1px;
+            border-style: solid;
+            margin: 8px 4px;
+            .answer-header .upvote-answer-form {
+                display: inline;
+            }
+            .answer-body p {
+                margin-bottom: 0px;            
+            }
+            .answer-box-contents {
+                margin-left: 8px;
+            }
+        }
+
+        .best-answers {
+            .answer-box .answer-footer .reply-form {
+                display: none;
+            }
+        }
+        .discussion-answers {
         }
     }
 }
