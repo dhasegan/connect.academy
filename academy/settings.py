@@ -244,9 +244,9 @@ PIPELINE_CSS = {
             'media': 'screen,projection',
         },
     },
-    'connect_base': {
+    'connect': {
         'source_filenames': (
-          'css/old_jcourse.css',
+          'css/connect.scss',
         ),
         'output_filename': 'css/connect.min.css',
         'extra_context': {

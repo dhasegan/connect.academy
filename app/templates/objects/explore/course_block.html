@@ -1,14 +1,18 @@
-<div class="col-md-12 course-block-wrapper">
-<div class="panel panel-default panel-course
+<div class="course-block-wrapper">
+<div class="panel panel-default course-panel
 {% if course.major %} major-{{ course.major }} {% endif %}
 {% if course.school %} school-{{ course.school }} {% endif %}
 {% if course.studies %} studies-{{ course.studies }} {% endif %}
 {% if course.term %} term-{{ course.term }} {% endif %}">
 
-    <div class="panel-heading">
-        <span class="badge course-credits"> {{ course.course.credits }} </span>
+    <div class="panel-heading block-header">
+        <span class="badge course-credits pull-right"> {{ course.course.credits }} </span>
+
         {% if course.overall_rating %}
-            <span class="badge course-rating"> <span class="glyphicon glyphicon-star yellow-star"></span> {{ course.overall_rating|floatformat:1 }} </span>
+            <span class="badge course-rating pull-right">
+                <span class="glyphicon glyphicon-star yellow-star"></span>
+                {{ course.overall_rating|floatformat:1 }}
+            </span>
         {% endif %}
 
         <div class="course-name">
@@ -16,7 +20,7 @@
         </div>
     </div>
 
-    <div class="panel-body">
+    <div class="panel-body block-details">
         <div class="row">
             <div class="col-md-2">
                 {% if course.course.image %}
@@ -45,7 +49,9 @@
                 <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">(more)</a>
 
                 <p class="course-catalog text-muted">
-                    {{ course.course_path }}
+                    <small>
+                        {{ course.course_path }}
+                    </small>
                 </p>
                 {% if course.registration_status != 3 %} <!-- if user is allowed to register -->
                     {% with course.registration_status as registration_status %}

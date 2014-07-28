@@ -397,6 +397,7 @@
 
   .navbar-brand {
     color: $navbar-default-brand-color;
+    font-family: $font-family-brand;
     &:hover,
     &:focus {
       color: $navbar-default-brand-hover-color;
@@ -531,6 +532,7 @@
 
   .navbar-brand {
     color: $navbar-inverse-brand-color;
+    font-family: $font-family-brand;
     &:hover,
     &:focus {
       color: $navbar-inverse-brand-hover-color;

@@ -1,0 +1,29 @@
+.connect-navigation .connect-brand .logo {
+  float: left;
+  margin-top: -11px;
+  width: 40px; }
+.connect-navigation .connect-brand .brand-name {
+  padding-left: 7.5px; }
+
+.explore-page .search-sidebar #credit-slider .ui-slider-range {
+  background: #428bca; }
+.explore-page .search-sidebar #credit-slider .ui-slider-handle {
+  border-color: #245682; }
+.explore-page .search-sidebar .credit-slider-values {
+  margin-top: 15px; }
+.explore-page .courses-sequence .course-panel .block-header .course-name {
+  font-size: 18px; }
+.explore-page .courses-sequence .course-panel .block-header .course-rating {
+  background-color: #33424d; }
+  .explore-page .courses-sequence .course-panel .block-header .course-rating .yellow-star {
+    color: #eeda74; }
+.explore-page .courses-sequence .course-panel .block-header .course-credits {
+  background-color: #92209b;
+  margin-left: 10px;
+  width: 46px;
+  height: 20px; }
+.explore-page .courses-sequence .course-panel .block-details .course-image {
+  max-height: 100px;
+  max-width: 100px; }
+.explore-page .courses-sequence .course-panel .block-details .course-catalog {
+  margin-top: 8px; }

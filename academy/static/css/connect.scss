@@ -1,0 +1,74 @@
+// Bootstrap variables and mixins
+@import "../bootstrap/stylesheets/bootstrap/variables";
+@import "../bootstrap/stylesheets/bootstrap/mixins";
+
+// Navigation bar
+.connect-navigation {
+    .connect-brand {
+        .logo {
+            float: left;
+            margin-top: 4px - $navbar-padding-vertical;
+            width: $navbar-height - 10px;
+        }
+        .brand-name {
+            padding-left: $navbar-padding-horizontal / 2;
+        }
+    }
+}
+
+// Explore page
+$course-block-img-max-size:         100px;
+$course-rating-star-color:          #EEDA74;
+$course-rating-badge-color:         #33424D;
+$course-credits-badge-color:        #92209B;
+
+.explore-page {
+    .search-sidebar {
+        #credit-slider {
+            .ui-slider-range {
+                background: $brand-primary;
+            }
+
+            .ui-slider-handle {
+                border-color: darken($brand-primary, 20%);
+            }
+        }
+
+        .credit-slider-values {
+            margin-top: 15px;
+        }
+    }
+
+    .courses-sequence {
+        .course-panel {
+            .block-header {
+                .course-name {
+                    font-size: 18px;
+                }
+                .course-rating {
+                    background-color: $course-rating-badge-color;
+                    .yellow-star { color: $course-rating-star-color; }
+                }
+                .course-credits {
+                    background-color: $course-credits-badge-color;
+                    margin-left: 10px;
+                    width: 46px;
+                    height: 20px;
+                }
+            }
+
+            .block-details {
+                .course-image {
+                    max-height: $course-block-img-max-size;
+                    max-width: $course-block-img-max-size;
+                }
+
+                .course-catalog {
+                    margin-top: 8px;
+                }
+            }
+        }
+    }
+}
+
+// Course page
