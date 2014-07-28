@@ -4,6 +4,14 @@
   width: 40px; }
 .connect-navigation .connect-brand .brand-name {
   padding-left: 7.5px; }
+.connect-navigation .login-form {
+  padding-top: 4px; }
+  .connect-navigation .login-form .login-input {
+    max-width: 150px;
+    max-height: 27px;
+    margin-left: 8px; }
+  .connect-navigation .login-form #campusnet-popover {
+    color: #29abe2; }
 
 .explore-page .search-sidebar #credit-slider .ui-slider-range {
   background: #428bca; }
@@ -56,3 +64,18 @@
     float: right; }
   .course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate .review-rate-form {
     display: inline; }
+
+.welcome-page .home-image-container .home-image {
+  width: 100% !important; }
+.welcome-page .register-sidebar {
+  padding-top: 75px; }
+  .welcome-page .register-sidebar .register-panel .register-heading {
+    background-color: #282828;
+    color: #FFF;
+    text-align: center; }
+  .welcome-page .register-sidebar .register-panel .validation-ok {
+    color: #5cb85c;
+    font-size: 11px; }
+  .welcome-page .register-sidebar .register-panel .validation-error {
+    color: #d9534f;
+    font-size: 11px; }

@@ -1,0 +1,74 @@
+<div class="panel panel-default register-panel">
+
+    <div class="panel-heading register-heading">
+        <h3 class="panel-title">Register with <strong>Connect Academy </strong></h3>
+    </div>
+    
+    <div class="panel-body" id = "welcome_page_panel-body">
+        <form action="{% url 'register' %}" id="registration_form" method="POST">
+            {%csrf_token%}
+
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="fname" id="fname" class="form-control input-sm" placeholder="First Name" required>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="lname" id="lname" class="form-control input-sm" placeholder="Last Name" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="email" name="email" id="email" class="form-control input-sm" placeholder="University Email address" required/>
+                        <div id ="email-ok" class='validation-ok'></div>
+                        <div id ="email-error" class='validation-error'></div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="username"  id="username" class="form-control input-sm" placeholder="Username" required/>
+                        <div id ="username-ok" class='validation-ok'></div>
+                        <div id ="username-error" class='validation-error'></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required/>
+                        <div id ="password-ok" class='validation-ok'></div>
+                        <div id ="password-error" class='validation-error'></div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-sm" placeholder="Confirm Password" required>
+                        <div id ="password_confirmation-ok" class='validation-ok'></div>
+                        <div id ="password_confirmation-error" class='validation-error'></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <div class="form-group">
+                        <input type="checkbox" name="is_professor" id="is_professor" value="True"/> I am a professor <br/>
+                    </div>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <div class="form-group" id="departments">
+                    
+                    </div>
+                </div>
+            </div>
+            
+            <input type="submit" value="Register" class="btn btn-info btn-block">
+        </form>
+    </div>
+</div>

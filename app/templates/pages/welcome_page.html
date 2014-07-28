@@ -2,92 +2,20 @@
 
 {% block content %}
 
-    {% comment %}
-        Please revise this code completely
-    {% endcomment %}
-
-           <div class="container-fluid" id="home-container">
-
-               <div class="container-fluid" id="home-image-container">
-                <img id="home-image" src="{{ STATIC_URL }}images/second_image.png"/>
-            </div>
-               
-            <div class="row fluid-form">
-            <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4" id="register_panel-body">
-                <div class="panel panel-default" id = "welcome_page_panel-body">
-                    <div class="panel-heading" id="register_panel-heading">
-                            <h3 class="panel-title">Register with <b>Connect Academy </b></h3>
-                             </div>
-                             <div class="panel-body" id = "welcome_page_panel-body">
-                            <form action="/register" id="registration_form" method="POST">
-                                {%csrf_token%}
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                <input type="text" name="fname" id="fname" class="form-control input-sm" placeholder="First Name" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="lname" id="lname" class="form-control input-sm" placeholder="Last Name" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class = "row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="email" name="email" id="email" class="form-control input-sm" placeholder="University Email address" required/>
-                                            <div id ="email-ok" class='validation-ok'></div>
-                                            <div id ="email-error" class='validation-error'></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="username"  id="username" class="form-control input-sm" placeholder="Username" required/>
-                                            <div id ="username-ok" class='validation-ok'></div>
-                                            <div id ="username-error" class='validation-error'></div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="password" name="password" id="password" class="form-control input-sm" placeholder="Password" required/>
-                                            <div id ="password-ok" class='validation-ok'></div>
-                                            <div id ="password-error" class='validation-error'></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-sm" placeholder="Confirm Password" required>
-                                            <div id ="password_confirmation-ok" class='validation-ok'></div>
-                                            <div id ="password_confirmation-error" class='validation-error'></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="checkbox" name="is_professor" id="is_professor" value="True"/> I am a professor <br/>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
-                                        <div class="form-group" id="departments">
-                                        
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <input type="submit" value="Register" class="btn btn-info btn-block">
-                            
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="welcome-page">
+    <div class="row">
+       <div class="col-md-8" id="home-container">
+            <div class="home-image-container">
+                <img class="home-image" src="{{ STATIC_URL }}images/second_image.png"/>
             </div>
         </div>
+           
+        <div class="col-md-4">
+            <div class="register-sidebar">
+                {% include 'objects/welcome/signup_form.html' %}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
