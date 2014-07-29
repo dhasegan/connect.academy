@@ -64,7 +64,7 @@ def dashboard(request):
             context['courses'].append(course_dict)
 
     else:
-        raise Http404
+        return redirect('/admin')
 
     return render(request, "pages/dashboard.html", context)
 
