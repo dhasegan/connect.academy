@@ -42,19 +42,18 @@ h1 {
   <script type="text/javascript" src="{{ STATIC_URL }}jquery_schedule/libs/date.js"></script>
   <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.js'></script>
 
+
   <script type='text/javascript'>
+  
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
   var day = new Date().getDate();
 
   var eventData = {
     events : [
-       {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 35),'title':'Lunch with Mike'},
-       {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 45),'title':'Dev Meeting'},
-       {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 45),'title':'Hair cut'},
-       {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 30),'title':'Team breakfast'},
-       {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 16),'title':'Product showcase'},
-       {'id':5, 'start': new Date(year, month, day + 1, 15), 'end': new Date(year, month, day + 1, 17),'title':'Overlay event'}
+    	{% for app in appointments %}
+    		{{app|safe}},
+    	{% endfor %}	
     ]
   };
 
@@ -107,19 +106,17 @@ h1 {
       $('#message').html(message).fadeIn();
     }
 
-    $('<div id="message" class="ui-corner-all"></div>').prependTo($('body'));
   });
   </script>
 
   <p class="description">
+    NOTES: <br/>
     This calendar demonstrates a basic calendar. Events triggered are
     displayed in the message area. Appointments in the past are shaded grey.
     <br/>
     This calendar demonstrates overlapped events with little space on right to
     create new events  (new option <i>"totalEventsWidthPercentInOneColumn"</i>)
   </p>
-
-  {{ courses_enrolled }}
 
   <div id="calendar"></div>
 

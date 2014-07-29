@@ -20,6 +20,8 @@
           <li {% if page == 'dashboard' %} class="active" {% endif %}><a href="{% url 'dashboard' %}"> <b>Dashboard</b></a></li>
           <li {% if page == 'explore' %} class="active" {% endif %}><a href="{% url 'explore' %}"><b>Explore</b></a></li>
           <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="{% url 'all_comments' %}"> <b>All comments</b></a></li>
+          <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}"> <b>Schedule</b></a></li>
+
 
         </ul>
       {% endif %}

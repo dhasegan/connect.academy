@@ -1,4 +1,5 @@
 import random
+from random import *
 
 from django.db import IntegrityError
 
@@ -403,3 +404,59 @@ class Populator:
         print "populate_forum_upvotes... "
         populator.populate_forum_upvotes()
         print "ok"
+
+    @staticmethod
+    def populate_course_appointments():
+        courses = Course.objects.all()
+        if len(courses) == 0:
+            print "No courses in the DB. Populate them first."
+            return False
+
+        current_date = datetime.now()
+        
+        index = 0
+        for course in courses:
+            for i in range(randint(8,12)):
+                start = current_date + timedelta(days=randint(0,6),hours=randint(0,22),minutes=randint(0,59))
+                end = start + timedelta(hours=randint(1,3))
+                l = "Location " + str(index)
+                d = "CourseAppointment " + str(index)
+                appointment = CourseAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,course=course)
+                appointment.save()
+                index += 1
+
+        return True
+
+
+    @staticmethod
+    def populate_personal_appointments():
+        users = jUser.objects.all()
+        if len(users) == 0:
+            print "No users in the DB. Populate them first"
+            return False
+
+        current_date = datetime.now()
+        
+        index = 0
+        for user in users:
+            for i in range(randint(8,12)):
+                start = current_date + timedelta(days=randint(0,6),hours=randint(0,22),minutes=randint(0,59))
+                end = start + timedelta(hours=randint(1,3))
+                l = "Location " + str(index)
+                d = "PersonalAppointment " + str(index)
+                appointment = PersonalAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,user=user)
+                appointment.save()
+                index += 1
+        return True
+
+    @staticmethod
+    def populate_appointments():
+        print "Populating course appointments ..."
+        status_course = Populator.populate_course_appointments()
+        print "Populating personal appointments ..."
+        statuc_person = Populator.populate_personal_appointments()
+
+        if status_course and statuc_person:
+            print "Successfully populated the appointment tables"
+
+

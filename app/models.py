@@ -607,7 +607,11 @@ class Appointment(models.Model):
 
 class PersonalAppointment(Appointment):
     user = models.ForeignKey('jUser',related_name='appointments')
+    def __str__(self):
+        return self.user.name
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
 
+    def __str__(self):
+        return self.course.name
