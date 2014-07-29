@@ -1,0 +1,27 @@
+{% if checkbox_group.categories|length > 1 %}
+    <div class="category-checkbox" id="cat_cb_{{ checkbox_group.parent.id }}">
+
+        <div class="text-muted">
+            {% if checkbox_group.name %}
+                {{ checkbox_group.name }}
+            {% else %}
+                {{ checkbox_group.parent.name }}
+            {% endif %}
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" class="cat-cb cb-all" {% if checkbox_group.none_checked %} checked {% endif %}> All
+            </label>
+        </div>
+
+        {% for category in checkbox_group.categories %}
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="cat-cb cb-normal" id="checkbox_{{ category.category.id }}" name="{{ category.category.id }}" {% if category.checked %} checked {% endif %} />
+                    {{ category.category.name }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

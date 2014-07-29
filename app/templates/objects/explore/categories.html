@@ -1,0 +1,16 @@
+<div class="explore_categories">
+    <form class="categories-form" class="form" method="post" action="{% url 'explore_categories' %}">
+        {% csrf_token %}
+
+        {% for level_group in explore_categories %}
+            <div class="level_categories" id="cats-level-{{ level_group.level }}">
+                {% for checkbox_group in level_group.checkbox_groups %}
+                    {% include 'objects/explore/categories_checkboxes.html' %}
+                {% endfor %}
+                {% if level_group.checkbox_groups|length > 0 %}
+                    <hr>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </form>
+</div>

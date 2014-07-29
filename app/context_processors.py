@@ -4,10 +4,12 @@ from django.conf import settings
 from app.models import *
 from app.ratings import *
 
+
 def debug(context):
     return {
         'DEBUG': settings.DEBUG
     }
+
 
 def user_authenticated(request):
     context = {}
@@ -22,62 +24,90 @@ def user_authenticated(request):
 
     return context
 
+def explore_level_context(parents, checked=[]):
+    context = []
+
+    for parent in parents:
+        categories = []
+        none_checked = True
+        for category in parent.children.all():
+            if category.id in checked:
+                none_checked = False
+            categories.append({
+                'category': category,
+                'checked': category.id in checked
+            })
+        if len(categories) > 1:
+            context.append({
+                'categories': categories,
+                'parent': parent,
+                'name': parent.name,
+                'none_checked': none_checked
+            })
+    return context
+
+def explore_categories_context(checked=[]):
+    context = []
+
+    connect = Category.objects.get(parent=None)
+    categories = [connect]
+    while categories:
+        context.append({
+            'level': 0,
+            'checkbox_groups': explore_level_context(categories, checked)
+        })
+        children_categories = []
+        for category in categories:
+            children = category.children.all()
+            if len(children) > 1:
+                for child in children:
+                    if child.id in checked:
+                        children_categories.append( child )
+            elif len(children) == 1:
+                children_categories.append( children[0] )
+        categories = children_categories
+    return context
 
 
-def course_timeline_context(courses,user):
+def course_timeline_context(courses, user):
     context = {}
 
     courses = sorted(courses, key=lambda x: x.name)
-    # Add the courses to the context
+
     allcourses = []
     for course in courses:
         if course.category is None:
             continue
-        studies = ""
-        if course.course_type == COURSE_TYPE_UG:
-            studies = "UG"
-        elif course.course_type == COURSE_TYPE_GRAD:
-            studies = "GRAD"
-        
-        ratings = Rating.objects.filter(course= course, rating_type=OVERALL_R)
-        if (len(ratings) == 0):
-            overall_rating = None
-        else:   
-            overall_rating = sum([cur.rating for cur in ratings])/len(ratings)
 
+        categories = []
         category = course.category
-        course_path = category.name
-        while (category.parent is not None):
-            course_path = "%s > %s" % (category.parent.name, course_path)
+        course_path = None
+        while category.parent is not None:
+            categories.append(category)
+            course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
             category = category.parent
+        categories = categories[::-1] # reversed
 
-              
+        professors = [pcr.professor for pcr in course.professorcourseregistration_set.filter(is_approved=True)]
+
         registration_status = course.get_registration_status(user)
-        registration = course.get_registration_deadline() # course registration deadline
-        ### Is course registration open?
-        registration_open = False
-        if registration is not None:
-            registration_open = registration.is_open()
-        
-        professors = []
-        for reg in ProfessorCourseRegistration.objects.filter(course=course,is_approved=True):
-            professors.append(reg.professor)
+        registration = course.get_registration_deadline()
+        registration_open = registration.is_open() if registration is not None else False
 
         allcourses.append({
             'course': course,
             'professors': professors,
-            'majors': course.majors.all(),
-            'category': course.category,
+            # 'majors': course.majors.all(), # Majors not used yet
+            'categories': categories,
             'course_path': course_path,
-            'university': course.university,
-            'studies': studies,
-            'overall_rating': overall_rating,
+            'overall_rating': course.get_rating(OVERALL_R),
             'registration_status': registration_status,
             'registration_open': registration_open
         })
-    allcourses = sorted(allcourses, key=lambda x:x['overall_rating'], reverse=True)
-    context['courses'] = allcourses
+    context['courses'] = sorted(allcourses, key=lambda x: x['overall_rating'], reverse=True)
 
+    # Should be only one and should be connect
+    context['explore_categories'] = explore_categories_context([4,2,3,5,8])
     return context
 
 
@@ -141,18 +171,16 @@ def course_page_context(request, course):
     if request.user.is_authenticated():
         current_user = jUser.objects.get(id=request.user.id)
 
-
     comments = Review.objects.filter(course=course)
     context['comments'] = []
     for comment in comments:
-        context['comments'].append( review_context(comment, request, current_user) )
+        context['comments'].append(review_context(comment, request, current_user))
 
-
-    ### User - Course Registration status (open|pending|registered|not allowed)
+    # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(request.user)
-    registration_deadline = course.get_registration_deadline() # course registration deadline
+    registration_deadline = course.get_registration_deadline()  # course registration deadline
 
-    ### Is course registration open?
+    # Is course registration open?
     registration_open = False
     if registration_deadline is not None:
         registration_open = registration_deadline.is_open()
@@ -206,6 +234,7 @@ def course_page_context(request, course):
     """
     return context
 
+
 def review_context(comment, request, current_user):
     context_comment = {
         'comment': comment
@@ -214,7 +243,7 @@ def review_context(comment, request, current_user):
     upvotes = comment.upvoted_by.all().count()
     downvotes = comment.downvoted_by.all().count()
     # Add a +1 to upvotes to fix the ratings score
-    context_comment['rating'] = comment_rating(upvotes+1, downvotes)
+    context_comment['rating'] = comment_rating(upvotes + 1, downvotes)
     if upvotes + downvotes > 0:
         context_comment['score'] = str(upvotes) + "/" + str(upvotes + downvotes)
     if (upvotes + 1) * 2 < downvotes:
@@ -231,10 +260,10 @@ def review_context(comment, request, current_user):
     if not comment.anonymous:
         context_comment['posted_by'] = comment.posted_by
 
-
     return context_comment
 
-################## Forum Contexts ######################
+# Forum Contexts ######################
+
 
 def forum_vote_context(obj, current_user):
     # obj is either post or answer
@@ -268,6 +297,7 @@ def forum_child_answer_context(post, answer, current_user):
     context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
+
 def forum_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
@@ -280,17 +310,19 @@ def forum_answer_context(post, answer, current_user):
     context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
+
 def forum_post_context(post, current_user):
     answers_context = []
     answers = ForumAnswer.objects.filter(post=post, parent_answer=None)
     for answer in answers:
-        answers_context.append( forum_answer_context(post, answer, current_user) )
+        answers_context.append(forum_answer_context(post, answer, current_user))
     context = {
         'question': post,
         'answers': answers_context,
     }
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context
+
 
 def forum_context(forum, current_user):
     context_forum = {
@@ -306,18 +338,20 @@ def forum_context(forum, current_user):
 
     return context_forum
 
+
 def forum_discussion_answer_context(answer, current_user):
     context = {
-        'answer': answer, 
+        'answer': answer,
         'child_answers': []
     }
 
     context = dict(context.items() + forum_vote_context(answer, current_user).items())
     return context
 
+
 def forum_discussion_post_context(post, answer1, answer2, current_user):
-    discussion_answers = [forum_discussion_answer_context(answer1, current_user),\
-        forum_discussion_answer_context(answer2, current_user)]
+    discussion_answers = [forum_discussion_answer_context(answer1, current_user),
+                          forum_discussion_answer_context(answer2, current_user)]
     answer = answer2
     while True:
         child_answers = answer.forumanswer_set.all()
@@ -326,7 +360,7 @@ def forum_discussion_post_context(post, answer1, answer2, current_user):
         answer = child_answers[0]
         discussion_answers.append(forum_discussion_answer_context(answer, current_user))
 
-    context =  {
+    context = {
         'question': post,
         'answers': discussion_answers,
     }
@@ -338,7 +372,7 @@ def forum_discussion_context(forum, post, answer, current_user):
     parent_answer = answer.parent_answer
     return {
         'post': forum_discussion_post_context(post, parent_answer, answer, current_user),
-        'forum': forum, 
+        'forum': forum,
         'course': forum.course,
         'discussion_answer_id': answer.id
     }

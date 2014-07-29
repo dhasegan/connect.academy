@@ -1,9 +1,6 @@
 <div class="course-block-wrapper">
-<div class="panel panel-default course-panel
-{% if course.major %} major-{{ course.major }} {% endif %}
-{% if course.school %} school-{{ course.school }} {% endif %}
-{% if course.studies %} studies-{{ course.studies }} {% endif %}
-{% if course.term %} term-{{ course.term }} {% endif %}">
+<div class="panel panel-default course-panel 
+{% for category in course.categories %} clvl-{{ forloop.counter }}-{{ category.id }} {% endfor %}">
 
     <div class="panel-heading block-header">
         <span class="badge course-credits pull-right"> {{ course.course.credits }} </span>
@@ -34,7 +31,7 @@
             <div class="col-md-10 course-details">
 
                 <div class="course-professors">
-                    <strong> Professors: </strong> 
+                    <strong> Professors: </strong>
                     {% for juser in course.professors|slice:":3" %}
                         {% include 'objects/user_link.html' %};
                     {% endfor %}

@@ -1,42 +1,11 @@
 <div class="search-sidebar">
   <div class="panel panel-default">
     <div class="panel-body">
-    	<!-- Search bar -->
       <input type="text" class="form-control course-search-bar"  id="search_courses"  placeholder="Search by course name">
 
       <hr>
 
-      <div class="btn-group studies-group" id= "study_groups_button"  data-toggle="buttons">
-        <label class="btn btn-primary btn-studies">
-          <input type="radio" class="studies-radio" name="studies" id="st_UG"> UG </input>
-        </label>
-        <label class="btn btn-primary btn-studies">
-          <input type="radio" class="studies-radio" name="studies" id="st_Grad"> Grad </input>
-        </label>
-        <label class="btn btn-primary btn-studies active">
-          <input type="radio" class="studies-radio" name="studies" id="st_Both"> Both </input>
-        </label>
-      </div>
-
-      <hr>
-
-      <!-- Checkboxes for majors -->
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" class="major-checkbox" id="all-majors-cb" value="">
-            All majors
-        </label>
-      </div>
-      {% for category in categories %}
-      <div class="checkbox major-cb">
-        <label>
-          <input type="checkbox" class="major-checkbox cb-{{category.2}}  " id="checkbox_{{ category.0 }}" value="">
-          {{ category.1 }}
-        </label>
-      </div>
-      {% endfor %}
-
-      <hr>
+      {% include 'objects/explore/categories.html' %}
 
       <h5>Credits range:</h5>
       <div id="credit-slider"></div>

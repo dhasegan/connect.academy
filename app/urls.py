@@ -5,11 +5,12 @@ urlpatterns = patterns('app.views',
     url(r'^$', 'welcome'),
 
     url(r'^home$', 'explore', name='home'),
-    url(r'^explore$', 'explore', name='explore'),
     url(r'^dashboard$', 'dashboard', name='dashboard'),
-
     url(r'^about$', 'about'),
     url(r'^all_comments$', 'all_comments', name='all_comments'),
+
+    url(r'^explore$', 'explore', name='explore'),
+    url(r'^explore_categories$', 'explore_categories', name='explore_categories'),
 )
 
 urlpatterns += patterns('',

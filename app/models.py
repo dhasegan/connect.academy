@@ -196,6 +196,13 @@ class Course(models.Model):
         else:
             return None
 
+    def get_rating(self, rating_type):
+        ratings = self.rating_set.filter(rating_type=rating_type)
+        if not ratings:
+            return None
+        return sum([cur.rating for cur in ratings]) / len(ratings)
+
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Course, self).save(*args, **kwargs)

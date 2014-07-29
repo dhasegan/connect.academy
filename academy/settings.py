@@ -246,9 +246,9 @@ PIPELINE_CSS = {
     },
     'connect': {
         'source_filenames': (
-          'css/connect.scss',
+          'local/css/connect.scss',
         ),
-        'output_filename': 'css/connect.min.css',
+        'output_filename': 'local/css/connect.min.css',
         'extra_context': {
             'media': 'screen,projection',
         },
@@ -258,9 +258,16 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'connect_base': {
         'source_filenames': (
-          'js/jcourse.js',
+          'local/js/connect.js',
+          'local/js/explore.js',
         ),
-        'output_filename': 'js/connect_base.min.js',
+        'output_filename': 'js/connect.min.js',
+    },
+    'admin_tree': {
+        'source_filenames': (
+            'local/js/admin_tree.js',
+        ),
+        'output_filename': 'js/admin_tree.min.js',
     },
     'bootstrap': {
         'source_filenames': (
