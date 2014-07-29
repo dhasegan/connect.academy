@@ -16,25 +16,25 @@
     </form>
 
 {% else %}
-
-  <ul class="nav navbar-nav navbar-right" id="navBar">
-        <div class="dropdown" id="dName">
-            <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="/page.html">
-                {% if user_auth.first_name %}
-                {{ user_auth.first_name }}
-                {% else %}
-                {{ user_auth.username }}
-                {% endif %}
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu multi-level" id="dropdown_menu_profile"role="menu" aria-labelledby="dropdownMenu">
-                <li><a href="/profile/{{user_auth.username}}">My profile </a></li>
-                <li><a href="/manage_account">Manage Account</a></li>
-                <li><a href="/logout">Logout</a></li>
-            </ul>
-                </li>
-            </ul>
-        </div>
+  <ul class="nav navbar-nav navbar-right">
+        <li>
+            <div class="btn-group navbar-btn">
+                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle ">
+                    {% if user_auth.first_name %}
+                        {{ user_auth.first_name }}
+                    {% else %}
+                        {{ user_auth.username }}
+                    {% endif %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="{% url 'profile' user_auth.username %}">My profile </a></li>
+                    <li><a href="{% url 'manage_account' %}">Manage Account</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </li>
     </ul>
 
 {% endif %}
