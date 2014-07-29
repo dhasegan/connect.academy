@@ -2,7 +2,7 @@
     {% csrf_token %}
     <input type="hidden" name="answer_id" value="{{ answer.answer.id }}">
 
-    <button type="submit" class="btn {% if answer.voted %} btn-primary {% endif %} btn-xs">
+    <button type="submit" class="btn {% if answer.voted %} btn-primary {% else  %} btn-default {% endif %} btn-xs">
         <span class="glyphicon glyphicon-thumbs-up"></span> {% if answer.upvotes %} {{ answer.upvotes }} {% else %} 0 {% endif %}
     </button>
 </form>

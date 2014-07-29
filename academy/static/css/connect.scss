@@ -31,6 +31,41 @@ $campusnet-popover-info-color:      #29ABE2;
     }
 }
 
+$nav-sidebar-bg:                    white;
+$nav-sidebar-active-link:           $brand-primary;
+$nav-sidebar-active-focus-link:     darken($nav-sidebar-active-link, 8%);
+$nav-sidebar-focus-link:            $gray-lighter;
+
+.nav-sidebar {
+    li {
+        background-color: $nav-sidebar-bg;
+        > a {
+            color: $gray;
+            white-space: nowrap;
+            overflow: hidden;
+            border-bottom: 1px solid $gray-lighter;
+
+            &:hover,
+            &:focus {
+                background-color: $nav-sidebar-focus-link;
+            }
+        }
+
+        &.active {
+            a {
+                cursor: default;
+                background-color: $nav-sidebar-active-link; 
+                color: #fff;
+            }
+
+            a:hover, 
+            a:focus {
+                background-color: $nav-sidebar-active-focus-link;
+            }
+        }
+    }
+}
+
 // Explore page
 $course-block-img-max-size:         100px;
 $course-rating-star-color:          #EEDA74;
@@ -198,10 +233,14 @@ $register-validation-font-size:     11px;
     }
 
     .answers-tabs {
+        .upvote-post-form {
+            display: inline;
+        }
+
         .answer-box {
-            border: 1px;
-            border-style: solid;
             margin: 8px 4px;
+            background-color: $gray-lighter;
+
             .answer-header .upvote-answer-form {
                 display: inline;
             }
@@ -209,7 +248,13 @@ $register-validation-font-size:     11px;
                 margin-bottom: 0px;            
             }
             .answer-box-contents {
-                margin-left: 8px;
+                padding: 4px 8px;
+            }
+
+            .child-answers {
+                .answer-box {
+                    background-color: white;
+                }
             }
         }
 
