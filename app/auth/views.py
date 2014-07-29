@@ -156,7 +156,7 @@ def signup_action(request):
     university = form.cleaned_data["university"]
 
     if is_professor:
-        user_type = USER_TYPE_INSTRUCTOR
+        user_type = USER_TYPE_PROFESSOR
     else:
         user_type = USER_TYPE_STUDENT
 
