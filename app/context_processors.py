@@ -106,8 +106,8 @@ def course_timeline_context(courses, user):
         })
     context['courses'] = sorted(allcourses, key=lambda x: x['overall_rating'], reverse=True)
 
-    # Should be only one and should be connect
-    context['explore_categories'] = explore_categories_context([4,2,3,5,8])
+    uni_category = user.university.get_university_category()
+    context['explore_categories'] = explore_categories_context([ uni_category.id ])
     return context
 
 

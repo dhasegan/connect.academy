@@ -1,6 +1,6 @@
 <div class="course-block-wrapper">
 <div class="panel panel-default course-panel 
-{% for category in course.categories %} clvl-{{ forloop.counter }}-{{ category.id }} {% endfor %}">
+{% for category in course.categories %} ct-{{ category.id }} {% endfor %}">
 
     <div class="panel-heading block-header">
         <span class="badge course-credits pull-right"> {{ course.course.credits }} </span>

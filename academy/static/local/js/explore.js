@@ -5,57 +5,39 @@ jQuery( document ).ready(function( $ ) {
         effect : "fadeIn"
     });
 
-    indexCourses = function(btn_studies) {
-        var courses = $('.course-panel');
-        var checked = $('.major-checkbox').filter( ':checked' );
-        var allMajors = false;
-        var allStudies = false;
-        var searchTerm = $('.course-search-bar').val();
+    getAvoidedCategoriesIds = function() {
+        var $checked = $('.cb-normal').filter(':checked');
+        var $avoided = $([]);
+        $checked.each( function() {
+            $bad_categories = $(this).parents('.category-checkbox').find('.cb-normal').not(':checked');
+            $bad_ids = $bad_categories.map( function() { return this.name; } )
+            $avoided = $avoided.add($bad_ids)
+        });
+        return $avoided.toArray();
+    }
 
-        if (checked.not( '#all-majors-cb' ).length == 0) {
-            allMajors = true;
-        }
-        if (btn_studies == undefined && $('#st_Both').parent().hasClass('active')) {
-            allStudies = true;
-        }
-        if (btn_studies != undefined && btn_studies == "Both") {
-            allStudies = true
-        }
+    indexCourses = function() {
+        var courses = $('.course-panel');
+
+        var searchTerm = $('.course-search-bar').val();
+        var avoided_categories = getAvoidedCategoriesIds();
 
         courses.each( function() {
             var show = true;
             classesArr = this.classList;
-            if (!allMajors) {
-                for(var i=0; i< classesArr.length; i++) {
-                    if (classesArr[i].match('^major-') != undefined) {
-                        major = classesArr[i].replace('major-', '');
-                        if (!$('#checkbox_' + major).is(':checked')) {
+            if (show) {
+                $(classesArr).each( function() {
+                    if (this.indexOf('ct-') >= 0) {
+                        var category_id = this.replace("ct-", "");
+                        if (avoided_categories.indexOf(category_id) >= 0) {
                             show = false;
-                        }
+                        }   
                     }
-                }
-            }
-            if (show && !allStudies) {
-                found = false;
-                for(var i=0; i<classesArr.length; i++) {
-                    if (classesArr[i].match('^studies-') != undefined) {
-                        studies = classesArr[i].replace('studies-', '');
-                        if (btn_studies == undefined && !$('#st_' + studies).parent().hasClass('active')) {
-                            show = false;
-                        }
-                        if (btn_studies != undefined && btn_studies != studies) {
-                            show = false;
-                        }
-                        found = true;
-                    }
-                }
-                if (found == false) {
-                    show = false;
-                }
+                })
             }
             if (show) {
-                credits = parseFloat( $(this).find('.course-credits').text() );
-                values = $("#credit-slider").slider("values");
+                var credits = parseFloat( $(this).find('.course-credits').text() );
+                var values = $("#credit-slider").slider("values");
                 if (credits < creditValues[values[0]] || credits > creditValues[values[1]]) {
                     show = false;
                 }
@@ -92,12 +74,6 @@ jQuery( document ).ready(function( $ ) {
         }
     });
 
-    // Studies handle code!
-    $('.btn-studies').click( function() {
-        studies = $(this).children('.studies-radio')[0].id.replace('st_','')
-        indexCourses(studies)
-    });
-
     // Category Checkbox All-vs-normal
     categoryCheckboxHandle = function() {
         var $this = $(this)
@@ -125,6 +101,7 @@ jQuery( document ).ready(function( $ ) {
             success: function(result) {
                 $(".explore_categories").html(result.html)
                 $('.cat-cb').change(categoryCheckboxHandle)
+                indexCourses()
             },
             error: function() {
             }
@@ -132,25 +109,6 @@ jQuery( document ).ready(function( $ ) {
 
     }
     $('.cat-cb').change(categoryCheckboxHandle)
-
-
-    // Checkboxes handle code!
-    majorCheckboxHandle = function() {
-        if (this.id == "all-majors-cb") {
-            $('.major-checkbox').prop('checked', false);
-            $('#all-majors-cb').prop('checked', true);
-        }
-        var checked = $('.major-checkbox').filter( ':checked' );
-        if (checked.length > 0) {
-            if (checked.not( '#all-majors-cb' ).length > 0) {
-                $('#all-majors-cb').prop('checked', false);
-            }
-        } else {
-            $('#all-majors-cb').prop('checked', true);
-        }
-
-    }
-    $('.major-checkbox').change(majorCheckboxHandle);
 
     // Credit slider handle code!
     var creditValues = [0.1, 0.15, 0.2, 0.3, 1.1, 2.5, 3.0, 3.75, 5.0, 7.5, 10.0, 12.0, 15.0, 30.0];
@@ -175,6 +133,6 @@ jQuery( document ).ready(function( $ ) {
 
     $("#slider-handle-0").val( creditValues[0] )
     $("#slider-handle-1").val( creditValues[creditValues.length - 1] )
-    majorCheckboxHandle();
 
+    indexCourses()
 });
