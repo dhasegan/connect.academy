@@ -197,6 +197,13 @@ class Course(models.Model):
         else:
             return None
 
+    def get_rating(self, rating_type):
+        ratings = self.rating_set.filter(rating_type=rating_type)
+        if not ratings:
+            return None
+        return sum([cur.rating for cur in ratings]) / len(ratings)
+
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Course, self).save(*args, **kwargs)
@@ -246,6 +253,13 @@ class University(models.Model):
     #   domains (<university>.domains.all() returns all domains of <university>)
     #   courses (<university>.courses.all() returns all courses of <university>)
     #   categories (<university>.categories.all() returns all categories of <university>)
+    def get_university_category(self):
+        connect = Category.objects.get(parent=None)
+        univs = self.categories.filter(parent=connect)
+        if not univs:
+            return None
+        return univs[0]
+
     def __unicode__(self):
         return str(self.name)
 

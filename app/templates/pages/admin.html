@@ -29,11 +29,14 @@
 	<link type="text/css" href="{{ STATIC_URL }}css/Jit/Spacetree.css" rel="stylesheet" />
 {% endblock %}
 
+{% load compressed %}
+
 {% block extra_js_includes %}
 	<script type="text/javascript" src="{{ STATIC_URL }}js/Jit/jit.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
     <script type="text/javascript">
     	var json = {{ category_tree|safe }};
     </script>
+    {% compressed_js 'admin_tree' %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/admin_tree.js"></script>
 {% endblock %}
