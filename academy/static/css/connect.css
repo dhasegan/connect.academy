@@ -114,3 +114,6 @@
     background-color: white; }
 .forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }
+
+.dashboard-page .tabpane-contents {
+  margin-top: 12px; }
