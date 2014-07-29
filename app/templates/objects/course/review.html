@@ -1,19 +1,19 @@
 {% load humanize %}
 
-<div class="comment-block">
+<div class="review-block">
     {% if user_auth or not comment.dont_show %}
-        <div class="course-comment">
+        <div class="review">
             {% comment %}
-                Comment header
+                Review header
             {% endcomment %}
             <div class="row">
                 <div class="text-muted col-md-3"> @{{ comment.comment.id }} </div>
                 <div class="text-muted col-md-4"> 
-                    <span class="badge comment-score-badge">{{ comment.score }}</span> 
+                    <span class="badge review-score-badge">{{ comment.score }}</span> 
                     {% if comment.posted_by %} by {{ comment.posted_by }} {% endif %} 
                 </div>
                 <div class="text-muted col-md-5">
-                    <div class="comment-datetime">
+                    <div class="review-datetime">
                         {{ comment.comment.datetime|naturaltime }}
                     </div>
                 </div>
@@ -22,7 +22,7 @@
             {% comment %}
                 Comment contents
             {% endcomment %}
-            <div class="comment-text" align="justify">
+            <div class="review-text" align="justify">
                 {{ comment.comment.review|linebreaks }}
             </div>
 
@@ -30,10 +30,10 @@
                 Comment Rating system
             {% endcomment %}
             {% if user_auth and comment.should_vote %}
-                <div class="comment-rate">
+                <div class="review-rate">
                     <div class="rate-content">
                         <small> Helpful?
-                            <form class="comment-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
+                            <form class="review-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
                                 <input type="hidden" name="review_id" value="{{comment.comment.id}}">
                                 <input type="hidden" name="vote_type" value="upvote">
                                 <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
@@ -41,7 +41,7 @@
                                 <button type="submit" class="btn btn-default btn-xs">Yes</button>
                             </form>
 
-                            <form class="comment-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
+                            <form class="review-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
                                 <input type="hidden" name="review_id" value="{{comment.comment.id}}">
                                 <input type="hidden" name="vote_type" value="downvote">
                                 <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
@@ -59,9 +59,9 @@
     {% if comment.dont_show %}
         <a class="comment-flag" href="#">
             {% if user_auth %}
-                This comment was flagged as inaccurate or offensive. Click to reveal.
+                This review was flagged as inaccurate or offensive. Click to reveal.
             {% else %}
-                This comment was flagged as inaccurate or offensive. Log in to view it.
+                This review was flagged as inaccurate or offensive. Log in to view it.
             {% endif %}
         </a>
     {% endif %}

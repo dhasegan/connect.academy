@@ -3,7 +3,7 @@
     <div class="col-md-6">
         {% for rating in ratings %}
             {% if rating.type != 'Professor' %}
-                <div class="row">
+                <div class="row rating">
                     <form class="rating-form" method="post" action="/vote_course">
                         <div class="col-md-8">
                             {{ rating.type }}:
@@ -13,7 +13,7 @@
                             <span class="badge course-rating">
                                 <span class="rating-agg-score"> {{ rating.score|floatformat:1 }} </span>
                             </span>
-                            <span class="rating-nrs">
+                            <span class="rating-nrs text-muted">
                                 ({{ rating.count }})
                             </span>
                         </div>
@@ -26,7 +26,7 @@
     <div class="col-md-6">
         {% for rating in ratings %}
             {% if rating.type == 'Professor' and user_auth %}
-                <div class="row">
+                <div class="row rating">
                     <form class="rating-form" method="post" action="/vote_course">
                         <div class="col-md-8">
                             {% with rating.professor as juser %}
@@ -38,7 +38,7 @@
                             <span class="badge course-rating">
                                 <span class="rating-agg-score"> {{ rating.score|floatformat:1 }} </span>
                             </span>
-                            <span class="rating-nrs">
+                            <span class="rating-nrs text-muted">
                                 ({{ rating.count }})
                             </span>
                         </div>

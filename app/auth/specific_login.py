@@ -1,7 +1,7 @@
 import sys
 import os
 
-from twill.commands import go, showforms, formclear, fv, submit
+# from twill.commands import go, showforms, formclear, fv, submit
 
 _UNIVERSITY_LOGINS = [
     {

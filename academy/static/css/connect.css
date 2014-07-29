@@ -1,0 +1,119 @@
+.connect-navigation .connect-brand .logo {
+  float: left;
+  margin-top: -11px;
+  width: 40px; }
+.connect-navigation .connect-brand .brand-name {
+  padding-left: 7.5px; }
+.connect-navigation .login-form {
+  padding-top: 4px; }
+  .connect-navigation .login-form .login-input {
+    max-width: 150px;
+    max-height: 27px;
+    margin-left: 8px; }
+  .connect-navigation .login-form #campusnet-popover {
+    color: #29abe2; }
+
+.nav-sidebar li {
+  background-color: white; }
+  .nav-sidebar li > a {
+    color: #555555;
+    white-space: nowrap;
+    overflow: hidden;
+    border-bottom: 1px solid #eeeeee; }
+    .nav-sidebar li > a:hover, .nav-sidebar li > a:focus {
+      background-color: #eeeeee; }
+  .nav-sidebar li.active a {
+    cursor: default;
+    background-color: #428bca;
+    color: #fff; }
+  .nav-sidebar li.active a:hover,
+  .nav-sidebar li.active a:focus {
+    background-color: #3276b1; }
+
+.explore-page .search-sidebar #credit-slider .ui-slider-range {
+  background: #428bca; }
+.explore-page .search-sidebar #credit-slider .ui-slider-handle {
+  border-color: #245682; }
+.explore-page .search-sidebar .credit-slider-values {
+  margin-top: 15px; }
+.explore-page .courses-sequence .course-panel .block-header .course-name {
+  font-size: 18px; }
+.explore-page .courses-sequence .course-panel .block-header .course-rating {
+  background-color: #33424d; }
+  .explore-page .courses-sequence .course-panel .block-header .course-rating .yellow-star {
+    color: #eeda74; }
+.explore-page .courses-sequence .course-panel .block-header .course-credits {
+  background-color: #92209b;
+  margin-left: 10px;
+  width: 46px;
+  height: 20px; }
+.explore-page .courses-sequence .course-panel .block-details .course-image {
+  max-height: 100px;
+  max-width: 100px; }
+.explore-page .courses-sequence .course-panel .block-details .course-catalog {
+  margin-top: 8px; }
+
+.course-page .course-details .course-contents .course-image {
+  max-height: 150px;
+  max-width: 150px; }
+.course-page .course-details .course-brief-detail-wrapper {
+  margin-top: 10px; }
+  .course-page .course-details .course-brief-detail-wrapper .course-brief-detail {
+    margin-top: 4px; }
+.course-page .course-details .course-detail {
+  margin-top: 16px; }
+.course-page .course-details .agg-ratings .rating .rating-nrs {
+  font-size: 10px; }
+.course-page .course-sidebar .ratings hr {
+  margin-top: 6px;
+  margin-bottom: 6px; }
+.course-page .course-sidebar .reviews-panel .review-submit {
+  resize: vertical; }
+.course-page .course-sidebar .reviews-panel .reviews-display hr {
+  margin-bottom: 12px; }
+.course-page .course-sidebar .reviews-panel .reviews-display .review .review-datetime {
+  float: right; }
+.course-page .course-sidebar .reviews-panel .reviews-display .review .review-text {
+  margin-top: 6px; }
+.course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate {
+  overflow: hidden; }
+  .course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate .rate-content {
+    float: right; }
+  .course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate .review-rate-form {
+    display: inline; }
+
+.welcome-page .home-image-container .home-image {
+  width: 100% !important; }
+.welcome-page .register-sidebar {
+  padding-top: 75px; }
+  .welcome-page .register-sidebar .register-panel .register-heading {
+    background-color: #282828;
+    color: white;
+    text-align: center; }
+  .welcome-page .register-sidebar .register-panel .validation-ok {
+    color: #5cb85c;
+    font-size: 11px; }
+  .welcome-page .register-sidebar .register-panel .validation-error {
+    color: #d9534f;
+    font-size: 11px; }
+
+.forum-page .forum-bar .new-post-btn {
+  margin-right: 8px; }
+.forum-page .answers-tabs .upvote-post-form {
+  display: inline; }
+.forum-page .answers-tabs .answer-box {
+  margin: 8px 4px;
+  background-color: #eeeeee; }
+  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form {
+    display: inline; }
+  .forum-page .answers-tabs .answer-box .answer-body p {
+    margin-bottom: 0px; }
+  .forum-page .answers-tabs .answer-box .answer-box-contents {
+    padding: 4px 8px; }
+  .forum-page .answers-tabs .answer-box .child-answers .answer-box {
+    background-color: white; }
+.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
+  display: none; }
+
+.dashboard-page .tabpane-contents {
+  margin-top: 12px; }

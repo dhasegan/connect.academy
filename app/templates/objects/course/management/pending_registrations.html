@@ -1,29 +1,31 @@
-{% if course.students.pending|length > 0 %} 
-  <form method="POST" action="/approve_student_registrations">
-      {% csrf_token %}
-      <div class='pull-left list-approve'>
-      
-          <ul>
-              <li>
-                  <input type='checkbox' class='selectAll'/> Select All
-              </li>
-            {% for student in course.students.pending %}
-              <li> 
-                  <input type='checkbox' name='student-{{student.id}}'> 
-                  <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
-                  </a> 
-              </li> 
-            {% endfor %}
-          </ul>
-          <input type='hidden' name='course' value='{{course.course.id}}'/>
-      </div>
+{% if course.students.pending|length > 0 %}
+    <form method="POST" action="/approve_student_registrations">
+      <div class="row">
+        {% csrf_token %}
+        <div class='col-md-8 list-approve'>
+        
+            <ul>
+                <li>
+                    <input type='checkbox' class='selectAll'/> Select All
+                </li>
+              {% for student in course.students.pending %}
+                <li> 
+                    <input type='checkbox' name='student-{{student.id}}'> 
+                    <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
+                    </a> 
+                </li> 
+              {% endfor %}
+            </ul>
+            <input type='hidden' name='course' value='{{course.course.id}}'/>
+        </div>
 
-      <div class='pull-right'> 
-        <input class='btn btn-primary' value='Approve Registrations' type='submit'/>
+        <div class='col-md-4'> 
+          <input class='btn btn-primary' value='Approve Registrations' type='submit'/>
+        </div>
       </div>
-  </form>
+    </form>
       
-      {% else %}
-          <p class="h3"> There are no pending registrations for this course. </p>
-      {% endif %} 
+{% else %}
+  <p class="h3"> There are no pending registrations for this course. </p>
+{% endif %} 
    

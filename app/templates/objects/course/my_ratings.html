@@ -12,15 +12,6 @@
                     {% endif %}
                 </div>
 
-                {% comment %}
-                <div class="col-md-2">
-                    {% if user_auth %}
-                        <span class="badge course-rating"> <span class="glyphicon glyphicon-star {% if rating.my_score %} yellow-star {% endif %}"></span>
-                            <span class="rating-my-score"> {% if rating.my_score %} {{ rating.my_score }} {% endif %} </span>
-                        </span>
-                    {% endif %}
-                </div>
-                {% endcomment %}
                 <div class="col-md-4">
                     <span class="rating-stars {% if not user_auth %} ratings-tooltip {% endif %} {% if user_auth %} ratings-tooltip-clarif {% endif %} ">
                     </span>

@@ -22,6 +22,11 @@ class Populator:
             except UnicodeError:
                 continue
 
+    def add_admin(self, category):
+        university = category.university
+        user = self.add_juser(user_type=USER_TYPE_ADMIN, university=university)
+        user.categories_managed.add(category)
+
     def add_university(self):
         while True:
             first_name = self.random_word().capitalize()
@@ -39,7 +44,8 @@ class Populator:
         Domain.objects.create(name=domain, university=univ)
 
         connect = Category.objects.get(name="Connect.Academy")
-        Category.objects.create(parent=connect, level=1, name=name, university=univ, abbreviation=abbreviation)
+        category = Category.objects.create(parent=connect, level=1, name=name, university=univ, abbreviation=abbreviation)
+        self.add_admin(category) # make sure that every university category has an admin
 
     def populate_universities(self, count):
         for i in range(count):
@@ -55,24 +61,27 @@ class Populator:
             username = utype + str(nr_utypes)
         return username
 
-    def add_juser(self, user_type=None):
+    def add_juser(self, user_type=None, university=None):
         if user_type == None:
             user_type = random.choice(list(USER_TYPES))[0]
         fname = self.random_word().capitalize()
         lname = self.random_word().capitalize()
         username = self.create_username_juser(user_type)
-        univs = University.objects.all()
-        univ = univs[random.randrange(len(univs))]
+        if university is None:
+            univs = University.objects.all()
+            university = univs[random.randrange(len(univs))]
         active = True
         password = "1234"
-        domain = univ.domains.all()[0]
+        domain = university.domains.all()[0]
         email = username + "@" + domain.name
         user = jUser.objects.create_user(username=username, password=password,
                                          email=email, first_name=fname, last_name=lname,
-                                         user_type=user_type, university=univ)
+                                         user_type=user_type, university=university)
         if user_type == 1:
             user.is_confirmed = True
-            user.save()
+        
+        user.save()
+        return user # needed by add_admin()
 
     def populate_jusers(self, count):
         for i in range(count):
@@ -100,8 +109,8 @@ class Populator:
         lname = self.random_word().capitalize()
         name = fname + " " + lname
         abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
-
-        category = Category(parent=parent, name=name, level=level, abbreviation=abbreviation)
+        univ = parent.university
+        category = Category(parent=parent, name=name, university=univ, level=level, abbreviation=abbreviation)
         category.save()
 
     def populate_categories(self, count):
@@ -129,8 +138,7 @@ class Populator:
             description = description + self.random_word() + " "
         category = random.choice(leaf_categories)
 
-        universities = University.objects.all()
-        university = random.choice(universities)
+        university = category.university
 
         # Add additional description
         # Add all other fields
@@ -141,9 +149,10 @@ class Populator:
 
         professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR, university=university))
         if not professors:
-            self.populate_professors(1)
+            self.add_juser(user_type=USER_TYPE_PROFESSOR, university=university)
+            professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR, university=university))
         random.shuffle(professors)
-        nr_professors = random.randint(1, 3)
+        nr_professors = random.randint(1, min(3,len(professors)))
         for i in range(nr_professors):
             pcr = ProfessorCourseRegistration(professor=professors[i], course=course, is_approved=True)
             pcr.save()
@@ -223,13 +232,14 @@ class Populator:
 
     def populate_ratings(self, count):
         courses = Course.objects.all()
-        for i in range(count):
+        i = 0
+        while i < count:
             course = random.choice(courses)
             if len(Rating.objects.filter(course=course)) >= len(jUser.objects.all()) * len(RATING_TYPES):
-                i -= 1
                 continue
             while not self.add_rating(course):
                 pass
+            i += 1
 
 
     def populate_forum_post(self, forum):

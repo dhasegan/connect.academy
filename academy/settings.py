@@ -139,7 +139,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'django.contrib.humanize',
-    'django_extensions',
+    'django_extensions', # for special commands
+    'pipeline', # js and css/less compilers
     'storages',
     'app',
     'versioning',  # Should be after apps with versioned models
@@ -223,6 +224,51 @@ if not DEBUG:
 ########################## South library configuration
 
 SOUTH_TESTS_MIGRATE = False
+
+########################### Pipeline settings 
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_JS_COMPRESSOR = "pipeline.compressors.yuglify.YuglifyCompressor" if not DEBUG else None
+
+PIPELINE_COMPILERS = (
+  'pipeline.compilers.sass.SASSCompiler',
+)
+
+PIPELINE_CSS = {
+    'bootstrap': {
+        'source_filenames': (
+            'bootstrap/stylesheets/bootstrap.scss',
+        ),
+        'output_filename': 'css/bootstrap.min.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    },
+    'connect': {
+        'source_filenames': (
+          'css/connect.scss',
+        ),
+        'output_filename': 'css/connect.min.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    },
+}
+
+PIPELINE_JS = {
+    'connect_base': {
+        'source_filenames': (
+          'js/jcourse.js',
+        ),
+        'output_filename': 'js/connect_base.min.js',
+    },
+    'bootstrap': {
+        'source_filenames': (
+          'bootstrap/javascripts/bootstrap.js',
+        ),
+        'output_filename': 'js/bootstrap.min.js',
+    },
+}
 
 ########################## Django extension config
 

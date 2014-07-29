@@ -1,24 +1,9 @@
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#forum-header">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
+<nav class="navbar navbar-default forum-bar" role="navigation">
+    <p class="navbar-text h4"> Forum page of
+        <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
+    </p>
 
-        <div class="collapse navbar-collapse" id="forum-header">
-            <ul class="nav navbar-nav">
-                <p class="navbar-text h4"> Forum page of
-                    <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
-                </p>
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <a href="{% url 'forum_new_post' course.slug %}"><button type="submit" class="btn btn-success">New Post</button></a>
-            </ul>
-        </div>
-    </div>
+    <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">
+        <button type="button" class="btn btn-success navbar-btn navbar-right new-post-btn">New Post</button>
+    </a>
 </nav>

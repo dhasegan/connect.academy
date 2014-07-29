@@ -1,0 +1,276 @@
+// Bootstrap variables and mixins
+@import "../bootstrap/stylesheets/bootstrap/variables";
+@import "../bootstrap/stylesheets/bootstrap/mixins";
+
+// Navigation bar
+$campusnet-popover-info-color:      #29ABE2;
+
+.connect-navigation {
+    .connect-brand {
+        .logo {
+            float: left;
+            margin-top: 4px - $navbar-padding-vertical;
+            width: $navbar-height - 10px;
+        }
+        .brand-name {
+            padding-left: $navbar-padding-horizontal / 2;
+        }
+    }
+
+    .login-form {
+        padding-top: 4px;
+
+        .login-input {
+            max-width: 150px;
+            max-height: 27px;
+            margin-left: 8px;
+        }
+        #campusnet-popover {
+            color: $campusnet-popover-info-color;
+        }
+    }
+}
+
+$nav-sidebar-bg:                    white;
+$nav-sidebar-active-link:           $brand-primary;
+$nav-sidebar-active-focus-link:     darken($nav-sidebar-active-link, 8%);
+$nav-sidebar-focus-link:            $gray-lighter;
+
+.nav-sidebar {
+    li {
+        background-color: $nav-sidebar-bg;
+        > a {
+            color: $gray;
+            white-space: nowrap;
+            overflow: hidden;
+            border-bottom: 1px solid $gray-lighter;
+
+            &:hover,
+            &:focus {
+                background-color: $nav-sidebar-focus-link;
+            }
+        }
+
+        &.active {
+            a {
+                cursor: default;
+                background-color: $nav-sidebar-active-link; 
+                color: #fff;
+            }
+
+            a:hover, 
+            a:focus {
+                background-color: $nav-sidebar-active-focus-link;
+            }
+        }
+    }
+}
+
+// Explore page
+$course-block-img-max-size:         100px;
+$course-rating-star-color:          #EEDA74;
+$course-rating-badge-color:         #33424D;
+$course-credits-badge-color:        #92209B;
+
+.explore-page {
+    .search-sidebar {
+        #credit-slider {
+            .ui-slider-range {
+                background: $brand-primary;
+            }
+
+            .ui-slider-handle {
+                border-color: darken($brand-primary, 20%);
+            }
+        }
+
+        .credit-slider-values {
+            margin-top: 15px;
+        }
+    }
+
+    .courses-sequence {
+        .course-panel {
+            .block-header {
+                .course-name {
+                    font-size: 18px;
+                }
+                .course-rating {
+                    background-color: $course-rating-badge-color;
+                    .yellow-star { color: $course-rating-star-color; }
+                }
+                .course-credits {
+                    background-color: $course-credits-badge-color;
+                    margin-left: 10px;
+                    width: 46px;
+                    height: 20px;
+                }
+            }
+
+            .block-details {
+                .course-image {
+                    max-height: $course-block-img-max-size;
+                    max-width: $course-block-img-max-size;
+                }
+
+                .course-catalog {
+                    margin-top: 8px;
+                }
+            }
+        }
+    }
+}
+
+// Course page
+$course-img-max-size:           150px;
+
+.course-page {
+    .course-details {
+        .course-contents {
+            .course-image {
+                max-height: $course-img-max-size;
+                max-width: $course-img-max-size;
+            }
+        }
+        .course-brief-detail-wrapper { 
+            margin-top: 10px;
+            .course-brief-detail {
+                margin-top: 4px;
+            }
+        }
+        .course-detail {
+            margin-top: 16px;
+        }
+
+        .agg-ratings {
+            .rating {
+                .rating-nrs {
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+
+    .course-sidebar {
+        .ratings {
+            hr {
+                margin-top: 6px;
+                margin-bottom: 6px;
+            }
+        }
+        .reviews-panel {
+            .review-submit {
+                resize: vertical;
+            }
+
+            .reviews-display {
+                 hr {
+                    margin-bottom: 12px;
+                }
+                .review {
+                    .review-datetime {
+                        float: right;
+                    }
+                    .review-text {
+                        margin-top: 6px;
+                    }
+                    .review-rate {
+                        overflow: hidden;
+                        .rate-content {
+                            float: right;
+                        }
+                        .review-rate-form {
+                            display: inline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Welcome page
+$register-panel-padding-top:        75px;
+$register-panel-heading-color:      #282828;
+$register-validation-font-size:     11px;
+
+.welcome-page {
+
+    .home-image-container {
+        .home-image {
+            width: 100% !important;
+        }
+    }
+
+    .register-sidebar {
+        padding-top: $register-panel-padding-top;
+
+        .register-panel {
+            .register-heading {
+                background-color: $register-panel-heading-color;
+                color: white;
+                text-align: center;
+            }
+            .validation-ok {
+                color: $brand-success;
+                font-size: $register-validation-font-size;
+            }
+            .validation-error {
+                color: $brand-danger;
+                font-size: $register-validation-font-size;
+            }
+        }
+    }
+}
+
+// Forum page
+
+.forum-page {
+    .forum-bar {
+        .new-post-btn {
+            margin-right: 8px;
+        }
+    }
+
+    .answers-tabs {
+        .upvote-post-form {
+            display: inline;
+        }
+
+        .answer-box {
+            margin: 8px 4px;
+            background-color: $gray-lighter;
+
+            .answer-header .upvote-answer-form {
+                display: inline;
+            }
+            .answer-body p {
+                margin-bottom: 0px;            
+            }
+            .answer-box-contents {
+                padding: 4px 8px;
+            }
+
+            .child-answers {
+                .answer-box {
+                    background-color: white;
+                }
+            }
+        }
+
+        .best-answers {
+            .answer-box .answer-footer .reply-form {
+                display: none;
+            }
+        }
+        .discussion-answers {
+        }
+    }
+}
+
+// Dashboard page
+.dashboard-page {
+    .tabpane-contents {
+        margin-top: 12px;
+    }
+}
