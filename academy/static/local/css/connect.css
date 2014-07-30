@@ -30,11 +30,14 @@
   .nav-sidebar li.active a:focus {
     background-color: #3276b1; }
 
-.explore-page .search-sidebar #credit-slider .ui-slider-range {
+.explore-page .search-sidebar #credits-slider .ui-slider-range,
+.explore-page .search-sidebar #ratings-slider .ui-slider-range {
   background: #428bca; }
-.explore-page .search-sidebar #credit-slider .ui-slider-handle {
+.explore-page .search-sidebar #credits-slider .ui-slider-handle,
+.explore-page .search-sidebar #ratings-slider .ui-slider-handle {
   border-color: #245682; }
-.explore-page .search-sidebar .credit-slider-values {
+.explore-page .search-sidebar .credits-slider-values,
+.explore-page .search-sidebar .ratings-slider-values {
   margin-top: 15px; }
 .explore-page .courses-sequence .course-panel .block-header .course-name {
   font-size: 18px; }

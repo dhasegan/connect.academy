@@ -1,6 +1,8 @@
 jQuery( document ).ready(function( $ ) { 
 
-    // For lazy loading images
+    /*************************************
+        Lazy load images
+    **************************************/
     $("img.course-image").lazyload({
         effect : "fadeIn"
     });
@@ -16,11 +18,17 @@ jQuery( document ).ready(function( $ ) {
         return $avoided.toArray();
     }
 
+    /*************************************
+        Index the courses in the sequence
+    **************************************/
     indexCourses = function() {
         var courses = $('.course-panel');
 
         var searchTerm = $('.course-search-bar').val();
         var avoided_categories = getAvoidedCategoriesIds();
+
+        var creditsCurrentValues = $("#credits-slider").slider("values");
+        var ratingsCurrentValues = $("#ratings-slider").slider("values");
 
         courses.each( function() {
             var show = true;
@@ -37,8 +45,22 @@ jQuery( document ).ready(function( $ ) {
             }
             if (show) {
                 var credits = parseFloat( $(this).find('.course-credits').text() );
-                var values = $("#credit-slider").slider("values");
-                if (credits < creditValues[values[0]] || credits > creditValues[values[1]]) {
+                if (credits < creditsValues[creditsCurrentValues[0]] ||
+                    credits > creditsValues[creditsCurrentValues[1]]) {
+                        show = false;
+                }
+            }
+            if (show) {
+                var rating = 0.0;
+                var rating_item = $(this).find('.course-rating');
+                if (rating_item.length > 0) {
+                    rating = parseFloat( rating_item.text() );
+                }
+                if ((ratingsCurrentValues[0] > 0 && rating < ratingsValues[ratingsCurrentValues[0]]) ||
+                    (ratingsCurrentValues[1] > 0 && rating > ratingsValues[ratingsCurrentValues[1]])) {
+                        show = false;
+                }
+                if (ratingsCurrentValues[1] == 0 && rating > 0) {
                     show = false;
                 }
             }
@@ -62,7 +84,9 @@ jQuery( document ).ready(function( $ ) {
         
     }
 
-    // Search handle code!
+    /*************************************
+        Search handle code!
+    **************************************/
     $(".course-search-bar").keypress(function(event) {
         if (event.which == 13) {
             indexCourses();
@@ -74,7 +98,9 @@ jQuery( document ).ready(function( $ ) {
         }
     });
 
-    // Category Checkbox All-vs-normal
+    /*************************************
+        Category Checkbox All-vs-normal
+    **************************************/
     categoryCheckboxHandle = function() {
         var $this = $(this)
         var $parent = $this.parents('.category-checkbox');
@@ -110,29 +136,57 @@ jQuery( document ).ready(function( $ ) {
     }
     $('.cat-cb').change(categoryCheckboxHandle)
 
-    // Credit slider handle code!
-    var creditValues = [0.1, 0.15, 0.2, 0.3, 1.1, 2.5, 3.0, 3.75, 5.0, 7.5, 10.0, 12.0, 15.0, 30.0];
-    var nrCredits = creditValues.length;
 
+    /*************************************
+        Sliders handle code!
+    **************************************/
     function sliderStop(event, ui) {
         indexCourses()
     }
-    function sliderChange(event, ui) {
-        $("#slider-handle-0").val( creditValues[ ui.values[0] ] )
-        $("#slider-handle-1").val( creditValues[ ui.values[1] ] )
+
+    /*************************************
+        Credit slider handle code!
+    **************************************/
+    // input: creditsValues - as the values of the credits
+    var nrCredits = creditsValues.length;
+
+    function creditsSliderChange(event, ui) {
+        $("#credits_handle_0").val( creditsValues[ ui.values[0] ] )
+        $("#credits_handle_1").val( creditsValues[ ui.values[1] ] )
     }
-    $("#credit-slider").slider({
+    $("#credits-slider").slider({
         orientation: "horizontal",
         range: true,
         max: nrCredits-1,
         values: [0, nrCredits-1],
-        slide: sliderChange,
+        slide: creditsSliderChange,
         stop: sliderStop
     });
+    $("#credits_handle_0").val( creditsValues[0] )
+    $("#credits_handle_1").val( creditsValues[creditsValues.length - 1] )
 
 
-    $("#slider-handle-0").val( creditValues[0] )
-    $("#slider-handle-1").val( creditValues[creditValues.length - 1] )
+    /*************************************
+        Ratings slider handle code!
+    **************************************/
+    ratingsValues = ["Unrated", 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5]
+    var nrRatings = ratingsValues.length;
 
+    function ratingsSliderChange(event, ui) {
+        $("#ratings_handle_0").val( ratingsValues[ ui.values[0] ] )
+        $("#ratings_handle_1").val( ratingsValues[ ui.values[1] ] )
+    }
+    $("#ratings-slider").slider({
+        orientation: "horizontal",
+        range: true,
+        max: nrRatings-1,
+        values: [0, nrRatings-1],
+        slide: ratingsSliderChange,
+        stop: sliderStop
+    });
+    $("#ratings_handle_0").val( ratingsValues[0] )
+    $("#ratings_handle_1").val( ratingsValues[ratingsValues.length - 1] )
+
+    // Index courses
     indexCourses()
 });
