@@ -85,10 +85,12 @@
         {% endwith %}
     {% endif %}
 
-
-    {% include 'objects/course/documents.html' %}
-
-    {% include 'objects/course/homework_student.html' %}
+    {% comment %}
+        These are now included in their respective syllabus
+        
+        {% include 'objects/course/documents.html' %}
+        {% include 'objects/course/homework_student.html' %}
+    {% endcomment %}
 
     {% if forum %}
         <a href="{% url 'forum_course' course.slug %}">
@@ -151,22 +153,21 @@
     </div>
     {% endif %}
     
+    {% if syllabus %}
+    <div class="course-detail">
+        <strong> Syllabus: </strong>
+        <span class="content">
+            {% include 'objects/course/syllabus.html' %}
+        </span>
+    </div>
+    {% endif %}
 
     <hr/>
     
     <div class="course-detail">
         <strong> Wiki: </strong>
         <div class="content">
-            {% if course.wiki.all %}
-                {% with course.wiki.all.0 as wiki %}
-                    <a href="{% url 'view_wiki_page' course.slug %}"> Course Wiki </a>
-                {% endwith %}
-            {% else %}
-                This course doesn't have a <b> wiki </b> yet. 
-                {% if user_auth.university == course.university %}
-                    Contribute by <a href="{% url 'edit_wiki_page' course.slug %}">creating</a> one.
-                {% endif %}
-            {% endif %}
+            {% include 'objects/wiki/course_page_link.html' %}
         </div>
     </div>
 

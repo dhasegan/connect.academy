@@ -465,8 +465,7 @@ class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
-    course_topic = models.ForeignKey('CourseTopic', null=True)
-
+    course_topic = models.ForeignKey('CourseTopic', null=True, related_name="documents")
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField(auto_now=True)
@@ -478,7 +477,7 @@ class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     deadline = models.ForeignKey('Deadline')
-
+    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests")
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
 

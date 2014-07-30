@@ -119,7 +119,8 @@ def submit_document(request, slug):
 
     docfile = form.cleaned_data['document']
     course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
-                                     description=form.cleaned_data['description'], course=form.cleaned_data['course'], submitter=user)
+                                     description=form.cleaned_data['description'], course=form.cleaned_data['course'], 
+                                     submitter=user, course_topic=form.cleaned_data["topic"])
     course_document.save()
 
     return redirect(form.cleaned_data['url'])
@@ -178,7 +179,8 @@ def submit_homework_request(request, slug):
     deadline = Deadline(start=start_time, end=end_time)
     deadline.save()
     homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
-                                             course=form.cleaned_data['course'], submitter=user, deadline=deadline)
+                                             course=form.cleaned_data['course'], submitter=user, 
+                                             deadline=deadline, course_topic=form.cleaned_data["topic"])
     homework_request.save()
 
     return redirect(form.cleaned_data['url'])

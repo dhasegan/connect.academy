@@ -56,6 +56,7 @@ def edit_wiki_page(request, slug):
                                                                             is_approved=True).count(),
             'pending_students': StudentCourseRegistration.objects.filter(course=course,
                                                                          is_approved=False).count()
+            
         })
 
     return render(request, "pages/wiki/edit_wiki_page.html", context)

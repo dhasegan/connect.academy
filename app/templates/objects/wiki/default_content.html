@@ -49,37 +49,34 @@
 </table>
 
 <ol>
-	<li><a href="#Chapter1">Chapter 1</a></li>
-	<li><a href="#Chapter2">Chapter 2</a></li>
-	<li><a href="#Chapter3">Chapter 3</a></li>
-	<li><a href="#Chapter4">Chapter 4</a></li>
-	<li><a href="#Chapter5">Chapter 5</a></li>
+	{% for topic in course.course_topics.all %}
+		<li><a href="#CourseTopic{{topic.id}}">{{topic.name}}</a></li>
+	{% endfor %}
 	<li><a href="#ref">References</a></li>
 </ol>
 
-<h2><a id="Chapter1" name="Chapter1"></a>Chapter 1</h2>
+{% for topic in course.course_topics.all %}
+	<h2><a id="CourseTopic{{topic.id}}" name="CourseTopic{{topic.id}}"></a>{{topic.name}}</h2>
 
-<p>The content of chapter 1 goes here.&nbsp;</p>
-
-<h2><a id="Chapter2" name="Chapter2"></a>Chapter 2</h2>
-
-<p>The content of chapter 2 goes here</p>
-
-<h2><a id="Chapter3" name="Chapter3"></a>Chapter 3</h2>
-
-<p>The content of chapter 3 goes here</p>
-
-<h2><a id="Chapter4" name="Chapter4"></a>Chapter 4</h2>
-
-<p>The content of chapter 4 goes here</p>
-
-<h2><a id="Chapter5" name="Chapter5"></a>Chapter 5</h2>
-
-<p>The content of chapter 5 goes here</p>
+	<p>
+		{% if topic.description %}
+			{{topic.description}}
+		{% else %}
+			What is <i>{{topic.name}}</i> about? Contribute now!
+		{% endif %}
+	</p>
+{% endfor %}
 
 <h2><a id="ref" name="ref"></a>References</h2>
 
-<p>The References go here</p>
+<p> Support your contributions with good references.</p>
+<ol>
+	{% for topic in course.course_topics.all %}
+		{% for document in topic.documents.all %}
+			<li> <a href="{{ document.document.url }}"> {{ document.name }} </a> </li>
+		{% endfor %}
+	{% endfor %}
+<ol>
 
 <p>&nbsp;</p>
 

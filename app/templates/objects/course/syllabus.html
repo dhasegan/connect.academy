@@ -1,0 +1,26 @@
+<div class='course-syllabus'>
+	<ol>
+	{% for topic in syllabus %}
+		<li>
+			<a data-toggle="collapse" data-parent=".course-syllabus" href="#course-topic{{topic.id}}">{{ topic.name }}</a> 
+			
+			<div class="collapse course-topic" id="course-topic{{topic.id}}">
+				{% if topic.description %}
+					<strong> Description: </strong>
+					<span class='content'>
+						{{ topic.description }}
+					</span>
+				{% endif %}
+
+				{% if topic.documents.all %}
+					{% with topic.documents.all as documents %}
+						{% include 'objects/course/documents.html' %}
+					{% endwith %}
+				{% endif %}	
+
+				{% include 'objects/course/homework_student.html' %}
+			</div>
+		</li>
+	{% endfor %}
+	</ol>
+</div>

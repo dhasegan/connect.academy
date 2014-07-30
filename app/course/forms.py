@@ -1,6 +1,5 @@
 from django import forms
 from django.template.defaultfilters import filesizeformat
-
 from app.models import *
 
 
@@ -61,6 +60,7 @@ class SubmitCommentForm(forms.Form):
 class SubmitDocumentForm(forms.Form):
     name = forms.CharField()
     document = forms.FileField()
+    topic_id = forms.CharField(required=False)
     description = forms.CharField(required=False)
     course_id = forms.CharField()
     url = forms.CharField()
@@ -72,6 +72,15 @@ class SubmitDocumentForm(forms.Form):
         if len(courses) != 1:
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
         cleaned_data['course'] = courses[0]
+
+        if cleaned_data['topic_id']:
+            topics = CourseTopic.objects.filter(id=cleaned_data['topic_id'], course=cleaned_data["course"])
+            if topics: 
+                cleaned_data["topic"] = topics[0]
+            else:
+                raise forms.ValidationError("The selected topic does not belong to this course")
+        else:
+            cleaned_data["topic"] = None
 
         return cleaned_data
 
@@ -116,6 +125,7 @@ class SubmitHomeworkForm(forms.Form):
 class SubmitHomeworkRequestForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(required=False)
+    topic_id = forms.CharField(required=False)
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     timezone = forms.IntegerField()
@@ -131,6 +141,15 @@ class SubmitHomeworkRequestForm(forms.Form):
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
         cleaned_data['course'] = courses[0]
 
+        if cleaned_data['topic_id']:
+            topics = CourseTopic.objects.filter(id=cleaned_data['topic_id'], course=cleaned_data["course"])
+            if topics: 
+                cleaned_data["topic"] = topics[0]
+            else:
+                raise forms.ValidationError("The selected topic does not belong to this course")
+        else:
+            raise forms.VaildationError("Please specify the course topic.")
+        
         return cleaned_data
 
     def clean_timezone(self):

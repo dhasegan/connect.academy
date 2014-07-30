@@ -59,8 +59,10 @@
 
                             <div class="col-md-6">
                                 Upload Documents
-                                {% with course.course as course %}
-                                    {% include 'objects/course/management/upload_document.html' %}
+                                {% with course.topics as topics %}
+                                    {% with course.course as course %}
+                                        {% include 'objects/course/management/upload_document.html' %}
+                                    {% endwith %}
                                 {% endwith %}
                             </div>
                         </div>
@@ -75,14 +77,17 @@
                     {% if course.is_approved %}
                         <div class="row">
                             <div class="col-md-6">
+
                                 {% with course.homework as homework %}
                                     {% include 'objects/course/management/current_homework.html' %}
                                 {% endwith %}
                             </div>
 
                             <div class="col-md-6">
-                                {% with course.course as course %}
-                                    {% include 'objects/course/management/demand_homework.html' %}
+                                {% with course.topics as topics %}
+                                    {% with course.course as course %}
+                                        {% include 'objects/course/management/demand_homework.html' %}
+                                    {% endwith %}
                                 {% endwith %}
                             </div>
                         </div>

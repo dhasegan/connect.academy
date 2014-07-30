@@ -61,6 +61,8 @@ def dashboard(request):
                 forums = prof_reg.course.forumcourse_set.all()
                 if forums.count() == 1:
                     course_dict['forum'] = forums[0]
+                course_dict['topics'] = list(prof_reg.course.course_topics.all())
+
             context['courses'].append(course_dict)
 
     else:

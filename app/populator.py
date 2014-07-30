@@ -26,6 +26,7 @@ class Populator:
         user = self.add_juser(user_type=USER_TYPE_ADMIN, university=university)
         user.categories_managed.add(category)
 
+
     def add_university(self):
         while True:
             first_name = self.random_word().capitalize()
@@ -45,6 +46,7 @@ class Populator:
         connect = Category.objects.get(name="Connect.Academy")
         category = Category.objects.create(parent=connect, level=1, name=name, university=univ, abbreviation=abbreviation)
         self.add_admin(category) # make sure that every university category has an admin
+
 
     def populate_universities(self, count):
         for i in range(count):
@@ -116,6 +118,19 @@ class Populator:
         for i in range(count):
             self.add_category()
 
+    def add_course_topic(self, course):
+        name = ""
+        description = ""
+        for i in range(random.randint(1, 4)):
+            name += self.random_word() + " "
+        for i in range(random.randint(30, 60)):
+            description += self.random_word() + " "
+        CourseTopic.objects.create(name=name, description=description, course=course)
+
+    def populate_course_topics(self, course, count=10):
+        for i in range(count):
+            self.add_course_topic(course)
+
     def add_course(self, leaf_categories=None):
         if not leaf_categories:
             categories = Category.objects.all()
@@ -146,7 +161,12 @@ class Populator:
                         university=university)
         course.save()
 
+        self.populate_course_topics(course, count=random.randint(5,10))
+
         professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR, university=university))
+        
+
+
         if not professors:
             self.add_juser(user_type=USER_TYPE_PROFESSOR, university=university)
             professors = list(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR, university=university))
