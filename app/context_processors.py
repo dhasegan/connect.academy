@@ -74,6 +74,7 @@ def course_timeline_context(courses, user):
 
     courses = sorted(courses, key=lambda x: x.name)
 
+    credits = []
     allcourses = []
     for course in courses:
         if course.category is None:
@@ -94,6 +95,9 @@ def course_timeline_context(courses, user):
         registration = course.get_registration_deadline()
         registration_open = registration.is_open() if registration is not None else False
 
+        if course.credits not in credits:
+            credits.append(course.credits)
+
         allcourses.append({
             'course': course,
             'professors': professors,
@@ -108,6 +112,8 @@ def course_timeline_context(courses, user):
 
     uni_category = user.university.get_university_category()
     context['explore_categories'] = explore_categories_context([ uni_category.id ])
+
+    context['credits'] = sorted(credits)
     return context
 
 
@@ -219,19 +225,10 @@ def course_page_context(request, course):
         if forums.count() == 1:
             context['forum'] = forums[0]
 
-        # adding context for the wikis
-    wikis = course.wiki.all()
-    """
-    if len(wikis) == 1:
-        wiki = wikis[0]
-        edit_info_set = ContributedToWiki.objects.filter(wiki=wiki).order_by('-modified_on')
-        if len(edit_info_set) > 0:
-            edit_info = edit_info_set[0]
-            edited_by = edit_info.user.username
-            edited_on = edit_info.modified_on
-            context['edited_by'] = edited_by
-            context['edited_on'] = edited_on
-    """
+
+    # course syllabus
+    context['syllabus'] = list(course.course_topics.all())
+
     return context
 
 

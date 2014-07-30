@@ -415,6 +415,15 @@ class Populator:
         populator.populate_forum_upvotes()
         print "ok"
 
+    def populate_course_intense():
+        populator = Populator()
+        populator.populate_database(nr_universities=10, nr_students=50, nr_categories=200,
+            nr_professors=50, nr_courses=700, nr_reviews=0, nr_ratings=1000)
+
+        print "populate_registrations... "
+        populator.populate_registrations()
+        print "ok"
+
     @staticmethod
     def populate_course_appointments():
         courses = Course.objects.all()
@@ -468,5 +477,3 @@ class Populator:
 
         if status_course and statuc_person:
             print "Successfully populated the appointment tables"
-
-
