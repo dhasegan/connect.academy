@@ -216,12 +216,9 @@ class CourseTopic(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=500, blank=True)
     course = models.ForeignKey("Course", related_name="course_topics");
-    
-    # The forum posts that are marked as relevant to this Course Topic
-    forum_posts = models.ManyToManyField('ForumTopic', related_name='course_topics')
 
     # Relations declared in other models define the following:
-    #    forums (<course_topic>.forums.all() returns all courses forums of  <course_topic>)
+    #    forums (<course_topic>.forums.all() returns all forums of  <course_topic>)
 
 
     class Meta:
