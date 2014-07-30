@@ -219,19 +219,10 @@ def course_page_context(request, course):
         if forums.count() == 1:
             context['forum'] = forums[0]
 
-        # adding context for the wikis
-    wikis = course.wiki.all()
-    """
-    if len(wikis) == 1:
-        wiki = wikis[0]
-        edit_info_set = ContributedToWiki.objects.filter(wiki=wiki).order_by('-modified_on')
-        if len(edit_info_set) > 0:
-            edit_info = edit_info_set[0]
-            edited_by = edit_info.user.username
-            edited_on = edit_info.modified_on
-            context['edited_by'] = edited_by
-            context['edited_on'] = edited_on
-    """
+
+    # course syllabus
+    context['syllabus'] = list(course.course_topics.all())
+
     return context
 
 
