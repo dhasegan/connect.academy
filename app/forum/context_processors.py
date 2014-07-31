@@ -66,6 +66,7 @@ def forum_post_context(post, current_user):
 def forum_context(forum, current_user):
     context_forum = {
         "forum": forum,
+        "tags": forum.get_tags(),
         "course": forum.course,
         "user": current_user
     }

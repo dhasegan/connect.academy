@@ -109,7 +109,7 @@ jQuery( document ).ready(function( $ ) {
     };
 
     // Forum register form
-    $('.forumcourseregistration-form').submit(function(event) {
+    $('.forumregistration-form').submit(function(event) {
         SubmitFormAjax(event, this,
             function(result) {
                 $(".forum-management").html(result.html)
@@ -121,7 +121,7 @@ jQuery( document ).ready(function( $ ) {
     });
 
     // Get reply form for forum answer reply
-    $('.forumcourseregistration-form').submit(function(event) {
+    $('.forumregistration-form').submit(function(event) {
         SubmitFormAjax(event, this,
             function(result) {
                 $(".forum-management").html(result.html)
@@ -200,6 +200,19 @@ jQuery( document ).ready(function( $ ) {
         });
     };
     onRefreshAnswerTab($('html'));
+
+    indexPosts = function() {
+        var $posts = $('.forum-post');
+
+        var tag_filter = $('.current-post-filter').find('.post-filter-name').text().replace("#", "");
+        
+    }
+
+    $('.post-filter').click( function() {
+        $('.post-filter').removeClass("hidden");
+        $(this).addClass("hidden");
+        $('.current-post-filter').find('.post-filter-name').text(this.text);
+    });
 
 
     $("#email").blur(function(){

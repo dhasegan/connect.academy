@@ -7,6 +7,7 @@ class SubmitForumPost(forms.Form):
     title = forms.CharField()
     description = forms.CharField(required=False)
     anonymous = forms.BooleanField(required=False)
+    tagsRadios = forms.CharField(required=False)
 
     def clean(self):
         cleaned_data = super(SubmitForumPost, self).clean()
@@ -14,7 +15,14 @@ class SubmitForumPost(forms.Form):
         forums = Forum.objects.filter(id=cleaned_data.get("forum_id"))
         if len(forums) != 1:
             raise forms.ValidationError("Not a valid number of forums with this forum_id!")
-        cleaned_data['forum'] = forums[0]
+        forum = forums[0]
+        cleaned_data['forum'] = forum
+
+        if 'tagsRadios' in cleaned_data:
+            tag = cleaned_data['tagsRadios']
+            possibleTags = forum.get_tags()
+            if tag not in possibleTags:
+                cleaned_data['tagsRadios'] = None
 
         return cleaned_data
 

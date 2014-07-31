@@ -101,7 +101,7 @@
                         {% else %}
                             <div class="forum-management">
                                 <p class="h3"> There is no forum for this course. </p>
-                                <form class="form forumcourseregistration-form" action="{% url 'forum_course_registration' course.course.slug %}" method="post">
+                                <form class="form forumregistration-form" action="{% url 'forum_course_registration' course.course.slug %}" method="post">
                                     {% csrf_token %}
                                     <input class="btn btn-primary" type="submit" value="Start a forum" />
                                 </form>

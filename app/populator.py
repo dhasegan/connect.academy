@@ -157,7 +157,7 @@ class Populator:
             pcr.save()
 
         if random.random() < 0.5:
-            forum = ForumCourse.objects.create(forum_type=FORUM_TYPE_COURSE, course=course)
+            forum = Forum.objects.create(course=course)
 
     def populate_courses(self, count):
         categories = Category.objects.all()
@@ -255,13 +255,13 @@ class Populator:
         ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon)
 
     def populate_forum_posts(self, count):
-        forums = ForumCourse.objects.all()
+        forums = Forum.objects.all()
         for i in range(count):
             forum = random.choice(forums)
             self.populate_forum_post(forum)
 
     def populate_forum_answer(self, forum_post):
-        forum = ForumCourse.objects.get(id=forum_post.forum.id)
+        forum = forum_post.forum
         course = forum.course
         students = course.students.all()
         posted_by = random.choice(students)
@@ -300,7 +300,7 @@ class Populator:
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
-        forums = ForumCourse.objects.all()
+        forums = Forum.objects.all()
         for forum in forums:
             course = forum.course
             students = list(course.students.all())

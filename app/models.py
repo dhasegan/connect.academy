@@ -147,7 +147,7 @@ class Course(models.Model):
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #                 <course> as a prerequisite)
-    #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
+    #   forum_set (<course>.forum_set.all() returns all forums of the <course>)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
 
 
@@ -510,48 +510,41 @@ class CourseHomeworkSubmission(models.Model):
 ############################ Forums, Wikis ################################
 ###########################################################################
 
-
-# Course types
-FORUM_TYPE_COURSE = 0
-FORUM_TYPE_TOPIC = 1
-FORUM_TYPE_HOMEWORK = 2
-FORUM_TYPES = (
-    (FORUM_TYPE_COURSE,"Course"),
-    (FORUM_TYPE_TOPIC, "Topic"),
-    (FORUM_TYPE_HOMEWORK, "Homework")
-)
+ForumTags = ['general', 'offtopic']
 
 class Forum(models.Model):
-    forum_type = models.IntegerField(choices=FORUM_TYPES, default=FORUM_TYPE_COURSE)
-
-    def __unicode__(self):
-        return dict(FORUM_TYPES)[self.forum_type]
-
-class ForumCourse(Forum):
     course = models.ForeignKey('Course')
 
-    def __unicode__(self):
-        return str(self.course)
+    def get_tags(self):
+        tags = ForumTags
 
-class ForumHomework(Forum):
-    homework_request = models.ForeignKey('CourseHomeworkRequest')
+        # TODO: Syllabus course tags
 
-    def __unicode__(self):
-        return str(self.homework_request)
+        extra_tags = self.forumextratag_set.all()
+        for etag in extra_tags:
+            tags.append(etag.name)
 
-class ForumTopic(Forum):
-    course_topic = models.ForeignKey('CourseTopic', related_name='forums')    
-    
-    # TODO
+        return tags
 
     def __unicode__(self):
         return str(self.course)
+
+
+class ForumExtraTag(models.Model):
+    name = models.CharField(max_length=20)
+    forum = models.ForeignKey('Forum')
+
+    def __unicode__(self):
+        return str(self.name)
+
 
 class ForumPost(models.Model):
     name = models.CharField(max_length=250)
     forum = models.ForeignKey('Forum')
     text = models.CharField(max_length=5000, blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
+
+    tag = models.CharField(max_length=20, blank=True, null=True)
 
     posted_by = models.ForeignKey('jUser', related_name='question_posted')
     anonymous = models.BooleanField(default=False)
@@ -603,6 +596,3 @@ versioning.register(
     WikiPage,
     ['content']
 )
-
-
-

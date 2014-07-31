@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.template import Context, Template, RequestContext
+from django.template.loader import render_to_string
 
 
 from app.models import *
@@ -23,10 +24,16 @@ def forum_course(request, slug):
     }
     context["course"] = course
 
-    forums = course.forumcourse_set.all()
+    forums = course.forum_set.all()
     if not forums.count():
         raise Http404
-    context = dict(context.items() + forum_context(forums[0], user).items())
+    forum = forums[0]
+    context = dict(context.items() + forum_context(forum, user).items())
+
+    if 'tag' in request.GET and request.GET['tag']:
+        tag = request.GET['tag']
+        if tag in forum.get_tags():
+            context['current_tag'] = tag
 
     return render(request, "pages/forum/page.html", context)
 
@@ -40,11 +47,11 @@ def course_registration(request, slug):
     if not user.is_professor_of(course):
         raise Http404
 
-    forums = course.forumcourse_set.all()
+    forums = course.forum_set.all()
     if forums.count():
         raise Http404
 
-    forum = ForumCourse(forum_type=FORUM_TYPE_COURSE, course=course)
+    forum = Forum(course=course)
     forum.save()
 
     context = {
@@ -67,10 +74,12 @@ def new_post(request, slug):
     }
     context["course"] = course
 
-    forums = course.forumcourse_set.all()
+    forums = course.forum_set.all()
     if not forums.count():
         raise Http404
-    context['forum'] = forums[0]
+    forum = forums[0]
+    context['forum'] = forum
+    context['tags'] = forum.get_tags()
 
     # Get request
     if request.method == "GET":
@@ -86,7 +95,7 @@ def new_post(request, slug):
 
     post = ForumPost(name=form.cleaned_data['title'], forum=form.cleaned_data['forum'],
                      text=form.cleaned_data['description'], posted_by=user,
-                     anonymous=form.cleaned_data['anonymous'])
+                     anonymous=form.cleaned_data['anonymous'], tag=form.cleaned_data['tagsRadios'])
     post.save()
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
@@ -100,7 +109,7 @@ def new_answer(request, slug):
     context = {}
     context["course"] = course
 
-    forums = course.forumcourse_set.all()
+    forums = course.forum_set.all()
     if not forums.count():
         raise Http404
 
@@ -141,7 +150,7 @@ def reply_form(request, answer_id):
     user = get_object_or_404(jUser, id=request.user.id)
 
     post = answer.post
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    forum = get_object_or_404(Forum, id=post.forum.id)
     context = {
         'parent_answer': {
             'answer': answer,
@@ -170,7 +179,7 @@ def discussion(request, answer_id):
         raise Http404
 
     post = answer.post
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    forum = get_object_or_404(Forum, id=post.forum.id)
     context = forum_discussion_context(forum, post, answer, user)
 
     response_data = {
@@ -185,7 +194,7 @@ def answers(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
+    forum = get_object_or_404(Forum, id=post.forum.id)
     context = {
         'course': forum.course,
         'forum': forum,

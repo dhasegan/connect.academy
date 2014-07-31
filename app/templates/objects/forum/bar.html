@@ -3,6 +3,22 @@
         <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
     </p>
 
+    <p class="navbar-text">Filter: </p>
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle current-post-filter" data-toggle="dropdown">
+                <span class="post-filter-name">#{% if current_tag %}{{ current_tag }}{% else %}all{% endif %}</span>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a class="post-filter {% if not current_tag %} hidden {% endif %}" href="#">#all</a></li>
+                {% for tag in tags %}
+                    <li><a class="post-filter {% if current_tag == tag %} hidden {% endif %} " href="#">#{{ tag }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
     <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">
         <button type="button" class="btn btn-success navbar-btn navbar-right new-post-btn">New Post</button>
     </a>

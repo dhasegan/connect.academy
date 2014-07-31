@@ -145,7 +145,7 @@ def course_page_context(request, course):
 
     # Course forum link
     context['forum'] = None
-    forums = course.forumcourse_set.all()
+    forums = course.forum_set.all()
     if forums.count() == 1:
         context['forum'] = forums[0]
 

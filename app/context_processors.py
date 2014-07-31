@@ -54,7 +54,7 @@ def professor_dashboard_context(request, user):
             course_dict['documents'] = prof_reg.course.coursedocument_set.all()
             course_dict['homework'] = prof_reg.course.coursehomeworkrequest_set.all()
             course_dict['forum'] = None
-            forums = prof_reg.course.forumcourse_set.all()
+            forums = prof_reg.course.forum_set.all()
             if forums.count() == 1:
                 course_dict['forum'] = forums[0]
         context['courses'].append(course_dict)
