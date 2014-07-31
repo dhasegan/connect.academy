@@ -79,27 +79,3 @@ def all_comments(request):
 
     return render(request, 'pages/comments.html', context)
 
-
-@login_required
-def explore(request):
-    context = {
-        "page": "explore",
-    }
-
-    courses = Course.objects.all()
-    context = dict(context.items() + course_timeline_context(courses, request.user).items())
-    return render(request, "pages/explore.html", context)
-
-@login_required
-@require_POST
-def explore_categories(request):
-    checked = []
-    for key, value in request.POST.iteritems():
-        if key.isdigit():
-            checked.append(int(key))
-    context = {
-        'explore_categories': explore_categories_context(checked)
-    }
-    response_data = {}
-    response_data['html'] = render_to_string("objects/explore/categories.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
