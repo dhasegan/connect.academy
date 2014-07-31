@@ -1,8 +1,8 @@
-(optional) Select an appropriate tag for your post:
+Select an appropriate tag for your post:
 {% for tag in tags %}
     <div class="radio">
       <label>
-        <input type="radio" name="tagsRadios" id="{{ tag }}" value="{{ tag }}">
+        <input type="radio" name="tagsRadios" id="{{ tag }}" value="{{ tag }}" {% if forloop.counter == 1 %}checked{% endif %}>
         #{{ tag }}
       </label>
     </div>

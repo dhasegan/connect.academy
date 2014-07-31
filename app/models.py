@@ -544,7 +544,7 @@ class ForumPost(models.Model):
     text = models.CharField(max_length=5000, blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
 
-    tag = models.CharField(max_length=20, blank=True, null=True)
+    tag = models.CharField(max_length=20)
 
     posted_by = models.ForeignKey('jUser', related_name='question_posted')
     anonymous = models.BooleanField(default=False)

@@ -203,16 +203,37 @@ jQuery( document ).ready(function( $ ) {
 
     indexPosts = function() {
         var $posts = $('.forum-post');
-
         var tag_filter = $('.current-post-filter').find('.post-filter-name').text().replace("#", "");
-        
-    }
 
+        if (tag_filter == "all") {
+            $posts.show()
+            return ;
+        } 
+
+        $posts.each( function() {
+            var show = $(this).hasClass('ptag-' + tag_filter)
+
+            if (show) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+
+        var active_post = $posts.filter( function() { return $(this).hasClass('active') });
+        if (active_post.is(':visible') == false) {
+            $visible_posts = $posts.filter(':visible');
+            $visible_posts.first().find('a').click();
+        }
+    }
     $('.post-filter').click( function() {
         $('.post-filter').removeClass("hidden");
         $(this).addClass("hidden");
         $('.current-post-filter').find('.post-filter-name').text(this.text);
+
+        indexPosts();
     });
+    indexPosts();
 
 
     $("#email").blur(function(){
