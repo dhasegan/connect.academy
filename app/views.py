@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.models import *
 from app.context_processors import *
+from app.course.context_processors import *
 
 
 def welcome(request):

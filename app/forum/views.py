@@ -8,8 +8,8 @@ from django.template import Context, Template, RequestContext
 
 
 from app.models import *
-from app.context_processors import *
 from app.forum.forms import *
+from app.forum.context_processors import *
 
 
 @require_GET

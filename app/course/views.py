@@ -16,7 +16,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.core.mail import send_mail
 
 from app.models import *
-from app.context_processors import *
+from app.course.context_processors import *
 from app.course.forms import *
 
 
