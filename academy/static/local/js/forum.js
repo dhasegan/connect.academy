@@ -21,14 +21,17 @@ ForumPage = {
     init: function() {
         s = this.settings;
 
+        // Index the posts based on the filters
         this.indexPosts();
 
+        // Bind ui actions for answers tab
         this.onRefreshAnswerTab($('html'));
-
         this.bindUIActions();
     },
 
     bindUIActions: function() {
+
+        // On Filter change
         s.postFilters.click( function() {
             s.postFilters.removeClass("hidden");
             $(this).addClass("hidden");
@@ -67,7 +70,6 @@ ForumPage = {
     onRefreshAnswerTab: function(SubtreeDOM) {
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
-            debugger
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);
