@@ -533,7 +533,7 @@ class Forum(models.Model):
     def __unicode__(self):
         return str(self.course)
 
-ForumTags = ['general', 'announcement', 'askprof', 'offtopic']
+ForumTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 
 FORUMTAG_PRIMARY = "1"
 FORUMTAG_TOPIC = "2"
