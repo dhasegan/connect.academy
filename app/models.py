@@ -54,14 +54,39 @@ class jUser(User):
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
 
+    def is_student(self):
+        return self.user_type == USER_TYPE_STUDENT
+
+    def is_professor(self):
+        return self.user_type == USER_TYPE_PROFESSOR
+
+    def is_admin(self):
+        return self.user_type == USER_TYPE_ADMIN
+
+    def is_student_of(self, course):
+        if not self.is_student():
+            return False
+        registration = StudentCourseRegistration.objects.filter(student=self, course=course)
+        return self.is_student() and registration and registration[0].is_approved
+
+    def is_professor_of(self, course):
+        if not self.is_professor():
+            return False
+        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
+        return registration and registration[0].is_approved
+
+    def is_admin_of(self, course):
+        if not self.is_admin():
+            return False
+        categories = self.categories_managed.all()
+        for category in categories:
+            if course in category.get_all_courses():
+                return True
+        return False
 
 
     def __unicode__(self):
         return str(self.username)
-
-    def is_professor_of(self, course):
-        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
-        return registration and registration[0].is_approved
 
 
 class StudentCourseRegistration(models.Model):
@@ -533,7 +558,6 @@ class Forum(models.Model):
     def __unicode__(self):
         return str(self.course)
 
-ForumTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 
 FORUMTAG_PRIMARY = "1"
 FORUMTAG_TOPIC = "2"
@@ -544,9 +568,42 @@ FORUMTAG_TYPES = (
     (FORUMTAG_EXTRA, 'Extra Tag'),
 )
 
+PublicForumTags = ['general']
+StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
+StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
+ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+AdminViewTags = ['general', 'announcement', 'meta']
+AdminPostTags = ['general', 'announcement', 'meta']
+
+
 class ForumTag(models.Model):
     name = models.CharField(max_length=20)
     tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
+
+    def can_view(self, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student():
+            return (self.name in StudentViewTags) if tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor():
+            return (self.name in ProfessorViewTags) if tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin():
+            return (self.name in AdminViewTags) if tag_type == FORUMTAG_PRIMARY else False
+        return False
+
+    def can_post(self, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student():
+            return (self.name in StudentPostTags) if tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor():
+            return (self.name in ProfessorPostTags) if tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin():
+            return (self.name in AdminPostTags) if tag_type == FORUMTAG_PRIMARY else False
+        return False
 
     def __unicode__(self):
         return str(self.name)
@@ -571,7 +628,7 @@ class ForumPost(models.Model):
     text = models.CharField(max_length=5000, blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
 
-    tag = models.CharField(max_length=20)
+    tag = models.ForeignKey('ForumTag')
 
     posted_by = models.ForeignKey('jUser', related_name='question_posted')
     anonymous = models.BooleanField(default=False)

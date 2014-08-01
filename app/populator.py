@@ -249,7 +249,9 @@ class Populator:
         anon = False
         if random.random() < 0.1:
             anon = True
-        ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon)
+        tags = ForumTag.objects.all()
+        tag = random.choice(tags)
+        ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon, tag=tag)
 
     def populate_forum_posts(self, count):
         forums = Forum.objects.all()

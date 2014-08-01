@@ -25,7 +25,8 @@
                         {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
                         {% else %}
                             Anonymous
-                        {% endif %}. 
+                        {% endif %}
+                        in #{{ post.question.tag.name }}.
                         {{ post.question.datetime|naturaltime }}
                     </div>
                     <div class="post-text">
