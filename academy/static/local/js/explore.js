@@ -17,17 +17,17 @@ ExplorePage = (function () {
             creditsHandle0: $("#credits_handle_0"),
             creditsHandle1: $("#credits_handle_1"),
             creditsValues: function() {
-                if (typeof variable !== 'undefined') {
-                    creditsValues
+                if (typeof creditsValues !== 'undefined') {
+                    return creditsValues
                 } else { 
-                    []
+                    return []
                 }
             }(),
             nrCredits: function() {
-                if (typeof variable !== 'undefined') {
-                    creditsValues.length
+                if (typeof creditsValues !== 'undefined') {
+                    return creditsValues.length
                 } else { 
-                    0
+                    return 0
                 }
             }(),
 
