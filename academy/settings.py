@@ -258,19 +258,21 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'bootstrap': {
         'source_filenames': (
-          'bootstrap/javascripts/bootstrap.js',
+            'bootstrap/javascripts/bootstrap.js',
         ),
         'output_filename': 'js/bootstrap.min.js',
     },
     'connect': {
         'source_filenames': (
-          'local/js/connect.js',
+            'local/js/utils.js',
+            'local/js/connect.js',
+            'local/js/forum.js',
         ),
         'output_filename': 'js/connect.min.js',
     },
     'explore_page': {
         'source_filenames': (
-          'local/js/explore.js',
+            'local/js/explore.js',
         ),
         'output_filename': 'js/explore.min.js',
     },

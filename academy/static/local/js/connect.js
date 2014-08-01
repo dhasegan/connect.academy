@@ -97,17 +97,6 @@ jQuery( document ).ready(function( $ ) {
         tz.val( moment().zone() )
     });
 
-    function SubmitFormAjax(event, form, successFunction, errorFunction) {
-        event.preventDefault();
-        $.ajax({
-            type: form.method,
-            url: form.action,
-            data: $(form).serialize(),
-            success: successFunction,
-            error: errorFunction
-        });
-    };
-
     // Forum register form
     $('.forumregistration-form').submit(function(event) {
         SubmitFormAjax(event, this,
@@ -131,110 +120,6 @@ jQuery( document ).ready(function( $ ) {
             }
         );
     });
-
-    // Refresh something in the DOM, relink everything in its subtree
-    var onRefreshAnswerTab = function(SubtreeDOM) {
-        // Submit answers ajax
-        SubtreeDOM.find('.forumpostnewanswer-form').submit(function(event) {
-            SubmitFormAjax(event, this,
-                function(result) {
-                    var $answer_tab = $(result.id_selector);
-                    $answer_tab.html(result.html);
-
-                    onRefreshAnswerTab($answer_tab);
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus)
-                }
-            );
-        });
-        // Get the reply form ajax
-        SubtreeDOM.find('.getreplyform-link').click(function(event) {
-            event.preventDefault();
-            var $link = $(this);
-            var $reply_form = $link.parents('.answer-footer').find('.reply-form');
-            if (!($reply_form.hasClass('active'))) {
-                $.ajax({
-                    type: "get",
-                    url: this.href,
-                    success: function(response) {
-                        $reply_form.html(response.html).slideDown();
-                        $reply_form.addClass('active');
-
-                        onRefreshAnswerTab($reply_form);
-                    }
-                })
-            }
-        });
-        // Get the bestanswers or discussion view ajax
-        var $discussions = SubtreeDOM.find('.discussion-link');
-        var $best_answers = SubtreeDOM.find('.bestanswers-link');
-        ($best_answers.add($discussions)).click(function(event) {
-            event.preventDefault();
-            var $link = $(this);
-            var $forum_answers = $link.parents('.forum-answers').parent();
-            $.ajax({
-                type: "get",
-                url: this.href,
-                success: function(response) {
-                    $forum_answers.html(response.html).slideDown();
-
-                    onRefreshAnswerTab($forum_answers);
-                }
-            })
-        });
-        // Upvote posts and answers
-        var $upvote_posts = SubtreeDOM.find('.upvote-post-form');
-        var $upvote_answers = SubtreeDOM.find('.upvote-answer-form');
-        ($upvote_posts.add($upvote_answers)).click(function(event) {
-            SubmitFormAjax(event, this,
-                function(result) {
-                    $(result.id_selector).html(result.html);
-
-                    onRefreshAnswerTab($(result.id_selector));
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus);
-                }
-            );
-        });
-    };
-    onRefreshAnswerTab($('html'));
-
-    indexPosts = function() {
-        var $posts = $('.forum-post');
-        var tag_filter = $('.current-post-filter').find('.post-filter-name').text().replace("#", "");
-
-        if (tag_filter == "all") {
-            $posts.show()
-            return ;
-        } 
-
-        $posts.each( function() {
-            var show = $(this).hasClass('ptag-' + tag_filter)
-
-            if (show) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-
-        var active_post = $posts.filter( function() { return $(this).hasClass('active') });
-        if (active_post.is(':visible') == false) {
-            $visible_posts = $posts.filter(':visible');
-            $visible_posts.first().find('a').click();
-        }
-    }
-    $('.post-filter').click( function() {
-        $('.post-filter').removeClass("hidden");
-        $(this).addClass("hidden");
-        $('.current-post-filter').find('.post-filter-name').text(this.text);
-
-        indexPosts();
-    });
-    indexPosts();
-
 
     $("#email").blur(function(){
         var email_address = this.value;
