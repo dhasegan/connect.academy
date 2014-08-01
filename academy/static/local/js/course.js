@@ -81,5 +81,3 @@ var CoursePage = (function() {
 
     return me;
 }());
-
-CoursePage.init();

@@ -137,5 +137,3 @@ var ForumPage = (function() {
 
     return me;
 }());
-
-ForumPage.init();

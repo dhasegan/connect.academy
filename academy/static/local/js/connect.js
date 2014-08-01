@@ -1,5 +1,12 @@
 jQuery( document ).ready(function( $ ) {
 
+    if ($('.explore-page').length > 0) { ExplorePage.init(); }
+    else if ($('.course-page').length > 0) { CoursePage.init(); }
+    else if ($('.forum-page').length > 0) { ForumPage.init(); }
+});
+
+jQuery( document ).ready(function( $ ) {
+
     // Activate Alerts
     $(".dismissable-alert").alert();
     // Email confirmation link

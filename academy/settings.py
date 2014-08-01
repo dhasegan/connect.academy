@@ -265,17 +265,12 @@ PIPELINE_JS = {
     'connect': {
         'source_filenames': (
             'local/js/utils.js',
-            'local/js/connect.js',
             'local/js/forum.js',
             'local/js/course.js',
+            'local/js/explore.js',
+            'local/js/connect.js',
         ),
         'output_filename': 'js/connect.min.js',
-    },
-    'explore_page': {
-        'source_filenames': (
-            'local/js/explore.js',
-        ),
-        'output_filename': 'js/explore.min.js',
     },
     'admin_tree': {
         'source_filenames': (

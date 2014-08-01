@@ -231,5 +231,3 @@ ExplorePage = (function () {
 
     return me;
 }());
-
-ExplorePage.init();

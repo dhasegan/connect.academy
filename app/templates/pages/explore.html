@@ -11,11 +11,8 @@
             {% include 'objects/explore/courses_sequence.html' %}
         </div>
     </div>
-{% endblock %}
 
-{% block extra_js_includes %}
     <script type="text/javascript">
         var creditsValues = {{ credits|safe }};
     </script>
-    {% compressed_js 'explore_page' %}
 {% endblock %}
