@@ -24,10 +24,7 @@ def forum_course(request, slug):
     }
     context["course"] = course
 
-    forums = course.forum_set.all()
-    if not forums.count():
-        raise Http404
-    forum = forums[0]
+    forum = course.forum
     context = dict(context.items() + forum_context(forum, user).items())
 
     if 'tag' in request.GET and request.GET['tag']:
@@ -36,32 +33,6 @@ def forum_course(request, slug):
             context['current_tag'] = tag
 
     return render(request, "pages/forum/page.html", context)
-
-
-@require_POST
-@login_required
-def course_registration(request, slug):
-    course = get_object_or_404(Course, slug=slug)
-    user = get_object_or_404(jUser, id=request.user.id)
-
-    if not user.is_professor_of(course):
-        raise Http404
-
-    forums = course.forum_set.all()
-    if forums.count():
-        raise Http404
-
-    forum = Forum(course=course)
-    forum.save()
-
-    context = {
-        'course': {
-            'course': course
-        }
-    }
-    response_data = {}
-    response_data['html'] = render_to_string("objects/forum/forum_management.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_http_methods(["GET", "POST"])
@@ -73,13 +44,8 @@ def new_post(request, slug):
         "page": "forum_new_post"
     }
     context["course"] = course
-
-    forums = course.forum_set.all()
-    if not forums.count():
-        raise Http404
-    forum = forums[0]
-    context['forum'] = forum
-    context['tags'] = forum.get_tags()
+    context['forum'] = course.forum
+    context['tags'] = course.forum.get_tags()
 
     # Get request
     if request.method == "GET":
@@ -107,11 +73,9 @@ def new_answer(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
-    context["course"] = course
 
-    forums = course.forum_set.all()
-    if not forums.count():
-        raise Http404
+    context["course"] = course
+    forum = course.forum
 
     form = SubmitForumAnswer(request.POST)
     if not form.is_valid():
@@ -129,10 +93,10 @@ def new_answer(request, slug):
     answer.save()
 
     if 'discussion_answer' in form.cleaned_data and form.cleaned_data['discussion_answer']:
-        context = forum_discussion_context(forums[0], form.cleaned_data['post'], form.cleaned_data['discussion_answer'], user)
+        context = forum_discussion_context(forum, form.cleaned_data['post'], form.cleaned_data['discussion_answer'], user)
         template_filename = "objects/forum/discussion.html"
     else:
-        context['forum'] = forums[0]
+        context['forum'] = forum
         context['post'] = forum_post_context(form.cleaned_data['post'], user)
         template_filename = "objects/forum/answers.html"
 
@@ -150,15 +114,14 @@ def reply_form(request, answer_id):
     user = get_object_or_404(jUser, id=request.user.id)
 
     post = answer.post
-    forum = get_object_or_404(Forum, id=post.forum.id)
     context = {
         'parent_answer': {
             'answer': answer,
             'child_answers': []
         },
         'question': post,
-        'forum': forum,
-        'course': forum.course
+        'forum': post.forum,
+        'course': post.forum.course
     }
 
     response_data = {
@@ -179,8 +142,7 @@ def discussion(request, answer_id):
         raise Http404
 
     post = answer.post
-    forum = get_object_or_404(Forum, id=post.forum.id)
-    context = forum_discussion_context(forum, post, answer, user)
+    context = forum_discussion_context(post.forum, post, answer, user)
 
     response_data = {
         'html': render_to_string("objects/forum/discussion.html", RequestContext(request, context))
@@ -194,10 +156,9 @@ def answers(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    forum = get_object_or_404(Forum, id=post.forum.id)
     context = {
-        'course': forum.course,
-        'forum': forum,
+        'course': post.forum.course,
+        'forum': post.forum,
         'post': forum_post_context(post, user)
     }
 

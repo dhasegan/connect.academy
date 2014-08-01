@@ -77,11 +77,14 @@
     {
         "fields": {
             "abbreviation": "connect",
-            "admins": [1,2],
-            "registration_deadline": null,
+            "admins": [
+                1,
+                2
+            ],
             "level": 0,
             "name": "Connect.Academy",
             "parent": null,
+            "registration_deadline": null,
             "university": null
         },
         "model": "app.category",
@@ -91,13 +94,45 @@
         "fields": {
             "abbreviation": "jacobs",
             "admins": [],
-            "registration_deadline": null,
             "level": 1,
             "name": "Jacobs University Bremen",
             "parent": 1,
+            "registration_deadline": null,
             "university": 1
         },
         "model": "app.category",
         "pk": 2
+    },
+    {
+        "fields": {
+            "name": "general",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "name": "announcement",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "name": "askprof",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "name": "offtopic",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 4
     }
 ]

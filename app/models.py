@@ -143,11 +143,11 @@ class Course(models.Model):
     prerequisites = models.ManyToManyField('self',related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
+    #   forum (<course>.forum returns the forum of the <course>)
     #   professors (<course>.professor.all() returns all professors of <course>)
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #                 <course> as a prerequisite)
-    #   forum_set (<course>.forum_set.all() returns all forums of the <course>)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
 
 
@@ -205,6 +205,7 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        Forum.objects.get_or_create(course=self)
         super(Course, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -510,16 +511,19 @@ class CourseHomeworkSubmission(models.Model):
 ############################ Forums, Wikis ################################
 ###########################################################################
 
-ForumTags = ['general', 'offtopic']
-
 class Forum(models.Model):
-    course = models.ForeignKey('Course')
+    course = models.OneToOneField('Course', primary_key=True)
 
     def get_tags(self):
-        tags = ForumTags
+        # Primary tags
+        tags = [tag.name for tag in ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY)]
 
-        # TODO: Syllabus course tags
+        # Topic tags
+        topic_tags = self.forumtopictag_set.all()
+        for etag in topic_tags:
+            tags.append(etag.name)
 
+        # Extra tags
         extra_tags = self.forumextratag_set.all()
         for etag in extra_tags:
             tags.append(etag.name)
@@ -529,9 +533,32 @@ class Forum(models.Model):
     def __unicode__(self):
         return str(self.course)
 
+ForumTags = ['general', 'announcement', 'askprof', 'offtopic']
 
-class ForumExtraTag(models.Model):
+FORUMTAG_PRIMARY = "1"
+FORUMTAG_TOPIC = "2"
+FORUMTAG_EXTRA = "3"
+FORUMTAG_TYPES = (
+    (FORUMTAG_PRIMARY, 'Primary Tag'),
+    (FORUMTAG_TOPIC, 'Topic Tag'),
+    (FORUMTAG_EXTRA, 'Extra Tag'),
+)
+
+class ForumTag(models.Model):
     name = models.CharField(max_length=20)
+    tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
+
+    def __unicode__(self):
+        return str(self.name)
+
+class ForumTopicTag(ForumTag):
+    topic = models.OneToOneField('CourseTopic', primary_key=True)
+    forum = models.ForeignKey('Forum')
+
+    def __unicode__(self):
+        return str(self.name)
+
+class ForumExtraTag(ForumTag):
     forum = models.ForeignKey('Forum')
 
     def __unicode__(self):

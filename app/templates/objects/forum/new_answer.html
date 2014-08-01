@@ -15,7 +15,7 @@
                 </label>
             </div>
 
-            <input type="hidden" name="forum_id" value="{{ forum.id }}">
+            <input type="hidden" name="forum_pk" value="{{ forum.pk }}">
             <input type="hidden" name="post_id" value="{{ question.id }}">
             {% if parent_answer %}
                 <input type="hidden" name="parent_answer_id" value="{{ parent_answer.answer.id }}">

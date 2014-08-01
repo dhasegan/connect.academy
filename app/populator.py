@@ -156,9 +156,6 @@ class Populator:
             pcr = ProfessorCourseRegistration(professor=professors[i], course=course, is_approved=True)
             pcr.save()
 
-        if random.random() < 0.5:
-            forum = Forum.objects.create(course=course)
-
     def populate_courses(self, count):
         categories = Category.objects.all()
         leaf_categories = []

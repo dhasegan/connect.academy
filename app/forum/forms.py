@@ -3,7 +3,7 @@ from app.models import *
 
 
 class SubmitForumPost(forms.Form):
-    forum_id = forms.CharField()
+    forum_pk = forms.CharField()
     title = forms.CharField()
     description = forms.CharField(required=False)
     anonymous = forms.BooleanField(required=False)
@@ -12,9 +12,9 @@ class SubmitForumPost(forms.Form):
     def clean(self):
         cleaned_data = super(SubmitForumPost, self).clean()
 
-        forums = Forum.objects.filter(id=cleaned_data.get("forum_id"))
+        forums = Forum.objects.filter(pk=cleaned_data.get("forum_pk"))
         if len(forums) != 1:
-            raise forms.ValidationError("Not a valid number of forums with this forum_id!")
+            raise forms.ValidationError("Not a valid number of forums with this forum_pk!")
         forum = forums[0]
         cleaned_data['forum'] = forum
 
@@ -27,7 +27,7 @@ class SubmitForumPost(forms.Form):
         return cleaned_data
 
 class SubmitForumAnswer(forms.Form):
-    forum_id = forms.CharField()
+    forum_pk = forms.CharField()
     text = forms.CharField()
     post_id = forms.CharField()
     parent_answer_id = forms.CharField(required=False)
@@ -39,9 +39,9 @@ class SubmitForumAnswer(forms.Form):
     def clean(self):
         cleaned_data = super(SubmitForumAnswer, self).clean()
 
-        forums = Forum.objects.filter(id=cleaned_data.get("forum_id"))
+        forums = Forum.objects.filter(pk=cleaned_data.get("forum_pk"))
         if len(forums) != 1:
-            raise forms.ValidationError("Not a valid number of forums with this forum_id!")
+            raise forms.ValidationError("Not a valid number of forums with this forum_pk!")
         cleaned_data['forum'] = forums[0]
 
         posts = ForumPost.objects.filter(id=cleaned_data.get("post_id"))

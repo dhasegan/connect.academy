@@ -144,10 +144,7 @@ def course_page_context(request, course):
     context['syllabus'] = list(course.course_topics.all())
 
     # Course forum link
-    context['forum'] = None
-    forums = course.forum_set.all()
-    if forums.count() == 1:
-        context['forum'] = forums[0]
+    context['forum'] = course.forum
 
     # Show documents/homework only if the user is registered
     if registration_status == COURSE_REGISTRATION_REGISTERED:
