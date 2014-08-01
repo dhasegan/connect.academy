@@ -1,21 +1,47 @@
 jQuery( document ).ready(function( $ ) {
 
+    ConnectGlobal.init();
+
     if ($('.explore-page').length > 0) { ExplorePage.init(); }
     else if ($('.course-page').length > 0) { CoursePage.init(); }
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
 });
 
+var ConnectGlobal = (function() {
+    var me = { 
+        settings: {
+            dismissableAlerts: $(".dismissable-alert"),
+            emailConfirmationLinks: $(".email-confirmation-link"),
+            campusnetPopover: $("#campusnet-popover"),
+        }
+    }, s;
+
+    me.init = function() {
+        s = this.settings;
+
+        this.bindUIActions();
+    };
+
+    me.bindUIActions = function() {
+        // Activate Alerts
+        s.dismissableAlerts.alert();
+        // Email confirmation link
+        s.emailConfirmationLinks.click( function() {
+            $.get($(this).attr("src"));
+        });
+
+        // Tooltip for CampusNet
+        s.campusnetPopover.tooltip({title: 'Please log in with your CampusNet credentials!'});
+    };
+
+    return me;
+}());
+
+// ****************************************************
+// TODO: Break the code below into separate files
+//
 jQuery( document ).ready(function( $ ) {
 
-    // Activate Alerts
-    $(".dismissable-alert").alert();
-    // Email confirmation link
-    $(".email-confirmation-link").click( function() {
-        $.get($(this).attr("src"));
-    });
-
-    // Tooltip for CampusNet
-    $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'});
 
     // Datetimepicker and Time handlers
     $('.homework-start-datetime').datetimepicker({

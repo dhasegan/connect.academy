@@ -16,8 +16,20 @@ ExplorePage = (function () {
             creditsSlider: $("#credits-slider"),
             creditsHandle0: $("#credits_handle_0"),
             creditsHandle1: $("#credits_handle_1"),
-            creditsValues: creditsValues,
-            nrCredits: creditsValues.length,
+            creditsValues: function() {
+                if (typeof variable !== 'undefined') {
+                    creditsValues
+                } else { 
+                    []
+                }
+            }(),
+            nrCredits: function() {
+                if (typeof variable !== 'undefined') {
+                    creditsValues.length
+                } else { 
+                    0
+                }
+            }(),
 
             // Ratings
             ratingsSlider: $("#ratings-slider"),
