@@ -3,6 +3,7 @@ import hashlib
 import string
 import random
 import datetime
+import json
 
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
@@ -14,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from app.models import *
 from app.course.context_processors import *
@@ -45,7 +47,7 @@ def get_course_image(request, slug):
 
 @require_POST
 @login_required
-def submit_comment(request, slug):
+def submit_review(request, slug):
 
     form = SubmitCommentForm(request.POST)
     if not form.is_valid():
@@ -61,21 +63,29 @@ def submit_comment(request, slug):
     comment.save()
     comment.upvoted_by.add(user)
 
-    return redirect(form.cleaned_data['url'])
+    context = {
+        'course': course,
+        'comments': course_reviews_context(request, course, user)
+    }
+    response_data = {}
+    response_data['html'] = render_to_string("objects/course/reviews_panel.html", RequestContext(request, context))
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_POST
 @login_required
 def rate_course(request, slug):
-    context = {}
-
     user = get_object_or_404(jUser, id=request.user.id)
 
     form = RateCourseForm(request.POST)
     if not form.is_valid():
         raise Http404
 
-    course = form.cleaned_data['course']
+    course = get_object_or_404(Course, slug=slug)
+    course_form = form.cleaned_data['course']
+    if course.id != course_form.id:
+        raise Http404
+
     rating_value = form.cleaned_data['rating_value']
     rating_type = form.cleaned_data['rating_type']
 
@@ -99,7 +109,15 @@ def rate_course(request, slug):
             rating.rating = rating_value
             rating.save()
 
-    return redirect(form.cleaned_data['url'])
+
+    context = {
+        'course': course,
+        'ratings': course_ratings_context(request, course, user)
+    }
+    response_data = {}
+    response_data['agg_ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
+    response_data['my_ratings'] = render_to_string("objects/course/my_ratings.html", RequestContext(request, context))
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_POST

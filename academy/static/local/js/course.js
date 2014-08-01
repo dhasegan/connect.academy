@@ -1,21 +1,35 @@
 var CoursePage = (function() {
     var me = { 
         settings: {
+            // Ratings settings
+            myRatingsSelector: ".my-ratings",
+            aggRatingsSelector: ".agg-ratings",
+
+            ratingFormSelector: ".rating-form",
             ratingClarifications: $('.ratings-tooltip-clarif'),
             ratingTooltips: $('.ratings-tooltip'),
 
-            ratingStars: $('.rating-stars'),
-
+            ratingStarsSelector: '.rating-stars',
             starOnURL: '/static/images/star-on.png',
             starOffURL: '/static/images/star-off.png',
             starHalfURL: '/static/images/star-half.png',
+
+            // Reviews settings
+            reviewsPanelSelector: '.reviews-panel',
+            reviewFormSelector: '.submit-review-form',
         }
     }, s;
 
     me.init = function() {
         s = me.settings;
 
-        s.ratingStars.raty( {
+        this.setupMyRatings();
+
+        this.bindUIActions();
+    };
+
+    me.setupMyRatings = function() {
+        $(s.ratingStarsSelector).raty({
             starOn: s.starOnURL,
             starOff: s.starOffURL,
             starHalf: s.starHalfURL,
@@ -71,13 +85,34 @@ var CoursePage = (function() {
                 } 
             }
         });
+    }
 
-        bindUIActions();
+    me.bindUIActions = function() {
+        $(s.ratingFormSelector).submit(this.ratingFormSubmit);
+        $(s.reviewFormSelector).submit(this.reviewFormSubmit);
     };
 
-    function bindUIActions() {
+    me.ratingFormSubmit = function(event) {
+        Utils.SubmitFormAjax(event, this, 
+            function(response) {
+                $(s.aggRatingsSelector).replaceWith(response.agg_ratings);
+                $(s.myRatingsSelector).replaceWith(response.my_ratings);
+                me.setupMyRatings();
+                $(s.ratingFormSelector).submit(me.ratingFormSubmit);
+            }, function(jqXHR, textStatus, errorThrown) {
+            }
+        );
     };
 
+    me.reviewFormSubmit = function(event) {
+        Utils.SubmitFormAjax(event, this, 
+            function(response) {
+                $(s.reviewsPanelSelector).replaceWith(response.html);
+                $(s.reviewFormSelector).submit(me.reviewFormSubmit);
+            }, function(jqXHR, textStatus, errorThrown) {
+            }
+        );
+    }
 
     return me;
 }());

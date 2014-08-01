@@ -7,7 +7,7 @@
             The submit review form
         {% endcomment %}
         {% if user_auth %}
-            <form role="form" action="{% url 'submit_comment' course.slug %}" method="post">
+            <form class="submit-review-form" role="form" action="{% url 'submit_review' course.slug %}" method="post">
                 <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
                 <input type="hidden" name="course_id" value="{{course.id}}">
                 {% csrf_token %}

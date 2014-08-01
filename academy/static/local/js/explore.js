@@ -1,4 +1,4 @@
-ExplorePage = (function () {
+var ExplorePage = (function () {
     var me = {
         settings: {
             // -- Sidebar --
