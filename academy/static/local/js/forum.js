@@ -1,35 +1,36 @@
-var s,
-ForumPage = {
-    settings: {
-        // Filters
-        postFilters: $('.post-filter'),
-        currentPostFilter: $('.current-post-filter'),
-        postFilterNameSelector: '.post-filter-name',
+var ForumPage = (function() {
+    var me = {
+        settings: {
+            // Filters
+            postFilters: $('.post-filter'),
+            currentPostFilter: $('.current-post-filter'),
+            postFilterNameSelector: '.post-filter-name',
 
-        // Posts sidebar
-        posts: $('.forum-post'),
+            // Posts sidebar
+            posts: $('.forum-post'),
 
-        // Answers tabs
-        postAnswerFormSelector: '.forumpostnewanswer-form',
-        getReplyLinkSelector: '.getreplyform-link',
-        discussionLinkSelector: '.discussion-link',
-        bestanswersLinkSelector: '.bestanswers-link',
-        upvotePostFormSelector: '.upvote-post-form',
-        upvoteAnswerFormSelector: '.upvote-answer-form',
-    },
+            // Answers tabs
+            postAnswerFormSelector: '.forumpostnewanswer-form',
+            getReplyLinkSelector: '.getreplyform-link',
+            discussionLinkSelector: '.discussion-link',
+            bestanswersLinkSelector: '.bestanswers-link',
+            upvotePostFormSelector: '.upvote-post-form',
+            upvoteAnswerFormSelector: '.upvote-answer-form',
+        }
+    }, s;
 
-    init: function() {
-        s = this.settings;
+    me.init = function() {
+        s = me.settings;
 
         // Index the posts based on the filters
-        this.indexPosts();
+        me.indexPosts();
 
         // Bind ui actions for answers tab
-        this.onRefreshAnswerTab($('html'));
-        this.bindUIActions();
-    },
+        me.onRefreshAnswerTab($('html'));
+        me.bindUIActions();
+    };
 
-    bindUIActions: function() {
+    me.bindUIActions = function() {
 
         // On Filter change
         s.postFilters.click( function() {
@@ -39,9 +40,9 @@ ForumPage = {
 
             ForumPage.indexPosts();
         });
-    },
+    };
 
-    indexPosts: function() {
+    me.indexPosts = function() {
         var tag_filter = s.currentPostFilter.find(s.postFilterNameSelector).text().replace("#", "");
 
         if (tag_filter == "all") {
@@ -64,10 +65,10 @@ ForumPage = {
             $visible_posts = s.posts.filter(':visible');
             $visible_posts.first().find('a').click();
         }
-    },
+    };
 
     // Refresh something in the DOM, relink everything in its subtree
-    onRefreshAnswerTab: function(SubtreeDOM) {
+    me.onRefreshAnswerTab = function(SubtreeDOM) {
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
             Utils.SubmitFormAjax(event, this,
@@ -132,7 +133,9 @@ ForumPage = {
                 }
             );
         });
-    },
-};
+    };
+
+    return me;
+}());
 
 ForumPage.init();

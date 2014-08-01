@@ -267,6 +267,7 @@ PIPELINE_JS = {
             'local/js/utils.js',
             'local/js/connect.js',
             'local/js/forum.js',
+            'local/js/course.js',
         ),
         'output_filename': 'js/connect.min.js',
     },

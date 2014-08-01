@@ -1,41 +1,41 @@
-var s,
-ExplorePage = {
+ExplorePage = (function () {
+    var me = {
+        settings: {
+            // -- Sidebar --
+            // Searchbar
+            searchBar: $(".course-search-bar"),
 
-    settings: {
-        // -- Sidebar --
-        // Searchbar
-        searchBar: $(".course-search-bar"),
+            // Categories
+            categoryCheckboxSelector: ".cat-cb",
+            checkboxAllSelector: ".cb-all",
+            checkboxNormalSelector: ".cb-normal",
+            categoryCheckboxWrapperSelector: ".category-checkbox",
+            categoriesSearchWrapper: $(".explore_categories"),
 
-        // Categories
-        categoryCheckboxSelector: ".cat-cb",
-        checkboxAllSelector: ".cb-all",
-        checkboxNormalSelector: ".cb-normal",
-        categoryCheckboxWrapperSelector: ".category-checkbox",
-        categoriesSearchWrapper: $(".explore_categories"),
+            // Credits
+            creditsSlider: $("#credits-slider"),
+            creditsHandle0: $("#credits_handle_0"),
+            creditsHandle1: $("#credits_handle_1"),
+            creditsValues: creditsValues,
+            nrCredits: creditsValues.length,
 
-        // Credits
-        creditsSlider: $("#credits-slider"),
-        creditsHandle0: $("#credits_handle_0"),
-        creditsHandle1: $("#credits_handle_1"),
-        creditsValues: creditsValues,
-        nrCredits: creditsValues.length,
+            // Ratings
+            ratingsSlider: $("#ratings-slider"),
+            ratingsHandle0: $("#ratings_handle_0"),
+            ratingsHandle1: $("#ratings_handle_1"),
+            ratingsValues: ["Unrated", 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5],
+            nrRatings: 42,
 
-        // Ratings
-        ratingsSlider: $("#ratings-slider"),
-        ratingsHandle0: $("#ratings_handle_0"),
-        ratingsHandle1: $("#ratings_handle_1"),
-        ratingsValues: ["Unrated", 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5],
-        nrRatings: 42,
+            // -- Course sequence --
+            coursePanelSelector: ".course-panel",
+            courseCreditsSelector: ".course-credits",
+            courseRatingsSelector: ".course-rating",
+            courseNameSelector: ".course-name",
+            courseImageSelector: "img.course-image",
+        }
+    }, s;
 
-        // -- Course sequence --
-        coursePanelSelector: ".course-panel",
-        courseCreditsSelector: ".course-credits",
-        courseRatingsSelector: ".course-rating",
-        courseNameSelector: ".course-name",
-        courseImageSelector: "img.course-image",
-    },
-
-    init: function() {
+    me.init = function() {
         s = this.settings;
 
         // Credits handle
@@ -67,9 +67,9 @@ ExplorePage = {
 
         // Bind actions
         this.bindUIActions();
-    },
+    };
 
-    bindUIActions: function() {
+    me.bindUIActions = function() {
         // Lazy load images
         $(s.courseImageSelector).lazyload({
             effect: "fadeIn",
@@ -91,9 +91,9 @@ ExplorePage = {
 
         // Category handle
         $(s.categoryCheckboxSelector).change(this.categoryCheckboxHandle);
-    },
+    };
 
-    getAvoidedCategoriesIds: function() {
+    me.getAvoidedCategoriesIds = function() {
         var $checked = $(s.checkboxNormalSelector).filter(':checked');
         var $avoided = $([]);
         $checked.each( function() {
@@ -102,12 +102,12 @@ ExplorePage = {
             $avoided = $avoided.add($bad_ids)
         });
         return $avoided.toArray();
-    },
+    };
 
     /*************************************
         Index the courses in the sequence
     **************************************/
-    indexCourses: function() {
+    me.indexCourses = function() {
         var courses = $(s.coursePanelSelector);
 
         var searchTerm = s.searchBar.val();
@@ -167,12 +167,12 @@ ExplorePage = {
         // $("img.course-image").lazyload({
         //     event : "click"
         // });
-    },
+    };
 
     /*************************************
         Category Checkbox All-vs-normal
     **************************************/
-    categoryCheckboxHandle: function() {
+    me.categoryCheckboxHandle = function() {
         var $this = $(this);
         var $parent = $this.parents(s.categoryCheckboxWrapperSelector);
         var $cb_all = $parent.find(s.checkboxAllSelector);
@@ -204,30 +204,32 @@ ExplorePage = {
             }
         });
 
-    },
+    };
 
     /*************************************
         Sliders handle code!
     **************************************/
-    sliderStop: function(event, ui) {
+    me.sliderStop = function(event, ui) {
         ExplorePage.indexCourses();
-    },
+    };
 
     /*************************************
         Credit slider handle code!
     **************************************/
-    creditsSliderChange: function(event, ui) {
+    me.creditsSliderChange = function(event, ui) {
         $("#credits_handle_0").val( s.creditsValues[ ui.values[0] ] )
         $("#credits_handle_1").val( s.creditsValues[ ui.values[1] ] )
-    },
+    };
 
     /*************************************
         Ratings slider handle code!
     **************************************/
-    ratingsSliderChange: function(event, ui) {
+    me.ratingsSliderChange = function(event, ui) {
         $("#ratings_handle_0").val( s.ratingsValues[ ui.values[0] ] )
         $("#ratings_handle_1").val( s.ratingsValues[ ui.values[1] ] )
-    }
-};
+    };
+
+    return me;
+}());
 
 ExplorePage.init();
