@@ -20,7 +20,7 @@ class SubmitForumPost(forms.Form):
 
         if 'tagsRadios' in cleaned_data:
             tag = cleaned_data['tagsRadios']
-            possibleTags = forum.get_tags()
+            possibleTags = forum.get_tags_names()
             if tag not in possibleTags:
                 cleaned_data['tagsRadios'] = None
 

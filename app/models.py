@@ -540,20 +540,32 @@ class Forum(models.Model):
     course = models.OneToOneField('Course', primary_key=True)
 
     def get_tags(self):
-        # Primary tags
-        tags = [tag.name for tag in ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY)]
+        primary_tags = list(ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY))
+        topic_tags = list(self.forumtopictag_set.all())
+        extra_tags = list(self.forumextratag_set.all())
+        return primary_tags + topic_tags + extra_tags
 
-        # Topic tags
-        topic_tags = self.forumtopictag_set.all()
-        for etag in topic_tags:
-            tags.append(etag.name)
 
-        # Extra tags
-        extra_tags = self.forumextratag_set.all()
-        for etag in extra_tags:
-            tags.append(etag.name)
+    def get_tags_names(self):
+        return [tag.name for tag in self.get_tags()]
 
-        return tags
+    def get_view_tags(self, user):
+        tags = self.get_tags()
+
+        view_tags = []
+        for tag in tags:
+            if tag.can_view(user):
+                view_tags.append(tag)
+        return view_tags
+
+    def get_post_tags(self, user):
+        tags = self.get_tags()
+
+        post_tags = []
+        for tag in tags:
+            if tag.can_post(user):
+                post_tags.append(tag)
+        return post_tags
 
     def __unicode__(self):
         return str(self.course)
@@ -570,6 +582,7 @@ FORUMTAG_TYPES = (
 
 PublicForumTags = ['general']
 StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
+# students can view their own askprof questions
 StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
@@ -586,11 +599,11 @@ class ForumTag(models.Model):
             return True
 
         if user.is_student():
-            return (self.name in StudentViewTags) if tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in StudentViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
         elif user.is_professor():
-            return (self.name in ProfessorViewTags) if tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in ProfessorViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
         elif user.is_admin():
-            return (self.name in AdminViewTags) if tag_type == FORUMTAG_PRIMARY else False
+            return (self.name in AdminViewTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
     def can_post(self, user):
@@ -598,11 +611,11 @@ class ForumTag(models.Model):
             return True
 
         if user.is_student():
-            return (self.name in StudentPostTags) if tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in StudentPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
         elif user.is_professor():
-            return (self.name in ProfessorPostTags) if tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in ProfessorPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
         elif user.is_admin():
-            return (self.name in AdminPostTags) if tag_type == FORUMTAG_PRIMARY else False
+            return (self.name in AdminPostTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
     def __unicode__(self):

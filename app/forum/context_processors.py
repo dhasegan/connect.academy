@@ -64,9 +64,10 @@ def forum_post_context(post, current_user):
 
 
 def forum_context(forum, current_user):
+    allowed_tags = forum.get_view_tags(current_user)
     context_forum = {
         "forum": forum,
-        "tags": forum.get_tags(),
+        "tags": allowed_tags,
         "course": forum.course,
         "user": current_user
     }
@@ -74,7 +75,8 @@ def forum_context(forum, current_user):
     context_forum['posts'] = []
     posts = ForumPost.objects.filter(forum=forum)
     for post in posts:
-        context_forum['posts'].append(forum_post_context(post, current_user))
+        if post.tag in allowed_tags:
+            context_forum['posts'].append(forum_post_context(post, current_user))
 
     return context_forum
 

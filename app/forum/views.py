@@ -29,7 +29,7 @@ def forum_course(request, slug):
 
     if 'tag' in request.GET and request.GET['tag']:
         tag = request.GET['tag']
-        if tag in forum.get_tags():
+        if tag in forum.get_view_tags(user):
             context['current_tag'] = tag
 
     return render(request, "pages/forum/page.html", context)
@@ -45,7 +45,8 @@ def new_post(request, slug):
     }
     context["course"] = course
     context['forum'] = course.forum
-    context['tags'] = course.forum.get_tags()
+    post_tags = course.forum.get_post_tags(user)
+    context['tags'] = post_tags
 
     # Get request
     if request.method == "GET":
@@ -57,11 +58,17 @@ def new_post(request, slug):
         raise Http404
 
     # user permissions to post:
-    # everyone is allowed
+    if form.cleaned_data['tagsRadios'] not in [tag.name for tag in post_tags]:
+        raise Http404
+
+    form_tag = None
+    for tag in post_tags:
+        if tag.name == form.cleaned_data['tagsRadios']:
+            form_tag = tag
 
     post = ForumPost(name=form.cleaned_data['title'], forum=form.cleaned_data['forum'],
                      text=form.cleaned_data['description'], posted_by=user,
-                     anonymous=form.cleaned_data['anonymous'], tag=form.cleaned_data['tagsRadios'])
+                     anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
