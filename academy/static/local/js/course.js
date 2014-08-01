@@ -17,6 +17,12 @@ var CoursePage = (function() {
             // Reviews settings
             reviewsPanelSelector: '.reviews-panel',
             reviewFormSelector: '.submit-review-form',
+            reviewBlockSelector: '.review-block',
+
+            // Vote review settings
+            reviewRateFormSelector: '.review-rate-form',
+            reviewRatingSelector: '.review-rate',
+            reviewRatingBadgeSelector: '.review-score-badge'
         }
     }, s;
 
@@ -90,6 +96,7 @@ var CoursePage = (function() {
     me.bindUIActions = function() {
         $(s.ratingFormSelector).submit(this.ratingFormSubmit);
         $(s.reviewFormSelector).submit(this.reviewFormSubmit);
+        $(s.reviewRateFormSelector).submit(this.reviewVoteFormSubmit);
     };
 
     me.ratingFormSubmit = function(event) {
@@ -112,7 +119,19 @@ var CoursePage = (function() {
             }, function(jqXHR, textStatus, errorThrown) {
             }
         );
-    }
+    };
+
+    me.reviewVoteFormSubmit = function(event) {
+        var $reviewRating = $(this).parents(s.reviewRatingSelector);
+        var $reviewBlock = $(this).parents(s.reviewBlockSelector);
+        Utils.SubmitFormAjax(event, this, 
+            function(response) {
+                $reviewBlock.find(s.reviewRatingBadgeSelector).text(response.score);
+                $reviewRating.addClass("hidden");
+            }, function(jqXHR, textStatus, errorThrown) {
+            }
+        );
+    };
 
     return me;
 }());

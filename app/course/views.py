@@ -224,7 +224,12 @@ def vote_review(request, slug):
     if form.cleaned_data['vote_type'] == "downvote":
         review.downvoted_by.add(user)
 
-    return redirect(form.cleaned_data['url'])
+    upvotes = review.upvoted_by.count()
+    downvotes = review.downvoted_by.count()
+
+    response_data = {}
+    response_data['score'] = str(upvotes) + "/" + str(upvotes + downvotes)
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @login_required
