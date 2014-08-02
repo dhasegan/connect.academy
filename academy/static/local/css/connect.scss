@@ -74,7 +74,8 @@ $course-credits-badge-color:        #92209B;
 
 .explore-page {
     .search-sidebar {
-        #credit-slider {
+        #credits-slider,
+        #ratings-slider {
             .ui-slider-range {
                 background: $brand-primary;
             }
@@ -84,7 +85,8 @@ $course-credits-badge-color:        #92209B;
             }
         }
 
-        .credit-slider-values {
+        .credits-slider-values,
+        .ratings-slider-values {
             margin-top: 15px;
         }
     }

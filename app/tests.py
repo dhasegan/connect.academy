@@ -212,15 +212,15 @@ class SubmitReviewTest(TestCase):
         self.client.login(username=user.username, password='1234')
 
     def test_entry_pages(self):
-        response = self.client.get('/submit_comment', follow=True)
+        response = self.client.get('/submit_review', follow=True)
         self.assertEqual(response.status_code, 404)
-        response = self.client.post('/submit_comment', follow=True)
+        response = self.client.post('/submit_review', follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_posting_comment(self):
         course = random.choice(Course.objects.all())
         comment_text = "Review text to be inserted"
-        response = self.client.post('/course/' + course.slug + '/submit_comment', {
+        response = self.client.post('/course/' + course.slug + '/submit_review', {
             "course_id": course.id,
             "comment": comment_text,
             "url": "/course/" + course.slug,  # Should be removed after refactoring
@@ -237,19 +237,19 @@ class SubmitReviewTest(TestCase):
         course = random.choice(Course.objects.all())
         comment_text = "Review text to be inserted"
 
-        response = self.client.post('/course/' + course.slug + '/submit_comment', {
+        response = self.client.post('/course/' + course.slug + '/submit_review', {
             "comment": comment_text,
             "url": "/course/" + course.slug,
         }, follow=True)
         self.assertEqual(response.status_code, 404)
 
-        response = self.client.post('/course/' + course.slug + '/submit_comment', {
+        response = self.client.post('/course/' + course.slug + '/submit_review', {
             "course_id": course.id,
             "url": "/course/" + course.slug,
         }, follow=True)
         self.assertEqual(response.status_code, 404)
 
-        response = self.client.post('/course/' + course.slug + '/submit_comment', {
+        response = self.client.post('/course/' + course.slug + '/submit_review', {
             "course_id": course.id,
             "comment": "",
             "url": "/course/" + course.slug,

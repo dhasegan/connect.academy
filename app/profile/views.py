@@ -7,7 +7,6 @@ from django.views.decorators.http import require_GET, require_POST
 from django.template.loader import render_to_string
 
 from app.models import *
-from app.context_processors import *
 from app.profile.forms import *
 
 

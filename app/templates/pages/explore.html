@@ -1,5 +1,7 @@
 {% extends 'pages/base.html' %}
 
+{% load compressed %}
+
 {% block content %}
     <div class="row explore-page">
         <div class="col-md-3">
@@ -9,4 +11,8 @@
             {% include 'objects/explore/courses_sequence.html' %}
         </div>
     </div>
+
+    <script type="text/javascript">
+        var creditsValues = {{ credits|safe }};
+    </script>
 {% endblock %}

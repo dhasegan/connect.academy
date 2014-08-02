@@ -256,10 +256,19 @@ PIPELINE_CSS = {
 }
 
 PIPELINE_JS = {
-    'connect_base': {
+    'bootstrap': {
         'source_filenames': (
-          'local/js/connect.js',
-          'local/js/explore.js',
+            'bootstrap/javascripts/bootstrap.js',
+        ),
+        'output_filename': 'js/bootstrap.min.js',
+    },
+    'connect': {
+        'source_filenames': (
+            'local/js/utils.js',
+            'local/js/forum.js',
+            'local/js/course.js',
+            'local/js/explore.js',
+            'local/js/connect.js',
         ),
         'output_filename': 'js/connect.min.js',
     },
@@ -268,13 +277,7 @@ PIPELINE_JS = {
             'local/js/admin_tree.js',
         ),
         'output_filename': 'js/admin_tree.min.js',
-    },
-    'bootstrap': {
-        'source_filenames': (
-          'bootstrap/javascripts/bootstrap.js',
-        ),
-        'output_filename': 'js/bootstrap.min.js',
-    },
+    }
 }
 
 ########################## Django extension config

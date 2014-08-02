@@ -34,39 +34,9 @@ def dashboard(request):
         'page': 'dashboard',
         'user_auth': request.user
     }
-    user = request.user
-    context['courses'] = []
 
-    if user.user_type == USER_TYPE_STUDENT:
-        registrations = StudentCourseRegistration.objects.filter(student=user)
-        for reg in registrations:
-            context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved})
+    context = dict(context.items() + dashboard_context(request).items())
 
-    elif user.user_type == USER_TYPE_PROFESSOR:
-        registrations = ProfessorCourseRegistration.objects.filter(professor=user)
-        for prof_reg in registrations:  # for each professor registration
-            course_dict = {'course': prof_reg.course,
-                           'is_approved': prof_reg.is_approved}
-            if prof_reg.is_approved:
-                course_dict['students'] = {'registered': [], 'pending': []}
-                # for each student registration
-                for student_reg in StudentCourseRegistration.objects.filter(course=prof_reg.course):
-                    if student_reg.is_approved:
-                        course_dict['students']['registered'].append(student_reg.student)
-                    else:
-                        course_dict['students']['pending'].append(student_reg.student)
-                course_dict['documents'] = prof_reg.course.coursedocument_set.all()
-                course_dict['homework'] = prof_reg.course.coursehomeworkrequest_set.all()
-                course_dict['forum'] = None
-                forums = prof_reg.course.forumcourse_set.all()
-                if forums.count() == 1:
-                    course_dict['forum'] = forums[0]
-                course_dict['topics'] = list(prof_reg.course.course_topics.all())
-
-            context['courses'].append(course_dict)
-
-    else:
-        return redirect('/admin')
 
     return render(request, "pages/dashboard.html", context)
 
@@ -80,27 +50,3 @@ def all_comments(request):
 
     return render(request, 'pages/comments.html', context)
 
-
-@login_required
-def explore(request):
-    context = {
-        "page": "explore",
-    }
-
-    courses = Course.objects.all()
-    context = dict(context.items() + course_timeline_context(courses, request.user).items())
-    return render(request, "pages/explore.html", context)
-
-@login_required
-@require_POST
-def explore_categories(request):
-    checked = []
-    for key, value in request.POST.iteritems():
-        if key.isdigit():
-            checked.append(int(key))
-    context = {
-        'explore_categories': explore_categories_context(checked)
-    }
-    response_data = {}
-    response_data['html'] = render_to_string("objects/explore/categories.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")

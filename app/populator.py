@@ -176,9 +176,6 @@ class Populator:
             pcr = ProfessorCourseRegistration(professor=professors[i], course=course, is_approved=True)
             pcr.save()
 
-        if random.random() < 0.5:
-            forum = ForumCourse.objects.create(forum_type=FORUM_TYPE_COURSE, course=course)
-
     def populate_courses(self, count):
         categories = Category.objects.all()
         leaf_categories = []
@@ -272,16 +269,18 @@ class Populator:
         anon = False
         if random.random() < 0.1:
             anon = True
-        ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon)
+        tags = ForumTag.objects.all()
+        tag = random.choice(tags)
+        ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon, tag=tag)
 
     def populate_forum_posts(self, count):
-        forums = ForumCourse.objects.all()
+        forums = Forum.objects.all()
         for i in range(count):
             forum = random.choice(forums)
             self.populate_forum_post(forum)
 
     def populate_forum_answer(self, forum_post):
-        forum = ForumCourse.objects.get(id=forum_post.forum.id)
+        forum = forum_post.forum
         course = forum.course
         students = course.students.all()
         posted_by = random.choice(students)
@@ -320,7 +319,7 @@ class Populator:
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
-        forums = ForumCourse.objects.all()
+        forums = Forum.objects.all()
         for forum in forums:
             course = forum.course
             students = list(course.students.all())
@@ -432,4 +431,14 @@ class Populator:
 
         print "populate_forum_upvotes... "
         populator.populate_forum_upvotes()
+        print "ok"
+
+    @staticmethod
+    def populate_course_intense():
+        populator = Populator()
+        populator.populate_database(nr_universities=10, nr_students=50, nr_categories=200,
+            nr_professors=50, nr_courses=700, nr_reviews=0, nr_ratings=1000)
+
+        print "populate_registrations... "
+        populator.populate_registrations()
         print "ok"
