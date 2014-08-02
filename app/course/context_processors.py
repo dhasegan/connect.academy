@@ -149,7 +149,7 @@ def course_page_context(request, course):
     # Show documents/homework only if the user is registered
     if registration_status == COURSE_REGISTRATION_REGISTERED:
         # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
-        context['documents'] = course.coursedocument_set.all()
+        context['documents'] = course.documents.all()
         context['homework'] = course_homework_context(request, course, current_user)
 
     return context
