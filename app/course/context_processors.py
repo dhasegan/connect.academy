@@ -4,7 +4,7 @@ from app.models import *
 from app.ratings import *
 
 
-def course_ratings_context(request, course, current_user=None):
+def course_ratings_context(course, current_user=None):
     context = []
     allratings = course.rating_set.all()
 
@@ -51,7 +51,7 @@ def course_ratings_context(request, course, current_user=None):
     return context
 
 
-def review_context(request, comment, current_user=None):
+def review_context(comment, current_user=None):
     context_comment = {
         'comment': comment
     }
@@ -81,23 +81,25 @@ def review_context(request, comment, current_user=None):
     return context_comment
 
 
-def course_reviews_context(request, course, current_user=None):
+def course_reviews_context(course, current_user=None):
     context = []
     reviews = course.review_set.all()
     for review in reviews:
-        context.append(review_context(request, review, current_user))
+        context.append(review_context(review, current_user))
     return context
 
 
-def course_homework_context(request, course, current_user):
+def course_homework_context(course, current_user):
     current_time = pytz.utc.localize(datetime.now())
 
     context = []
     all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
-        can_submit_homework = False
-        if hw.deadline.start < current_time and current_time < hw.deadline.end:
-            can_submit_homework = True
+        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
+        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
+        is_student = current_user in course.students.all()
+        can_submit_homework = is_student and is_allowed and within_deadline
+        
         homework_submission = None
         homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
         if homework_submissions:
@@ -106,8 +108,25 @@ def course_homework_context(request, course, current_user):
         context.append({
             "homework": hw,
             "can_submit": can_submit_homework,
+            "is_allowed": is_allowed,
             "previous_submission": homework_submission
         })
+    return context
+
+def course_syllabus_context(course, current_user):
+    context = []
+    for topic in course.course_topics.all():
+        topic_context = {
+            'topic': topic,
+            'documents': topic.documents.all(),
+
+        }
+        if current_user in course.students.all() or current_user in course.professors.all():
+            topic_context['homework'] = [hw for hw in course_homework_context(course,current_user) 
+                                            if hw['homework'].course_topic == topic]
+
+        context.append(topic_context)
+    return context
 
 
 def course_page_context(request, course):
@@ -125,8 +144,8 @@ def course_page_context(request, course):
         current_user = jUser.objects.get(id=request.user.id)
 
     # Ratings and comments
-    context['ratings'] = course_ratings_context(request, course, current_user)
-    context['comments'] = course_reviews_context(request, course, current_user)
+    context['ratings'] = course_ratings_context(course, current_user)
+    context['comments'] = course_reviews_context(course, current_user)
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(request.user)
@@ -141,15 +160,16 @@ def course_page_context(request, course):
     context['registration_open'] = registration_open
 
     # Course syllabus
-    context['syllabus'] = list(course.course_topics.all())
+    context['syllabus'] = course_syllabus_context(course,current_user)
 
     # Course forum link
     context['forum'] = course.forum
 
+    context['documents'] = course.documents.filter(course_topic=None)
+
     # Show documents/homework only if the user is registered
     if registration_status == COURSE_REGISTRATION_REGISTERED:
-        # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED
-        context['documents'] = course.documents.all()
-        context['homework'] = course_homework_context(request, course, current_user)
+        # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED    
+        context['current_homework'] = [hw for hw in course_homework_context(course, current_user) if hw['is_allowed']]
 
     return context

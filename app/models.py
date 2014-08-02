@@ -247,7 +247,7 @@ class CourseTopic(models.Model):
 
     # Relations declared in other models define the following:
     #    forums (<course_topic>.forums.all() returns all forums of  <course_topic>)
-
+    #    homework_requests (<course_topic>.homework_requests.all() returns all homework requests of <course_topic>)
 
     class Meta:
         order_with_respect_to = 'course'

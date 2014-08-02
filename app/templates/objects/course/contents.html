@@ -85,16 +85,15 @@
         {% endwith %}
     {% endif %}
 
-    {% with course.get_non_topic_documents as documents %}
-        {% include 'objects/course/documents.html' %}
-    {% endwith %}
 
-    {% comment %}
-        These are now included in their respective CourseTopic
-        
-        {% include 'objects/course/documents.html' %}
-        {% include 'objects/course/homework_student.html' %}
-    {% endcomment %}
+    {% include 'objects/course/documents.html' %}
+
+    {% if current_homework %}
+        {% with current_homework as homework %}
+            {% include 'objects/course/homework_student.html' %}
+        {% endwith %}
+    {% endif %}
+
 
     {% if forum %}
         <a href="{% url 'forum_course' course.slug %}">

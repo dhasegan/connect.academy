@@ -1,24 +1,28 @@
 <div class='course-syllabus'>
 	<ol>
-	{% for topic in syllabus %}
+	{% for entry in syllabus %}
 		<li>
-			<a data-toggle="collapse" data-parent=".course-syllabus" href="#course-topic{{topic.id}}">{{ topic.name }}</a> 
+			<a data-toggle="collapse" data-parent=".course-syllabus" href="#course-topic{{entry.topic.id}}">{{ entry.topic.name }}</a> 
 			
-			<div class="collapse course-topic" id="course-topic{{topic.id}}">
-				{% if topic.description %}
+			<div class="collapse course-topic" id="course-topic{{entry.topic.id}}">
+				{% if entry.topic.description %}
 					<strong> Description: </strong>
 					<span class='content'>
-						{{ topic.description }}
+						{{ entry.topic.description }}
 					</span>
 				{% endif %}
 
-				{% if topic.documents.all %}
-					{% with topic.documents.all as documents %}
+				{% if entry.documents %}
+					{% with entry.documents as documents %}
 						{% include 'objects/course/documents.html' %}
 					{% endwith %}
 				{% endif %}	
 
-				{% include 'objects/course/homework_student.html' %}
+				{% if entry.homework %}
+					{% with entry.homework as homework %}
+						{% include 'objects/course/homework_student.html' %}
+					{% endwith %}
+				{% endif %}
 			</div>
 		</li>
 	{% endfor %}

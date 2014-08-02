@@ -3,19 +3,19 @@
         <strong> Homework: </strong>
         <div class="content">
             {% for hw in homework %}
-                {% if hw.homework.course_topic == topic %}
-                    <div class="homework_content">
-                        <div class="h4 text-primary"> {{ hw.homework.name }} </div>
-                        {% if hw.homework.description %}
-                            <p class="text-muted"> {{ hw.homework.description }} </p>
-                        {% endif %}
-                        <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
-                        <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> </div>
-                        {% if hw.can_submit %}
-                            {% include "objects/course/homework_submit.html" %}
-                        {% endif %}
-                    </div>
-                {% endif %}
+                
+                <div class="homework_content">
+                    <div class="h4 text-primary"> {{ hw.homework.name }} </div>
+                    {% if hw.homework.description %}
+                        <p class="text-muted"> {{ hw.homework.description }} </p>
+                    {% endif %}
+                    <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
+                    <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> </div>
+                    {% if hw.can_submit %}
+                        {% include "objects/course/homework_submit.html" %}
+                    {% endif %}
+                </div>
+
             {% endfor %}
         </div>
     </div>
