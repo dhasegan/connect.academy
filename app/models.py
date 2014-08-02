@@ -55,14 +55,39 @@ class jUser(User):
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
 
+    def is_student(self):
+        return self.user_type == USER_TYPE_STUDENT
+
+    def is_professor(self):
+        return self.user_type == USER_TYPE_PROFESSOR
+
+    def is_admin(self):
+        return self.user_type == USER_TYPE_ADMIN
+
+    def is_student_of(self, course):
+        if not self.is_student():
+            return False
+        registration = StudentCourseRegistration.objects.filter(student=self, course=course)
+        return self.is_student() and registration and registration[0].is_approved
+
+    def is_professor_of(self, course):
+        if not self.is_professor():
+            return False
+        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
+        return registration and registration[0].is_approved
+
+    def is_admin_of(self, course):
+        if not self.is_admin():
+            return False
+        categories = self.categories_managed.all()
+        for category in categories:
+            if course in category.get_all_courses():
+                return True
+        return False
 
 
     def __unicode__(self):
         return str(self.username)
-
-    def is_professor_of(self, course):
-        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
-        return registration and registration[0].is_approved
 
 
 class StudentCourseRegistration(models.Model):
@@ -144,11 +169,11 @@ class Course(models.Model):
     prerequisites = models.ManyToManyField('self',related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
+    #   forum (<course>.forum returns the forum of the <course>)
     #   professors (<course>.professor.all() returns all professors of <course>)
     #   students    (<course>.students.all()    returns all students    of <course>)
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #                 <course> as a prerequisite)
-    #   forumcourse_set (<course>.forumcourse_set.all() returns all forums of the <course>)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
     #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
 
@@ -206,6 +231,7 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        Forum.objects.get_or_create(course=self)
         super(Course, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -511,48 +537,112 @@ class CourseHomeworkSubmission(models.Model):
 ############################ Forums, Wikis ################################
 ###########################################################################
 
+class Forum(models.Model):
+    course = models.OneToOneField('Course', primary_key=True)
 
-# Course types
-FORUM_TYPE_COURSE = 0
-FORUM_TYPE_TOPIC = 1
-FORUM_TYPE_HOMEWORK = 2
-FORUM_TYPES = (
-    (FORUM_TYPE_COURSE,"Course"),
-    (FORUM_TYPE_TOPIC, "Topic"),
-    (FORUM_TYPE_HOMEWORK, "Homework")
+    def get_tags(self):
+        primary_tags = list(ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY))
+        topic_tags = list(self.forumtopictag_set.all())
+        extra_tags = list(self.forumextratag_set.all())
+        return primary_tags + topic_tags + extra_tags
+
+
+    def get_tags_names(self):
+        return [tag.name for tag in self.get_tags()]
+
+    def get_view_tags(self, user):
+        tags = self.get_tags()
+
+        view_tags = []
+        for tag in tags:
+            if tag.can_view(user):
+                view_tags.append(tag)
+        return view_tags
+
+    def get_post_tags(self, user):
+        tags = self.get_tags()
+
+        post_tags = []
+        for tag in tags:
+            if tag.can_post(user):
+                post_tags.append(tag)
+        return post_tags
+
+    def __unicode__(self):
+        return str(self.course)
+
+
+FORUMTAG_PRIMARY = "1"
+FORUMTAG_TOPIC = "2"
+FORUMTAG_EXTRA = "3"
+FORUMTAG_TYPES = (
+    (FORUMTAG_PRIMARY, 'Primary Tag'),
+    (FORUMTAG_TOPIC, 'Topic Tag'),
+    (FORUMTAG_EXTRA, 'Extra Tag'),
 )
 
-class Forum(models.Model):
-    forum_type = models.IntegerField(choices=FORUM_TYPES, default=FORUM_TYPE_COURSE)
+PublicForumTags = ['general']
+StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
+# students can view their own askprof questions
+StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
+ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+AdminViewTags = ['general', 'announcement', 'meta']
+AdminPostTags = ['general', 'announcement', 'meta']
+
+
+class ForumTag(models.Model):
+    name = models.CharField(max_length=20)
+    tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
+
+    def can_view(self, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student():
+            return (self.name in StudentViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor():
+            return (self.name in ProfessorViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin():
+            return (self.name in AdminViewTags) if self.tag_type == FORUMTAG_PRIMARY else False
+        return False
+
+    def can_post(self, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student():
+            return (self.name in StudentPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor():
+            return (self.name in ProfessorPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin():
+            return (self.name in AdminPostTags) if self.tag_type == FORUMTAG_PRIMARY else False
+        return False
 
     def __unicode__(self):
-        return dict(FORUM_TYPES)[self.forum_type]
+        return str(self.name)
 
-class ForumCourse(Forum):
-    course = models.ForeignKey('Course')
-
-    def __unicode__(self):
-        return str(self.course)
-
-class ForumHomework(Forum):
-    homework_request = models.ForeignKey('CourseHomeworkRequest')
+class ForumTopicTag(ForumTag):
+    topic = models.OneToOneField('CourseTopic', primary_key=True)
+    forum = models.ForeignKey('Forum')
 
     def __unicode__(self):
-        return str(self.homework_request)
+        return str(self.name)
 
-class ForumTopic(Forum):
-    course_topic = models.ForeignKey('CourseTopic', related_name='forums')    
-    
-    # TODO
+class ForumExtraTag(ForumTag):
+    forum = models.ForeignKey('Forum')
 
     def __unicode__(self):
-        return str(self.course)
+        return str(self.name)
+
 
 class ForumPost(models.Model):
     name = models.CharField(max_length=250)
     forum = models.ForeignKey('Forum')
     text = models.CharField(max_length=5000, blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
+
+    tag = models.ForeignKey('ForumTag')
 
     posted_by = models.ForeignKey('jUser', related_name='question_posted')
     anonymous = models.BooleanField(default=False)

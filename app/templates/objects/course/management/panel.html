@@ -96,17 +96,7 @@
             <div class="tab-pane" id="forum{{course.course.id}}">
                 <div class="tabpane-contents class-forum">
                     {% if course.is_approved %}
-                        {% if course.forum %}
-                            {% include "objects/forum/forum_management.html" %}
-                        {% else %}
-                            <div class="forum-management">
-                                <p class="h3"> There is no forum for this course. </p>
-                                <form class="form forumcourseregistration-form" action="{% url 'forum_course_registration' course.course.slug %}" method="post">
-                                    {% csrf_token %}
-                                    <input class="btn btn-primary" type="submit" value="Start a forum" />
-                                </form>
-                            </div>
-                        {% endif %}
+                        {% include "objects/forum/forum_management.html" %}
                     {% else %}
                         <p class="h3"> You cannot manage the forum until you are confirmed as a professor of this course </p>
                     {% endif %}

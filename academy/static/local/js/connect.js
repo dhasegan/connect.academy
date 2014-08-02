@@ -1,78 +1,47 @@
 jQuery( document ).ready(function( $ ) {
 
-    // Activate Alerts
-    $(".dismissable-alert").alert();
-    // Email confirmation link
-    $(".email-confirmation-link").click( function() {
-        $.get($(this).attr("src"));
-    });
+    ConnectGlobal.init();
 
-    // Course page JS
-    $('.rating-stars').raty( {
-        starOn: '/static/images/star-on.png',
-        starOff: '/static/images/star-off.png',
-        starHalf: '/static/images/star-half.png',
-        number: 5,
-        mouseover: function(score, evt) {
-            $(this).parents('form').find('.rating-my-score').text(score);
-        },
-        mouseout: function() {
-            var form = $(this).parents('form');
-            var score = form.find('input[name="old_score"]').val();
-            form.find('.rating-my-score').text(score);
-        },
-        noRatedMsg: "To rate please log in!",
-        score: function() {
-            var form = $(this).parents('form');
-            form.find('input[name="rating_value"]')
-            return form.find('input[name="rating_value"]').val()
-        },
-        click: function(score, evt) {
-            var form = $(this).parents('form');
-            form.find('input[name="rating_value"]').val(score)
-            var user = form.find('input[name="username"]')
-            if (user.length > 0) {
-                form.submit();
-            }
-        },
-        readOnly: function() {
-            var is_auth = $(this).parents('form').find('input[name="authenticated"]')
-            return (is_auth.length == 0);
-        },
-        hints: ['1', '2', '3', '4', '5']
-    });
+    if ($('.explore-page').length > 0) { ExplorePage.init(); }
+    else if ($('.course-page').length > 0) { CoursePage.init(); }
+    else if ($('.forum-page').length > 0) { ForumPage.init(); }
+});
 
-    // Logged out rating tooltip
-    var ratingTooltips = $('.ratings-tooltip')
-    if (ratingTooltips.length > 0) {
-        ratingTooltips.tooltip({
-            placement: 'left',
-            html: false,
-            title: 'Log in to vote!'
+var ConnectGlobal = (function() {
+    var me = { 
+        settings: {
+            dismissableAlerts: $(".dismissable-alert"),
+            emailConfirmationLinks: $(".email-confirmation-link"),
+            campusnetPopover: $("#campusnet-popover"),
+        }
+    }, s;
+
+    me.init = function() {
+        s = this.settings;
+
+        this.bindUIActions();
+    };
+
+    me.bindUIActions = function() {
+        // Activate Alerts
+        s.dismissableAlerts.alert();
+        // Email confirmation link
+        s.emailConfirmationLinks.click( function() {
+            $.get($(this).attr("src"));
         });
-        ratingTooltips.attr('data-original-title', 'Log in to vote!')
-    }
-    var ratingClarif = $('.ratings-tooltip-clarif')
-    if (ratingClarif.length > 0) {
-        ratingClarif.tooltip({
-            placement: 'top',
-            title: function() {
-                var type = $(this).parents('form').find('input[name="rating_type"]').val();
-                if (type == 'ALL') {
-                    return "How do you rate the course in general?"
-                } else if (type == 'WKL') {
-                    return "More stars means higher workload"
-                } else if (type == 'DIF') {
-                    return "More stars means higher difficulty"
-                } else if (type == 'PRF') {
-                    return "How do you rate this professor?"
-                } 
-            }
-        })
-    }
 
-    // Tooltip for CampusNet
-    $("#campusnet-popover").tooltip({title: 'Please log in with your CampusNet credentials!'});
+        // Tooltip for CampusNet
+        s.campusnetPopover.tooltip({title: 'Please log in with your CampusNet credentials!'});
+    };
+
+    return me;
+}());
+
+// ****************************************************
+// TODO: Break the code below into separate files
+//
+jQuery( document ).ready(function( $ ) {
+
 
     // Datetimepicker and Time handlers
     $('.homework-start-datetime').datetimepicker({
@@ -97,19 +66,8 @@ jQuery( document ).ready(function( $ ) {
         tz.val( moment().zone() )
     });
 
-    function SubmitFormAjax(event, form, successFunction, errorFunction) {
-        event.preventDefault();
-        $.ajax({
-            type: form.method,
-            url: form.action,
-            data: $(form).serialize(),
-            success: successFunction,
-            error: errorFunction
-        });
-    };
-
     // Forum register form
-    $('.forumcourseregistration-form').submit(function(event) {
+    $('.forumregistration-form').submit(function(event) {
         SubmitFormAjax(event, this,
             function(result) {
                 $(".forum-management").html(result.html)
@@ -121,7 +79,7 @@ jQuery( document ).ready(function( $ ) {
     });
 
     // Get reply form for forum answer reply
-    $('.forumcourseregistration-form').submit(function(event) {
+    $('.forumregistration-form').submit(function(event) {
         SubmitFormAjax(event, this,
             function(result) {
                 $(".forum-management").html(result.html)
@@ -131,76 +89,6 @@ jQuery( document ).ready(function( $ ) {
             }
         );
     });
-
-    // Refresh something in the DOM, relink everything in its subtree
-    var onRefreshAnswerTab = function(SubtreeDOM) {
-        // Submit answers ajax
-        SubtreeDOM.find('.forumpostnewanswer-form').submit(function(event) {
-            SubmitFormAjax(event, this,
-                function(result) {
-                    var $answer_tab = $(result.id_selector);
-                    $answer_tab.html(result.html);
-
-                    onRefreshAnswerTab($answer_tab);
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus)
-                }
-            );
-        });
-        // Get the reply form ajax
-        SubtreeDOM.find('.getreplyform-link').click(function(event) {
-            event.preventDefault();
-            var $link = $(this);
-            var $reply_form = $link.parents('.answer-footer').find('.reply-form');
-            if (!($reply_form.hasClass('active'))) {
-                $.ajax({
-                    type: "get",
-                    url: this.href,
-                    success: function(response) {
-                        $reply_form.html(response.html).slideDown();
-                        $reply_form.addClass('active');
-
-                        onRefreshAnswerTab($reply_form);
-                    }
-                })
-            }
-        });
-        // Get the bestanswers or discussion view ajax
-        var $discussions = SubtreeDOM.find('.discussion-link');
-        var $best_answers = SubtreeDOM.find('.bestanswers-link');
-        ($best_answers.add($discussions)).click(function(event) {
-            event.preventDefault();
-            var $link = $(this);
-            var $forum_answers = $link.parents('.forum-answers').parent();
-            $.ajax({
-                type: "get",
-                url: this.href,
-                success: function(response) {
-                    $forum_answers.html(response.html).slideDown();
-
-                    onRefreshAnswerTab($forum_answers);
-                }
-            })
-        });
-        // Upvote posts and answers
-        var $upvote_posts = SubtreeDOM.find('.upvote-post-form');
-        var $upvote_answers = SubtreeDOM.find('.upvote-answer-form');
-        ($upvote_posts.add($upvote_answers)).click(function(event) {
-            SubmitFormAjax(event, this,
-                function(result) {
-                    $(result.id_selector).html(result.html);
-
-                    onRefreshAnswerTab($(result.id_selector));
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus);
-                }
-            );
-        });
-    };
-    onRefreshAnswerTab($('html'));
-
 
     $("#email").blur(function(){
         var email_address = this.value;

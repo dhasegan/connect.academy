@@ -7,7 +7,6 @@ urlpatterns = patterns('app.forum.views',
     url(r'^answers/(?P<post_id>[0-9]+)$', 'answers', name="forum_answers"),
     url(r'^reply_form/(?P<answer_id>[0-9]+)$', 'reply_form', name="forum_reply_form"),
     url(r'^discussion/(?P<answer_id>[0-9]+)$', 'discussion', name="forum_discussion"),
-    url(r'^(?P<slug>[\w-]+)/register$', 'course_registration', name='forum_course_registration'),
 
     url(r'^upvote/post$', 'upvote_post', name="upvote_post"),
     url(r'^upvote/answer$', 'upvote_answer', name="upvote_answer"),

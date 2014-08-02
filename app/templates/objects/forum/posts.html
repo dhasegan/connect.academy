@@ -1,7 +1,7 @@
 <nav class="nav-sidebar">
     <ul class="nav tabs">
         {% for post in posts|dictsortreversed:"rating" %}
-            <li {% if forloop.counter == 1 %} class="active" {% endif %}>
+            <li class="forum-post {% if forloop.counter == 1 %}active{% endif %} ptag-{{ post.question.tag.name }}">
                 <a href="#answers{{post.question.id}}" role="tab" data-toggle="tab"> {{ post.question.name }}
                     {% if not post.question.anonymous %}
                         <small class="pull-right post-author">

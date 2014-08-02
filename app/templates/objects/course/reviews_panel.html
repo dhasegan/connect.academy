@@ -7,13 +7,13 @@
             The submit review form
         {% endcomment %}
         {% if user_auth %}
-            <form role="form" action="{% url 'submit_comment' course.slug %}" method="post">
+            <form class="submit-review-form" role="form" action="{% url 'submit_review' course.slug %}" method="post">
                 <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
                 <input type="hidden" name="course_id" value="{{course.id}}">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-9">
-                        <textarea class="form-control review-submit" rows="2" max-length="1000" placeholder="Write a review..." name="comment"></textarea>
+                        <textarea class="form-control review-submit" rows="2" max-length="5000" placeholder="Write a review..." name="comment"></textarea>
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-default">Submit</button>

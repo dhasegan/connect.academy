@@ -4,13 +4,10 @@ urlpatterns = patterns('app.views',
     url(r'^welcome$', 'welcome'),
     url(r'^$', 'welcome'),
 
-    url(r'^home$', 'explore', name='home'),
+    url(r'^home$', 'dashboard', name='home'),
     url(r'^dashboard$', 'dashboard', name='dashboard'),
     url(r'^about$', 'about'),
     url(r'^all_comments$', 'all_comments', name='all_comments'),
-
-    url(r'^explore$', 'explore', name='explore'),
-    url(r'^explore_categories$', 'explore_categories', name='explore_categories'),
 )
 
 urlpatterns += patterns('',
@@ -20,6 +17,7 @@ urlpatterns += patterns('',
     url(r'^course/(?P<slug>[\w-]+)/', include('app.course.urls')),
     url(r'^admin/', include('app.admin.urls')),
     url(r'^forum/', include('app.forum.urls')),
+    url(r'^explore/', include('app.explore.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('app.wiki.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('versioning.urls')),
     url(r'^', include('app.schedule.urls')),

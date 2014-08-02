@@ -5,11 +5,12 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.template import Context, Template, RequestContext
+from django.template.loader import render_to_string
 
 
 from app.models import *
-from app.context_processors import *
 from app.forum.forms import *
+from app.forum.context_processors import *
 
 
 @require_GET
@@ -23,38 +24,15 @@ def forum_course(request, slug):
     }
     context["course"] = course
 
-    forums = course.forumcourse_set.all()
-    if not forums.count():
-        raise Http404
-    context = dict(context.items() + forum_context(forums[0], user).items())
+    forum = course.forum
+    context = dict(context.items() + forum_context(forum, user).items())
+
+    if 'tag' in request.GET and request.GET['tag']:
+        tag = request.GET['tag']
+        if tag in forum.get_view_tags(user):
+            context['current_tag'] = tag
 
     return render(request, "pages/forum/page.html", context)
-
-
-@require_POST
-@login_required
-def course_registration(request, slug):
-    course = get_object_or_404(Course, slug=slug)
-    user = get_object_or_404(jUser, id=request.user.id)
-
-    if not user.is_professor_of(course):
-        raise Http404
-
-    forums = course.forumcourse_set.all()
-    if forums.count():
-        raise Http404
-
-    forum = ForumCourse(forum_type=FORUM_TYPE_COURSE, course=course)
-    forum.save()
-
-    context = {
-        'course': {
-            'course': course
-        }
-    }
-    response_data = {}
-    response_data['html'] = render_to_string("objects/forum/forum_management.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_http_methods(["GET", "POST"])
@@ -66,11 +44,9 @@ def new_post(request, slug):
         "page": "forum_new_post"
     }
     context["course"] = course
-
-    forums = course.forumcourse_set.all()
-    if not forums.count():
-        raise Http404
-    context['forum'] = forums[0]
+    context['forum'] = course.forum
+    post_tags = course.forum.get_post_tags(user)
+    context['tags'] = post_tags
 
     # Get request
     if request.method == "GET":
@@ -82,11 +58,17 @@ def new_post(request, slug):
         raise Http404
 
     # user permissions to post:
-    # everyone is allowed
+    if form.cleaned_data['tagsRadios'] not in [tag.name for tag in post_tags]:
+        raise Http404
+
+    form_tag = None
+    for tag in post_tags:
+        if tag.name == form.cleaned_data['tagsRadios']:
+            form_tag = tag
 
     post = ForumPost(name=form.cleaned_data['title'], forum=form.cleaned_data['forum'],
                      text=form.cleaned_data['description'], posted_by=user,
-                     anonymous=form.cleaned_data['anonymous'])
+                     anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
@@ -98,11 +80,9 @@ def new_answer(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
-    context["course"] = course
 
-    forums = course.forumcourse_set.all()
-    if not forums.count():
-        raise Http404
+    context["course"] = course
+    forum = course.forum
 
     form = SubmitForumAnswer(request.POST)
     if not form.is_valid():
@@ -120,10 +100,10 @@ def new_answer(request, slug):
     answer.save()
 
     if 'discussion_answer' in form.cleaned_data and form.cleaned_data['discussion_answer']:
-        context = forum_discussion_context(forums[0], form.cleaned_data['post'], form.cleaned_data['discussion_answer'], user)
+        context = forum_discussion_context(forum, form.cleaned_data['post'], form.cleaned_data['discussion_answer'], user)
         template_filename = "objects/forum/discussion.html"
     else:
-        context['forum'] = forums[0]
+        context['forum'] = forum
         context['post'] = forum_post_context(form.cleaned_data['post'], user)
         template_filename = "objects/forum/answers.html"
 
@@ -141,15 +121,14 @@ def reply_form(request, answer_id):
     user = get_object_or_404(jUser, id=request.user.id)
 
     post = answer.post
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
     context = {
         'parent_answer': {
             'answer': answer,
             'child_answers': []
         },
         'question': post,
-        'forum': forum,
-        'course': forum.course
+        'forum': post.forum,
+        'course': post.forum.course
     }
 
     response_data = {
@@ -170,8 +149,7 @@ def discussion(request, answer_id):
         raise Http404
 
     post = answer.post
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
-    context = forum_discussion_context(forum, post, answer, user)
+    context = forum_discussion_context(post.forum, post, answer, user)
 
     response_data = {
         'html': render_to_string("objects/forum/discussion.html", RequestContext(request, context))
@@ -185,10 +163,9 @@ def answers(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    forum = get_object_or_404(ForumCourse, id=post.forum.id)
     context = {
-        'course': forum.course,
-        'forum': forum,
+        'course': post.forum.course,
+        'forum': post.forum,
         'post': forum_post_context(post, user)
     }
 
