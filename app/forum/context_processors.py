@@ -67,16 +67,19 @@ def forum_context(forum, current_user):
     allowed_tags = forum.get_view_tags(current_user)
     context_forum = {
         "forum": forum,
-        "tags": allowed_tags,
         "course": forum.course,
         "user": current_user
     }
 
     context_forum['posts'] = []
+    tags = []
     posts = ForumPost.objects.filter(forum=forum)
     for post in posts:
-        if post.tag in allowed_tags:
+        if post.tag in allowed_tags or post.posted_by == current_user:
             context_forum['posts'].append(forum_post_context(post, current_user))
+            if post.tag not in tags:
+                tags.append( post.tag )
+    context_forum['tags'] = sorted(tags, key=lambda x:x.name)
 
     return context_forum
 

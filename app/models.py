@@ -554,7 +554,7 @@ class Forum(models.Model):
 
         view_tags = []
         for tag in tags:
-            if tag.can_view(user):
+            if tag.can_view(self.course, user):
                 view_tags.append(tag)
         return view_tags
 
@@ -563,7 +563,16 @@ class Forum(models.Model):
 
         post_tags = []
         for tag in tags:
-            if tag.can_post(user):
+            if tag.can_post(self.course, user):
+                post_tags.append(tag)
+        return post_tags
+
+    def get_answer_tags(self, user):
+        tags = self.get_tags()
+
+        post_tags = []
+        for tag in tags:
+            if tag.can_answer(self.course, user):
                 post_tags.append(tag)
         return post_tags
 
@@ -582,40 +591,54 @@ FORUMTAG_TYPES = (
 
 PublicForumTags = ['general']
 StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
-# students can view their own askprof questions
 StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
+StudentAnswerTags = ['general', 'annoncement', 'meta', 'offtopic']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 AdminViewTags = ['general', 'announcement', 'meta']
 AdminPostTags = ['general', 'announcement', 'meta']
-
+AdminAnswerTags = ['general', 'announcement', 'meta']
+# Extra permissions: Anyone can view and answer their own posts
 
 class ForumTag(models.Model):
     name = models.CharField(max_length=20)
     tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
 
-    def can_view(self, user):
+    def can_view(self, course, user):
         if self.name in PublicForumTags:
             return True
 
-        if user.is_student():
+        if user.is_student_of(course):
             return (self.name in StudentViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_professor():
+        elif user.is_professor_of(course):
             return (self.name in ProfessorViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_admin():
+        elif user.is_admin_of(course):
             return (self.name in AdminViewTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
-    def can_post(self, user):
+    def can_post(self, course, user):
         if self.name in PublicForumTags:
             return True
 
-        if user.is_student():
+        if user.is_student_of(course):
             return (self.name in StudentPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_professor():
+        elif user.is_professor_of(course):
             return (self.name in ProfessorPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_admin():
+        elif user.is_admin_of(course):
             return (self.name in AdminPostTags) if self.tag_type == FORUMTAG_PRIMARY else False
+        return False
+
+    def can_answer(self, course, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student_of(course):
+            return (self.name in StudentAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor_of(course):
+            return (self.name in ProfessorAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin_of(course):
+            return (self.name in AdminAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
     def __unicode__(self):
