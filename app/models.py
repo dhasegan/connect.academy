@@ -151,6 +151,8 @@ class Course(models.Model):
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
 
 
+    def get_non_topic_documents(self):
+        return self.documents.filter(course_topic=None)
 
     # gets the registration status of this course for the given user
     # Registration status is one of the following:
@@ -466,7 +468,7 @@ class CourseDocument(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
     course_topic = models.ForeignKey('CourseTopic', null=True, related_name="documents")
-    course = models.ForeignKey('Course')
+    course = models.ForeignKey('Course', related_name="documents")
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField(auto_now=True)
 

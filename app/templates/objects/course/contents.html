@@ -85,8 +85,12 @@
         {% endwith %}
     {% endif %}
 
+    {% with course.get_non_topic_documents as documents %}
+        {% include 'objects/course/documents.html' %}
+    {% endwith %}
+
     {% comment %}
-        These are now included in their respective syllabus
+        These are now included in their respective CourseTopic
         
         {% include 'objects/course/documents.html' %}
         {% include 'objects/course/homework_student.html' %}
