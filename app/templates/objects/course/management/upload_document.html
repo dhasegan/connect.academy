@@ -5,6 +5,17 @@
         <label for="documentName{{course.id}}">Document Name</label>
         <input class="form-control" type="text" name="name" id="documentName{{course.id}}" required>
     </div>
+
+    <div class="form-group">
+        <label for="documentTopic{{course.id}}">Course Topic</label>
+        <select class="form-control" name="topic_id" id="documentTopic{{course.id}}">
+            <option value=""> No specific topic </option>
+            {% for topic in topics %}
+                <option value="{{topic.id}}"> {{ topic.name }} </option>
+            {% endfor %} 
+        </select>
+    </div>
+
     <div class="form-group">
         <label for="documentDescription{{course.id}}">Description (optional)</label>
         <textarea class="form-control" type="text" name="description" id="documentDescription{{course.id}}" rows="3"></textarea>
@@ -12,6 +23,9 @@
     <div class="form-group">
         <input type="file" name="document" required>
     </div>
+
+   
+
 
     <input type="hidden" name="course_id" value="{{ course.id }}">
     <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">

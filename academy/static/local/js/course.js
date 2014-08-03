@@ -2,12 +2,12 @@ var CoursePage = (function() {
     var me = { 
         settings: {
             // Ratings settings
-            myRatingsSelector: ".my-ratings",
-            aggRatingsSelector: ".agg-ratings",
+            courseRatingsSelector: ".course-ratings",
+            ratingTooltipsSelector: '.rating-tooltip',
 
             ratingFormSelector: ".rating-form",
             ratingClarifications: $('.ratings-tooltip-clarif'),
-            ratingTooltips: $('.ratings-tooltip'),
+            expandRatingSubmit: $('.expand-rating-submit'),
 
             ratingStarsSelector: '.rating-stars',
             starOnURL: '/static/images/star-on.png',
@@ -15,20 +15,31 @@ var CoursePage = (function() {
             starHalfURL: '/static/images/star-half.png',
 
             // Reviews settings
-            reviewsPanelSelector: '.reviews-panel',
+            reviewsWrapperSelector: '.reviews-display',
+
             reviewFormSelector: '.submit-review-form',
             reviewBlockSelector: '.review-block',
+            submitReviewButton: $('.submit-btn'),
+            reviewCollapser: $('#submitreview'),
+            expandReviewSubmit: $('.expand-review-submit'),
 
             // Vote review settings
-            reviewRateFormSelector: '.review-rate-form',
-            reviewRatingSelector: '.review-rate',
-            reviewRatingBadgeSelector: '.review-score-badge'
+            upvoteReviewFormSelector: '.upvote-review-form',
+            flagReviewFormSelector: '.flag-review-form',
+
+            // Upvote review
+            upvoteButtonSelector: '.upvote-btn',
+
+            // Flag review
+            reviewFlagSelector: '.review-flag',
+            flagButtonSelector: '.flag-btn',
         }
     }, s;
 
     me.init = function() {
         s = me.settings;
 
+        $(s.ratingTooltipsSelector).tooltip()
         this.setupMyRatings();
 
         this.bindUIActions();
@@ -69,13 +80,6 @@ var CoursePage = (function() {
             hints: ['1', '2', '3', '4', '5']
         });
 
-        s.ratingTooltips.tooltip({
-            placement: 'left',
-            html: false,
-            title: 'Log in to vote!'
-        });
-        s.ratingTooltips.attr('data-original-title', 'Log in to vote!')
-
         s.ratingClarifications.tooltip({
             placement: 'top',
             title: function() {
@@ -96,38 +100,58 @@ var CoursePage = (function() {
     me.bindUIActions = function() {
         $(s.ratingFormSelector).submit(this.ratingFormSubmit);
         $(s.reviewFormSelector).submit(this.reviewFormSubmit);
-        $(s.reviewRateFormSelector).submit(this.reviewVoteFormSubmit);
+        $(s.upvoteReviewFormSelector).submit(this.upvoteReviewFormSubmit);
+        $(s.flagReviewFormSelector).submit(this.flagReviewFormSubmit);
     };
 
     me.ratingFormSubmit = function(event) {
         Utils.SubmitFormAjax(event, this, 
             function(response) {
-                $(s.aggRatingsSelector).replaceWith(response.agg_ratings);
-                $(s.myRatingsSelector).replaceWith(response.my_ratings);
-                me.setupMyRatings();
-                $(s.ratingFormSelector).submit(me.ratingFormSubmit);
+                $(s.courseRatingsSelector).replaceWith(response.ratings);
+                $(s.ratingTooltipsSelector).tooltip()
             }, function(jqXHR, textStatus, errorThrown) {
             }
         );
     };
 
     me.reviewFormSubmit = function(event) {
+        s.submitReviewButton.attr('disabled', 'disabled');
+        s.reviewCollapser.collapse('hide');
+        s.expandReviewSubmit.addClass('hidden');
+
         Utils.SubmitFormAjax(event, this, 
             function(response) {
-                $(s.reviewsPanelSelector).replaceWith(response.html);
-                $(s.reviewFormSelector).submit(me.reviewFormSubmit);
+                $(s.reviewsWrapperSelector).prepend("<hr>" + response.html);
+                item = $(s.reviewsWrapperSelector).find(s.reviewBlockSelector).first();
+
+                item.find(s.upvoteReviewFormSelector).submit(me.upvoteReviewFormSubmit);
+                item.find(s.flagReviewFormSelector).submit(me.flagReviewFormSubmit);
             }, function(jqXHR, textStatus, errorThrown) {
             }
         );
     };
 
-    me.reviewVoteFormSubmit = function(event) {
-        var $reviewRating = $(this).parents(s.reviewRatingSelector);
-        var $reviewBlock = $(this).parents(s.reviewBlockSelector);
+    me.upvoteReviewFormSubmit = function(event) {
+        $(this).find(s.upvoteButtonSelector).attr('disabled', 'disabled');
+        var upvoteForm = $(this);
+        var parent = upvoteForm.parent();
+
         Utils.SubmitFormAjax(event, this, 
             function(response) {
-                $reviewBlock.find(s.reviewRatingBadgeSelector).text(response.score);
-                $reviewRating.addClass("hidden");
+                upvoteForm.replaceWith(response.html);
+                parent.find(s.upvoteReviewFormSelector).submit(me.upvoteReviewFormSubmit);
+            }, function(jqXHR, textStatus, errorThrown) {
+            }
+        );
+    }
+
+    me.flagReviewFormSubmit = function(event) {
+        $(this).find(s.flagButtonSelector).attr('disabled', 'disabled');
+        var $reviewFlag = $(this).parents(s.reviewFlagSelector);
+        $reviewFlag.addClass("hidden");
+
+        Utils.SubmitFormAjax(event, this, 
+            function(response) {
             }, function(jqXHR, textStatus, errorThrown) {
             }
         );

@@ -1,84 +1,4 @@
 
-<div class="panel-heading">
-    <!-- Course Name -->
-    <div class="course-name">
-        <a href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
-    </div>
-</div>
-
-<div class="panel-body">
-    <div class="row course-contents">
-        <!-- Picture here -->
-        <div class="col-md-4">
-            <div class="course-image-wrapper">
-                {% if course.image %}
-                    <img class="img-thumbnail course-image" src="{% url 'course_image' course.slug %}" alt="{{course.name}}">
-                {% else %}
-                    <img class="img-thumbnail course-image" src="{{ STATIC_URL }}books.jpg" alt="{{course.name}}">
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Some info -->
-        <div class="col-md-8 course-brief-detail-wrapper">
-            {% if course.course_id %}
-                <div class="course-brief-detail">
-                        <strong> Course ID: </strong>
-                        <span class="content">
-                            {{ course.course_id }}
-                        </span>
-                </div>
-            {% endif %}
-            {% if course.credits %}
-                <div class="course-brief-detail">
-                        <strong> Credits: </strong>
-                        <span class="content">
-                            {{ course.credits }}
-                        </span>
-                </div>
-            {% endif %}
-            {% if course.participants %}
-                <div class="course-brief-detail">
-                        <strong> Min. | Max. participants: </strong>
-                        <span class="content">
-                            {{ course.participants }}
-                        </span>
-                </div>
-            {% endif %}
-            {% if course.abbreviation %}
-                <div class="course-brief-detail">
-                        <strong> Abbreviation: </strong>
-                        <span class="content">
-                            {{ course.abbreviation }}
-                        </span>
-                </div>
-            {% endif %}
-            {% if course_type %}
-                <div class="course-brief-detail">
-                        <strong> Course Type: </strong>
-                        <span class="content">
-                            {{ course_type }}
-                        </span>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="course-detail">
-        {% include 'objects/course/ratings.html' %}
-    </div>
-
-    {% if course.professors %}
-    <div class="course-detail">
-        <strong> Professors: </strong>
-        <div class="content">
-            {% for juser in professors %}
-                {% include 'objects/user_link.html' %};
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
     {% if registration_status >= 0 %}
         {% with course as jcourse %}
             {% include 'objects/course/registration.html' %}
@@ -88,7 +8,12 @@
 
     {% include 'objects/course/documents.html' %}
 
-    {% include 'objects/course/homework_student.html' %}
+    {% if current_homework %}
+        {% with current_homework as homework %}
+            {% include 'objects/course/homework_student.html' %}
+        {% endwith %}
+    {% endif %}
+
 
     {% if forum %}
         <a href="{% url 'forum_course' course.slug %}">
@@ -97,78 +22,10 @@
     {% endif %}
 
 
-    {% if course.description %}
-    <div class="course-detail">
-        <strong> Description: </strong>
-        <div class="content">
-            {{ course.description|linebreaks }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if course.additional_info %}
-    <div class="course-detail">
-        <strong> Additional information: </strong>
-        <div class="content">
-            {{ course.additional_info }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if course.grades %}
-    <div class="course-detail">
-        <strong> Grade breakdown: </strong>
-        <div class="content">
-            {{ course.grades }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if course.grades_info %}
-    <div class="course-detail">
-        <strong> Additional Information about grades: </strong>
-        <div class="content">
-            {{ course.grades_info }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if course.hours_per_week %}
-    <div class="course-detail">
-        <strong> Hours per week: </strong>
-        <span class="content">
-            {{ course.hours_per_week }}
-        </span>
-    </div>
-    {% endif %}
-
-    {% if course.catalogue %}
-    <div class="course-detail">
-        <strong> Catalogue: </strong>
-        <span class="content">
-            {{ course.catalogue }}
-        </span>
-    </div>
-    {% endif %}
-    
-
-    <hr/>
-    
     <div class="course-detail">
         <strong> Wiki: </strong>
         <div class="content">
-            {% if course.wiki.all %}
-                {% with course.wiki.all.0 as wiki %}
-                    <a href="{% url 'view_wiki_page' course.slug %}"> Course Wiki </a>
-                {% endwith %}
-            {% else %}
-                This course doesn't have a <b> wiki </b> yet. 
-                {% if user_auth.university == course.university %}
-                    Contribute by <a href="{% url 'edit_wiki_page' course.slug %}">creating</a> one.
-                {% endif %}
-            {% endif %}
+            {% include 'objects/wiki/course_page_link.html' %}
         </div>
     </div>
 
-    <!-- sections_info is useless -->
-</div>

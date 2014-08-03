@@ -1,0 +1,8 @@
+<form class="upvote-review-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
+    <input type="hidden" name="review_id" value="{{ comment.comment.id }}">
+    <input type="hidden" name="vote_type" value="upvote">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if comment.upvoted %} btn-primary {% else  %} btn-default {% endif %} btn-xs upvote-btn">
+        <span class="glyphicon glyphicon-thumbs-up"></span> {% if comment.upvotes %} {{ comment.upvotes }} {% else %} 0 {% endif %}
+    </button>
+</form>

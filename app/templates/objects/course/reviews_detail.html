@@ -1,0 +1,38 @@
+
+<div class="course-detail course-reviews">
+    <div class="submititems pull-right">
+        <a data-toggle="collapse" href="#submitreview">
+            <button type="submit" class="btn-xs btn-success expand-review-submit">Submit a review</button>
+        </a>
+        <a data-toggle="collapse" href="#submitrating">
+            <button type="submit" class="btn-xs btn-success expand-rating-submit">Rate course</button>
+        </a>
+    </div>
+    <h4> Reviews </h4>
+    <span class="content">
+        {% comment %}
+            The submit review/rating form
+        {% endcomment %}
+        {% if user_auth %}
+            <div class="collapse submit-rating-wrapper" id="submitrating">
+                <hr>
+                {% include 'objects/course/submit_ratings.html' %}
+            </div>
+            <div class="collapse submit-review-wrapper" id="submitreview">
+                <hr>
+                {% include 'objects/course/submit_review.html' %}
+            </div>
+        {% endif %}
+
+        {% comment %}
+            The reviews display
+        {% endcomment %}
+        <div class="reviews-display">
+            <hr>
+            {% for comment in comments|dictsort:"upvotes" reversed %}
+                {% include "objects/course/review.html" %}
+                <hr>
+            {% endfor %}
+        </div>
+    </span>
+</div>

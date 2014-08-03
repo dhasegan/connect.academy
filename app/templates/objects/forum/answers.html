@@ -2,17 +2,6 @@
 
 <div class="forum-answers">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            {{ post.question.name }}
-
-            {% block answer_question_button %}
-                <div class="answer-btn pull-right">
-                    <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
-                        <button type="submit" class="btn-xs btn-success">Answer</button>
-                    </a>
-                </div>
-            {% endblock answer_question_button %}
-        </div>
         <div class="panel-body">
 
             {% block post_details %}
@@ -28,13 +17,27 @@
                         {% endif %}
                         in #{{ post.question.tag.name }}.
                         {{ post.question.datetime|naturaltime }}
-                    </div>
-                    <div class="post-text">
-                        {% if post.question.text %}
-                            {{ post.question.text|linebreaks }}
-                        {% endif %}
+                        
+                        {% block answer_question_button %}
+                            <div class="answer-btn pull-right">
+                                <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
+                                    <button type="submit" class="btn-xs btn-success">Answer</button>
+                                </a>
+                            </div>
+                        {% endblock answer_question_button %}
                     </div>
                 </div>
+
+                <h3 class="post-name">
+                    {{ post.question.name }}
+                </h3>
+
+                <div class="post-text">
+                    {% if post.question.text %}
+                        {{ post.question.text|linebreaks }}
+                    {% endif %}
+                </div>
+
                 <hr>
             {% endblock post_details %}
 

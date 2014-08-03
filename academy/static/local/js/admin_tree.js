@@ -1,38 +1,78 @@
 var labelType, useGradients, nativeTextSupport, animate;
 
-(function() {
-  var ua = navigator.userAgent,
-      iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
-      typeOfCanvas = typeof HTMLCanvasElement,
-      nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
-      textSupport = nativeCanvasSupport 
-        && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
-  //I'm setting this based on the fact that ExCanvas provides text support for IE
-  //and that as of today iPhone/iPad current text support is lame
-  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
-  nativeTextSupport = labelType == 'Native';
-  useGradients = nativeCanvasSupport;
-  animate = !(iStuff || !nativeCanvasSupport);
-})();
+// $ is used by Javascrpt Infoviz Toolkit
+jQuery( document ).ready(function() {
 
-var Log = {
-  elem: false,
-  write: function(text){
-    if (!this.elem) 
-    this.elem = document.getElementById('log');
-    this.elem.innerHTML = text;
-    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
-  }
-};
+    AdminTree.init();
 
-var st = null;
-jQuery( document ).ready( function() {
-    //init data
-    
-    //end
-    //init Spacetree
-    //Create a new ST instance
-    st = new $jit.ST({
+});
+
+var AdminTree = (function() {
+    var me = { 
+        settings : {
+            // Management form selectors
+
+            //category forms
+            categoryFormsSelector: ".category-forms",
+            categoryNameSelector: ".category-forms form#edit-category-form input[name='name']",
+            categoryIdSelector: ".category-forms form input[type='hidden'][name='cat_id']",
+            registrationStatusSelector: ".category-forms form small[class='registration_deadline_status']",
+            adminsContainerSelector: "#admins-form-container",
+            // node styles
+            categoryNotSelectedColor: "#0b56a8",
+            categorySelectedColor: "#29ABE2",
+
+            //course forms
+            courseFormsSelector: ".course-forms",
+            courseNameSelector: ".course-forms form#edit-course-form input[name='name']",
+            courseIdSelector: ".course-forms form input[type='hidden'][name='course_id']",
+            professorsContainerSelector: "#professors-form-container",
+            //node styles
+            courseSelectedColor: "#000",
+            courseNotSelectedColor: "#444",
+
+        },
+
+        Log : {
+            elem: false,
+            write: function(text) {
+                if (!this.elem) 
+                this.elem = document.getElementById('log');
+                this.elem.innerHTML = text;
+                this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
+            }
+        },
+
+        
+
+    };
+
+    var s; // short for settings
+    var st = null;
+
+
+    me.init = function() {
+        (function() {
+          var ua = navigator.userAgent,
+              iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
+              typeOfCanvas = typeof HTMLCanvasElement,
+              nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
+              textSupport = nativeCanvasSupport 
+                && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
+          //I'm setting this based on the fact that ExCanvas provides text support for IE
+          //and that as of today iPhone/iPad current text support is lame
+          labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
+          nativeTextSupport = labelType == 'Native';
+          useGradients = nativeCanvasSupport;
+          animate = !(iStuff || !nativeCanvasSupport);
+        })();
+
+        s = this.settings;
+        this.bindUIActions();
+    };
+
+    me.bindUIActions = function() {
+        st = new $jit.ST({
         //id of viz container element
         injectInto: 'infovis',
         //set duration for the animation
@@ -66,11 +106,11 @@ jQuery( document ).ready( function() {
         },
         
         onBeforeCompute: function(node){
-            Log.write("loading " + node.name);
+            me.Log.write("loading " + node.name);
         },
         
         onAfterCompute: function(){
-            Log.write("done");
+            me.Log.write("done");
 
         },
         
@@ -104,21 +144,21 @@ jQuery( document ).ready( function() {
             //root node and the selected node.
             if (node.selected) {
                 if (node.data.type == "category") {
-                    node.data.$color = "#29ABE2";
-                    jQuery(".course-forms").hide();
+                    node.data.$color = s.categorySelectedColor;
+                    jQuery(s.courseFormsSelector).hide();
                     if (node.id != "root") {
-                        jQuery(".category-forms").show();
+                        jQuery(s.categoryFormsSelector).show();
                         // update the name field on the left container
-                        jQuery(".category-forms form#edit-category-form input[name='name']").val(node.name);
+                        jQuery(s.categoryNameSelector).val(node.name);
                         cat_id = node.id.split("-")[1];
                         // update all id fields in the category forms
-                        jQuery(".category-forms form input[type='hidden'][name='cat_id']").val(cat_id);
+                        jQuery(s.categoryIdSelector).val(cat_id);
                         // update the course registration deadline
-                        jQuery(".category-forms form small[class='registration_deadline_status']").html(node.data.registration_deadline);
+                        jQuery(s.registrationStatusSelector).html(node.data.registration_deadline);
                         // update the list of admins
                         var admins = node.data.admins;
                         var length = admins.length;
-                        jQuery("#admins-form-container").empty();
+                        jQuery(s.adminsContainerSelector).empty();
                         for (var i = 0; i < length; i++) {
                             var first_name = admins[i].first_name;
                             var last_name = admins[i].last_name;
@@ -136,31 +176,31 @@ jQuery( document ).ready( function() {
                             form +=       "<input type='hidden' name='form_type' value = 'remove_admin'/>";
                             form +=       "<div class='form-group'>";
                             if (own_admin)
-                                form +=             " <input type='submit' value='X' class='btn btn-danger btn-xs'/>";
+                                form +=         " <input type='submit' value='X' class='btn btn-danger btn-xs'/>";
                             form +=             " <a href='/profile/" + username + "'>" + first_name + " " + last_name + "</a>";
                             form +=       "</div>";
                             form +=    "</form>"
                             form +=    "</li>";
-                            jQuery("#admins-form-container").append(form);
+                            jQuery(s.adminsContainerSelector).append(form);
                         }
                     }
                     else {
-                        jQuery(".category-forms").hide();
-                        jQuery(".course-forms").hide();
+                        jQuery(s.categoryFormsSelector).hide();
+                        jQuery(s.courseFormsSelector).hide();
                     }
                         
                 }
                 else if (node.data.type == "course") {
-                    node.data.$color = "#000";
-                    jQuery(".category-forms").hide();
-                    jQuery(".course-forms").show();
-                    jQuery(".course-forms form#edit-course-form input[name='name']").val(node.name);
+                    node.data.$color = s.courseSelectedColor;
+                    jQuery(s.categoryFormsSelector).hide();
+                    jQuery(s.courseFormsSelector).show();
+                    jQuery(s.courseNameSelector).val(node.name);
                     course_id = node.id.split("-")[1];
                     // update all id fields in the category forms
-                    jQuery(".course-forms form input[type='hidden'][name='course_id']").val(course_id);
+                    jQuery(s.courseIdSelector).val(course_id);
                     var profs = node.data.professors;
                     var length = profs.length;
-                    jQuery("#professors-form-container").empty();
+                    jQuery(s.professorsContainerSelector).empty();
                     for (var i = 0; i < length; i++) {
                         var first_name = profs[i].first_name;
                         var last_name = profs[i].last_name;
@@ -181,17 +221,17 @@ jQuery( document ).ready( function() {
                         form +=       "</div>";
                         form +=    "</form>"
                         form +=    "</li>";
-                        jQuery("#professors-form-container").append(form);
+                        jQuery(s.professorsContainerSelector).append(form);
                     }
                 }
                     
             }
             else {
                 if (node.data.type == "category") {
-                    node.data.$color = "#0b56a8";
+                    node.data.$color = s.categoryNotSelectedColor;
                 }
                 else if (node.data.type == "course") {
-                    node.data.$color = "#444";
+                    node.data.$color = s.courseNotSelectedColor;
                 }
             }
             
@@ -222,4 +262,8 @@ jQuery( document ).ready( function() {
     //emulate a click on the root node.
     st.onClick(st.root);
     //end   
-});
+    };
+
+    return me;
+}());
+

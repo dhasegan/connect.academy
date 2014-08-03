@@ -1,46 +1,23 @@
-
-<div class="row agg-ratings">
-    <div class="col-md-6">
-        {% for rating in ratings %}
-            {% if rating.type != 'Professor' %}
-                <div class="row rating">
-                    <div class="col-md-8">
-                        {{ rating.type }}:
-                    </div>
-
-                    <div class="col-md-4">
-                        <span class="badge course-rating">
-                            <span class="rating-agg-score"> {{ rating.score|floatformat:1 }} </span>
-                        </span>
-                        <span class="rating-nrs text-muted">
-                            ({{ rating.count }})
-                        </span>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-
-    <div class="col-md-6">
-        {% for rating in ratings %}
-            {% if rating.type == 'Professor' and user_auth %}
-                <div class="row rating">
-                    <div class="col-md-8">
-                        {% with rating.professor as juser %}
-                            {% include 'objects/user_link.html' %}
-                        {% endwith %}
-                    </div>
-
-                    <div class="col-md-4">
-                        <span class="badge course-rating">
-                            <span class="rating-agg-score"> {{ rating.score|floatformat:1 }} </span>
-                        </span>
-                        <span class="rating-nrs text-muted">
-                            ({{ rating.count }})
-                        </span>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+<div class="course-ratings">
+    {% for rating in ratings %}
+        {% if rating.count > 0 %}
+            <div class="course-rating">
+                <span class="rating-badge badge rating-tooltip" data-toggle="tooltip" data-placement="left" title="{% if rating.type != 'Professor' %}{{rating.type}}{% else %}{{rating.professor.first_name}} {{rating.professor.last_name}}{% endif %}">
+                    {% if rating.type == "Overall" %}
+                        <span class="glyphicon glyphicon-star yellow-star"></span>
+                    {% elif rating.type == "Workload" %}
+                        <span class="glyphicon glyphicon-book"></span>
+                    {% elif rating.type == "Difficulty" %}
+                        <span class="glyphicon glyphicon-tower"></span>
+                    {% elif rating.type == "Professor" %}
+                        <span class="glyphicon glyphicon-briefcase"></span>
+                    {% endif %}
+                    <span class="rating-agg-score"> {{ rating.score|floatformat:1 }} </span>
+                </span>
+                <span class="rating-nrs text-muted">
+                    ({{ rating.count }})
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
 </div>

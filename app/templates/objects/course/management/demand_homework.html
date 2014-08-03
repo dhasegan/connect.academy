@@ -6,6 +6,17 @@
         <small> (Example: Homework1, Project1, ... ) </small>
         <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" required>
     </div>
+
+    <div class="form-group">
+        <label for="homeworkTopic{{course.id}}">Course Topic</label>
+        <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}" required>
+            <option value=""> Please select one </option>
+            {% for topic in topics %}
+                <option value="{{topic.id}}"> {{ topic.name }} </option>
+            {% endfor %} 
+        </select>
+    </div>
+
     <div class="form-group">
         <label for="homeworkDescription{{course.id}}">Description (optional)</label>
         <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" rows="3"></textarea>

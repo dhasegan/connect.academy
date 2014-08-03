@@ -162,11 +162,11 @@ class Course(models.Model):
     abbreviation = models.CharField(max_length=50, blank=True, null=True)
     slug = models.SlugField(max_length=200)
     image = models.ImageField(upload_to='courses')
-    university = models.ForeignKey('University', related_name = 'courses')
-    category = models.ForeignKey('Category', null=True, default=None, related_name = 'courses')
-    tags = models.ManyToManyField('Tag',related_name='courses')
+    university = models.ForeignKey('University', related_name='courses')
+    category = models.ForeignKey('Category', null=True, default=None, related_name='courses')
+    tags = models.ManyToManyField('Tag', related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
-    prerequisites = models.ManyToManyField('self',related_name='next_courses')
+    prerequisites = models.ManyToManyField('self', related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)
@@ -177,6 +177,8 @@ class Course(models.Model):
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
     #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
 
+    def get_non_topic_documents(self):
+        return self.documents.filter(course_topic=None)
 
     # gets the registration status of this course for the given user
     # Registration status is one of the following:
@@ -246,7 +248,7 @@ class CourseTopic(models.Model):
 
     # Relations declared in other models define the following:
     #    forums (<course_topic>.forums.all() returns all forums of  <course_topic>)
-
+    #    homework_requests (<course_topic>.homework_requests.all() returns all homework requests of <course_topic>)
 
     class Meta:
         order_with_respect_to = 'course'
@@ -492,9 +494,8 @@ class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
-    course_topic = models.ForeignKey('CourseTopic', null=True)
-
-    course = models.ForeignKey('Course')
+    course_topic = models.ForeignKey('CourseTopic', null=True, related_name="documents")
+    course = models.ForeignKey('Course', related_name="documents")
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField(auto_now=True)
 
@@ -505,7 +506,7 @@ class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     deadline = models.ForeignKey('Deadline')
-
+    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests")
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
 
@@ -555,7 +556,7 @@ class Forum(models.Model):
 
         view_tags = []
         for tag in tags:
-            if tag.can_view(user):
+            if tag.can_view(self.course, user):
                 view_tags.append(tag)
         return view_tags
 
@@ -564,9 +565,18 @@ class Forum(models.Model):
 
         post_tags = []
         for tag in tags:
-            if tag.can_post(user):
+            if tag.can_post(self.course, user):
                 post_tags.append(tag)
         return post_tags
+
+    def get_answer_tags(self, user):
+        tags = self.get_tags()
+
+        answer_tags = []
+        for tag in tags:
+            if tag.can_answer(self.course, user):
+                answer_tags.append(tag)
+        return answer_tags
 
     def __unicode__(self):
         return str(self.course)
@@ -583,40 +593,54 @@ FORUMTAG_TYPES = (
 
 PublicForumTags = ['general']
 StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
-# students can view their own askprof questions
 StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
+StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 AdminViewTags = ['general', 'announcement', 'meta']
 AdminPostTags = ['general', 'announcement', 'meta']
-
+AdminAnswerTags = ['general', 'announcement', 'meta']
+# Extra permissions: Anyone can view and answer their own posts
 
 class ForumTag(models.Model):
     name = models.CharField(max_length=20)
     tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
 
-    def can_view(self, user):
+    def can_view(self, course, user):
         if self.name in PublicForumTags:
             return True
 
-        if user.is_student():
+        if user.is_student_of(course):
             return (self.name in StudentViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_professor():
+        elif user.is_professor_of(course):
             return (self.name in ProfessorViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_admin():
+        elif user.is_admin_of(course):
             return (self.name in AdminViewTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
-    def can_post(self, user):
+    def can_post(self, course, user):
         if self.name in PublicForumTags:
             return True
 
-        if user.is_student():
+        if user.is_student_of(course):
             return (self.name in StudentPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_professor():
+        elif user.is_professor_of(course):
             return (self.name in ProfessorPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
-        elif user.is_admin():
+        elif user.is_admin_of(course):
             return (self.name in AdminPostTags) if self.tag_type == FORUMTAG_PRIMARY else False
+        return False
+
+    def can_answer(self, course, user):
+        if self.name in PublicForumTags:
+            return True
+
+        if user.is_student_of(course):
+            return (self.name in StudentAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_professor_of(course):
+            return (self.name in ProfessorAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+        elif user.is_admin_of(course):
+            return (self.name in AdminAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
 
     def __unicode__(self):

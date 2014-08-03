@@ -56,34 +56,45 @@
 .explore-page .courses-sequence .course-panel .block-details .course-catalog {
   margin-top: 8px; }
 
-.course-page .course-details .course-contents .course-image {
+.course-page .course-sidebar .sidebar-header hr {
+  margin: 4px -15px; }
+.course-page .course-sidebar .sidebar-body {
+  margin-top: 120px;
+  margin-bottom: 20px; }
+  .course-page .course-sidebar .sidebar-body .sidebar-tabs {
+    margin: 0px -15px; }
+.course-page .course-info .info-header .course-image {
   max-height: 150px;
   max-width: 150px; }
-.course-page .course-details .course-brief-detail-wrapper {
-  margin-top: 10px; }
-  .course-page .course-details .course-brief-detail-wrapper .course-brief-detail {
-    margin-top: 4px; }
-.course-page .course-details .course-detail {
-  margin-top: 16px; }
-.course-page .course-details .agg-ratings .rating .rating-nrs {
+.course-page .course-info .info-header .course-name h3 {
+  margin: 4px; }
+.course-page .course-info .info-header .course-rating .rating-badge {
+  margin-bottom: 4px;
+  background-color: #33424d; }
+  .course-page .course-info .info-header .course-rating .rating-badge .yellow-star {
+    color: #eeda74; }
+.course-page .course-info .info-header .course-rating .rating-nrs {
   font-size: 10px; }
-.course-page .course-sidebar .ratings hr {
-  margin-top: 6px;
-  margin-bottom: 6px; }
-.course-page .course-sidebar .reviews-panel .review-submit {
-  resize: vertical; }
-.course-page .course-sidebar .reviews-panel .reviews-display hr {
-  margin-bottom: 12px; }
-.course-page .course-sidebar .reviews-panel .reviews-display .review .review-datetime {
-  float: right; }
-.course-page .course-sidebar .reviews-panel .reviews-display .review .review-text {
-  margin-top: 6px; }
-.course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate {
-  overflow: hidden; }
-  .course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate .rate-content {
-    float: right; }
-  .course-page .course-sidebar .reviews-panel .reviews-display .review .review-rate .review-rate-form {
-    display: inline; }
+.course-page .course-info .info-bar hr {
+  margin: 8px 0px; }
+.course-page .course-info .info-bar .course-credits {
+  background-color: #92209b; }
+.course-page .course-info .info-body {
+  margin-top: 20px; }
+  .course-page .course-info .info-body .review-submit {
+    resize: vertical; }
+  .course-page .course-info .info-body .reviews-display hr {
+    margin-bottom: 12px; }
+  .course-page .course-info .info-body .reviews-display .review .review-text {
+    margin-top: 6px; }
+  .course-page .course-info .info-body .reviews-display .review .review-flag {
+    overflow: hidden; }
+    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-content {
+      float: right; }
+    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-review-form {
+      display: inline; }
+    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:hover .glyphicon-flag, .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:focus .glyphicon-flag {
+      color: #d9534f; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }
@@ -100,23 +111,37 @@
     color: #d9534f;
     font-size: 11px; }
 
-.forum-page .forum-bar .new-post-btn {
+.forum-page .forum-bar .new-post-btn,
+.course-forum .forum-bar .new-post-btn {
   margin-right: 8px; }
-.forum-page .answers-tabs .upvote-post-form {
+.forum-page .answers-tabs .post-name,
+.course-forum .answers-tabs .post-name {
+  margin-top: 8px; }
+.forum-page .answers-tabs .upvote-post-form,
+.course-forum .answers-tabs .upvote-post-form {
   display: inline; }
-.forum-page .answers-tabs .answer-box {
+.forum-page .answers-tabs .answer-box,
+.course-forum .answers-tabs .answer-box {
   margin: 8px 4px;
   background-color: #eeeeee; }
-  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form {
+  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
+  .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
-  .forum-page .answers-tabs .answer-box .answer-body p {
+  .forum-page .answers-tabs .answer-box .answer-body p,
+  .course-forum .answers-tabs .answer-box .answer-body p {
     margin-bottom: 0px; }
-  .forum-page .answers-tabs .answer-box .answer-box-contents {
+  .forum-page .answers-tabs .answer-box .answer-box-contents,
+  .course-forum .answers-tabs .answer-box .answer-box-contents {
     padding: 4px 8px; }
-  .forum-page .answers-tabs .answer-box .child-answers .answer-box {
+  .forum-page .answers-tabs .answer-box .child-answers .answer-box,
+  .course-forum .answers-tabs .answer-box .child-answers .answer-box {
     background-color: white; }
-.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
+.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
+.course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }
+.forum-page .sidebar-name,
+.course-forum .sidebar-name {
+  margin-top: 0px; }
 
 .dashboard-page .tabpane-contents {
   margin-top: 12px; }

@@ -1,8 +1,9 @@
 {% if homework %}
     <div class="course-detail">
-        <strong> Homework due: </strong>
+        <strong> Homework: </strong>
         <div class="content">
             {% for hw in homework %}
+                
                 <div class="homework_content">
                     <div class="h4 text-primary"> {{ hw.homework.name }} </div>
                     {% if hw.homework.description %}
@@ -14,6 +15,7 @@
                         {% include "objects/course/homework_submit.html" %}
                     {% endif %}
                 </div>
+
             {% endfor %}
         </div>
     </div>

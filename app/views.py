@@ -34,7 +34,9 @@ def dashboard(request):
         'page': 'dashboard',
         'user_auth': request.user
     }
+
     context = dict(context.items() + dashboard_context(request).items())
+
 
     return render(request, "pages/dashboard.html", context)
 

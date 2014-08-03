@@ -3,7 +3,7 @@ from math import sqrt, log
 
 from django.conf import settings
 
-
+# Not used for now
 def comment_rating(upvotes, downvotes):
     total = 1.0 * (upvotes + downvotes)
 

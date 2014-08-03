@@ -2,16 +2,19 @@
 
 {% block content %}
     <div class="row course-page">
-        <div class="col-md-7">
-            <div class="panel panel-default course-details">
-                {% include 'objects/course/contents.html' %}
+        <div class="col-md-4">
+            <div class="course-sidebar">
+                {% include 'objects/course/sidebar.html' %}
             </div>
         </div>
-
-        <div class="col-md-5">
-            <div class="course-sidebar">
-                {% include "objects/course/my_ratings_panel.html" %}
-                {% include "objects/course/reviews_panel.html" %}
+        <div class="col-md-8">
+        <div class="course-details">
+            <div class="tab-content">
+                {% include 'objects/course/course_activity.html' %}
+                {% include 'objects/course/course_info.html' %}
+                {% include 'objects/course/course_wiki.html' %}
+                {% include 'objects/course/course_forum.html' %}
+                {% include 'objects/course/course_resources.html' %}
             </div>
         </div>
     </div>

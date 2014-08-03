@@ -127,68 +127,87 @@ $course-credits-badge-color:        #92209B;
 $course-img-max-size:           150px;
 
 .course-page {
-    .course-details {
-        .course-contents {
+    .course-sidebar {
+        .sidebar-header {
+            hr {
+                margin: 4px -15px; 
+            }
+        }
+        .sidebar-body {
+            margin-top: 120px;
+            margin-bottom: 20px;
+            .sidebar-tabs {
+                margin: 0px -15px;
+            }
+        }
+    }
+
+    .course-info {
+        .info-header {
             .course-image {
                 max-height: $course-img-max-size;
                 max-width: $course-img-max-size;
-            }
-        }
-        .course-brief-detail-wrapper { 
-            margin-top: 10px;
-            .course-brief-detail {
-                margin-top: 4px;
-            }
-        }
-        .course-detail {
-            margin-top: 16px;
-        }
 
-        .agg-ratings {
-            .rating {
+            }
+            .course-name {
+                h3 { margin: 4px; }
+            }
+            .course-rating {
+                .rating-badge {
+                    margin-bottom: 4px;
+                    background-color: $course-rating-badge-color;
+                    .yellow-star {
+                        color: $course-rating-star-color;
+                    }
+                }
                 .rating-nrs {
                     font-size: 10px;
                 }
             }
         }
-    }
-
-    .course-sidebar {
-        .ratings {
+        .info-bar {
             hr {
-                margin-top: 6px;
-                margin-bottom: 6px;
+                margin: 8px 0px;    
+            }
+            .course-credits {
+                background-color: $course-credits-badge-color;
             }
         }
-        .reviews-panel {
+        .info-body {
+            margin-top: 20px;
             .review-submit {
                 resize: vertical;
             }
-
             .reviews-display {
                  hr {
                     margin-bottom: 12px;
                 }
                 .review {
-                    .review-datetime {
-                        float: right;
-                    }
                     .review-text {
                         margin-top: 6px;
                     }
-                    .review-rate {
+                    .review-flag {
                         overflow: hidden;
-                        .rate-content {
+                        .flag-content {
                             float: right;
                         }
-                        .review-rate-form {
+                        .flag-review-form {
                             display: inline;
+                        }
+                        .flag-btn {
+                            &:hover,
+                            &:focus {
+                                .glyphicon-flag {
+                                    color: $brand-danger;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 // Welcome page
@@ -226,8 +245,8 @@ $register-validation-font-size:     11px;
 }
 
 // Forum page
-
-.forum-page {
+.forum-page,
+.course-forum {
     .forum-bar {
         .new-post-btn {
             margin-right: 8px;
@@ -235,6 +254,9 @@ $register-validation-font-size:     11px;
     }
 
     .answers-tabs {
+        .post-name {
+            margin-top: 8px;
+        }
         .upvote-post-form {
             display: inline;
         }
@@ -267,6 +289,10 @@ $register-validation-font-size:     11px;
         }
         .discussion-answers {
         }
+    }
+
+    .sidebar-name {
+        margin-top: 0px;
     }
 }
 
