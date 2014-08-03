@@ -13,6 +13,7 @@ from app.auth.forms import *
 from app.auth.helpers import *
 # from app.auth.specific_login import get_university
 
+import json
 
 @require_POST
 def login_action(request):
@@ -186,20 +187,36 @@ def university_by_email(request):
     email = request.GET["email"]
 
     if jUser.objects.filter(email=email).count() > 0:
-        return HttpResponse("Exists")
+        return_dict = {
+            "status": "Error",
+            "message": "E-mail address exists"
+        }
+        return HttpResponse(json.dumps(return_dict))
 
     try:
         _, domain = email.split("@")
     except ValueError as e:
-        return HttpResponse("NotFound")
+        return_dict = {
+            "status": "Error",
+            "message": "Not a valid e-mail address"
+        }
+        return HttpResponse(json.dumps(return_dict))
 
     universities = University.objects.filter(domains__name=domain)
 
     if not universities:
-        return HttpResponse("NotFound")
+        return_dict = {
+            "status": "Error",
+            "message": "University not found"
+        }
+        return HttpResponse(json.dumps(return_dict))
     else:
         university = universities[0]
-        return HttpResponse(university.name)
+        return_dict = {
+            "status": "OK",
+            "message": university.name
+        }
+        return HttpResponse(json.dumps(return_dict))
 
 
 @require_GET
@@ -212,11 +229,23 @@ def check_username(request):
 #   "OK" if the username is available
     username = request.GET["username"]
     if username == "":
-        return HttpResponse("Username is required")
+        return_dict = {
+            "status": "Error",
+            "message": "Username is required"
+        }
+        return HttpResponse(json.dumps(return_dict))
     if jUser.objects.filter(username=username).count() > 0:
-        return HttpResponse("Username exists")
+        return_dict = {
+            "status": "Error",
+            "message": "Username exists"
+        }
+        return HttpResponse(json.dumps(return_dict))
     else:
-        return HttpResponse("OK")
+        return_dict = {
+            "status": "OK",
+            "message": "Username OK"
+        }
+        return HttpResponse(json.dumps(return_dict))
 
 
 @require_GET
@@ -232,16 +261,31 @@ def validate_registration(request):
     try:
         _, domain = email.split('@')
     except ValueError:
-        return HttpResponse("Error")
+        return_dict = {
+            "status": "Error"
+        }
+        return HttpResponse(json.dumps(return_dict))
 
     if jUser.objects.filter(email=email).count() > 0:
-        return HttpResponse("Error")
+        return_dict = {
+            "status": "Error"
+        }
+        return HttpResponse(json.dumps(return_dict))
     elif jUser.objects.filter(username=username).count() > 0:
-        return HttpResponse("Error")
+        return_dict = {
+            "status": "Error"
+        }
+        return HttpResponse(json.dumps(return_dict))
     elif University.objects.filter(domains__name=domain).count() == 0:
-        return HttpResponse("Error")
+        return_dict = {
+            "status": "Error"
+        }
+        return HttpResponse(json.dumps(return_dict))
     else:
-        return HttpResponse("OK")
+        return_dict = {
+            "status": "OK"
+        }
+        return HttpResponse(json.dumps(return_dict))
 
 
 @login_required

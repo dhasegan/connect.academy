@@ -11,6 +11,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Daniel Hasegan', 'daniel@hasegan.com'),
+    ('Tomas Pllaha', 'tomaspllaha@gmail.com')
 )
 
 MANAGERS = ADMINS
@@ -268,6 +269,7 @@ PIPELINE_JS = {
             'local/js/forum.js',
             'local/js/course.js',
             'local/js/explore.js',
+            'local/js/welcome.js',
             'local/js/connect.js',
         ),
         'output_filename': 'js/connect.min.js',

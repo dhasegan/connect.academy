@@ -1,7 +1,7 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
-    <div class="row">
+    <div class="row admin-page">
         <div id="left-container" class="panel panel-default col-md-3">
             <div class="text">
             </div>
@@ -38,5 +38,5 @@
     	var json = {{ category_tree|safe }};
     </script>
     {% compressed_js 'admin_tree' %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/admin_tree.js"></script>
+
 {% endblock %}

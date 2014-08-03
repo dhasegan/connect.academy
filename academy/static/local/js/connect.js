@@ -5,6 +5,7 @@ jQuery( document ).ready(function( $ ) {
     if ($('.explore-page').length > 0) { ExplorePage.init(); }
     else if ($('.course-page').length > 0) { CoursePage.init(); }
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
+    else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
 });
 
 var ConnectGlobal = (function() {
@@ -90,91 +91,6 @@ jQuery( document ).ready(function( $ ) {
         );
     });
 
-    $("#email").blur(function(){
-        var email_address = this.value;
-        $.get('/university_by_email', {email: email_address},function(data,status) {
-            if (data == "NotFound") {
-                $("#email-ok").empty();
-                $('#email-error').html("University Not Found");
-            }
-            else if (data == "Exists") {
-                $("#email-ok").empty();
-                $('#email-error').html("E-mail address exists");
-            }
-            else {
-                // university found
-                $("#email-error").empty();
-                $('#email-ok').html(data);
-            }
-        });
-    });
-
-    $("#username").blur(function() {
-        var username = this.value;
-        $.get('/check_username', {username: username}, function(data,status) {
-            if (data == "OK") {
-                $("#username-error").empty();
-                $("#username-ok").html("Username OK");
-            }
-            else {
-                $("#username-ok").empty();
-                $("#username-error").html(data);
-            }
-
-        });
-    });
-
-    $("#password, #password_confirmation").keyup(function() {
-        var password = $("#password").val();
-        var password_confirmation = $("#password_confirmation").val();
-
-        if (password.length < 6) {
-            $("#password-ok").empty();
-            $("#password-error").html("Password is too short");
-        }
-        else {
-            $("#password-ok").html("Password ok");
-            $("#password-error").empty();
-        }
-
-
-        if (password_confirmation == password) {
-            $("#password_confirmation-ok").html("Passwords match");
-            $("#password_confirmation-error").empty();
-        }
-        else {
-            $("#password_confirmation-ok").empty();
-            $("#password_confirmation-error").html("Passwords do not match");
-        }
-    });
-    
-
-
-    $("#registration_form").submit(function(event) {
-        var form = this;
-        var fname = $("#fname").val();
-        var lname = $("#lname").val();
-        var password = $("#password").val();
-        var password_confirmation = $("#password_confirmation").val();
-        var username = $("#username").val();
-        var email = $("#email").val();
-        event.preventDefault();
-
-        if (fname.length < 1 || lname.length < 1) {
-            return false;
-        }
-
-        if (password.length < 6 || password != password_confirmation) {
-            return false;
-        }
-
-        $.get('/validate_registration', {email: email, username:username},function(data,status) {
-            if (data == "OK") {
-                form.submit();
-            }
-        });
-
-    });
 
     // Confirm the registration of a student for a course. 
     $(".confirm_registration").submit(function(event) {
