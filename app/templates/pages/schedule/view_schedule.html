@@ -1,59 +1,20 @@
 {% extends 'pages/base.html' %}
 {% load humanize %}
-{% block content %}
 
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.css' />
-<style type='text/css'>
-body {
-	font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-    margin: 0;
-}
+{% block extra_js_includes %}
+<script type="text/javascript" src="{{ STATIC_URL }}jquery_schedule/libs/date.js"></script>
+<script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.js'></script>
 
-h1 {
-	margin: 0 0 1em;
-    padding: 0.5em 0.5em 0;
-}
-
-  p.description {
-    font-size: 0.8em;
-    padding: 1em;
-    top: 3.2em;
-    margin-right: 400px;
-  }
-
-  #message {
-    font-size: 0.7em;
-    position: absolute;
-    top: 1em;
-    right: 1em;
-    width: 350px;
-    display: none;
-    padding: 1em;
-    background: #ffc;
-    border: 1px solid #dda;
-  }
-  </style>
-
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/libs/jquery-1.4.4.min.js'></script>
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/libs/jquery-ui-1.8.11.custom.min.js'></script>
-
-  <script type="text/javascript" src="{{ STATIC_URL }}jquery_schedule/libs/date.js"></script>
-  <script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.js'></script>
-
-
-  <script type='text/javascript'>
-  
+<script type='text/javascript'>
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
   var day = new Date().getDate();
 
   var eventData = {
     events : [
-    	{% for app in appointments %}
-    		{{app|safe}},
-    	{% endfor %}	
+      {% for app in appointments %}
+        {{app|safe}},
+      {% endfor %}  
     ]
   };
 
@@ -107,8 +68,14 @@ h1 {
     }
 
   });
-  </script>
+</script>
+{% endblock %}
 
+
+{% block content %}
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.css' />
   <p class="description">
     NOTES: <br/>
     This calendar demonstrates a basic calendar. Events triggered are
@@ -119,5 +86,4 @@ h1 {
   </p>
 
   <div id="calendar"></div>
-
 {% endblock %}
