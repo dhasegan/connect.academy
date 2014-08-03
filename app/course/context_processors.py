@@ -58,25 +58,20 @@ def review_context(comment, current_user=None):
     upvotes = comment.upvoted_by.all()
     downvotes = comment.downvoted_by.all()
 
-    nr_upvotes = upvotes.count()
-    nr_downvotes = downvotes.count()
-    # Add a +1 to nr_upvotes to fix the ratings score
-    context_comment['rating'] = comment_rating(nr_upvotes + 1, nr_downvotes)
-    if nr_upvotes + nr_downvotes > 0:
-        context_comment['score'] = str(nr_upvotes) + "/" + str(nr_upvotes + nr_downvotes)
-    if (nr_upvotes + 1) * 2 < nr_downvotes:
-        context_comment['dont_show'] = True
-
     if not comment.anonymous:
         context_comment['posted_by'] = comment.posted_by
 
-    already_voted = False
-    if current_user:
-        users_votes = upvotes.filter(id=current_user.id).count() + \
-            downvotes.filter(id=current_user.id).count()
-        if users_votes:
-            already_voted = True
-    context_comment['should_vote'] = not already_voted
+    nr_upvotes = upvotes.count()
+    nr_downvotes = downvotes.count()
+    context_comment['upvotes'] = nr_upvotes
+    context_comment['downvotes'] = nr_downvotes
+    if nr_downvotes > 3:
+        context_comment['dont_show'] = True
+
+    if upvotes.filter(id=current_user.id).count() > 0:
+        context_comment['upvoted'] = True
+    if downvotes.filter(id=current_user.id).count() > 0:
+        context_comment['downvoted'] = True
 
     return context_comment
 
@@ -146,6 +141,15 @@ def course_page_context(request, course):
     # Ratings and comments
     context['ratings'] = course_ratings_context(course, current_user)
     context['comments'] = course_reviews_context(course, current_user)
+
+    # Course path
+    course_path = None
+    university_category = course.university.get_university_category()
+    category = course.category
+    while category is not None and category != university_category:
+        course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
+        category = category.parent
+    context['course_path'] = course_path
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(request.user)

@@ -161,11 +161,11 @@ class Course(models.Model):
     abbreviation = models.CharField(max_length=50, blank=True, null=True)
     slug = models.SlugField(max_length=200)
     image = models.ImageField(upload_to='courses')
-    university = models.ForeignKey('University', related_name = 'courses')
-    category = models.ForeignKey('Category', null=True, default=None, related_name = 'courses')
-    tags = models.ManyToManyField('Tag',related_name='courses')
+    university = models.ForeignKey('University', related_name='courses')
+    category = models.ForeignKey('Category', null=True, default=None, related_name='courses')
+    tags = models.ManyToManyField('Tag', related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
-    prerequisites = models.ManyToManyField('self',related_name='next_courses')
+    prerequisites = models.ManyToManyField('self', related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)

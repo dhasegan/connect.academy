@@ -1,0 +1,94 @@
+<div class="course-info">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="info-header">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="course-image-wrapper">
+                            {% if course.image %}
+                                <img class="img-rounded course-image" src="{% url 'course_image' course.slug %}" alt="{{course.name}}">
+                            {% else %}
+                                <img class="img-rounded course-image" src="{{ STATIC_URL }}books.jpg" alt="{{course.name}}">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="pull-right text-right">
+                            {% include 'objects/course/ratings.html' %}
+                        </div>
+
+                        <div class="course-university">
+                            <h4> {{ course.university.name }} </h4>
+                        </div>
+                        <div class="course-name">
+                            <h3> <a href="{% url 'course_page' course.slug %}">{{ course.name }}</a> </h3>
+                        </div>
+                        <div class="course-professors">
+                            <span class="text-muted"> Professor{% if professors|length > 1 %}s{% endif %}:</span>
+                            {% for juser in professors %}
+                                {% if forloop.counter != 1 %}
+                                    ;
+                                {% endif %}
+                                {% include 'objects/user_link.html' %}
+                            {% endfor %}
+                        </div>
+                        <h6 class="course-catalogue text-muted">
+                            {{ course_path }}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="info-bar">
+                <hr/>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        {% if course.course_id %}
+                            Course ID: {{ course.course_id }}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {% if course.abbreviation %}
+                            Abbreviation: {{ course.abbreviation }}
+                        {% endif %}
+                        Teaching Assistants <span class="caret"></span>
+                    </div>
+                    <div class="col-md-3">
+                        Semester: {{ course.category.name }}
+                    </div>
+                    <div class="col-md-3">
+                        Credits: <span class="badge course-credits"> {{ course.credits }} </span>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+            <div class="info-body">
+
+                
+                <div class="course-detail course-description">
+                    <h4> Description </h4>
+                    <span class="content">
+                        {{ course.description|linebreaks }}
+                    </span>
+                </div>
+
+                {% include 'objects/course/additional_details.html' %}
+
+                <hr>
+
+                {% if syllabus %}
+                    <div class="course-detail">
+                        <h4> Syllabus </h4>
+                        <span class="content">
+                            {% include 'objects/course/syllabus.html' %}
+                        </span>
+                    </div>
+                {% endif %}
+
+                <hr>
+
+                {% include 'objects/course/reviews_detail.html' %}
+
+            </div>
+        </div>
+    </div>
+</div>

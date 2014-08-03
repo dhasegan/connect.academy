@@ -7,7 +7,6 @@ class RateCourseForm(forms.Form):
     course_id = forms.CharField()
     rating_value = forms.CharField()
     rating_type = forms.CharField()
-    url = forms.CharField()
     profname = forms.CharField(required=False)
 
     def clean(self):
@@ -44,7 +43,6 @@ class RateCourseForm(forms.Form):
 class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
     comment = forms.CharField()
-    url = forms.CharField()
     anonymous = forms.BooleanField(required=False)
 
     def clean(self):
@@ -161,7 +159,6 @@ class SubmitHomeworkRequestForm(forms.Form):
 class VoteReviewForm(forms.Form):
     review_id = forms.CharField()
     vote_type = forms.CharField()
-    url = forms.CharField()
 
     def clean(self):
         cleaned_data = super(VoteReviewForm, self).clean()

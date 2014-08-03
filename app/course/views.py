@@ -65,10 +65,10 @@ def submit_review(request, slug):
 
     context = {
         'course': course,
-        'comments': course_reviews_context(request, course, user)
+        'comment': review_context(comment, user)
     }
     response_data = {}
-    response_data['html'] = render_to_string("objects/course/reviews_panel.html", RequestContext(request, context))
+    response_data['html'] = render_to_string("objects/course/review.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
@@ -112,11 +112,10 @@ def rate_course(request, slug):
 
     context = {
         'course': course,
-        'ratings': course_ratings_context(request, course, user)
+        'ratings': course_ratings_context(course, user)
     }
     response_data = {}
-    response_data['agg_ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
-    response_data['my_ratings'] = render_to_string("objects/course/my_ratings.html", RequestContext(request, context))
+    response_data['ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
@@ -217,20 +216,24 @@ def vote_review(request, slug):
         raise Http404
 
     review = form.cleaned_data['review']
-    votes = review.upvoted_by.filter(username=user.username) | review.downvoted_by.filter(username=user.username)
-    if votes:
-        raise Http404
 
     if form.cleaned_data['vote_type'] == "upvote":
-        review.upvoted_by.add(user)
+        if not review.upvoted_by.filter(username=user.username).count():
+            review.upvoted_by.add(user)
+        else:
+            review.upvoted_by.remove(user)
     if form.cleaned_data['vote_type'] == "downvote":
-        review.downvoted_by.add(user)
+        if not review.upvoted_by.filter(username=user.username).count():
+            review.downvoted_by.add(user)
+        else:
+            raise Http404
 
-    upvotes = review.upvoted_by.count()
-    downvotes = review.downvoted_by.count()
-
+    context = {
+        'course': review.course,
+        'comment': review_context(review, user)
+    }
     response_data = {}
-    response_data['score'] = str(upvotes) + "/" + str(upvotes + downvotes)
+    response_data['html'] = render_to_string("objects/course/upvote_review.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
