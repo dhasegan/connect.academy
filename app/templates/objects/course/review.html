@@ -7,12 +7,14 @@
                 Review header
             {% endcomment %}
             <div class="row">
-                <div class="text-muted col-md-3"> @{{ comment.comment.id }} </div>
-                <div class="text-muted col-md-4"> 
-                    <span class="badge review-score-badge">{{ comment.score }}</span> 
-                    {% if comment.posted_by %} by {{ comment.posted_by }} {% endif %} 
+                <div class="text-muted col-md-1 text-left"> @{{ comment.comment.id }} </div>
+                <div class="text-muted col-md-1 text-left">
+                    {% include 'objects/course/upvote_review.html' %}
                 </div>
-                <div class="text-muted col-md-5">
+                <div class="text-muted col-md-5 text-left">
+                    {% if comment.posted_by %} by {% with comment.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% endif %} 
+                </div>
+                <div class="text-muted col-md-5 text-right">
                     <div class="review-datetime">
                         {{ comment.comment.datetime|naturaltime }}
                     </div>
@@ -29,26 +31,16 @@
             {% comment %}
                 Comment Rating system
             {% endcomment %}
-            {% if user_auth and comment.should_vote %}
-                <div class="review-rate">
-                    <div class="rate-content">
-                        <small> Helpful?
-                            <form class="review-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
-                                <input type="hidden" name="review_id" value="{{comment.comment.id}}">
-                                <input type="hidden" name="vote_type" value="upvote">
-                                <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-default btn-xs">Yes</button>
-                            </form>
-
-                            <form class="review-rate-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
+            {% if user_auth and not comment.downvoted %}
+                <div class="review-flag">
+                    <div class="flag-content text-muted">
+                        <small> Innapropriate?
+                            <form class="flag-review-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
                                 <input type="hidden" name="review_id" value="{{comment.comment.id}}">
                                 <input type="hidden" name="vote_type" value="downvote">
-                                <input type="hidden" name="url" value="{% url 'course_page' comment.comment.course.slug %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-default btn-xs">No</button>
+                                <button type="submit" class="btn btn-default btn-xs flag-btn">Flag <span class="glyphicon glyphicon-flag"></span> </button>
                             </form>
-
                         </small>
                     </div>
                 </div>

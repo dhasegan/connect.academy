@@ -27,10 +27,10 @@ def forum_course(request, slug):
     forum = course.forum
     context = dict(context.items() + forum_context(forum, user).items())
 
-    if 'tag' in request.GET and request.GET['tag']:
-        tag = request.GET['tag']
-        if tag in forum.get_view_tags(user):
-            context['current_tag'] = tag
+    if 'filter' in request.GET and request.GET['filter']:
+        tag = request.GET['filter']
+        if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
+            context['current_filter'] = tag
 
     return render(request, "pages/forum/page.html", context)
 
@@ -91,7 +91,7 @@ def new_answer(request, slug):
 
     # user permissions to post:
     tag = form.cleaned_data['post'].tag
-    if tag not in [atag.name for atag in answer_tags] or \
+    if not tag in answer_tags and \
         form.cleaned_data['post'].posted_by != user:
             raise Http404
 

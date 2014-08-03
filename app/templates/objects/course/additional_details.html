@@ -1,0 +1,35 @@
+{% if course.additional_info %}
+    <div class="course-detail">
+        <h4> Additional information: </h4>
+        <div class="content">
+            {{ course.additional_info|linebreaks }}
+        </div>
+    </div>
+{% endif %}
+
+{% if course.grades %}
+    <div class="course-detail">
+        <h4> Grade breakdown: </h4>
+        <div class="content">
+            {{ course.grades|linebreaks }}
+        </div>
+    </div>
+{% endif %}
+
+{% if course.grades_info %}
+    <div class="course-detail">
+        <h4> Additional Information about grades: </h4>
+        <div class="content">
+            {{ course.grades_info|linebreaks }}
+        </div>
+    </div>
+{% endif %}
+
+{% if course.hours_per_week %}
+    <div class="course-detail">
+        <h4> Hours per week: </h4>
+        <span class="content">
+            {{ course.hours_per_week|linebreaks }}
+        </span>
+    </div>
+{% endif %}

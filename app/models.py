@@ -51,6 +51,7 @@ class jUser(User):
     #    as an admin)
     #    upvoted: (<juser>.upvoted.all() returns all comments that <juser> upvoted)
     #    downvoted: (<juser>.downvoted.all() returns all comments that <juser> downvoted)
+    #    appointments(<jUser>.appointments.all() returns all the appointments of that <jUser>)
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
 
@@ -161,11 +162,11 @@ class Course(models.Model):
     abbreviation = models.CharField(max_length=50, blank=True, null=True)
     slug = models.SlugField(max_length=200)
     image = models.ImageField(upload_to='courses')
-    university = models.ForeignKey('University', related_name = 'courses')
-    category = models.ForeignKey('Category', null=True, default=None, related_name = 'courses')
-    tags = models.ManyToManyField('Tag',related_name='courses')
+    university = models.ForeignKey('University', related_name='courses')
+    category = models.ForeignKey('Category', null=True, default=None, related_name='courses')
+    tags = models.ManyToManyField('Tag', related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
-    prerequisites = models.ManyToManyField('self',related_name='next_courses')
+    prerequisites = models.ManyToManyField('self', related_name='next_courses')
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)
@@ -174,7 +175,7 @@ class Course(models.Model):
     #   next_courses (<course>.next_courses.all() returns all courses that have
     #                 <course> as a prerequisite)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
-
+    #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
 
     def get_non_topic_documents(self):
         return self.documents.filter(course_topic=None)
@@ -571,11 +572,11 @@ class Forum(models.Model):
     def get_answer_tags(self, user):
         tags = self.get_tags()
 
-        post_tags = []
+        answer_tags = []
         for tag in tags:
             if tag.can_answer(self.course, user):
-                post_tags.append(tag)
-        return post_tags
+                answer_tags.append(tag)
+        return answer_tags
 
     def __unicode__(self):
         return str(self.course)
@@ -593,7 +594,7 @@ FORUMTAG_TYPES = (
 PublicForumTags = ['general']
 StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
 StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
-StudentAnswerTags = ['general', 'annoncement', 'meta', 'offtopic']
+StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
@@ -717,3 +718,25 @@ versioning.register(
     WikiPage,
     ['content']
 )
+
+
+###########################################################################
+############################### Schedule ##################################
+###########################################################################
+
+class Appointment(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    location = models.CharField(max_length=250)
+    description = models.CharField(max_length=500, blank=True)
+
+class PersonalAppointment(Appointment):
+    user = models.ForeignKey('jUser',related_name='appointments')
+    def __str__(self):
+        return self.user.name
+
+class CourseAppointment(Appointment):
+    course = models.ForeignKey('Course',related_name='appointments')
+
+    def __str__(self):
+        return self.course.name

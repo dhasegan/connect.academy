@@ -20,6 +20,7 @@ urlpatterns += patterns('',
     url(r'^explore/', include('app.explore.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('app.wiki.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('versioning.urls')),
+    url(r'^', include('app.schedule.urls')),
 )
 
 

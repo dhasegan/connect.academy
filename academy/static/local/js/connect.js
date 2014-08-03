@@ -3,7 +3,7 @@ jQuery( document ).ready(function( $ ) {
     ConnectGlobal.init();
 
     if ($('.explore-page').length > 0) { ExplorePage.init(); }
-    else if ($('.course-page').length > 0) { CoursePage.init(); }
+    else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
     else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
 });
