@@ -1,5 +1,4 @@
 import random
-from random import *
 
 from django.db import IntegrityError
 
@@ -454,9 +453,9 @@ class Populator:
         
         index = 0
         for course in courses:
-            for i in range(randint(8,12)):
-                start = current_date + timedelta(days=randint(0,6),hours=randint(0,22),minutes=randint(0,59))
-                end = start + timedelta(hours=randint(1,3))
+            for i in range(random.randint(8,12)):
+                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
+                end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
                 d = "CourseAppointment " + str(index)
                 appointment = CourseAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,course=course)
@@ -477,9 +476,9 @@ class Populator:
         
         index = 0
         for user in users:
-            for i in range(randint(8,12)):
-                start = current_date + timedelta(days=randint(0,6),hours=randint(0,22),minutes=randint(0,59))
-                end = start + timedelta(hours=randint(1,3))
+            for i in range(random.randint(8,12)):
+                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
+                end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
                 d = "PersonalAppointment " + str(index)
                 appointment = PersonalAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,user=user)
