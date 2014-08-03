@@ -95,6 +95,8 @@
       display: inline; }
     .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:hover .glyphicon-flag, .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:focus .glyphicon-flag {
       color: #d9534f; }
+.course-page .course-wiki .wiki-explanation {
+  margin-top: 20px; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }

@@ -131,9 +131,10 @@ def view_wiki_page(request, slug):
         'page': 'view_wiki_page',
     }
     course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
     wikis = course.wiki.all()
-    user = request.user
-    context['can_edit_wiki'] = user.university == course.university and user.is_active
+    context['can_edit_wiki'] = None
     if len(wikis) < 1:
         raise Http404
     else:
@@ -142,5 +143,6 @@ def view_wiki_page(request, slug):
         context['course'] = wiki.course
         wiki_type_id = ContentType.objects.get(app_label="app", model="wikipage").id
         context['wiki_type_id'] = wiki_type_id
+        context['can_edit_wiki'] = wiki.can_edit(user)
 
     return render(request, 'pages/wiki/view_wiki.html', context)

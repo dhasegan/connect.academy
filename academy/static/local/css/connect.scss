@@ -142,6 +142,7 @@ $course-img-max-size:           150px;
         }
     }
 
+    // Course info page part
     .course-info {
         .info-header {
             .course-image {
@@ -205,6 +206,12 @@ $course-img-max-size:           150px;
                     }
                 }
             }
+        }
+    }
+
+    .course-wiki {
+        .wiki-explanation {
+            margin-top: 20px;
         }
     }
 

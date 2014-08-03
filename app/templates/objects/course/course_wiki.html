@@ -1,6 +1,18 @@
 <div class="tab-pane course-wiki fade {% if current_tab == 'wiki' %}in active{% endif %}">
     <div class="panel panel-default">
         <div class="panel-body">
+            {% if wiki %}
+                {{ wiki.content|safe }}
+            {% else %}
+                <h4> Wiki </h4>
+                This course doesn't have a wiki yet. 
+                {% if user_auth.university == course.university %}
+                    Contribute by <a href="{% url 'edit_wiki_page' course.slug %}">creating</a> one.
+                {% endif %}
+                <div class="wiki-explanation">
+                    The Wiki Pages are populated by students and they are meant for you to access relevant information easily and facilitate your studying process. Keep this Wiki Page structured according to the course syllabus and complement the course material by adding additional relevant information in the right chapters.
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -708,10 +708,12 @@ class WikiPage(models.Model):
     def __unicode__(self):
         return "Wiki of course " + str(self.course.name)
 
-
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
+
+    def can_edit(self, user):
+        return user.is_student_of(self.course) or user.is_professor_of(self.course)
 
 
 versioning.register(

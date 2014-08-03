@@ -171,6 +171,12 @@ def course_page_context(request, course):
 
     context['documents'] = course.documents.filter(course_topic=None)
 
+    wikis = course.wiki.all()
+    if wikis:
+        context['wiki'] = wikis[0]
+        if current_user:
+            context['can_edit_wiki'] = wikis[0].can_edit(current_user)
+
     # Show documents/homework only if the user is registered
     if registration_status == COURSE_REGISTRATION_REGISTERED:
         # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED    

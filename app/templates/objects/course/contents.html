@@ -13,19 +13,3 @@
             {% include 'objects/course/homework_student.html' %}
         {% endwith %}
     {% endif %}
-
-
-    {% if forum %}
-        <a href="{% url 'forum_course' course.slug %}">
-            <button class="btn btn-default">Forum page</button>
-        </a>
-    {% endif %}
-
-
-    <div class="course-detail">
-        <strong> Wiki: </strong>
-        <div class="content">
-            {% include 'objects/wiki/course_page_link.html' %}
-        </div>
-    </div>
-
