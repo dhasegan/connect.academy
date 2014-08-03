@@ -111,23 +111,37 @@
     color: #d9534f;
     font-size: 11px; }
 
-.forum-page .forum-bar .new-post-btn {
+.forum-page .forum-bar .new-post-btn,
+.course-forum .forum-bar .new-post-btn {
   margin-right: 8px; }
-.forum-page .answers-tabs .upvote-post-form {
+.forum-page .answers-tabs .post-name,
+.course-forum .answers-tabs .post-name {
+  margin-top: 8px; }
+.forum-page .answers-tabs .upvote-post-form,
+.course-forum .answers-tabs .upvote-post-form {
   display: inline; }
-.forum-page .answers-tabs .answer-box {
+.forum-page .answers-tabs .answer-box,
+.course-forum .answers-tabs .answer-box {
   margin: 8px 4px;
   background-color: #eeeeee; }
-  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form {
+  .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
+  .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
-  .forum-page .answers-tabs .answer-box .answer-body p {
+  .forum-page .answers-tabs .answer-box .answer-body p,
+  .course-forum .answers-tabs .answer-box .answer-body p {
     margin-bottom: 0px; }
-  .forum-page .answers-tabs .answer-box .answer-box-contents {
+  .forum-page .answers-tabs .answer-box .answer-box-contents,
+  .course-forum .answers-tabs .answer-box .answer-box-contents {
     padding: 4px 8px; }
-  .forum-page .answers-tabs .answer-box .child-answers .answer-box {
+  .forum-page .answers-tabs .answer-box .child-answers .answer-box,
+  .course-forum .answers-tabs .answer-box .child-answers .answer-box {
     background-color: white; }
-.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
+.forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
+.course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }
+.forum-page .sidebar-name,
+.course-forum .sidebar-name {
+  margin-top: 0px; }
 
 .dashboard-page .tabpane-contents {
   margin-top: 12px; }

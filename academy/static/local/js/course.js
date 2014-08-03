@@ -2,7 +2,6 @@ var CoursePage = (function() {
     var me = { 
         settings: {
             // Ratings settings
-            // myRatingsSelector: ".my-ratings",
             courseRatingsSelector: ".course-ratings",
             ratingTooltipsSelector: '.rating-tooltip',
 

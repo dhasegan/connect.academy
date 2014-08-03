@@ -571,11 +571,11 @@ class Forum(models.Model):
     def get_answer_tags(self, user):
         tags = self.get_tags()
 
-        post_tags = []
+        answer_tags = []
         for tag in tags:
             if tag.can_answer(self.course, user):
-                post_tags.append(tag)
-        return post_tags
+                answer_tags.append(tag)
+        return answer_tags
 
     def __unicode__(self):
         return str(self.course)
@@ -593,7 +593,7 @@ FORUMTAG_TYPES = (
 PublicForumTags = ['general']
 StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
 StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
-StudentAnswerTags = ['general', 'annoncement', 'meta', 'offtopic']
+StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']

@@ -245,8 +245,8 @@ $register-validation-font-size:     11px;
 }
 
 // Forum page
-
-.forum-page {
+.forum-page,
+.course-forum {
     .forum-bar {
         .new-post-btn {
             margin-right: 8px;
@@ -254,6 +254,9 @@ $register-validation-font-size:     11px;
     }
 
     .answers-tabs {
+        .post-name {
+            margin-top: 8px;
+        }
         .upvote-post-form {
             display: inline;
         }
@@ -286,6 +289,10 @@ $register-validation-font-size:     11px;
         }
         .discussion-answers {
         }
+    }
+
+    .sidebar-name {
+        margin-top: 0px;
     }
 }
 

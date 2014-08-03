@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 
 from app.models import *
 from app.course.context_processors import *
+from app.forum.context_processors import *
 from app.course.forms import *
 
 
@@ -26,10 +27,20 @@ from app.course.forms import *
 @login_required
 def course_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
     context = {
         "page": "course",
     }
     context = dict(context.items() + course_page_context(request, course).items())
+
+    forum = course.forum
+    context = dict(context.items() + forum_context(forum, user).items())
+
+    if 'tag' in request.GET and request.GET['tag']:
+        tag = request.GET['tag']
+        if tag in forum.get_view_tags(user):
+            context['current_tag'] = tag
 
     return render(request, "pages/course.html", context)
 
