@@ -49,6 +49,21 @@ var AdminTree = (function() {
 
     var s; // short for settings
     var st = null;
+
+    function findById(json_tree, id) {
+        if (json_tree.id == id) {
+            return json_tree;
+        }
+        else {
+            for (var i = 0; i < json_tree.children.length; i++) {
+                node = json_tree.children[i];
+                result = findById(node,id);
+                if (result != null)
+                    return result; 
+            }
+            return null;
+        }
+    }
         // add the admin in the tree object
     function addAdminToSubtree(node,admin) {
         if (node.data.type == "category") {
