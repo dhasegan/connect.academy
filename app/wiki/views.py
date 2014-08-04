@@ -14,7 +14,6 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 
-
 # ContentType is needed for version control
 from django.contrib.contenttypes.models import ContentType
 
@@ -26,6 +25,7 @@ from app.wiki.forms import *
 
 #@transaction.atomic()
 #@reversion.create_revision()
+@require_GET
 @login_required
 def edit_wiki_page(request, slug):
     context = {
@@ -33,13 +33,13 @@ def edit_wiki_page(request, slug):
         'slug': slug,
     }
     course = Course.objects.get(slug=slug)
-    wikis = course.wiki.all()
-    user = request.user
-    if user.university != course.university or not user.is_active:
+    wiki = course.wiki
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_student_of(course) and not user.is_professor_of(course):
         raise Http404
 
-    if len(wikis) > 0:
-        wiki = wikis[0]
+    if wiki:
         context['course'] = course
         context['content'] = wiki.content
 
@@ -48,16 +48,16 @@ def edit_wiki_page(request, slug):
         professors = []
         for reg in ProfessorCourseRegistration.objects.filter(course=course, is_approved=True):
             professors.append(reg.professor)
-        context['content'] = render_to_string('objects/wiki/default_content.html', {
-            'STATIC_URL': "/static/",
+
+        wiki_context = {
             'course': course,
             'professors': professors,
             'registered_students': StudentCourseRegistration.objects.filter(course=course,
                                                                             is_approved=True).count(),
             'pending_students': StudentCourseRegistration.objects.filter(course=course,
                                                                          is_approved=False).count()
-            
-        })
+        }
+        context['content'] = render_to_string('objects/wiki/default_content.html', RequestContext(request, wiki_context))
 
     return render(request, "pages/wiki/edit_wiki_page.html", context)
 
@@ -85,10 +85,9 @@ def save_wiki_page(request, slug):
         raise Http404
 
     content = form.cleaned_data['content']
-    wikis = course.wiki.all()
-    if wikis:
+    if course.wiki:
         # update content
-        wiki = wikis[0]
+        wiki = course.wiki
         wiki.content = content
         wiki.save()
         # add student contribution if it doesn't exist
@@ -133,16 +132,15 @@ def view_wiki_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    wikis = course.wiki.all()
-    context['can_edit_wiki'] = None
-    if len(wikis) < 1:
+    if not course.wiki:
         raise Http404
-    else:
-        wiki = wikis[0]
-        context['wiki'] = wiki
-        context['course'] = wiki.course
-        wiki_type_id = ContentType.objects.get(app_label="app", model="wikipage").id
-        context['wiki_type_id'] = wiki_type_id
-        context['can_edit_wiki'] = wiki.can_edit(user)
+
+    wiki = course.wiki
+    context['wiki'] = wiki
+    context['can_edit_wiki'] = wiki.can_edit(user)
+    context['course'] = course
+
+    wiki_type_id = ContentType.objects.get(app_label="app", model="wikipage").id
+    context['wiki_type_id'] = wiki_type_id
 
     return render(request, 'pages/wiki/view_wiki.html', context)

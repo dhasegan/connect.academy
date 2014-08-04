@@ -1,12 +1,13 @@
+from datetime import * #datetime
+import pytz # timezones
+import versioning
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
-from datetime import * #datetime
-import pytz # timezones
-import versioning
+from django.core.urlresolvers import reverse
 from django import forms
-
 
 
 ###########################################################################
@@ -702,14 +703,13 @@ class WikiContributions(models.Model):
 
 
 class WikiPage(models.Model):
-    course = models.ForeignKey('Course',related_name='wiki')
+    course = models.OneToOneField('Course', related_name='wiki')
     content = models.TextField()
 
     def __unicode__(self):
         return "Wiki of course " + str(self.course.name)
 
     def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
 
     def can_edit(self, user):

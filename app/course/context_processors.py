@@ -1,5 +1,9 @@
 from django.conf import settings
 
+# For wikis versioning
+from django.contrib.contenttypes.models import ContentType
+from versioning.models import Revision
+
 from app.models import *
 from app.ratings import *
 
@@ -171,11 +175,14 @@ def course_page_context(request, course):
 
     context['documents'] = course.documents.filter(course_topic=None)
 
-    wikis = course.wiki.all()
-    if wikis:
-        context['wiki'] = wikis[0]
+    if course.wiki:
+        context['wiki'] = course.wiki
         if current_user:
-            context['can_edit_wiki'] = wikis[0].can_edit(current_user)
+            context['can_edit_wiki'] = course.wiki.can_edit(current_user)
+        wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
+        content_object = wiki_ctype.get_object_for_this_type(pk=course.wiki.id)
+
+        context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
 
     # Show documents/homework only if the user is registered
     if registration_status == COURSE_REGISTRATION_REGISTERED:

@@ -1,3 +1,5 @@
+{% load humanize %}
+
 <div class="tab-pane course-wiki fade {% if current_tab == 'wiki' %}in active{% endif %}">
     {% if wiki and can_edit_wiki %}
         <div class="panel panel-default">
@@ -8,6 +10,19 @@
                         <a class='btn btn-primary pull-right' href='{% url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
                     {% endif %}
                 </h4>
+                Contributors
+                <ul>
+                    {% for revision in wiki_revisions %}
+                        <li> <a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">r{{ revision.revision }}</a>:
+                            {% with revision.editor as juser %}
+                                {% include 'objects/user_link.html' %}
+                            {% endwith %}
+                            <span class="text-muted pull-right">
+                                {{ revision.created_at|naturaltime }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     {% endif %}
