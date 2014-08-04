@@ -452,7 +452,7 @@ class Populator:
         
         index = 0
         for course in courses:
-            for i in range(random.randint(8,12)):
+            for i in range(random.randint(1,5)):
                 start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
                 end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
@@ -475,7 +475,7 @@ class Populator:
         
         index = 0
         for user in users:
-            for i in range(random.randint(8,12)):
+            for i in range(random.randint(1,5)):
                 start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
                 end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
