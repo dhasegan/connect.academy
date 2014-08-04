@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from app.models import *
 from app.forum.forms import *
 from app.forum.context_processors import *
+from app.decorators import *
 
 
 @require_GET
@@ -36,6 +37,7 @@ def forum_course(request, slug):
 
 
 @require_http_methods(["GET", "POST"])
+@require_active_user
 @login_required
 def new_post(request, slug):
     course = get_object_or_404(Course, slug=slug)
@@ -75,6 +77,7 @@ def new_post(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def new_answer(request, slug):
     course = get_object_or_404(Course, slug=slug)
@@ -180,6 +183,7 @@ def answers(request, post_id):
 
 
 @require_POST
+@require_active_user
 @login_required
 def upvote_post(request):
     user = get_object_or_404(jUser, id=request.user.id)
@@ -210,6 +214,7 @@ def upvote_post(request):
 
 
 @require_POST
+@require_active_user
 @login_required
 def upvote_answer(request):
     user = get_object_or_404(jUser, id=request.user.id)

@@ -21,11 +21,13 @@ from django.contrib.contenttypes.models import ContentType
 from app.models import *
 from app.context_processors import *
 from app.wiki.forms import *
+from app.decorators import *
 
 
 #@transaction.atomic()
 #@reversion.create_revision()
 @require_GET
+@require_active_user
 @login_required
 def edit_wiki_page(request, slug):
     context = {
@@ -65,6 +67,7 @@ def edit_wiki_page(request, slug):
 #@transaction.atomic()
 #@reversion.create_revision()
 @require_POST
+@require_active_user
 @login_required
 def save_wiki_page(request, slug):
     context = {
@@ -120,6 +123,7 @@ def save_wiki_page(request, slug):
 
 
 @login_required
+@require_active_user
 def revert_wiki_page(request):
     pass
 

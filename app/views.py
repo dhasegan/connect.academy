@@ -37,7 +37,6 @@ def dashboard(request):
 
     context = dict(context.items() + dashboard_context(request).items())
 
-
     return render(request, "pages/dashboard.html", context)
 
 
@@ -50,3 +49,10 @@ def all_comments(request):
 
     return render(request, 'pages/comments.html', context)
 
+def error_page(request, error_type):
+    context = {
+        'page': 'error_page',
+        'error_type': error_type
+    }
+
+    return render(request, 'pages/error.html', context)

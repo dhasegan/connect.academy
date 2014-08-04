@@ -11,6 +11,7 @@ from django.db import IntegrityError
 from app.models import *
 from app.auth.forms import *
 from app.auth.helpers import *
+from app.decorators import *
 # from app.auth.specific_login import get_university
 
 import json
@@ -288,8 +289,9 @@ def validate_registration(request):
         return HttpResponse(json.dumps(return_dict))
 
 
-@login_required
 @require_POST
+@require_active_user
+@login_required
 def approve_student_registrations(request):
     context = {
         'page': 'approve_student_registrations',
