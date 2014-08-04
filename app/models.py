@@ -729,8 +729,8 @@ versioning.register(
 class Appointment(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
-    location = models.CharField(max_length=250)
-    description = models.CharField(max_length=500, blank=True)
+    location = models.CharField(max_length=250, null=True)
+    description = models.CharField(max_length=500, blank=True, null=True)
 
 class PersonalAppointment(Appointment):
     user = models.ForeignKey('jUser',related_name='appointments')
@@ -739,6 +739,6 @@ class PersonalAppointment(Appointment):
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
-
+    course_topic = models.ForeignKey('CourseTopic', related_name='appointments')
     def __str__(self):
         return self.course.name
