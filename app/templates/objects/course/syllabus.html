@@ -16,12 +16,6 @@
 					{% with entry.documents as documents %}
 						{% include 'objects/course/documents.html' %}
 					{% endwith %}
-				{% endif %}	
-
-				{% if entry.homework %}
-					{% with entry.homework as homework %}
-						{% include 'objects/course/homework_student.html' %}
-					{% endwith %}
 				{% endif %}
 			</div>
 		</li>

@@ -1,9 +1,9 @@
-<div id="submitHomework{{hw.homework.id}}" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+<div id="submitHomework{{hw.homework.id}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
-                <a class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
+                <a class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
                 <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>{% if hw.previous_submission %}Resubmit{% else %}Submit{% endif %} homework</b></h3>
             </div>
 
