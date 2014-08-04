@@ -56,6 +56,8 @@
 .explore-page .courses-sequence .course-panel .block-details .course-catalog {
   margin-top: 8px; }
 
+.course-page .course-sidebar .registration-btn {
+  width: 100%; }
 .course-page .course-sidebar .sidebar-header hr {
   margin: 4px -15px; }
 .course-page .course-sidebar .sidebar-body {

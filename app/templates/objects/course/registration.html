@@ -27,7 +27,7 @@
 
 {% if registration_open or user_auth.user_type == 1 %}
     {% if registration_status == 0 %} <!-- open -->
-        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-primary" id='register_button{{jcourse.id}}'>
+        <a data-toggle="modal" href="#registrationModal{{jcourse.id}}" class="btn btn-success registration-btn" id='register_button{{jcourse.id}}'>
             {% if user_auth.user_type == 0 %} <!-- Student -->
                 Register
             {% elif user_auth.user_type == 1 %} <!-- Professor -->
@@ -35,11 +35,10 @@
             {% endif %}
         </a>
     {% elif registration_status == 1 %} <!-- pending -->
-        <a class="btn btn-primary" disabled><b>Pending Registration</b></a>
+        <a class="btn btn-success registration-btn" disabled><b>Pending Registration</b></a>
     {% endif %}
 {% endif %}
 
 {% if registration_status == 2 %} <!-- registered -->
-    <a class="btn btn-success" disabled><b>Registered</b></a>
-
+    <a class="btn btn-primary registration-btn" disabled><b>Registered</b></a>
 {% endif %}
