@@ -75,7 +75,7 @@ def forum_context(forum, current_user):
     tags = []
     posts = ForumPost.objects.filter(forum=forum)
     for post in posts:
-        if post.tag in allowed_tags or post.posted_by == current_user:
+        if post.tag.name in [atag.name for atag in allowed_tags] or post.posted_by == current_user:
             context_forum['posts'].append(forum_post_context(post, current_user))
             if post.tag not in tags:
                 tags.append( post.tag )

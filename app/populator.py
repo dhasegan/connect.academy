@@ -156,10 +156,9 @@ class Populator:
 
         # Add additional description
         # Add all other fields
-        course = Course(course_id=course_id, course_type=course_type, name=name,
+        course = Course.objects.create(course_id=course_id, course_type=course_type, name=name,
                         credits=credits, description=description, category=category,
                         university=university)
-        course.save()
 
         self.populate_course_topics(course, count=random.randint(5,10))
 
@@ -269,7 +268,7 @@ class Populator:
         anon = False
         if random.random() < 0.1:
             anon = True
-        tags = ForumTag.objects.all()
+        tags = forum.get_tags()
         tag = random.choice(tags)
         ForumPost.objects.create(name=name, forum=forum, text=text, posted_by=posted_by, anonymous=anon, tag=tag)
 

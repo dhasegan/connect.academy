@@ -1,6 +1,7 @@
 from datetime import * #datetime
 import pytz # timezones
 import versioning
+import re 
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -260,6 +261,12 @@ class CourseTopic(models.Model):
         # <course> in the current order
         # To set the order, call <course>.set_topic_order(ls) where ls is the ordered
         # list of the primary keys (ids) of the topics.
+
+    def save(self, *args, **kwargs):
+        tag_name = ForumTag.create_tag_name(self.name)
+        ForumTopicTag.objects.get_or_create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
+            forum=Forum.objects.get(pk=self.course.id), topic=self)
+        super(CourseTopic, self).save(*args, **kwargs)
 
 class Tag(models.Model):
     # Besides name, we might need to add more fancy things to tags (we can group them etc)
@@ -643,6 +650,16 @@ class ForumTag(models.Model):
         elif user.is_admin_of(course):
             return (self.name in AdminAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else False
         return False
+
+    @staticmethod
+    def create_tag_name(name):
+        clean_name = re.sub('[.!,;]', '', name)
+        clean_name = re.sub('-_', ' ', clean_name)
+        words = clean_name.title().split(' ')
+        tag_name = ""
+        for word in words:
+            tag_name += word[0:3]
+        return tag_name[0:20]
 
     def __unicode__(self):
         return str(self.name)

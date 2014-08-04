@@ -2,6 +2,11 @@
     {% include 'objects/forum/bar.html' %}
 
     <div class="tab-content answers-tabs">
+        {% if not posts %}
+            <div class="alert alert-success" role="alert">There is no post yet for this course! Why don't you post the first one by 
+                <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">clicking here</a>?
+            </div>
+        {% endif %}
         {% for post in posts %}
             <div class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}" id="answers{{post.question.id}}">
                 {% include "objects/forum/answers.html" %}
