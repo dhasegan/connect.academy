@@ -21,6 +21,7 @@ from app.models import *
 from app.course.context_processors import *
 from app.forum.context_processors import *
 from app.course.forms import *
+from app.decorators import *
 
 
 @require_GET
@@ -62,6 +63,7 @@ def get_course_image(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def submit_review(request, slug):
 
@@ -89,6 +91,7 @@ def submit_review(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def rate_course(request, slug):
     user = get_object_or_404(jUser, id=request.user.id)
@@ -136,6 +139,7 @@ def rate_course(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def submit_document(request, slug):
     context = {}
@@ -160,6 +164,7 @@ def submit_document(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def submit_homework(request, slug):
     context = {}
@@ -191,6 +196,7 @@ def submit_homework(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def submit_homework_request(request, slug):
     context = {}
@@ -220,6 +226,7 @@ def submit_homework_request(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def vote_review(request, slug):
     context = {}
@@ -253,6 +260,7 @@ def vote_review(request, slug):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
+@require_active_user
 @login_required
 def register_course(request, slug):
     context = {
@@ -295,6 +303,7 @@ def register_course(request, slug):
 
 
 @require_POST
+@require_active_user
 @login_required
 def send_mass_email(request, slug):
     course = get_object_or_404(Course, slug=slug)

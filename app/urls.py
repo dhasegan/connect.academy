@@ -8,6 +8,8 @@ urlpatterns = patterns('app.views',
     url(r'^dashboard$', 'dashboard', name='dashboard'),
     url(r'^about$', 'about'),
     url(r'^all_comments$', 'all_comments', name='all_comments'),
+
+    url(r'^error/(?P<error_type>[\w-]+)', 'error_page', name="error_page")
 )
 
 urlpatterns += patterns('',

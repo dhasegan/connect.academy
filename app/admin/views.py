@@ -1,3 +1,5 @@
+import json
+
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
@@ -5,13 +7,15 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.core.mail import send_mail
+from django.db.models import Q
+
 from app.models import *
 from app.context_processors import *
-
+from app.decorators import *
 from app.admin.forms import *
-from django.db.models import Q
-import json
 
+
+@require_active_user
 @login_required
 def course_categories(request):
 	context = {
@@ -93,6 +97,7 @@ forms = {
 # See also the documentation on forms.py										   #									
 #################################################################################### 			
 @require_POST
+@require_active_user
 @login_required
 def admin_form_action(request):
 	user = request.user

@@ -6,7 +6,7 @@
             {% else %}
                 <h4> Wiki </h4>
                 This course doesn't have a wiki yet. 
-                {% if user_auth.university == course.university %}
+                {% if can_edit_wiki %}
                     Contribute by <a href="{% url 'edit_wiki_page' course.slug %}">creating</a> one.
                 {% endif %}
                 <div class="wiki-explanation">
