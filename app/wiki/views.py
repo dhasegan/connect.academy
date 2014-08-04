@@ -33,13 +33,13 @@ def edit_wiki_page(request, slug):
         'slug': slug,
     }
     course = Course.objects.get(slug=slug)
-    wiki = course.wiki
     user = get_object_or_404(jUser, id=request.user.id)
 
     if not user.is_student_of(course) and not user.is_professor_of(course):
         raise Http404
 
-    if wiki:
+    if hasattr(course, 'wiki'):
+        wiki = course.wiki
         context['course'] = course
         context['content'] = wiki.content
 
@@ -85,7 +85,7 @@ def save_wiki_page(request, slug):
         raise Http404
 
     content = form.cleaned_data['content']
-    if course.wiki:
+    if hasattr(course, 'wiki'):
         # update content
         wiki = course.wiki
         wiki.content = content
@@ -132,7 +132,7 @@ def view_wiki_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not course.wiki:
+    if not hasattr(course, 'wiki'):
         raise Http404
 
     wiki = course.wiki

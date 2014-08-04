@@ -91,12 +91,14 @@ def course_reviews_context(course, current_user=None):
 def course_homework_context(course, current_user):
     current_time = pytz.utc.localize(datetime.now())
 
+    nr_students = StudentCourseRegistration.objects.filter(course=course, is_approved=True).count()
+
     context = []
     all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
         within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
         is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
-        is_student = current_user in course.students.all()
+        is_student = current_user.is_student_of(course)
         can_submit_homework = is_student and is_allowed and within_deadline
         
         homework_submission = None
@@ -104,11 +106,17 @@ def course_homework_context(course, current_user):
         if homework_submissions:
             homework_submission = homework_submissions[0]
 
+        homework_submitted = hw.coursehomeworksubmission_set.all().count()
+
         context.append({
             "homework": hw,
             "can_submit": can_submit_homework,
             "is_allowed": is_allowed,
-            "previous_submission": homework_submission
+            "previous_submission": homework_submission,
+            "stats": {
+                "submitted": homework_submitted,
+                "students": nr_students
+            }
         })
     return context
 
@@ -173,9 +181,7 @@ def course_page_context(request, course):
     # Course forum link
     context['forum'] = course.forum
 
-    context['documents'] = course.documents.filter(course_topic=None)
-
-    if course.wiki:
+    if hasattr(course, 'wiki'):
         context['wiki'] = course.wiki
         if current_user:
             context['can_edit_wiki'] = course.wiki.can_edit(current_user)
@@ -184,9 +190,10 @@ def course_page_context(request, course):
 
         context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
 
-    # Show documents/homework only if the user is registered
-    if registration_status == COURSE_REGISTRATION_REGISTERED:
-        # context['can_upload_docs'] = user in course.professors.all() <<< TO BE CHANGED    
+    context['documents'] = course.documents.all()
+    context['can_upload_docs'] = current_user.is_professor_of(course)
+    # Show documents/homework only if the user is registered and student/prof
+    if current_user.is_student_of(course) or current_user.is_professor_of(course):
         context['current_homework'] = [hw for hw in course_homework_context(course, current_user) if hw['is_allowed']]
 
     return context

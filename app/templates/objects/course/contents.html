@@ -5,11 +5,3 @@
         {% endwith %}
     {% endif %}
 
-
-    {% include 'objects/course/documents.html' %}
-
-    {% if current_homework %}
-        {% with current_homework as homework %}
-            {% include 'objects/course/homework_student.html' %}
-        {% endwith %}
-    {% endif %}

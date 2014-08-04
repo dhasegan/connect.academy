@@ -97,6 +97,12 @@
       color: #d9534f; }
 .course-page .course-wiki .wiki-explanation {
   margin-top: 20px; }
+.course-page .course-resources h3 {
+  margin: 0px; }
+.course-page .course-resources .top-line {
+  margin-top: 4px; }
+.course-page .course-resources .homework-list .hw-submit {
+  margin-top: 24px; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }

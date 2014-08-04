@@ -1,6 +1,25 @@
 <div class="tab-pane course-resources fade {% if current_tab == 'resources' %}in active{% endif %}">
     <div class="panel panel-default">
         <div class="panel-body">
+            {% if not current_homework and not documents %}
+                <h4>You are a lucky person! There is no homework for you... <small class="pull-right text-muted"> yet! </small></h4>
+            {% endif %}
+
+            {% if current_homework %}
+                <h3> Assignments </h3>
+                <hr class="top-line">
+
+                {% with current_homework as homework %}
+                    {% include 'objects/course/homework_student.html' %}
+                {% endwith %}
+            {% endif %}
+
+            {% if documents %}
+                <h3> Documents </h3>
+                <hr class="top-line">
+
+                {% include 'objects/course/documents.html' %}
+            {% endif %}
         </div>
     </div>
 </div>

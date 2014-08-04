@@ -215,6 +215,19 @@ $course-img-max-size:           150px;
         }
     }
 
+    .course-resources {
+        h3 {
+            margin: 0px;
+        }
+        .top-line {
+            margin-top: 4px;
+        }
+        .homework-list {
+            .hw-submit {
+                margin-top: 24px;
+            }
+        }
+    }
 }
 
 // Welcome page

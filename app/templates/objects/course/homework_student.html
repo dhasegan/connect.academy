@@ -1,21 +1,37 @@
+{% load humanize %}
+
 {% if homework %}
     <div class="course-detail">
-        <strong> Homework: </strong>
-        <div class="content">
+        <div class="content homework-list">
             {% for hw in homework %}
-                
-                <div class="homework_content">
-                    <div class="h4 text-primary"> {{ hw.homework.name }} </div>
-                    {% if hw.homework.description %}
-                        <p class="text-muted"> {{ hw.homework.description }} </p>
-                    {% endif %}
-                    <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
-                    <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> </div>
-                    {% if hw.can_submit %}
-                        {% include "objects/course/homework_submit.html" %}
-                    {% endif %}
+                <div class="row">
+                    <div class="col-md-8">
+                    
+                        <div class="homework-content">
+                            <div class="h4 text-primary"> {{ hw.homework.name }} </div>
+                            {% if hw.homework.description %}
+                                <p> {{ hw.homework.description }} </p>
+                            {% endif %}
+                            <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
+                            <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        {% if hw.previous_submission or hw.can_submit %}
+                            <div class="hw-submit">
+                                <div class="hw-stats">
+                                    <div class="text-muted"> {{ hw.stats.submitted }} out of {{ hw.stats.students }} submitted </div>
+                                </div>
+                                {% if hw.previous_submission %}<div class="text-success">You already submitted a homework for this!</div>{% endif %}
+                                {% if hw.can_submit %}
+                                    {% include "objects/course/homework_submit.html" %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
+                <hr>
             {% endfor %}
         </div>
     </div>
