@@ -1,1 +1,0 @@
-South Documentation: http://south.readthedocs.org/en/latest/
