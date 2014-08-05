@@ -4,7 +4,7 @@
 
   <head>
     {% block page_title %}
-      <title>Connect</title>
+      <title>{% include 'objects/page_title.html' %}</title>
     {% endblock %}
     <link rel="shortcut icon" href="{{ STATIC_URL }}/ju_favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

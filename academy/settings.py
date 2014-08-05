@@ -16,17 +16,18 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-PROJECT_ROOT = path.realpath(path.dirname(__file__)) + '/'
+SETTINGS_ROOT = path.realpath(path.dirname(__file__)) + '/'
+PROJECT_ROOT = path.abspath(path.join(SETTINGS_ROOT, '..'))
 
 DATABASES = {
     'default': {
         'ENGINE': environ.get('ACADEMY_DATABASE_BACKEND', 'django.db.backends.sqlite3'),
-        'NAME': environ.get('ACADEMY_DATABASE_NAME', PROJECT_ROOT + 'db/database.db'),
+        'NAME': environ.get('ACADEMY_DATABASE_NAME', SETTINGS_ROOT + 'db/database.db'),
         'USER': environ.get('ACADEMY_DATABASE_USER', ''),
         'PASSWORD': environ.get('ACADEMY_DATABASE_PASSWORD', ''),
         'HOST': environ.get('ACADEMY_DATABASE_HOST', ''),
         'PORT': environ.get('ACADEMY_DATABASE_PORT', ''),
-        'TEST_NAME': environ.get('ACADEMY_DATABASE_TEST_NAME', PROJECT_ROOT + 'db/test_database.db'),
+        'TEST_NAME': environ.get('ACADEMY_DATABASE_TEST_NAME', SETTINGS_ROOT + 'db/test_database.db'),
     }
 }
 
@@ -112,6 +113,7 @@ ROOT_URLCONF = 'academy.urls'
 WSGI_APPLICATION = 'academy.wsgi.application'
 
 TEMPLATE_DIRS = (
+    path.join(PROJECT_ROOT, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -177,12 +179,20 @@ LOGGING = {
     }
 }
 
+######################## Redis Cache
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.cache.RedisCache',
+        'LOCATION': '/var/run/redis/redis.sock'
+    }
+}
+
 ######################## Email settings
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
-
 
 
 ######################### Media files
