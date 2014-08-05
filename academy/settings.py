@@ -179,6 +179,15 @@ LOGGING = {
     }
 }
 
+######################## Redis Cache
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.cache.RedisCache',
+        'LOCATION': '/var/run/redis/redis.sock'
+    }
+}
+
 ######################## Email settings
 
 EMAIL_HOST = 'localhost'
