@@ -43,17 +43,17 @@ def view_schedule(request):
             data['id'] = appointment.id
             data['start'] = format_date(appointment.start.strftime(date_format))
             data['end'] = format_date(appointment.end.strftime(date_format))
-            data['title'] = appointment.description
-            all_appointments.append(json.dumps(data))
+            data['title'] = appointment.course_topic.name if appointment.course_topic.name else appointment.description
+            all_appointments.append(data)
 
     for appointment in personal_appointments:
         data = {}
         data['id'] = appointment.id
         data['start'] = format_date(appointment.start.strftime(date_format))
         data['end'] = format_date(appointment.end.strftime(date_format))
-        data['title'] = appointment.description
-        all_appointments.append(json.dumps(data))
+        data['title'] = appointment.course_topic.name if appointment.course_topic.name else appointment.description
+        all_appointments.append(data)
 
-    context['appointments'] = all_appointments
+    context['appointments'] = json.dumps(all_appointments)
 
     return render(request, "pages/schedule/view_schedule.html", context)

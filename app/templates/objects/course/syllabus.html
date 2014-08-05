@@ -17,6 +17,14 @@
 						{% include 'objects/course/documents.html' %}
 					{% endwith %}
 				{% endif %}
+
+				{% comment %}
+					{% if entry.homework %}
+						{% with entry.homework as homework %}
+							{% include 'objects/course/homework_dropdown.html' %}
+						{% endwith %}
+					{% endif %}
+				{% endcomment %}
 			</div>
 		</li>
 	{% endfor %}

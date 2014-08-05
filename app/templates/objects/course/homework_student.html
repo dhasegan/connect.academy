@@ -2,6 +2,7 @@
 
 {% if homework %}
     <div class="course-detail">
+       
         <div class="content homework-list">
             {% for hw in homework %}
                 <div class="row">
@@ -26,9 +27,11 @@
                                     <small class="text-success">You already submitted this homework</small>
                                 {% endif %}
                                 {% if hw.can_submit %}
+                                    
                                     {% include "objects/course/homework_submit.html" %}
+      
                                 {% endif %}
-                            </div>
+                            </div> 
                         {% endif %}
                     </div>
                 </div>

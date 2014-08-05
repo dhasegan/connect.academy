@@ -1,0 +1,28 @@
+<!-- not using it yet ... need to fix the module issue first -->
+{% load humanize %}
+{% if homework %}
+<div class="row dropdown homework-dropdown">
+    <div class="nav navbar-nav">
+            <div class="btn-group navbar-btn">
+                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle ">
+                    <strong> Homework </strong>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for hw in homework %}
+                    <li> 
+                        <a href="#"> {{ hw.homework.name }} </a>
+                        {% if hw.can_submit %}
+                            <div class='pull-right btn-small'>
+                             
+                                <button class="btn {% if not hw.previous_submission %} btn-danger {% else %} btn-primary {% endif %}" data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}"  id='submitHWButton{{hw.homework.id}}'>{% if hw.previous_submission %}Resubmit{% else %}Submit{% endif %} Homework</button>
+                            
+                            </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+    </div>
+</div>
+{% endif %}
