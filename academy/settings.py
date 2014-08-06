@@ -107,6 +107,10 @@ MIDDLEWARE_CLASSES = (
     "versioning.middleware.VersioningMiddleware",
 )
 
+AUTHENTICATION_BACKENDS = (
+    ('django.contrib.auth.backends.ModelBackend'),
+)
+
 ROOT_URLCONF = 'academy.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -128,7 +132,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "app.context_processors.user_authenticated",
-    "app.context_processors.debug")
+    "app.context_processors.debug"
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -138,16 +143,17 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
     'django.contrib.humanize',
+    'app', # our current app
+
     'django_extensions', # for special commands
     'pipeline', # js and css/less compilers
     'storages',
-    'app',
     'versioning',  # Should be after apps with versioned models
-    'south',
+    'south', # db migrations
 )
 
 # A sample logging configuration. The only tangible logging

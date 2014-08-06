@@ -21,13 +21,13 @@
             "first_name": "Daniel",
             "groups": [],
             "is_active": true,
-            "is_staff": false,
-            "is_superuser": false,
+            "is_staff": true,
+            "is_superuser": true,
             "last_login": "2014-07-26T13:51:36.312Z",
             "last_name": "Hasegan",
             "password": "pbkdf2_sha256$12000$wCkt0Io5pXuE$5Ak7BIf9UidwYpLoQt54PbXQuCFCJF9dHPSM/wyists=",
             "user_permissions": [],
-            "username": "dhasegan"
+            "username": "daniel"
         },
         "model": "auth.user",
         "pk": 1
@@ -39,8 +39,8 @@
             "first_name": "Jack",
             "groups": [],
             "is_active": true,
-            "is_staff": false,
-            "is_superuser": false,
+            "is_staff": true,
+            "is_superuser": true,
             "last_login": "2014-07-26T14:11:56.150Z",
             "last_name": "Jackobson",
             "password": "pbkdf2_sha256$12000$kctDxZHaIQ5P$fr2EiC2sStNvEN6t9rYOwfE9PmUQMuPoIY4CEcl3mPE=",
