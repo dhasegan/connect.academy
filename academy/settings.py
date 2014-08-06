@@ -56,6 +56,10 @@ LOGIN_URL = '/welcome'
 # to load the internationalization machinery.
 USE_I18N = True
 
+LOCALE_PATHS = (
+    path.join(PROJECT_ROOT, 'locale'),
+)
+
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
 USE_L10N = True
@@ -130,6 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
+    'django.core.context_processors.request',
     "django.contrib.messages.context_processors.messages",
     "app.context_processors.user_authenticated",
     "app.context_processors.debug"
@@ -261,6 +266,7 @@ PIPELINE_CSS = {
     },
     'connect': {
         'source_filenames': (
+          'local/css/flags.css',
           'local/css/connect.scss',
         ),
         'output_filename': 'local/css/connect.min.css',

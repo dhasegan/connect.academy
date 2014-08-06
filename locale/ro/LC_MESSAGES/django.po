@@ -21,7 +21,7 @@ msgstr ""
 
 #: academy/settings.py:45
 msgid "English"
-msgstr "Engleza"
+msgstr ""
 
 #: academy/settings.py:46
 msgid "German"
@@ -65,15 +65,15 @@ msgstr ""
 
 #: templates/objects/navbar.html:22 templates/objects/page_title.html:3
 msgid "Dashboard"
-msgstr ""
+msgstr "Birou"
 
 #: templates/objects/navbar.html:23 templates/objects/page_title.html:4
 msgid "Explore"
-msgstr ""
+msgstr "Explora"
 
 #: templates/objects/navbar.html:24
 msgid "All comments"
-msgstr ""
+msgstr "Toate comentarile"
 
 #: templates/objects/navbar.html:25
 msgid "Schedule"
