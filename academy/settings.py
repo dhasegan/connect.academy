@@ -192,8 +192,8 @@ LOGGING = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.cache.RedisCache',
-        'LOCATION': '/var/run/redis/redis.sock'
+        'BACKEND': 'redis_cache.cache.RedisCache' if not DEBUG else 'django.core.cache.backends.dummy.DummyCache',
+        'LOCATION': '/var/run/redis/redis.sock' if not DEBUG else ''
     }
 }
 
