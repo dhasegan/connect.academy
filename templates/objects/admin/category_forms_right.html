@@ -27,10 +27,10 @@
         {% csrf_token %}
         <input type='hidden' name='form_type' value='new_subcat'/>
         <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="Name" required/>
+            <input type="text" class="form-control" name="name" placeholder='{% trans "Name" %}' required/>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="abbrev" placeholder="Abbreviation" required/>
+            <input type="text" class="form-control" name="abbrev" placeholder='{% trans "Abbreviation" %}' required/>
         </div>
         <input type="hidden" name="cat_id"/>
         <div class='text text-success'>

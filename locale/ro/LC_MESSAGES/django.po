@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-06 16:15+0200\n"
+"POT-Creation-Date: 2014-08-06 20:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,39 +59,50 @@ msgid ""
 "The Connect.academy Team.\n"
 msgstr ""
 
-#: templates/objects/navbar.html:7
+#: templates/objects/navbar.html:8
 msgid "Toggle navigation"
 msgstr ""
 
-#: templates/objects/navbar.html:22 templates/objects/page_title.html:3
+#: templates/objects/navbar.html:23 templates/objects/page_title.html:3
 msgid "Dashboard"
 msgstr "Birou"
 
-#: templates/objects/navbar.html:23 templates/objects/page_title.html:4
+#: templates/objects/navbar.html:24 templates/objects/page_title.html:4
 msgid "Explore"
 msgstr "Explora"
 
-#: templates/objects/navbar.html:24
+#: templates/objects/navbar.html:25
 msgid "All comments"
 msgstr "Toate comentarile"
 
-#: templates/objects/navbar.html:25
+#: templates/objects/navbar.html:26
 msgid "Schedule"
 msgstr ""
 
-#: templates/objects/navbar_login.html:17
+#: templates/objects/navbar_login.html:15
+msgid "Username or Email"
+msgstr ""
+
+#: templates/objects/navbar_login.html:18
+#: templates/objects/welcome/register_form.html:45
+#: templates/pages/auth/user_account.html:18
+#: templates/pages/auth/user_account.html:65
+msgid "Password"
+msgstr ""
+
+#: templates/objects/navbar_login.html:20
 msgid "Login"
 msgstr ""
 
-#: templates/objects/navbar_login.html:33
+#: templates/objects/navbar_login.html:37
 msgid "My profile"
 msgstr ""
 
-#: templates/objects/navbar_login.html:34
+#: templates/objects/navbar_login.html:38
 msgid "Manage Account"
 msgstr ""
 
-#: templates/objects/navbar_login.html:36
+#: templates/objects/navbar_login.html:40
 msgid "Logout"
 msgstr ""
 
@@ -147,6 +158,7 @@ msgid "Disclaimer"
 msgstr ""
 
 #: templates/objects/admin/category_forms_left.html:4
+#: templates/objects/admin/category_forms_left.html:9
 msgid "Category Name"
 msgstr ""
 
@@ -202,6 +214,15 @@ msgstr ""
 msgid "Add a sub-category"
 msgstr ""
 
+#: templates/objects/admin/category_forms_right.html:30
+msgid "Name"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:33
+#: templates/objects/course/course_info.html:52
+msgid "Abbreviation"
+msgstr ""
+
 #: templates/objects/admin/category_forms_right.html:45
 #: templates/objects/admin/course_forms_right.html:25
 msgid "Move to category"
@@ -221,6 +242,7 @@ msgid "Select a course"
 msgstr ""
 
 #: templates/objects/admin/course_forms_left.html:3
+#: templates/objects/admin/course_forms_left.html:8
 msgid "Course Name"
 msgstr ""
 
@@ -261,15 +283,12 @@ msgstr ""
 
 #: templates/objects/course/course_info.html:28
 #: templates/objects/course/sidebar.html:15
-msgid "Professor{{ professors|pluralize }}"
+#, python-format
+msgid "Professor%(professors|pluralize)s"
 msgstr ""
 
 #: templates/objects/course/course_info.html:47
 msgid "Course ID"
-msgstr ""
-
-#: templates/objects/course/course_info.html:52
-msgid "Abbreviation"
 msgstr ""
 
 #: templates/objects/course/course_info.html:54
@@ -465,6 +484,10 @@ msgstr ""
 msgid "Contributors"
 msgstr ""
 
+#: templates/objects/course/submit_review.html:8
+msgid "Write a review..."
+msgstr ""
+
 #: templates/objects/course/submit_review.html:11
 #: templates/objects/forum/new_answer.html:11
 #: templates/objects/forum/new_post.html:28
@@ -568,6 +591,14 @@ msgstr ""
 msgid "Send an e-mail to"
 msgstr ""
 
+#: templates/objects/course/management/registered_students.html:26
+msgid "Subject"
+msgstr ""
+
+#: templates/objects/course/management/registered_students.html:27
+msgid "Email Body"
+msgstr ""
+
 #: templates/objects/course/management/upload_document.html:7
 msgid "Document Name"
 msgstr ""
@@ -576,13 +607,17 @@ msgstr ""
 msgid "No specific topic"
 msgstr ""
 
-#: templates/objects/dashboard/professor.html:9
+#: templates/objects/dashboard/professor.html:10
 msgid "Pending Confirmation"
 msgstr ""
 
 #: templates/objects/dashboard/student.html:29
 #: templates/objects/explore/course_block.html:46
 msgid "(more)"
+msgstr ""
+
+#: templates/objects/explore/search_sidebar.html:5
+msgid "Search by course name"
 msgstr ""
 
 #: templates/objects/explore/search_sidebar.html:11
@@ -658,8 +693,16 @@ msgstr ""
 msgid "Click here"
 msgstr ""
 
+#: templates/objects/forum/new_answer.html:7
+msgid "Type in your answer"
+msgstr ""
+
 #: templates/objects/forum/new_post.html:7
 msgid "Post title"
+msgstr ""
+
+#: templates/objects/forum/new_post.html:8
+msgid "Your question"
 msgstr ""
 
 #: templates/objects/forum/new_post.html:11
@@ -769,6 +812,26 @@ msgstr ""
 msgid "Register with <strong>Connect Academy </strong>"
 msgstr ""
 
+#: templates/objects/welcome/register_form.html:15
+msgid "First Name"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:20
+msgid "Last Name"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:28
+msgid "University Email address"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:35
+msgid "Username"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:52
+msgid "Confirm Password"
+msgstr ""
+
 #: templates/objects/welcome/register_form.html:62
 msgid "I am a professor"
 msgstr ""
@@ -800,9 +863,17 @@ msgstr ""
 msgid "You have to activate your account to do that!"
 msgstr ""
 
+#: templates/pages/auth/set_email.html:8
+msgid "University E-mail Address"
+msgstr ""
+
 #: templates/pages/auth/user_account.html:10
 #: templates/pages/auth/user_account.html:22
 msgid "Change Username"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:15
+msgid "New Username"
 msgstr ""
 
 #: templates/pages/auth/user_account.html:30
@@ -810,9 +881,29 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
+#: templates/pages/auth/user_account.html:35
+msgid "Old Password"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:38
+msgid "New Password"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:41
+msgid "Confirm New Password"
+msgstr ""
+
 #: templates/pages/auth/user_account.html:54
 #: templates/pages/auth/user_account.html:68
 msgid "Change Name"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:59
+msgid "New First Name"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:62
+msgid "New Last Name"
 msgstr ""
 
 #: templates/pages/forum/new_post.html:10

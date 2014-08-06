@@ -5,7 +5,7 @@
         {% csrf_token %}
         <input type='hidden' name='form_type' value='edit_course'/>
         <div class='form-group'>
-            <input type='text' name='name' class='form-control' placeholder='Course Name' required/>
+            <input type='text' name='name' class='form-control' placeholder='{% trans "Course Name" %}' required/>
             <input type='hidden' name='course_id'/>
         </div>
         <div class='text text-success'>

@@ -6,7 +6,7 @@
         {% csrf_token %}
         <input type='hidden' name='form_type' value='edit_category'/>
         <div class='form-group'>
-            <input type='text' name='name' class='form-control' placeholder='Category Name' required/>
+            <input type='text' name='name' class='form-control' placeholder='{% trans "Category Name" %}' required/>
             <input type='hidden' name='cat_id'/>
         </div>
         <div class='text text-success'>

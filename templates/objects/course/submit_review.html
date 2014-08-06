@@ -5,7 +5,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-md-9">
-            <textarea class="form-control review-submit" rows="10" max-length="5000" placeholder="Write a review..." name="comment"></textarea>
+            <textarea class="form-control review-submit" rows="10" max-length="5000" placeholder='{% trans "Write a review..." %}' name="comment"></textarea>
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-primary submit-btn">{% trans "Submit" %}</button>
