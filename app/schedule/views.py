@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 
+from app.models import *
 
 @login_required
 def view_schedule(request):
@@ -21,7 +22,7 @@ def view_schedule(request):
     }
 
     # get the CourseAppointments of the courses the user is registered in
-    user = request.user
+    user = get_object_or_404(jUser, id=request.user.id)
     courses_enrolled = user.courses_enrolled.all()
 
     course_appointments = []
