@@ -1,0 +1,832 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-06 16:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: academy/settings.py:45
+msgid "English"
+msgstr ""
+
+#: academy/settings.py:46
+msgid "German"
+msgstr ""
+
+#: academy/settings.py:47
+msgid "Romanian"
+msgstr ""
+
+#: academy/settings.py:48
+msgid "Albanian"
+msgstr ""
+
+#: templates/emails/require_confirmation.html:1
+#, python-format
+msgid ""
+"\n"
+"Dear %(fname)s,\n"
+"\n"
+"Thank you for registering with Connect.Academy! An account has been created "
+"with this e-mail address.\n"
+"Please confirm your account by following the link below:\n"
+"\n"
+"%(confirmation_link)s\n"
+"\n"
+"\n"
+"If you did not register with Connect.Academy, you can ignore this message, "
+"in which case we will delete the account in 3 days. If you wish to delete "
+"the account now, you can follow the link below:\n"
+"\n"
+"%(delete_link)s\n"
+"\n"
+"\n"
+"Greetings\n"
+"The Connect.academy Team.\n"
+msgstr ""
+
+#: templates/objects/navbar.html:7
+msgid "Toggle navigation"
+msgstr ""
+
+#: templates/objects/navbar.html:22 templates/objects/page_title.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: templates/objects/navbar.html:23 templates/objects/page_title.html:4
+msgid "Explore"
+msgstr ""
+
+#: templates/objects/navbar.html:24
+msgid "All comments"
+msgstr ""
+
+#: templates/objects/navbar.html:25
+msgid "Schedule"
+msgstr ""
+
+#: templates/objects/navbar_login.html:17
+msgid "Login"
+msgstr ""
+
+#: templates/objects/navbar_login.html:33
+msgid "My profile"
+msgstr ""
+
+#: templates/objects/navbar_login.html:34
+msgid "Manage Account"
+msgstr ""
+
+#: templates/objects/navbar_login.html:36
+msgid "Logout"
+msgstr ""
+
+#: templates/objects/page_title.html:5
+msgid "Welcome"
+msgstr ""
+
+#: templates/objects/page_title.html:7
+#: templates/objects/course/management/panel.html:24
+msgid "Forum"
+msgstr ""
+
+#: templates/objects/page_title.html:8
+msgid "New post"
+msgstr ""
+
+#: templates/objects/page_title.html:10
+msgid "Manage my account"
+msgstr ""
+
+#: templates/objects/page_title.html:11
+msgid "View Schedule"
+msgstr ""
+
+#: templates/objects/page_title.html:12
+msgid "Edit wiki"
+msgstr ""
+
+#: templates/objects/page_title.html:13
+#: templates/objects/course/course_wiki.html:10
+#: templates/objects/course/sidebar.html:29
+msgid "Wiki"
+msgstr ""
+
+#: templates/objects/page_title.html:14
+msgid "Admin"
+msgstr ""
+
+#: templates/objects/page_title.html:15
+msgid "Set email"
+msgstr ""
+
+#: templates/objects/page_title.html:16
+msgid "Error!"
+msgstr ""
+
+#: templates/objects/page_title.html:17
+msgid "About"
+msgstr ""
+
+#: templates/objects/page_title.html:18
+msgid "Disclaimer"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:4
+msgid "Category Name"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:23
+msgid "Administrators"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:32
+msgid "Course Registration"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:33
+msgid "Status"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:35
+#: templates/objects/course/management/demand_homework.html:28
+msgid "Start"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:45
+#: templates/objects/course/management/demand_homework.html:38
+msgid "Deadline"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:54
+#: templates/objects/course/management/demand_homework.html:47
+msgid "(times are in the local timezone)"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:67
+msgid "Delete Category"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:68
+msgid "Select \"Delete all\" if you want to also delete all subcategories"
+msgstr ""
+
+#: templates/objects/admin/category_forms_left.html:74
+msgid "Delete all"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:3
+msgid "Assign an administrator"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:9
+#: templates/objects/admin/course_forms_right.html:10
+msgid "Select a user"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:25
+msgid "Add a sub-category"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:45
+#: templates/objects/admin/course_forms_right.html:25
+msgid "Move to category"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:51
+#: templates/objects/admin/course_forms_right.html:33
+msgid "Select a category"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:69
+msgid "Move course to this category"
+msgstr ""
+
+#: templates/objects/admin/category_forms_right.html:75
+msgid "Select a course"
+msgstr ""
+
+#: templates/objects/admin/course_forms_left.html:3
+msgid "Course Name"
+msgstr ""
+
+#: templates/objects/admin/course_forms_left.html:20
+#: templates/objects/dashboard/student.html:19
+#: templates/objects/explore/course_block.html:35
+msgid "Professors"
+msgstr ""
+
+#: templates/objects/admin/course_forms_right.html:3
+msgid "Assign a professor"
+msgstr ""
+
+#: templates/objects/course/additional_details.html:5
+msgid "Additional information"
+msgstr ""
+
+#: templates/objects/course/additional_details.html:14
+msgid "Grade breakdown"
+msgstr ""
+
+#: templates/objects/course/additional_details.html:23
+msgid "Additional Information about grades"
+msgstr ""
+
+#: templates/objects/course/additional_details.html:32
+msgid "Hours per week"
+msgstr ""
+
+#: templates/objects/course/course_forum.html:7
+msgid ""
+"There is no post yet for this course! Why don't you post the first one by "
+msgstr ""
+
+#: templates/objects/course/course_forum.html:8
+msgid "clicking here"
+msgstr ""
+
+#: templates/objects/course/course_info.html:28
+#: templates/objects/course/sidebar.html:15
+msgid "Professor{{ professors|pluralize }}"
+msgstr ""
+
+#: templates/objects/course/course_info.html:47
+msgid "Course ID"
+msgstr ""
+
+#: templates/objects/course/course_info.html:52
+msgid "Abbreviation"
+msgstr ""
+
+#: templates/objects/course/course_info.html:54
+msgid "Teaching Assistants"
+msgstr ""
+
+#: templates/objects/course/course_info.html:57
+msgid "Semester"
+msgstr ""
+
+#: templates/objects/course/course_info.html:60
+msgid "Credits"
+msgstr ""
+
+#: templates/objects/course/course_info.html:69
+#: templates/objects/course/syllabus.html:10
+#: templates/objects/course/management/demand_homework.html:23
+#: templates/objects/course/management/upload_document.html:22
+#: templates/objects/dashboard/student.html:27
+#: templates/objects/explore/course_block.html:45
+msgid "Description"
+msgstr ""
+
+#: templates/objects/course/course_info.html:81
+msgid "Syllabus"
+msgstr ""
+
+#: templates/objects/course/course_resources.html:6
+msgid "You are a lucky person! There is no homework for you..."
+msgstr ""
+
+#: templates/objects/course/course_resources.html:10
+msgid "Assignments"
+msgstr ""
+
+#: templates/objects/course/course_resources.html:21
+#: templates/objects/course/documents.html:5
+msgid "Documents"
+msgstr ""
+
+#: templates/objects/course/course_wiki.html:11
+#: templates/objects/wiki/course_page_link.html:7
+msgid "This course doesn't have a wiki yet."
+msgstr ""
+
+#: templates/objects/course/course_wiki.html:14
+#, python-format
+msgid ""
+"\n"
+"                        Contribute by %(link_start)s creating %(link_stop)s "
+"one.\n"
+"                    "
+msgstr ""
+
+#: templates/objects/course/course_wiki.html:19
+msgid ""
+"The Wiki Pages are populated by students and they are meant for you to "
+"access relevant information easily and facilitate your studying process. "
+"Keep this Wiki Page structured according to the course syllabus and "
+"complement the course material by adding additional relevant information in "
+"the right chapters."
+msgstr ""
+
+#: templates/objects/course/homework_student.html:17
+#: templates/objects/course/homework_submit.html:27
+msgid "started on"
+msgstr ""
+
+#: templates/objects/course/homework_student.html:18
+#: templates/objects/course/homework_submit.html:28
+#: templates/objects/course/management/current_homework.html:14
+msgid "due"
+msgstr ""
+
+#: templates/objects/course/homework_student.html:26
+#, python-format
+msgid ""
+"\n"
+"                                            %(hw.stats.submitted)s out of "
+"%(hw.stats.students)s submitted </div>\n"
+"                                        "
+msgstr ""
+
+#: templates/objects/course/homework_student.html:31
+msgid "You already submitted this homework"
+msgstr ""
+
+#: templates/objects/course/homework_submit.html:9
+#: templates/objects/course/homework_submit.html:54
+msgid "Resubmit homework"
+msgstr ""
+
+#: templates/objects/course/homework_submit.html:9
+#: templates/objects/course/homework_submit.html:54
+msgid "Submit homework"
+msgstr ""
+
+#: templates/objects/course/homework_submit.html:18
+msgid "Resubmitting a homework will overwrite previous submissions."
+msgstr ""
+
+#: templates/objects/course/homework_submit.html:32
+msgid "Upload your homework"
+msgstr ""
+
+#: templates/objects/course/homework_submit.html:39
+#: templates/objects/course/registration.html:20
+msgid "No, cancel"
+msgstr ""
+
+#: templates/objects/course/registration.html:9
+msgid "Are you sure you want to register for this course?"
+msgstr ""
+
+#: templates/objects/course/registration.html:34
+msgid "Register"
+msgstr ""
+
+#: templates/objects/course/registration.html:36
+msgid "I am teaching this course"
+msgstr ""
+
+#: templates/objects/course/registration.html:40
+#: templates/objects/dashboard/student.html:36
+msgid "Pending Registration"
+msgstr ""
+
+#: templates/objects/course/registration.html:45
+#: templates/objects/dashboard/student.html:34
+msgid "Registered"
+msgstr ""
+
+#: templates/objects/course/review.html:41
+msgid "Innapropriate?"
+msgstr ""
+
+#: templates/objects/course/review.html:46
+msgid "Flag"
+msgstr ""
+
+#: templates/objects/course/review.html:58
+msgid "This review was flagged as inaccurate or offensive. Click to reveal."
+msgstr ""
+
+#: templates/objects/course/review.html:60
+msgid "This review was flagged as inaccurate or offensive. Log in to view it."
+msgstr ""
+
+#: templates/objects/course/reviews_detail.html:6
+msgid "Submit a review"
+msgstr ""
+
+#: templates/objects/course/reviews_detail.html:9
+msgid "Rate course"
+msgstr ""
+
+#: templates/objects/course/reviews_detail.html:12
+msgid "Reviews"
+msgstr ""
+
+#: templates/objects/course/sidebar.html:27
+msgid "Activity log"
+msgstr ""
+
+#: templates/objects/course/sidebar.html:28
+msgid "Course info"
+msgstr ""
+
+#: templates/objects/course/sidebar.html:30
+msgid "Connect"
+msgstr ""
+
+#: templates/objects/course/sidebar.html:31
+msgid "Resources and Assignments"
+msgstr ""
+
+#: templates/objects/course/sidebar_forum.html:7
+msgid "Forum posts"
+msgstr ""
+
+#: templates/objects/course/sidebar_wiki.html:9
+#: templates/pages/wiki/edit_wiki_page.html:14
+#: templates/pages/wiki/view_wiki.html:11
+msgid "Wiki page"
+msgstr ""
+
+#: templates/objects/course/sidebar_wiki.html:11
+#: templates/pages/wiki/view_wiki.html:13
+msgid "Edit Wiki"
+msgstr ""
+
+#: templates/objects/course/sidebar_wiki.html:14
+msgid "Contributors"
+msgstr ""
+
+#: templates/objects/course/submit_review.html:11
+#: templates/objects/forum/new_answer.html:11
+#: templates/objects/forum/new_post.html:28
+msgid "Submit"
+msgstr ""
+
+#: templates/objects/course/submit_review.html:13
+#: templates/objects/forum/answer.html:11
+#: templates/objects/forum/answers.html:17
+#: templates/objects/forum/new_answer.html:15
+#: templates/objects/forum/new_post.html:22
+msgid "Anonymous"
+msgstr ""
+
+#: templates/objects/course/management/current_homework.html:5
+#: templates/objects/course/management/panel.html:21
+msgid "Homework"
+msgstr ""
+
+#: templates/objects/course/management/demand_homework.html:7
+msgid "Homework Name"
+msgstr ""
+
+#: templates/objects/course/management/demand_homework.html:8
+msgid "(Example: Homework1, Project1, ... )"
+msgstr ""
+
+#: templates/objects/course/management/demand_homework.html:13
+#: templates/objects/course/management/upload_document.html:12
+msgid "Course Topic"
+msgstr ""
+
+#: templates/objects/course/management/demand_homework.html:15
+msgid "Please select one"
+msgstr ""
+
+#: templates/objects/course/management/demand_homework.html:23
+#: templates/objects/course/management/upload_document.html:22
+#: templates/objects/forum/new_post.html:11
+msgid "(optional)"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:12
+msgid "Pending Registrations"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:15
+msgid "Registered Students"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:18
+#: templates/objects/course/management/panel.html:63
+msgid "Upload Documents"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:36
+msgid ""
+"You cannot approve students' registrations until you are confirmed as a "
+"professor of this course"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:46
+msgid ""
+"You cannot see registered students until you are confirmed as a professor of "
+"this course"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:56
+msgid "Documents Uploaded"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:72
+msgid ""
+"You cannot upload documents until you are confirmed as a professor of this "
+"course"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:97
+msgid ""
+"You cannot ask for homework until you are confirmed as a professor of this "
+"course"
+msgstr ""
+
+#: templates/objects/course/management/panel.html:108
+msgid ""
+"You cannot manage the forum until you are confirmed as a professor of this "
+"course"
+msgstr ""
+
+#: templates/objects/course/management/pending_registrations.html:11
+#: templates/objects/course/management/registered_students.html:12
+msgid "Select All"
+msgstr ""
+
+#: templates/objects/course/management/pending_registrations.html:31
+#: templates/objects/course/management/registered_students.html:36
+msgid "There are no pending registrations for this course."
+msgstr ""
+
+#: templates/objects/course/management/registered_students.html:8
+msgid "Send an e-mail to"
+msgstr ""
+
+#: templates/objects/course/management/upload_document.html:7
+msgid "Document Name"
+msgstr ""
+
+#: templates/objects/course/management/upload_document.html:14
+msgid "No specific topic"
+msgstr ""
+
+#: templates/objects/dashboard/professor.html:9
+msgid "Pending Confirmation"
+msgstr ""
+
+#: templates/objects/dashboard/student.html:29
+#: templates/objects/explore/course_block.html:46
+msgid "(more)"
+msgstr ""
+
+#: templates/objects/explore/search_sidebar.html:11
+msgid "Credits range"
+msgstr ""
+
+#: templates/objects/explore/search_sidebar.html:25
+msgid "Ratings range"
+msgstr ""
+
+#: templates/objects/forum/answer.html:11
+#: templates/objects/forum/answers.html:14
+msgid "Posted by"
+msgstr ""
+
+#: templates/objects/forum/answer.html:24
+msgid "Reply"
+msgstr ""
+
+#: templates/objects/forum/answers.html:19
+msgid "in"
+msgstr ""
+
+#: templates/objects/forum/answers.html:25
+msgid "Answer"
+msgstr ""
+
+#: templates/objects/forum/answers.html:56
+msgid "Best Answers"
+msgstr ""
+
+#: templates/objects/forum/answers.html:62
+msgid "There are no answers yet."
+msgstr ""
+
+#: templates/objects/forum/bar.html:3
+msgid "Forum page of"
+msgstr ""
+
+#: templates/objects/forum/bar.html:7
+msgid "Filter"
+msgstr ""
+
+#: templates/objects/forum/bar.html:11 templates/objects/forum/bar.html:15
+msgid "all"
+msgstr ""
+
+#: templates/objects/forum/bar.html:24
+msgid "New Post"
+msgstr ""
+
+#: templates/objects/forum/child_answer.html:7
+msgid "Start Discussion"
+msgstr ""
+
+#: templates/objects/forum/child_answer.html:7
+msgid "View Ongoing Discussion"
+msgstr ""
+
+#: templates/objects/forum/discussion.html:14
+msgid "Discussion on the reply"
+msgstr ""
+
+#: templates/objects/forum/discussion.html:14
+msgid "back to best answers"
+msgstr ""
+
+#: templates/objects/forum/forum_management.html:3
+msgid "There is a forum for this course."
+msgstr ""
+
+#: templates/objects/forum/forum_management.html:3
+msgid "Click here"
+msgstr ""
+
+#: templates/objects/forum/new_post.html:7
+msgid "Post title"
+msgstr ""
+
+#: templates/objects/forum/new_post.html:11
+msgid "Additional description"
+msgstr ""
+
+#: templates/objects/forum/new_post_tags.html:2
+msgid "Select an appropriate tag for your post"
+msgstr ""
+
+#: templates/objects/notifications/auth/course_registration_success.html:2
+#, python-format
+msgid ""
+"\n"
+"Your registration for the course <b>%(course_name)s</b> was successful. You "
+"will be notified when the registration is approved.\n"
+msgstr ""
+
+#: templates/objects/notifications/auth/email_not_activated.html:6
+#, python-format
+msgid ""
+"\n"
+"Your account is not yet activated. Please check your email and open the "
+"confirmation that we have sent you. %(link_start)s Resend confirmation link "
+"%(link_stop)s\n"
+msgstr ""
+
+#: templates/objects/notifications/auth/email_not_set.html:5
+#, python-format
+msgid ""
+"\n"
+"Your email is not yet set! Please set your email address by clicking "
+"%(link_start)s here %(link_stop)s .\n"
+msgstr ""
+
+#: templates/objects/notifications/auth/email_taken.html:2
+msgid ""
+"Sorry, a user with that <b>e-mail address</b> already exists. If you already "
+"have an account, you can log in."
+msgstr ""
+
+#: templates/objects/notifications/auth/passwords_do_not_match.html:2
+msgid "Your <b>passwords</b> do not match. Please try again."
+msgstr ""
+
+#: templates/objects/notifications/auth/university_not_found.html:2
+msgid ""
+"Sorry, we do not have a <b>university</b> with the <b>domain</b> of your "
+"<b>e-mail address</b>. Please make sure that you your <b>university e-mail "
+"address</b> correctly or come back later."
+msgstr ""
+
+#: templates/objects/notifications/auth/username_taken.html:2
+msgid ""
+"Sorry, a user with that <b> username </b> already exists. Please choose "
+"another one."
+msgstr ""
+
+#: templates/objects/notifications/auth/wrong_username_or_password.html:2
+msgid ""
+"The username, email or password is incorrect. If you don't have an account, "
+"register below."
+msgstr ""
+
+#: templates/objects/notifications/profile/changed_object.html:2
+#, python-format
+msgid ""
+"\n"
+"Your <b>%(changed_object)s</b> has been changed <b>successfully</b>!\n"
+msgstr ""
+
+#: templates/objects/notifications/profile/incorrect_password.html:2
+msgid ""
+"\n"
+"Your <b>password</b> is <b>incorrect</b>. Please check your password and try "
+"again.\n"
+msgstr ""
+
+#: templates/objects/notifications/profile/not_matching_passwords.html:2
+msgid ""
+"\n"
+"Your <b>passwords</b> do <b>not match</b>. Please check your passwords and "
+"try again.\n"
+msgstr ""
+
+#: templates/objects/notifications/profile/username_exists.html:2
+msgid ""
+"\n"
+"A user with that <b> username </b> already exists. If you wish to change "
+"your username, please choose another one.\n"
+msgstr ""
+
+#: templates/objects/notifications/wiki/wiki_created.html:2
+#, python-format
+msgid ""
+"\n"
+"Successfully created a Wiki Page for course <b>%(course_name)s</b>\n"
+msgstr ""
+
+#: templates/objects/notifications/wiki/wiki_edited.html:2
+msgid ""
+"\n"
+"<b>Saved</b>\n"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:5
+msgid "Register with <strong>Connect Academy </strong>"
+msgstr ""
+
+#: templates/objects/welcome/register_form.html:62
+msgid "I am a professor"
+msgstr ""
+
+#: templates/objects/wiki/course_page_link.html:4
+msgid "Course Wiki"
+msgstr ""
+
+#: templates/objects/wiki/course_page_link.html:10
+#, python-format
+msgid ""
+"\n"
+"            Contribute by %(link_start)screating%(link_stop)s one.\n"
+"        "
+msgstr ""
+
+#: templates/objects/wiki/wiki_welcome.html:2
+#, python-format
+msgid ""
+"\n"
+"This is the Wiki Page of the course <b>%(course_name)s</b>. The Wiki Pages "
+"are populated by students and they are meant for you to access relevant "
+"information easily and facilitate your studying process. Keep this Wiki Page "
+"structured according to the course syllabus and complement the course "
+"material by adding additional relevant information in the right chapters.\n"
+msgstr ""
+
+#: templates/pages/error.html:7
+msgid "You have to activate your account to do that!"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:10
+#: templates/pages/auth/user_account.html:22
+msgid "Change Username"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:30
+#: templates/pages/auth/user_account.html:44
+msgid "Change Password"
+msgstr ""
+
+#: templates/pages/auth/user_account.html:54
+#: templates/pages/auth/user_account.html:68
+msgid "Change Name"
+msgstr ""
+
+#: templates/pages/forum/new_post.html:10
+msgid "Submit post on the forum of course"
+msgstr ""
+
+#: templates/pages/wiki/edit_wiki_page.html:14
+#: templates/pages/wiki/view_wiki.html:11
+msgid "of"
+msgstr ""
+
+#: templates/pages/wiki/edit_wiki_page.html:15
+msgid "Save"
+msgstr ""
+
+#: templates/pages/wiki/view_wiki.html:24
+msgid "View the list of revisions."
+msgstr ""

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="row">
 {% for course in courses %}
 <div class="col-md-12 course-block-wrapper">
@@ -15,7 +16,7 @@
             <div class="col-md-10 course-details">
 
                 <div class="course-professors">
-                    <strong> Professors: </strong> 
+                    <strong> {% trans "Professors" %}: </strong> 
                     {% for juser in course.course.professors.all|slice:":3" %}
                         {% include 'objects/user_link.html' %};
                     {% endfor %}
@@ -23,16 +24,16 @@
                         ...
                     {% endif %}
                 </div>
-                <strong> Description: </strong> {{ course.course.description|slice:":180" }} 
+                <strong> {% trans "Description" %}: </strong> {{ course.course.description|slice:":180" }} 
                 ...
-                <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">(more)</a>
+                <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">{% trans "(more)" %}</a>
                 
 
             </div>
                 {% if course.is_approved %}
-                     <button class="btn btn-success" disabled><b>Registered</b></button>
+                     <button class="btn btn-success" disabled><b>{% trans "Registered" %}</b></button>
                 {% else %}
-                     <button class="btn btn-primary" disabled><b>Pending Registration</b></button>
+                     <button class="btn btn-primary" disabled><b>{% trans "Pending Registration" %}</b></button>
                 {% endif %}
         </div>
 

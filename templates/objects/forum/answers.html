@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load humanize %}
 
 <div class="forum-answers">
@@ -10,18 +11,18 @@
                         <span id="upvote_post_{{ post.question.id }}">
                             {% include 'objects/forum/upvote_post.html' %}
                         </span>
-                        Posted by
+                        {% trans "Posted by" %}
                         {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
                         {% else %}
-                            Anonymous
+                            {% trans "Anonymous" %}
                         {% endif %}
-                        in #{{ post.question.tag.name }}.
+                        {% trans "in" %} #{{ post.question.tag.name }}.
                         {{ post.question.datetime|naturaltime }}
                         
                         {% block answer_question_button %}
                             <div class="answer-btn pull-right">
                                 <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
-                                    <button type="submit" class="btn-xs btn-success">Answer</button>
+                                    <button type="submit" class="btn-xs btn-success">{% trans "Answer" %}</button>
                                 </a>
                             </div>
                         {% endblock answer_question_button %}
@@ -52,13 +53,13 @@
 
             {% block all_answers %}
                 <div class="tab-content best-answers">
-                    <strong> Best Answers: </strong>
+                    <strong> {% trans "Best Answers" %}: </strong>
                     {% for answer in post.answers|dictsortreversed:"rating" %}
                         {% include 'objects/forum/answer.html' %}
                     {% endfor %}
                     {% if post.answers|length == 0 %}
                         <div class="no-posts">
-                            There are no answers yet.
+                            {% trans "There are no answers yet." %}
                         </div>
                     {% endif %}
                 </div>

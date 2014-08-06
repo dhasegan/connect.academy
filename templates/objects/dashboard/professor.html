@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="row">
   <div class="col-md-3">
     <nav class="nav-sidebar">
@@ -5,7 +7,7 @@
         {% for course in courses %}
           <li {% if forloop.counter == 1 %} class="active" {% endif %}>
             <a href="#tab{{course.course.id}}" data-toggle="tab">{{course.course.name}}
-              {% if not course.is_approved %} <br/> <small class='text-danger'> Pending Confirmation </small> {% endif %}
+              {% if not course.is_approved %} <br/> <small class='text-danger'> {% trans "Pending Confirmation" %} </small> {% endif %}
             </a> 
           </li>
         {% endfor %}

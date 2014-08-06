@@ -76,7 +76,7 @@ def save_wiki_page(request, slug):
     }
     context.update(csrf(request))
     course = get_object_or_404(Course, slug=slug)
-    user = request.user
+    user = get_object_or_404(jUser, id=request.user.id)
 
     # Only users from that university are allowed to edit
     # wiki pages

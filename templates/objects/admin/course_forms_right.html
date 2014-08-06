@@ -1,12 +1,13 @@
+{% load i18n %}
 <div class='course-forms'>
-    <h4> Assign a professor </h4>
+    <h4> {% trans 'Assign a professor' %} </h4>
     <form action="admin_form_action" method="POST" id="new-prof-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='new_professor'/>
         <input type='hidden' name='course_id' />
         <div class='form-group'>
             <select name="professor_id" class="form-control" required>
-                    <option value=""> Select a user </option>
+                    <option value=""> {% trans 'Select a user' %} </option>
                 {% for prof in potential_admins %}
                     <option value='{{prof.id}}'> {{prof.first_name}} {{prof.last_name}} ( {{prof.username}} ) </option>
                 {% endfor %}
@@ -21,7 +22,7 @@
         <input type='submit' class='btn btn-primary' value="Assign"/>
     </form>
 
-    <h4>Move to category</h4>
+    <h4>{% trans 'Move to category' %}</h4>
     <form action="admin_form_action" method="POST" id="move-to-category-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='move_to_category'/>
@@ -29,7 +30,7 @@
 
         <div class="form-group">
         	<select name="cat_id" class="form-control" required>
-        		<option value=""> Select a category </option>
+        		<option value=""> {% trans 'Select a category' %} </option>
         		{% for cat in all_categories %}
         			<option value="{{cat.id}}"> {{cat.name}} </option>
    				{% endfor %}

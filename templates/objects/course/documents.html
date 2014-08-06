@@ -1,6 +1,8 @@
+{% load i18n %}
+
 {% if documents %}
     <div class="course-detail">
-        <strong> Documents: </strong>
+        <strong> {% trans "Documents" %}: </strong>
         <div class="content">
             <ul>
                 {% for document in documents %}

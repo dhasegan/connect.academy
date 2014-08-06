@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load i18n %}
 
 <div class="review-block">
     {% if user_auth or not comment.dont_show %}
@@ -34,12 +35,12 @@
             {% if user_auth and not comment.downvoted %}
                 <div class="review-flag">
                     <div class="flag-content text-muted">
-                        <small> Innapropriate?
+                        <small> {% trans "Innapropriate?" %}
                             <form class="flag-review-form" role="form" action="{% url 'vote_review' comment.comment.course.slug %}" method="post">
                                 <input type="hidden" name="review_id" value="{{comment.comment.id}}">
                                 <input type="hidden" name="vote_type" value="downvote">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-default btn-xs flag-btn">Flag <span class="glyphicon glyphicon-flag"></span> </button>
+                                <button type="submit" class="btn btn-default btn-xs flag-btn">{% trans "Flag" %} <span class="glyphicon glyphicon-flag"></span> </button>
                             </form>
                         </small>
                     </div>
@@ -51,9 +52,9 @@
     {% if comment.dont_show %}
         <a class="comment-flag" href="#">
             {% if user_auth %}
-                This review was flagged as inaccurate or offensive. Click to reveal.
+                {% trans "This review was flagged as inaccurate or offensive. Click to reveal." %}
             {% else %}
-                This review was flagged as inaccurate or offensive. Log in to view it.
+                {% trans "This review was flagged as inaccurate or offensive. Log in to view it." %}
             {% endif %}
         </a>
     {% endif %}

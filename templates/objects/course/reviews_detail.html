@@ -1,14 +1,15 @@
+{% load i18n %}
 
 <div class="course-detail course-reviews">
     <div class="submititems pull-right">
         <a data-toggle="collapse" href="#submitreview">
-            <button type="submit" class="btn-xs btn-success expand-review-submit">Submit a review</button>
+            <button type="submit" class="btn-xs btn-success expand-review-submit">{% trans "Submit a review" %}</button>
         </a>
         <a data-toggle="collapse" href="#submitrating">
-            <button type="submit" class="btn-xs btn-success expand-rating-submit">Rate course</button>
+            <button type="submit" class="btn-xs btn-success expand-rating-submit">{% trans "Rate course" %}</button>
         </a>
     </div>
-    <h4> Reviews </h4>
+    <h4> {% trans "Reviews" %} </h4>
     <span class="content">
         {% comment %}
             The submit review/rating form

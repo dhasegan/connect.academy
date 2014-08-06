@@ -1,5 +1,7 @@
 {% extends 'objects/forum/answers.html' %}
 
+{% load i18n %}
+
 {% block answer_question_button %}
 {% endblock answer_question_button %}
 
@@ -9,7 +11,7 @@
 
 {% block all_answers %}
     <div class="tab-content discussion-answers">
-        <strong> Discussion on the reply (<a class="bestanswers-link" href="{% url 'forum_answers' post.question.id %}">back to best answers</a>): </strong>
+        <strong> {% trans "Discussion on the reply" %} (<a class="bestanswers-link" href="{% url 'forum_answers' post.question.id %}">{% trans "back to best answers" %}</a>): </strong>
         {% for answer in post.answers %}
             {% include 'objects/forum/discussion_answer.html' %}
         {% endfor %}

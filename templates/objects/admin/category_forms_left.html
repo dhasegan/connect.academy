@@ -1,6 +1,7 @@
+{% load i18n %}
 <div class='category-forms'>
 <!--####################### CATEGORY NAME ######################### -->
-    <h4> Category Name: </h4>
+    <h4> {% trans 'Category Name' %}: </h4>
     <form action="admin_form_action" method="POST" id="edit-category-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='edit_category'/>
@@ -19,7 +20,7 @@
 
 
 <!--####################### ADMINISTRATIORS ######################### -->
-    <h4>Administrators:</h4>
+    <h4>{% trans 'Administrators' %}:</h4>
     <div class="row">
         <ul id="admins-form-container">
         </ul>
@@ -28,10 +29,10 @@
 <!--################### COURSE REGISTRATION DEADLINE ################### -->
 <form class="form" class="cr-deadline-form" action="admin_form_action" method="post">
     {% csrf_token %}
-    <h4> Course Registration </h4>
-    <small> Status: </small> <small class='registration_deadline_status'> </small>
+    <h4> {% trans 'Course Registration' %} </h4>
+    <small> {% trans 'Status' %}: </small> <small class='registration_deadline_status'> </small>
     <div class="form-group">
-        <label>Start</label>
+        <label>{% trans 'Start' %}</label>
         <div class='input-group date' data-date-format="DD/MM/YYYY HH:mm">
             <input type='text' class="form-control" name="start" />
             <span class="input-group-addon">
@@ -41,7 +42,7 @@
     </div>
 
     <div class="form-group">
-        <label>Deadline</label>
+        <label>{% trans 'Deadline' %}</label>
         <div class='input-group date' data-date-format="DD/MM/YYYY HH:mm">
             <input type='text' class="form-control" name="end" />
             <span class="input-group-addon">
@@ -50,7 +51,7 @@
         </div>
     </div>
 
-    <div class="form-group text-muted"> (times are in the local timezone) </div>
+    <div class="form-group text-muted"> {% trans '(times are in the local timezone)' %} </div>
     {% comment %} >>> Say it is in UTC timezone if it is not provided <<< {% endcomment %}
 
 
@@ -62,14 +63,14 @@
 </form>
 
 <!--####################### DELETE CATEGORY ######################### -->
-    <h4> Delete Category </h4>
-    <small> Select "Delete all" if you want to also delete all subcategories </small>
+    <h4> {% trans 'Delete Category' %} </h4>
+    <small> {% trans 'Select "Delete all" if you want to also delete all subcategories' %} </small>
     <form action="admin_form_action" method="POST" id="delete-category-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='delete_category'/>
         <input type="hidden" name="cat_id"/>
         <div class="form-group">
-            <input type='checkbox'  name='delete_all' title='Delete all categories in this subtree' style='float:left;'/>  Delete all 
+            <input type='checkbox'  name='delete_all' title='Delete all categories in this subtree' style='float:left;'/>  {% trans 'Delete all' %}
             <input type="submit" class="btn btn-danger" name="delete-category" style="float:right;" value="Delete Category" >
         </div>
         <div class='text text-success'>

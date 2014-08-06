@@ -1,10 +1,14 @@
+{% load i18n %}
 {% if course.wiki.all %}
     {% with course.wiki.all.0 as wiki %}
-        <a href="{% url 'view_wiki_page' course.slug %}"> Course Wiki </a>
+        <a href="{% url 'view_wiki_page' course.slug %}"> {% trans "Course Wiki" %} </a>
     {% endwith %}
 {% else %}
-    This course doesn't have a <b> wiki </b> yet. 
+    {% trans "This course doesn't have a wiki yet." %}
     {% if user_auth.university == course.university %}
-        Contribute by <a href="{% url 'edit_wiki_page' course.slug %}">creating</a> one.
+        {% url 'edit_wiki_page' course_slug as edit_wiki_url %}
+        {% blocktrans with '<a href="{{0}}">'|safewrap:edit_wiki_url as link_start and '</a>' as link_stop %}
+            Contribute by {{link_start}}creating{{link_stop}} one.
+        {% endblocktrans %}
     {% endif %}
 {% endif %}

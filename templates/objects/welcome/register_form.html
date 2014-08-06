@@ -1,7 +1,8 @@
+{% load i18n %}
 <div class="panel panel-default register-panel">
 
     <div class="panel-heading register-heading">
-        <h3 class="panel-title">Register with <strong>Connect Academy </strong></h3>
+        <h3 class="panel-title">{% trans "Register with <strong>Connect Academy </strong>" %}</h3>
     </div>
     
     <div class="panel-body" id = "welcome_page_panel-body">
@@ -58,7 +59,7 @@
             <div class="row">
                 <div class="col-xs-8 col-sm-8 col-md-8">
                     <div class="form-group">
-                        <input type="checkbox" name="is_professor" id="is_professor" value="True"/> I am a professor <br/>
+                        <input type="checkbox" name="is_professor" id="is_professor" value="True"/>{% trans "I am a professor" %}<br/>
                     </div>
                 </div>
                 <div class="col-xs-4 col-sm-4 col-md-4">

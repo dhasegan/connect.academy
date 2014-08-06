@@ -1,10 +1,8 @@
 # Django settings for academy project.
+from django.utils.translation import ugettext_lazy
 
 from os import environ, path
 import boto
-
-#Authentication Backends
-AUTHENTICATION_BACKENDS = ('app.auth.helpers.jUserBackend',)
 
 DEBUG = environ.get('ACADEMY_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
@@ -43,7 +41,12 @@ TIME_ZONE = 'Europe/Berlin'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = (
+  ('en', ugettext_lazy('English')),
+  ('de', ugettext_lazy('German')),
+  ('ro', ugettext_lazy('Romanian')),
+  ('sq', ugettext_lazy('Albanian')),
+)
 
 SITE_ID = 1
 
@@ -63,11 +66,9 @@ USE_TZ = True
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
 STATIC_ROOT = path.join(PROJECT_ROOT, 'staticfiles/')
 
 # URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
@@ -102,13 +103,15 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    "django.middleware.locale.LocaleMiddleware",
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "versioning.middleware.VersioningMiddleware",
 )
 
 AUTHENTICATION_BACKENDS = (
-    ('django.contrib.auth.backends.ModelBackend'),
+    'django.contrib.auth.backends.ModelBackend',
+    'app.auth.helpers.jUserBackend',
 )
 
 ROOT_URLCONF = 'academy.urls'
@@ -118,9 +121,6 @@ WSGI_APPLICATION = 'academy.wsgi.application'
 
 TEMPLATE_DIRS = (
     path.join(PROJECT_ROOT, 'templates'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -142,9 +142,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'django.contrib.humanize',
     'app', # our current app

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="search-sidebar">
   <div class="panel panel-default">
     <div class="panel-body">
@@ -7,7 +8,7 @@
 
       {% include 'objects/explore/categories.html' %}
 
-      <h5>Credits range:</h5>
+      <h5>{% trans "Credits range" %}:</h5>
       <div id="credits-slider"></div>
       <div class="credits-slider-values row">
         <div class="col-md-4">
@@ -21,7 +22,7 @@
 
       <hr>
 
-      <h5>Ratings range:</h5>
+      <h5>{% trans "Ratings range" %}:</h5>
       <div id="ratings-slider"></div>
       <div class="ratings-slider-values row">
         <div class="col-md-5">

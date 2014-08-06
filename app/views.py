@@ -32,7 +32,6 @@ def about(request):
 def dashboard(request):
     context = {
         'page': 'dashboard',
-        'user_auth': request.user
     }
 
     context = dict(context.items() + dashboard_context(request).items())

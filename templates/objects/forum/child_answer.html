@@ -1,8 +1,10 @@
 {% extends 'objects/forum/answer.html' %}
 
+{% load i18n %}
+
 {% block reply_form %}
     <small class="text-muted">
-        <a class="discussion-link" href="{% url 'forum_discussion' answer.answer.id %}"> {% if not answer.children > 2 %} Start Discussion {% else %} View Ongoing Discussion ({{ answer.children }}) {% endif %} </a>
+        <a class="discussion-link" href="{% url 'forum_discussion' answer.answer.id %}"> {% if not answer.children > 2 %} {% trans "Start Discussion" %} {% else %} {% trans "View Ongoing Discussion" %} ({{ answer.children }}) {% endif %} </a>
     </small>
 {% endblock reply_form %}
 

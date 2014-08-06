@@ -1,3 +1,5 @@
+{% load i18n %}
+
 {% if not user_auth %}
 
     <form class="navbar-form navbar-right login-form" method="post" action="/login">
@@ -12,7 +14,7 @@
         <div class="form-group">
           <input type="password" class="form-control login-input" placeholder="Password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-default"  id="login_button"  height="27px"><b> Login </b></button>
+        <button type="submit" class="btn btn-default"  id="login_button"  height="27px"><b> {% trans "Login" %} </b></button>
     </form>
 
 {% else %}
@@ -28,10 +30,10 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="{% url 'profile' user_auth.username %}">My profile </a></li>
-                    <li><a href="{% url 'manage_account' %}">Manage Account</a></li>
+                    <li><a href="{% url 'profile' user_auth.username %}">{% trans "My profile" %} </a></li>
+                    <li><a href="{% url 'manage_account' %}">{% trans "Manage Account" %}</a></li>
                     <li class="divider"></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
                 </ul>
             </div>
         </li>

@@ -1,16 +1,18 @@
+{% load i18n %}
+
 <form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post">
     {% csrf_token %}
 
     <div class="form-group">
-        <label for="homeworkName{{course.id}}">Homework Name</label>
-        <small> (Example: Homework1, Project1, ... ) </small>
+        <label for="homeworkName{{course.id}}">{% trans "Homework Name" %}</label>
+        <small> {% trans "(Example: Homework1, Project1, ... )" %} </small>
         <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" required>
     </div>
 
     <div class="form-group">
-        <label for="homeworkTopic{{course.id}}">Course Topic</label>
+        <label for="homeworkTopic{{course.id}}">{% trans "Course Topic" %}</label>
         <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}" required>
-            <option value=""> Please select one </option>
+            <option value=""> {% trans "Please select one" %} </option>
             {% for topic in topics %}
                 <option value="{{topic.id}}"> {{ topic.name }} </option>
             {% endfor %} 
@@ -18,12 +20,12 @@
     </div>
 
     <div class="form-group">
-        <label for="homeworkDescription{{course.id}}">Description (optional)</label>
+        <label for="homeworkDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
         <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" rows="3"></textarea>
     </div>
 
     <div class="form-group">
-        <label for="homeworkStart{{course.id}}">Start</label>
+        <label for="homeworkStart{{course.id}}">{% trans "Start" %}</label>
         <div class='input-group date homework-start-datetime' data-date-format="DD/MM/YYYY HH:mm">
             <input type='text' class="form-control homework-datetime-input" name="start" id="homeworkStart{{course.id}}" />
             <span class="input-group-addon homework-datetime-button">
@@ -33,7 +35,7 @@
     </div>
 
     <div class="form-group">
-        <label for="homeworkDeadline{{course.id}}">Deadline</label>
+        <label for="homeworkDeadline{{course.id}}">{% trans "Deadline" %}</label>
         <div class='input-group date homework-deadline-datetime' data-date-format="DD/MM/YYYY HH:mm">
             <input type='text' class="form-control homework-datetime-input" name="deadline" id="homeworkDeadline{{course.id}}" />
             <span class="input-group-addon homework-datetime-button">
@@ -42,7 +44,7 @@
         </div>
     </div>
 
-    <div class="form-group text-muted"> (times are in the local timezone) </div>
+    <div class="form-group text-muted"> {% trans "(times are in the local timezone)" %} </div>
     {% comment %} >>> Say it is in UTC timezone if it is not provided <<< {% endcomment %}
 
 

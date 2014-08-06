@@ -1,13 +1,16 @@
 {% extends "pages/base.html" %}
+
 {% load humanize %}
+{% load i18n %}
+
 {% block content %}
 
 <div class="row">
   <div class="panel panel-default">
 	  <div class = "panel-heading">
-      <h4>Wiki page of <a href="{% url 'course_page' course.slug %}"> {{course.name}} </a></h4>
+      <h4>{% trans "Wiki page" %} {% trans "of" %} <a href="{% url 'course_page' course.slug %}"> {{course.name}} </a></h4>
       {% if can_edit_wiki %}
-        <a class='btn btn-default' href='{% url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
+        <a class='btn btn-default' href='{% url "edit_wiki_page" course.slug %}'>{% trans "Edit Wiki" %}</a>
       {% endif %}
     </div>
 
@@ -18,7 +21,7 @@
   		</div>
       {% if can_edit_wiki %}
         <div class="revision">
-            <a href="{% url 'versioning_revision_list' wiki_type_id wiki.id %}">View the list of revisions.</a>
+            <a href="{% url 'versioning_revision_list' wiki_type_id wiki.id %}">{% trans "View the list of revisions." %}</a>
         </div>
       {% endif %}
     </div>

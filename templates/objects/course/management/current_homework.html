@@ -1,6 +1,8 @@
+{% load i18n %}
+
 {% if homework %}
     <div class="course-detail">
-        <strong> Homework: </strong>
+        <strong> {% trans "Homework" %}: </strong>
         <div class="content">
             <ul>
                 {% for hw in homework %}
@@ -9,7 +11,7 @@
                         {% if hw.description %}
                             <small> {{ hw.description }} </small>
                         {% endif %}
-                        <span class="text-danger"> due {{ hw.deadline.end }} </span>
+                        <span class="text-danger"> {% trans "due" %} {{ hw.deadline.end }} </span>
                     </li>
                 {% endfor %}
             </ul>

@@ -1,8 +1,10 @@
 {% extends 'pages/base.html' %}
 
+{% load i18n %}
+
 {% block content %}
     {% if error_type == 'not-active' %}
-        <div class="alert alert-danger" role="alert">You have to activate your account to do that!</div>
+        <div class="alert alert-danger" role="alert">{% trans "You have to activate your account to do that!" %}</div>
     {% else %}
     {% endif %}
 {% endblock %}
