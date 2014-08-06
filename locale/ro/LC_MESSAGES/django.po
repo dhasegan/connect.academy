@@ -21,19 +21,19 @@ msgstr ""
 
 #: academy/settings.py:45
 msgid "English"
-msgstr ""
+msgstr "Engleză"
 
 #: academy/settings.py:46
 msgid "German"
-msgstr ""
+msgstr "Germană"
 
 #: academy/settings.py:47
 msgid "Romanian"
-msgstr ""
+msgstr "Română"
 
 #: academy/settings.py:48
 msgid "Albanian"
-msgstr ""
+msgstr "Albaneză"
 
 #: templates/emails/require_confirmation.html:1
 #, python-format
@@ -58,10 +58,11 @@ msgid ""
 "Greetings\n"
 "The Connect.academy Team.\n"
 msgstr ""
+"\n Dragă %(fname)s, \n\n Multumim pentru înregistrarea la Connect.Academy! Un cont a fost creat cu această adresă de e-mail \n Vă rugăm confirmați contul dvs. urmând link-ul de mai jos: \n\n %(confirmation_link)s \n \n \n Dacă nu ai înregistrat cu Connect.Academy, puteți ignora acest mesaj, în cazul în care vom șterge contul în 3 zile. Dacă doriți să ștergeți contul acum, aveți posibilitatea să urmați link-ul de mai jos: \n \n %(delete_link)s \n \n \n Salutări, \n Echipa Connect.academy. \n"
 
 #: templates/objects/navbar.html:8
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Schimbă Navigarea"
 
 #: templates/objects/navbar.html:23 templates/objects/page_title.html:3
 msgid "Dashboard"
@@ -69,7 +70,7 @@ msgstr "Birou"
 
 #: templates/objects/navbar.html:24 templates/objects/page_title.html:4
 msgid "Explore"
-msgstr "Explora"
+msgstr "Explorează"
 
 #: templates/objects/navbar.html:25
 msgid "All comments"
@@ -77,231 +78,231 @@ msgstr "Toate comentarile"
 
 #: templates/objects/navbar.html:26
 msgid "Schedule"
-msgstr ""
+msgstr "Program"
 
 #: templates/objects/navbar_login.html:15
 msgid "Username or Email"
-msgstr ""
+msgstr "Nume de utilizator sau e-mail"
 
 #: templates/objects/navbar_login.html:18
 #: templates/objects/welcome/register_form.html:45
 #: templates/pages/auth/user_account.html:18
 #: templates/pages/auth/user_account.html:65
 msgid "Password"
-msgstr ""
+msgstr "Parolă"
 
 #: templates/objects/navbar_login.html:20
 msgid "Login"
-msgstr ""
+msgstr "Conectare"
 
 #: templates/objects/navbar_login.html:37
 msgid "My profile"
-msgstr ""
+msgstr "Profilul meu"
 
 #: templates/objects/navbar_login.html:38
 msgid "Manage Account"
-msgstr ""
+msgstr "Administrare cont"
 
 #: templates/objects/navbar_login.html:40
 msgid "Logout"
-msgstr ""
+msgstr "Deconectare"
 
 #: templates/objects/page_title.html:5
 msgid "Welcome"
-msgstr ""
+msgstr "Bine ați venit"
 
 #: templates/objects/page_title.html:7
 #: templates/objects/course/management/panel.html:24
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 #: templates/objects/page_title.html:8
 msgid "New post"
-msgstr ""
+msgstr "Mesaj"
 
 #: templates/objects/page_title.html:10
 msgid "Manage my account"
-msgstr ""
+msgstr "Administrarea contului meu"
 
 #: templates/objects/page_title.html:11
 msgid "View Schedule"
-msgstr ""
+msgstr "Vezi programul"
 
 #: templates/objects/page_title.html:12
 msgid "Edit wiki"
-msgstr ""
+msgstr "Editează wiki"
 
 #: templates/objects/page_title.html:13
 #: templates/objects/course/course_wiki.html:10
 #: templates/objects/course/sidebar.html:29
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: templates/objects/page_title.html:14
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/objects/page_title.html:15
 msgid "Set email"
-msgstr ""
+msgstr "Setează e-mail"
 
 #: templates/objects/page_title.html:16
 msgid "Error!"
-msgstr ""
+msgstr "Eroare!"
 
 #: templates/objects/page_title.html:17
 msgid "About"
-msgstr ""
+msgstr "Despre Noi"
 
 #: templates/objects/page_title.html:18
 msgid "Disclaimer"
-msgstr ""
+msgstr "Disclaimer"
 
 #: templates/objects/admin/category_forms_left.html:4
 #: templates/objects/admin/category_forms_left.html:9
 msgid "Category Name"
-msgstr ""
+msgstr "Numele categoriei"
 
 #: templates/objects/admin/category_forms_left.html:23
 msgid "Administrators"
-msgstr ""
+msgstr "Administratorii"
 
 #: templates/objects/admin/category_forms_left.html:32
 msgid "Course Registration"
-msgstr ""
+msgstr "Inregistrare Curs"
 
 #: templates/objects/admin/category_forms_left.html:33
 msgid "Status"
-msgstr ""
+msgstr "Stare"
 
 #: templates/objects/admin/category_forms_left.html:35
 #: templates/objects/course/management/demand_homework.html:28
 msgid "Start"
-msgstr ""
+msgstr "Început"
 
 #: templates/objects/admin/category_forms_left.html:45
 #: templates/objects/course/management/demand_homework.html:38
 msgid "Deadline"
-msgstr ""
+msgstr "Termen"
 
 #: templates/objects/admin/category_forms_left.html:54
 #: templates/objects/course/management/demand_homework.html:47
 msgid "(times are in the local timezone)"
-msgstr ""
+msgstr "(timpul este în zona de fus orar local)"
 
 #: templates/objects/admin/category_forms_left.html:67
 msgid "Delete Category"
-msgstr ""
+msgstr "Ștergeți Categorie"
 
 #: templates/objects/admin/category_forms_left.html:68
 msgid "Select \"Delete all\" if you want to also delete all subcategories"
-msgstr ""
+msgstr "Selectați \"Delete all \" dacă doriți să ștergeți toate subcategoriile"
 
 #: templates/objects/admin/category_forms_left.html:74
 msgid "Delete all"
-msgstr ""
+msgstr "Ștergeți toate"
 
 #: templates/objects/admin/category_forms_right.html:3
 msgid "Assign an administrator"
-msgstr ""
+msgstr "Atribuiţi un administrator"
 
 #: templates/objects/admin/category_forms_right.html:9
 #: templates/objects/admin/course_forms_right.html:10
 msgid "Select a user"
-msgstr ""
+msgstr "Selectați un utilizator"
 
 #: templates/objects/admin/category_forms_right.html:25
 msgid "Add a sub-category"
-msgstr ""
+msgstr "Adăugați o sub-categorie"
 
 #: templates/objects/admin/category_forms_right.html:30
 msgid "Name"
-msgstr ""
+msgstr "Nume"
 
 #: templates/objects/admin/category_forms_right.html:33
 #: templates/objects/course/course_info.html:52
 msgid "Abbreviation"
-msgstr ""
+msgstr "Abreviere"
 
 #: templates/objects/admin/category_forms_right.html:45
 #: templates/objects/admin/course_forms_right.html:25
 msgid "Move to category"
-msgstr ""
+msgstr "Mutare în categorie"
 
 #: templates/objects/admin/category_forms_right.html:51
 #: templates/objects/admin/course_forms_right.html:33
 msgid "Select a category"
-msgstr ""
+msgstr "Selectați o categorie"
 
 #: templates/objects/admin/category_forms_right.html:69
 msgid "Move course to this category"
-msgstr ""
+msgstr "Mutare curs la această categorie"
 
 #: templates/objects/admin/category_forms_right.html:75
 msgid "Select a course"
-msgstr ""
+msgstr "Selectați un curs"
 
 #: templates/objects/admin/course_forms_left.html:3
 #: templates/objects/admin/course_forms_left.html:8
 msgid "Course Name"
-msgstr ""
+msgstr "Nume cursului"
 
 #: templates/objects/admin/course_forms_left.html:20
 #: templates/objects/dashboard/student.html:19
 #: templates/objects/explore/course_block.html:35
 msgid "Professors"
-msgstr ""
+msgstr "Profesori"
 
 #: templates/objects/admin/course_forms_right.html:3
 msgid "Assign a professor"
-msgstr ""
+msgstr "Atribuiţi un profesor"
 
 #: templates/objects/course/additional_details.html:5
 msgid "Additional information"
-msgstr ""
+msgstr "Informații suplimentare"
 
 #: templates/objects/course/additional_details.html:14
 msgid "Grade breakdown"
-msgstr ""
+msgstr "Detalii note"
 
 #: templates/objects/course/additional_details.html:23
 msgid "Additional Information about grades"
-msgstr ""
+msgstr "Informații suplimentare despre note"
 
 #: templates/objects/course/additional_details.html:32
 msgid "Hours per week"
-msgstr ""
+msgstr "Ore pe săptămână"
 
 #: templates/objects/course/course_forum.html:7
 msgid ""
 "There is no post yet for this course! Why don't you post the first one by "
-msgstr ""
+msgstr "Nu există nici un mesaj pentru acest curs! De ce nu te posta primul mesaj printr-un "
 
 #: templates/objects/course/course_forum.html:8
 msgid "clicking here"
-msgstr ""
+msgstr "click aici"
 
 #: templates/objects/course/course_info.html:28
 #: templates/objects/course/sidebar.html:15
 #, python-format
 msgid "Professor%(professors|pluralize)s"
-msgstr ""
+msgstr "Profesori %(professors|pluralize)s"
 
 #: templates/objects/course/course_info.html:47
 msgid "Course ID"
-msgstr ""
+msgstr "ID-ul cursului"
 
 #: templates/objects/course/course_info.html:54
 msgid "Teaching Assistants"
-msgstr ""
+msgstr "Asistenţi"
 
 #: templates/objects/course/course_info.html:57
 msgid "Semester"
-msgstr ""
+msgstr "Semestru"
 
 #: templates/objects/course/course_info.html:60
 msgid "Credits"
-msgstr ""
+msgstr "Credite"
 
 #: templates/objects/course/course_info.html:69
 #: templates/objects/course/syllabus.html:10
@@ -310,29 +311,29 @@ msgstr ""
 #: templates/objects/dashboard/student.html:27
 #: templates/objects/explore/course_block.html:45
 msgid "Description"
-msgstr ""
+msgstr "Descriere"
 
 #: templates/objects/course/course_info.html:81
 msgid "Syllabus"
-msgstr ""
+msgstr "Programa"
 
 #: templates/objects/course/course_resources.html:6
 msgid "You are a lucky person! There is no homework for you..."
-msgstr ""
+msgstr "Ești o persoană norocoasă! Nu există nici o temă pentru tine ..."
 
 #: templates/objects/course/course_resources.html:10
 msgid "Assignments"
-msgstr ""
+msgstr "Teme"
 
 #: templates/objects/course/course_resources.html:21
 #: templates/objects/course/documents.html:5
 msgid "Documents"
-msgstr ""
+msgstr "Documente"
 
 #: templates/objects/course/course_wiki.html:11
 #: templates/objects/wiki/course_page_link.html:7
 msgid "This course doesn't have a wiki yet."
-msgstr ""
+msgstr "Acest curs nu are un wiki încă."
 
 #: templates/objects/course/course_wiki.html:14
 #, python-format
@@ -341,7 +342,7 @@ msgid ""
 "                        Contribute by %(link_start)s creating %(link_stop)s "
 "one.\n"
 "                    "
-msgstr ""
+msgstr "\n Contribuie prin %(link_start)s crearea %(link_stop)s unuia . \n                    "
 
 #: templates/objects/course/course_wiki.html:19
 msgid ""
@@ -350,18 +351,18 @@ msgid ""
 "Keep this Wiki Page structured according to the course syllabus and "
 "complement the course material by adding additional relevant information in "
 "the right chapters."
-msgstr ""
+msgstr "Pagini Wiki sunt populate de elevi și care sunt menite pentru tine de a accesa informații relevante cu ușurință și de a facilita procesul de studiu. Păstrați această pagină Wiki structurată în conformitate cu programa cursului și completeazmaterialele de curs prin adăugarea de informații suplimentare relevante în capitolele potrivite."
 
 #: templates/objects/course/homework_student.html:17
 #: templates/objects/course/homework_submit.html:27
 msgid "started on"
-msgstr ""
+msgstr "a început pe"
 
 #: templates/objects/course/homework_student.html:18
 #: templates/objects/course/homework_submit.html:28
 #: templates/objects/course/management/current_homework.html:14
 msgid "due"
-msgstr ""
+msgstr "până	pe"
 
 #: templates/objects/course/homework_student.html:26
 #, python-format
@@ -370,129 +371,129 @@ msgid ""
 "                                            %(hw.stats.submitted)s out of "
 "%(hw.stats.students)s submitted </div>\n"
 "                                        "
-msgstr ""
+msgstr "\n %(hw.stats.submitted)s din %(hw.stats.students)s elevi și-au depus tema </div> \n                                        "
 
 #: templates/objects/course/homework_student.html:31
 msgid "You already submitted this homework"
-msgstr ""
+msgstr "Ai depus deja acestă temă"
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Resubmit homework"
-msgstr ""
+msgstr "Retrimiteți tema"
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Submit homework"
-msgstr ""
+msgstr "Trimite tema"
 
 #: templates/objects/course/homework_submit.html:18
 msgid "Resubmitting a homework will overwrite previous submissions."
-msgstr ""
+msgstr "Retrimiterea o tema va suprascrie propunerile anterioare."
 
 #: templates/objects/course/homework_submit.html:32
 msgid "Upload your homework"
-msgstr ""
+msgstr "Încărcați temele"
 
 #: templates/objects/course/homework_submit.html:39
 #: templates/objects/course/registration.html:20
 msgid "No, cancel"
-msgstr ""
+msgstr "Nu, anulează"
 
 #: templates/objects/course/registration.html:9
 msgid "Are you sure you want to register for this course?"
-msgstr ""
+msgstr "Sunteți sigur că doriți să înregistrați pentru acest curs?"
 
 #: templates/objects/course/registration.html:34
 msgid "Register"
-msgstr ""
+msgstr "Înregistrare"
 
 #: templates/objects/course/registration.html:36
 msgid "I am teaching this course"
-msgstr ""
+msgstr "Eu predau acest curs"
 
 #: templates/objects/course/registration.html:40
 #: templates/objects/dashboard/student.html:36
 msgid "Pending Registration"
-msgstr ""
+msgstr "În așteptarea înregistrării"
 
 #: templates/objects/course/registration.html:45
 #: templates/objects/dashboard/student.html:34
 msgid "Registered"
-msgstr ""
+msgstr "Înregistrați"
 
 #: templates/objects/course/review.html:41
 msgid "Innapropriate?"
-msgstr ""
+msgstr "Nepotrivit?"
 
 #: templates/objects/course/review.html:46
 msgid "Flag"
-msgstr ""
+msgstr "Semnalizează"
 
 #: templates/objects/course/review.html:58
 msgid "This review was flagged as inaccurate or offensive. Click to reveal."
-msgstr ""
+msgstr "Aceast comentariu a fost marcat ca nepotrivit. Faceți clic pentru a dezvălui."
 
 #: templates/objects/course/review.html:60
 msgid "This review was flagged as inaccurate or offensive. Log in to view it."
-msgstr ""
+msgstr "Aceast comentariu a fost marcat ca nepotrivit. Autentifica-te pentru a putea vizualiza comentariul."
 
 #: templates/objects/course/reviews_detail.html:6
 msgid "Submit a review"
-msgstr ""
+msgstr "Trimite un comentariu"
 
 #: templates/objects/course/reviews_detail.html:9
 msgid "Rate course"
-msgstr ""
+msgstr "Evaluează cursul"
 
 #: templates/objects/course/reviews_detail.html:12
 msgid "Reviews"
-msgstr ""
+msgstr "Comentarii"
 
 #: templates/objects/course/sidebar.html:27
 msgid "Activity log"
-msgstr ""
+msgstr "Jurnalul de activitate"
 
 #: templates/objects/course/sidebar.html:28
 msgid "Course info"
-msgstr ""
+msgstr "Informații Curs"
 
 #: templates/objects/course/sidebar.html:30
 msgid "Connect"
-msgstr ""
+msgstr "Connect"
 
 #: templates/objects/course/sidebar.html:31
 msgid "Resources and Assignments"
-msgstr ""
+msgstr "Resurse și teme"
 
 #: templates/objects/course/sidebar_forum.html:7
 msgid "Forum posts"
-msgstr ""
+msgstr "Întrebări forum"
 
 #: templates/objects/course/sidebar_wiki.html:9
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "Wiki page"
-msgstr ""
+msgstr "Pagina Wiki"
 
 #: templates/objects/course/sidebar_wiki.html:11
 #: templates/pages/wiki/view_wiki.html:13
 msgid "Edit Wiki"
-msgstr ""
+msgstr "Editare Wiki"
 
 #: templates/objects/course/sidebar_wiki.html:14
 msgid "Contributors"
-msgstr ""
+msgstr "Colaboratori"
 
 #: templates/objects/course/submit_review.html:8
 msgid "Write a review..."
-msgstr ""
+msgstr "Scrie un comentariu..."
 
 #: templates/objects/course/submit_review.html:11
 #: templates/objects/forum/new_answer.html:11
 #: templates/objects/forum/new_post.html:28
 msgid "Submit"
-msgstr ""
+msgstr "Trimite"
 
 #: templates/objects/course/submit_review.html:13
 #: templates/objects/forum/answer.html:11
@@ -500,218 +501,218 @@ msgstr ""
 #: templates/objects/forum/new_answer.html:15
 #: templates/objects/forum/new_post.html:22
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonim"
 
 #: templates/objects/course/management/current_homework.html:5
 #: templates/objects/course/management/panel.html:21
 msgid "Homework"
-msgstr ""
+msgstr "Tema"
 
 #: templates/objects/course/management/demand_homework.html:7
 msgid "Homework Name"
-msgstr ""
+msgstr "Nume tema"
 
 #: templates/objects/course/management/demand_homework.html:8
 msgid "(Example: Homework1, Project1, ... )"
-msgstr ""
+msgstr "(Exemplu: Tema1, Proiectul1, ...)"
 
 #: templates/objects/course/management/demand_homework.html:13
 #: templates/objects/course/management/upload_document.html:12
 msgid "Course Topic"
-msgstr ""
+msgstr "Subiectul cursului"
 
 #: templates/objects/course/management/demand_homework.html:15
 msgid "Please select one"
-msgstr ""
+msgstr "Vă rugăm să selectați una"
 
 #: templates/objects/course/management/demand_homework.html:23
 #: templates/objects/course/management/upload_document.html:22
 #: templates/objects/forum/new_post.html:11
 msgid "(optional)"
-msgstr ""
+msgstr "(opţional)"
 
 #: templates/objects/course/management/panel.html:12
 msgid "Pending Registrations"
-msgstr ""
+msgstr "Așteptare înregistrare"
 
 #: templates/objects/course/management/panel.html:15
 msgid "Registered Students"
-msgstr ""
+msgstr "Elevii înregistrați"
 
 #: templates/objects/course/management/panel.html:18
 #: templates/objects/course/management/panel.html:63
 msgid "Upload Documents"
-msgstr ""
+msgstr "Trimite documente"
 
 #: templates/objects/course/management/panel.html:36
 msgid ""
 "You cannot approve students' registrations until you are confirmed as a "
 "professor of this course"
-msgstr ""
+msgstr "Nu se poate aproba înregistrări ale elevilor până când sunteți confirmat ca un profesor al acestui curs"
 
 #: templates/objects/course/management/panel.html:46
 msgid ""
 "You cannot see registered students until you are confirmed as a professor of "
 "this course"
-msgstr ""
+msgstr "Nu puteți vedea studenți înregistrați până când sunteți confirmat ca un profesor al acestui curs"
 
 #: templates/objects/course/management/panel.html:56
 msgid "Documents Uploaded"
-msgstr ""
+msgstr "Documentele încărcate"
 
 #: templates/objects/course/management/panel.html:72
 msgid ""
 "You cannot upload documents until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Nu puteți încărca documente până când sunteți confirmat ca un profesor al acestui curs"
 
 #: templates/objects/course/management/panel.html:97
 msgid ""
 "You cannot ask for homework until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Nu poti cere temele până când sunteți confirmat ca un profesor al acestui curs"
 
 #: templates/objects/course/management/panel.html:108
 msgid ""
 "You cannot manage the forum until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Nu puteți administra forumul până când sunteți confirmat ca un profesor al acestui curs"
 
 #: templates/objects/course/management/pending_registrations.html:11
 #: templates/objects/course/management/registered_students.html:12
 msgid "Select All"
-msgstr ""
+msgstr "Selectează toate"
 
 #: templates/objects/course/management/pending_registrations.html:31
 #: templates/objects/course/management/registered_students.html:36
 msgid "There are no pending registrations for this course."
-msgstr ""
+msgstr "Nu există înregistrări în așteptare pentru acest curs."
 
 #: templates/objects/course/management/registered_students.html:8
 msgid "Send an e-mail to"
-msgstr ""
+msgstr "Trimite un e-mail la"
 
 #: templates/objects/course/management/registered_students.html:26
 msgid "Subject"
-msgstr ""
+msgstr "Subiect"
 
 #: templates/objects/course/management/registered_students.html:27
 msgid "Email Body"
-msgstr ""
+msgstr "Text email"
 
 #: templates/objects/course/management/upload_document.html:7
 msgid "Document Name"
-msgstr ""
+msgstr "Numele documentului"
 
 #: templates/objects/course/management/upload_document.html:14
 msgid "No specific topic"
-msgstr ""
+msgstr "Niciun subiect specific"
 
 #: templates/objects/dashboard/professor.html:10
 msgid "Pending Confirmation"
-msgstr ""
+msgstr "În așteptarea confirmării"
 
 #: templates/objects/dashboard/student.html:29
 #: templates/objects/explore/course_block.html:46
 msgid "(more)"
-msgstr ""
+msgstr "(mai mult)"
 
 #: templates/objects/explore/search_sidebar.html:5
 msgid "Search by course name"
-msgstr ""
+msgstr "Căutare după nume curs"
 
 #: templates/objects/explore/search_sidebar.html:11
 msgid "Credits range"
-msgstr ""
+msgstr "Interval credite"
 
 #: templates/objects/explore/search_sidebar.html:25
 msgid "Ratings range"
-msgstr ""
+msgstr "Interval calificative"
 
 #: templates/objects/forum/answer.html:11
 #: templates/objects/forum/answers.html:14
 msgid "Posted by"
-msgstr ""
+msgstr "Adăugat de:"
 
 #: templates/objects/forum/answer.html:24
 msgid "Reply"
-msgstr ""
+msgstr "Răspunde"
 
 #: templates/objects/forum/answers.html:19
 msgid "in"
-msgstr ""
+msgstr "în"
 
 #: templates/objects/forum/answers.html:25
 msgid "Answer"
-msgstr ""
+msgstr "Răspuns"
 
 #: templates/objects/forum/answers.html:56
 msgid "Best Answers"
-msgstr ""
+msgstr "Cele mai bune răspunsuri"
 
 #: templates/objects/forum/answers.html:62
 msgid "There are no answers yet."
-msgstr ""
+msgstr "Deocamdată nu există răspunsuri."
 
 #: templates/objects/forum/bar.html:3
 msgid "Forum page of"
-msgstr ""
+msgstr "Pagina de Forum al"
 
 #: templates/objects/forum/bar.html:7
 msgid "Filter"
-msgstr ""
+msgstr "Filtru"
 
 #: templates/objects/forum/bar.html:11 templates/objects/forum/bar.html:15
 msgid "all"
-msgstr ""
+msgstr "toate"
 
 #: templates/objects/forum/bar.html:24
 msgid "New Post"
-msgstr ""
+msgstr "Mesaj nou"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "Start Discussion"
-msgstr ""
+msgstr "Pornește o discuție"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "View Ongoing Discussion"
-msgstr ""
+msgstr "Vezi discuția în curs"
 
 #: templates/objects/forum/discussion.html:14
 msgid "Discussion on the reply"
-msgstr ""
+msgstr "Discuții cu privire la răspunsul"
 
 #: templates/objects/forum/discussion.html:14
 msgid "back to best answers"
-msgstr ""
+msgstr "înapoi la cele mai bune răspunsuri"
 
 #: templates/objects/forum/forum_management.html:3
 msgid "There is a forum for this course."
-msgstr ""
+msgstr "Există un forum pentru acest curs."
 
 #: templates/objects/forum/forum_management.html:3
 msgid "Click here"
-msgstr ""
+msgstr "Click aici"
 
 #: templates/objects/forum/new_answer.html:7
 msgid "Type in your answer"
-msgstr ""
+msgstr "Introduceți răspunsul dvs."
 
 #: templates/objects/forum/new_post.html:7
 msgid "Post title"
-msgstr ""
+msgstr "Titlu mesaj"
 
 #: templates/objects/forum/new_post.html:8
 msgid "Your question"
-msgstr ""
+msgstr "Întrebarea dumneavoastră"
 
 #: templates/objects/forum/new_post.html:11
 msgid "Additional description"
-msgstr ""
+msgstr "Descriere suplimentară"
 
 #: templates/objects/forum/new_post_tags.html:2
 msgid "Select an appropriate tag for your post"
-msgstr ""
+msgstr "Selectați o etichetă corespunzătoare pentru postul tau"
 
 #: templates/objects/notifications/auth/course_registration_success.html:2
 #, python-format
@@ -719,7 +720,7 @@ msgid ""
 "\n"
 "Your registration for the course <b>%(course_name)s</b> was successful. You "
 "will be notified when the registration is approved.\n"
-msgstr ""
+msgstr "\n Înregistrarea pentru cursul <b> %(course_name)s </b> a fost de succes. Veți fi anunțat când înregistrarea este aprobat. \n"
 
 #: templates/objects/notifications/auth/email_not_activated.html:6
 #, python-format
@@ -728,7 +729,7 @@ msgid ""
 "Your account is not yet activated. Please check your email and open the "
 "confirmation that we have sent you. %(link_start)s Resend confirmation link "
 "%(link_stop)s\n"
-msgstr ""
+msgstr "\n Contul nu este înca activat. Vă rugăm să verificați e-mail-ul și deschideți link-ul de confirmare pe care vi l-am trimis. %(link_start)s Mai trimite odată link-ul de confirmare %(link_stop)s \n"
 
 #: templates/objects/notifications/auth/email_not_set.html:5
 #, python-format
@@ -737,16 +738,19 @@ msgid ""
 "Your email is not yet set! Please set your email address by clicking "
 "%(link_start)s here %(link_stop)s .\n"
 msgstr ""
+"\n"
+"Email-ul nu este încă setat! Vă rugăm să setați adresa de email făcând clic %(link_start)s aici %(link_stop)s. \n"
 
 #: templates/objects/notifications/auth/email_taken.html:2
 msgid ""
 "Sorry, a user with that <b>e-mail address</b> already exists. If you already "
 "have an account, you can log in."
 msgstr ""
+"Ne pare rău, un utilizator cu această <b> adresa de email </b> există deja. Dacă aveți deja un cont, vă puteți conecta."
 
 #: templates/objects/notifications/auth/passwords_do_not_match.html:2
 msgid "Your <b>passwords</b> do not match. Please try again."
-msgstr ""
+msgstr "<b> Parolele </b> nu se potrivesc. Vă rugăm să încercați din nou."
 
 #: templates/objects/notifications/auth/university_not_found.html:2
 msgid ""
@@ -754,18 +758,21 @@ msgid ""
 "<b>e-mail address</b>. Please make sure that you your <b>university e-mail "
 "address</b> correctly or come back later."
 msgstr ""
+"Ne pare rău, nu avem o <b> universitate </b> cu acest <b> domeniu </b> din adresa dvs. de <b>  email </b>. Vă rugăm să vă asigurați că <b> email-ul </b> este scris corect sau reveniți mai târziu."
 
 #: templates/objects/notifications/auth/username_taken.html:2
 msgid ""
 "Sorry, a user with that <b> username </b> already exists. Please choose "
 "another one."
 msgstr ""
+"Ne pare rău, un utilizator cu care <b> numele de utilizator </b> exista deja. Vă rugăm să alegeți altul."
 
 #: templates/objects/notifications/auth/wrong_username_or_password.html:2
 msgid ""
 "The username, email or password is incorrect. If you don't have an account, "
 "register below."
 msgstr ""
+"Numele de utilizator, e-mail sau parola este incorectă. Daca nu ai un cont, înregistrați-vă mai jos."
 
 #: templates/objects/notifications/profile/changed_object.html:2
 #, python-format
@@ -773,72 +780,73 @@ msgid ""
 "\n"
 "Your <b>%(changed_object)s</b> has been changed <b>successfully</b>!\n"
 msgstr ""
+"\n <b> %(changed_object)s </b> a fost schimbat <b> cu succes </b>! \n"
 
 #: templates/objects/notifications/profile/incorrect_password.html:2
 msgid ""
 "\n"
 "Your <b>password</b> is <b>incorrect</b>. Please check your password and try "
 "again.\n"
-msgstr ""
+msgstr "\n <b> Parola </b> este <b> incorectă </ b>. Vă rugăm să verificați parola și încercați din nou. \n"
 
 #: templates/objects/notifications/profile/not_matching_passwords.html:2
 msgid ""
 "\n"
 "Your <b>passwords</b> do <b>not match</b>. Please check your passwords and "
 "try again.\n"
-msgstr ""
+msgstr "\n <b> Parolele </b> nu se potrivesc. Vă rugăm să verificați parolele și încercați din nou. \n"
 
 #: templates/objects/notifications/profile/username_exists.html:2
 msgid ""
 "\n"
 "A user with that <b> username </b> already exists. If you wish to change "
 "your username, please choose another one.\n"
-msgstr ""
+msgstr "\n Acest <b> nume de utilizator </ b> există deja. Dacă doriți să schimbați numele de utilizator, vă rugăm să alegeți altul. \n"
 
 #: templates/objects/notifications/wiki/wiki_created.html:2
 #, python-format
 msgid ""
 "\n"
 "Successfully created a Wiki Page for course <b>%(course_name)s</b>\n"
-msgstr ""
+msgstr "\n S-a creat o pagină Wiki pentru cursul <b>%(course_name)s </b> \n"
 
 #: templates/objects/notifications/wiki/wiki_edited.html:2
 msgid ""
 "\n"
 "<b>Saved</b>\n"
-msgstr ""
+msgstr "\n <b> Salvat </b> \n"
 
 #: templates/objects/welcome/register_form.html:5
 msgid "Register with <strong>Connect Academy </strong>"
-msgstr ""
+msgstr "Înregistrează-te cu <strong> Connect Academy </strong>"
 
 #: templates/objects/welcome/register_form.html:15
 msgid "First Name"
-msgstr ""
+msgstr "Prenume"
 
 #: templates/objects/welcome/register_form.html:20
 msgid "Last Name"
-msgstr ""
+msgstr "Nume"
 
 #: templates/objects/welcome/register_form.html:28
 msgid "University Email address"
-msgstr ""
+msgstr "Email-ul de la universitate"
 
 #: templates/objects/welcome/register_form.html:35
 msgid "Username"
-msgstr ""
+msgstr "Nume utilizator"
 
 #: templates/objects/welcome/register_form.html:52
 msgid "Confirm Password"
-msgstr ""
+msgstr "Confirmă parola"
 
 #: templates/objects/welcome/register_form.html:62
 msgid "I am a professor"
-msgstr ""
+msgstr "Sunt un profesor"
 
 #: templates/objects/wiki/course_page_link.html:4
 msgid "Course Wiki"
-msgstr ""
+msgstr "Wiki cursului"
 
 #: templates/objects/wiki/course_page_link.html:10
 #, python-format
@@ -846,7 +854,7 @@ msgid ""
 "\n"
 "            Contribute by %(link_start)screating%(link_stop)s one.\n"
 "        "
-msgstr ""
+msgstr "\n Contribuie prin %(link_start)s crearea %(link_stop)s unuia. \n        "
 
 #: templates/objects/wiki/wiki_welcome.html:2
 #, python-format
@@ -857,68 +865,69 @@ msgid ""
 "information easily and facilitate your studying process. Keep this Wiki Page "
 "structured according to the course syllabus and complement the course "
 "material by adding additional relevant information in the right chapters.\n"
-msgstr ""
+msgstr "\n Acesta este pagina Wiki al cursului <b>%(course_name)s </b>. Pagini Wiki sunt populate de elevi și sunt menite pentru tine de a accesa informații relevante cu ușurință și de a facilita procesul de studiu. Păstrați acestă pagină Wiki structurată în conformitate cu programa cursului și completează materialele de curs prin adăugarea de informații suplimentare relevante în capitolele potrivite. \n"
 
 #: templates/pages/error.html:7
 msgid "You have to activate your account to do that!"
-msgstr ""
+msgstr "Trebuie să activezi contul dvs. pentru a face asta!"
 
 #: templates/pages/auth/set_email.html:8
 msgid "University E-mail Address"
-msgstr ""
+msgstr "Email-ul de la universitate"
 
 #: templates/pages/auth/user_account.html:10
 #: templates/pages/auth/user_account.html:22
 msgid "Change Username"
-msgstr ""
+msgstr "Schimbare Username"
 
 #: templates/pages/auth/user_account.html:15
 msgid "New Username"
-msgstr ""
+msgstr "Username nou"
 
 #: templates/pages/auth/user_account.html:30
 #: templates/pages/auth/user_account.html:44
 msgid "Change Password"
-msgstr ""
+msgstr "Schimbare parolă"
 
 #: templates/pages/auth/user_account.html:35
 msgid "Old Password"
-msgstr ""
+msgstr "Vechea parolă"
 
 #: templates/pages/auth/user_account.html:38
 msgid "New Password"
-msgstr ""
+msgstr "Noua parolă"
 
 #: templates/pages/auth/user_account.html:41
 msgid "Confirm New Password"
-msgstr ""
+msgstr "Confirmați noua parolă"
 
 #: templates/pages/auth/user_account.html:54
 #: templates/pages/auth/user_account.html:68
 msgid "Change Name"
-msgstr ""
+msgstr "Schimbare de nume"
 
 #: templates/pages/auth/user_account.html:59
 msgid "New First Name"
-msgstr ""
+msgstr "Prenume nou"
 
 #: templates/pages/auth/user_account.html:62
 msgid "New Last Name"
-msgstr ""
+msgstr "Nume nou"
 
 #: templates/pages/forum/new_post.html:10
 msgid "Submit post on the forum of course"
-msgstr ""
+msgstr "Trimite un post pe forum"
 
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "of"
-msgstr ""
+msgstr "din"
 
 #: templates/pages/wiki/edit_wiki_page.html:15
 msgid "Save"
-msgstr ""
+msgstr "Salvează"
 
 #: templates/pages/wiki/view_wiki.html:24
 msgid "View the list of revisions."
-msgstr ""
+msgstr "Vezi lista de revizii."
+
