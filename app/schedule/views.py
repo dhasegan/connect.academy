@@ -44,7 +44,11 @@ def view_schedule(request):
             data['id'] = appointment.id
             data['start'] = format_date(appointment.start.strftime(date_format))
             data['end'] = format_date(appointment.end.strftime(date_format))
-            data['title'] = appointment.course_topic.name if appointment.course_topic.name else appointment.description
+            if appointment.course_topic.name:
+            	data['title'] = appointment.course_topic.name 
+            else:
+            	data['title']= appointment.description
+            
             all_appointments.append(data)
 
     for appointment in personal_appointments:
@@ -52,7 +56,7 @@ def view_schedule(request):
         data['id'] = appointment.id
         data['start'] = format_date(appointment.start.strftime(date_format))
         data['end'] = format_date(appointment.end.strftime(date_format))
-        data['title'] = appointment.course_topic.name if appointment.course_topic.name else appointment.description
+        data['title'] = appointment.description
         all_appointments.append(data)
 
     context['appointments'] = json.dumps(all_appointments)

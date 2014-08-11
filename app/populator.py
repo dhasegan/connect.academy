@@ -452,12 +452,14 @@ class Populator:
         
         index = 0
         for course in courses:
-            for i in range(random.randint(1,5)):
+            course_topics = course.course_topics.all()
+            for i in range(len(course_topics)):
+                topic = course_topics[i]
                 start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
                 end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
                 d = "CourseAppointment " + str(index)
-                appointment = CourseAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,course=course)
+                appointment = CourseAppointment(start=pytz.utc.localize(start),end=pytz.utc.localize(end),location=l,description=d,course=course,course_topic=topic)
                 appointment.save()
                 index += 1
 
@@ -490,7 +492,7 @@ class Populator:
         print "Populating course appointments ..."
         status_course = Populator.populate_course_appointments()
         print "Populating personal appointments ..."
-        statuc_person = Populator.populate_personal_appointments()
+        status_person = Populator.populate_personal_appointments()
 
-        if status_course and statuc_person:
+        if status_course and status_person:
             print "Successfully populated the appointment tables"
