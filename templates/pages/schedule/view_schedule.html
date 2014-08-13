@@ -15,6 +15,7 @@
   };
 
   $(document).ready(function() {
+    var $calendar = $('#calendar');
     $('#calendar').weekCalendar({
       data: eventData,
 
@@ -26,6 +27,7 @@
       height: function($calendar) {
         return $(window).height() - $('h1').outerHeight(true);
       },
+
       eventRender: function(calEvent, $event) {
         if (calEvent.end.getTime() < new Date().getTime()) {
           $event.css('backgroundColor', '#aaa');
@@ -35,33 +37,135 @@
           });
         }
       },
+      
       eventNew: function(calEvent, $event) {
-        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+        var $dialogContent = $("#event_edit_container");
+        prepareFields($dialogContent);
+        var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+        var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+        var titleField = $dialogContent.find("input[name='title']");
+        var bodyField = $dialogContent.find("textarea[name='body']");
+        
+        $dialogContent.dialog({
+            modal: true,
+            title: "New Appointment",
+            close: function() {
+               $dialogContent.dialog("destroy");
+               $dialogContent.hide();
+               $('#calendar').weekCalendar("removeUnsavedEvents");
+            },
+            buttons: {
+               save : function() {
+                  calEvent.id = id;
+                  id++;
+                  calEvent.start = new Date(startField.val());
+                  calEvent.end = new Date(endField.val());
+                  calEvent.title = titleField.val();
+                  calEvent.body = bodyField.val();
+                  
+                  $calendar.weekCalendar("removeUnsavedEvents");
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                  $dialogContent.dialog("close");
+               },
+               cancel : function() {
+                  $dialogContent.dialog("");
+               }
+            }
+         }).show();
+
+        var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+        var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+        $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+        setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+        $(window).resize().resize();
       },
+
       eventDrop: function(calEvent, $event) {
         displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
+
       eventResize: function(calEvent, $event) {
         displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
+
       eventClick: function(calEvent, $event) {
         displayMessage('<strong>Clicked Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
+
       eventMouseover: function(calEvent, $event) {
         displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
+
       eventMouseout: function(calEvent, $event) {
         displayMessage('<strong>Mouseout Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
+
       noEvents: function() {
-        displayMessage('There are no events for this week');
+        displayMessage('There are no events for this week. YAY!');
       }
+
     });
 
     function displayMessage(message) {
       $('#message').html(message).fadeIn();
     }
+
+    function prepareFields($dialogContent) {
+      $dialogContent.find("input").val("");
+      $dialogContent.find("textarea").val("");
+   }
+
+    function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
+      for (var i = 0; i < timeslotTimes.length; i++) {
+        var startTime = timeslotTimes[i].start;
+        var endTime = timeslotTimes[i].end;
+        var startSelected = "";
+        if (startTime.getTime() === calEvent.start.getTime()) {
+          startSelected = "selected=\"selected\"";
+        }
+        var endSelected = "";
+        if (endTime.getTime() === calEvent.end.getTime()) {
+          endSelected = "selected=\"selected\"";
+        }
+        $startTimeField.append("<option value=\"" + startTime + "\" " + startSelected + ">" + timeslotTimes[i].startFormatted + "</option>");
+        $endTimeField.append("<option value=\"" + endTime + "\" " + endSelected + ">" + timeslotTimes[i].endFormatted + "</option>");
+
+      }
+      
+      $endTimeOptions = $endTimeField.find("option");
+      $startTimeField.trigger("change");
+   }
+
+   var $endTimeField = $("select[name='end']");
+   var $endTimeOptions = $endTimeField.find("option");
+
+   //reduces the end time options to be only after the start time options.
+   $("select[name='start']").change(function() {
+      var startTime = $(this).find(":selected").val();
+      var currentEndTime = $endTimeField.find("option:selected").val();
+      $endTimeField.html(
+            $endTimeOptions.filter(function() {
+               return startTime < $(this).val();
+            })
+            );
+
+      var endTimeSelected = false;
+      $endTimeField.find("option").each(function() {
+         if ($(this).val() === currentEndTime) {
+            $(this).attr("selected", "selected");
+            endTimeSelected = true;
+            return false;
+         }
+      });
+
+      if (!endTimeSelected) {
+         //automatically select an end date 2 slots away.
+         $endTimeField.find("option:eq(1)").attr("selected", "selected");
+      }
+
+   });
+
+
 
   });
 </script>
@@ -82,4 +186,26 @@
   </p>
 
   <div id="calendar"></div>
+
+  <div id="event_edit_container" hidden>
+    <form>
+      <ul>
+        <li>
+          <span>Date: </span><span class="date_holder"></span> 
+        </li>
+        <li>
+          <label for="start">Start Time: </label><select name="start"><option value="">Select Start Time</option></select>
+        </li>
+        <li>
+          <label for="end">End Time: </label><select name="end"><option value="">Select End Time</option></select>
+        </li>
+        <li>
+          <label for="title">Title: </label><input type="text" name="title" />
+        </li>
+        <li>
+          <label for="body">Body: </label><textarea name="body"></textarea>
+        </li>
+      </ul>
+    </form>
+  </div>
 {% endblock %}

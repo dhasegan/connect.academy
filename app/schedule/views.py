@@ -62,3 +62,35 @@ def view_schedule(request):
     context['appointments'] = json.dumps(all_appointments)
 
     return render(request, "pages/schedule/view_schedule.html", context)
+
+#both professors and students
+@require_POST
+def add_personal_appointment(request):
+	context = {
+		'page':'add_personal_appointment'
+	}
+	return redirect('/')
+
+@require_POST
+def remove_personal_appointment(request):
+	context = {
+		'page':'remove_personal_appointment'
+	}
+	return redirect('/')
+
+
+
+#only for professors assigned to the course
+@require_POST
+def add_course_appointment(request):
+	context = {
+		'page':'add_personal_appointment'
+	}
+	return redirect('/')
+
+@require_POST
+def remove_course_appointment(request):
+	context = {
+		'page':'remove_course_appointment'
+	}
+	return redirect('/')
