@@ -26,12 +26,17 @@ def user_authenticated(request):
 
 def student_dashboard_context(request, user):
     context = {
-        'courses': []
+        'courses': [],
+        'schedule_items': []
     }
 
     registrations = StudentCourseRegistration.objects.filter(student=user)
     for reg in registrations:
         context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved})
+
+    schedule_items = list(CourseAppointment.objects.filter(course__students=user)) +\
+                        list(PersonalAppointment.objects.filter(user=user))
+
     return context
 
 def professor_dashboard_context(request, user):
