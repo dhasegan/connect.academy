@@ -1,13 +1,14 @@
+{% load i18n %}
 <div class="search-sidebar">
   <div class="panel panel-default">
     <div class="panel-body">
-      <input type="text" class="form-control course-search-bar"  id="search_courses"  placeholder="Search by course name">
+      <input type="text" class="form-control course-search-bar"  id="search_courses"  placeholder='{% trans "Search by course name" %}'>
 
       <hr>
 
       {% include 'objects/explore/categories.html' %}
 
-      <h5>Credits range:</h5>
+      <h5>{% trans "Credits range" %}:</h5>
       <div id="credits-slider"></div>
       <div class="credits-slider-values row">
         <div class="col-md-4">
@@ -21,7 +22,7 @@
 
       <hr>
 
-      <h5>Ratings range:</h5>
+      <h5>{% trans "Ratings range" %}:</h5>
       <div id="ratings-slider"></div>
       <div class="ratings-slider-values row">
         <div class="col-md-5">

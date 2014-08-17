@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="course-block-wrapper">
 <div class="panel panel-default course-panel 
 {% for category in course.categories %} ct-{{ category.id }} {% endfor %}">
@@ -31,7 +32,7 @@
             <div class="col-md-10 course-details">
 
                 <div class="course-professors">
-                    <strong> Professors: </strong>
+                    <strong> {% trans "Professors" %}: </strong>
                     {% for juser in course.professors|slice:":3" %}
                         {% include 'objects/user_link.html' %};
                     {% endfor %}
@@ -41,9 +42,8 @@
                 </div>
 
 
-                <strong> Description: </strong> {{ course.course.description|slice:":180" }} 
-                ...
-                <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">(more)</a>
+                <strong> {% trans "Description" %}: </strong> {{ course.course.description|truncatechars:180 }}
+                <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">{% trans "(more)" %}</a>
 
                 <p class="course-catalog text-muted">
                     <small>
@@ -56,9 +56,8 @@
                             {% with course.course as jcourse %}
                                 {%  include 'objects/course/registration.html' %}
                             {% endwith %}
-                        {% endwith %} 
-                    {% endwith %}       
-                
+                        {% endwith %}
+                    {% endwith %}
                 {% endif%}
 
             </div>

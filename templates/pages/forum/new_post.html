@@ -1,11 +1,13 @@
 {% extends 'pages/base.html' %}
 
+{% load i18n %}
+
 {% block content %}
 <div class="forum-new-post-page">
     <div class="panel panel-default">
         <div class="panel-heading">
             <p class="h4">
-                Submit post on the forum of course <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
+                {% trans "Submit post on the forum of course" %} <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
             </p>
         </div>
 

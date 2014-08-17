@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="panel panel-default course-management-section">
     <div class='panel-heading'>
         <a href='course/{{course.course.slug}}'> <span class="h2"> {{course.course.name}} </span> </a>
@@ -7,19 +9,19 @@
 
         <ul class="nav nav-tabs">
             <li class="active">
-                <a href="#pending{{course.course.id}}" data-toggle="tab">Pending Registrations ({{course.students.pending|length}})</a>
+                <a href="#pending{{course.course.id}}" data-toggle="tab">{% trans "Pending Registrations" %} ({{course.students.pending|length}})</a>
             </li>
             <li>
-                <a href="#registered{{course.course.id}}" data-toggle="tab">Registered Students ({{course.students.registered|length}})</a>
+                <a href="#registered{{course.course.id}}" data-toggle="tab">{% trans "Registered Students" %} ({{course.students.registered|length}})</a>
             </li>
             <li>
-                <a href="#documents{{course.course.id}}" data-toggle="tab">Upload Documents</a>
+                <a href="#documents{{course.course.id}}" data-toggle="tab">{% trans "Upload Documents" %}</a>
             </li>
             <li>
-                <a href="#homework{{course.course.id}}" data-toggle="tab">Homework</a>
+                <a href="#homework{{course.course.id}}" data-toggle="tab">{% trans "Homework" %}</a>
             </li>
             <li>
-                <a href="#forum{{course.course.id}}" data-toggle="tab">Forum</a>
+                <a href="#forum{{course.course.id}}" data-toggle="tab">{% trans "Forum" %}</a>
             </li>
         </ul>
 
@@ -31,7 +33,7 @@
                     {% if course.is_approved %}
                         {% include 'objects/course/management/pending_registrations.html' %}
                     {% else %}
-                        <p class="h3"> You cannot approve students' registrations until you are confirmed as a professor of this course </p>
+                        <p class="h3"> {% trans "You cannot approve students' registrations until you are confirmed as a professor of this course" %} </p>
                     {% endif %}
                 </div>
             </div>
@@ -41,7 +43,7 @@
                     {% if course.is_approved %}
                         {% include 'objects/course/management/registered_students.html' %}
                     {% else %}
-                        <p class="h3"> You cannot see registered students until you are confirmed as a professor of this course </p>
+                        <p class="h3"> {% trans "You cannot see registered students until you are confirmed as a professor of this course" %} </p>
                     {% endif %}
                 </div>
             </div>
@@ -51,14 +53,14 @@
                     {% if course.is_approved %}
                         <div class="row">
                             <div class="col-md-6">
-                                Documents Uploaded
+                                {% trans "Documents Uploaded" %}
                                 {% with course.documents as documents %}
                                     {% include 'objects/course/documents.html' %}
                                 {% endwith %}
                             </div>
 
                             <div class="col-md-6">
-                                Upload Documents
+                                {% trans "Upload Documents" %}
                                 {% with course.topics as topics %}
                                     {% with course.course as course %}
                                         {% include 'objects/course/management/upload_document.html' %}
@@ -67,7 +69,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <p class="h3"> You cannot upload documents until you are confirmed as a professor of this course </p>
+                        <p class="h3"> {% trans "You cannot upload documents until you are confirmed as a professor of this course" %} </p>
                     {% endif %}
                 </div>
             </div>
@@ -92,7 +94,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <p class="h3"> You cannot ask for homework until you are confirmed as a professor of this course </p>
+                        <p class="h3"> {% trans "You cannot ask for homework until you are confirmed as a professor of this course" %} </p>
                     {% endif %}
                 </div>
             </div>
@@ -103,7 +105,7 @@
                     {% if course.is_approved %}
                         {% include "objects/forum/forum_management.html" %}
                     {% else %}
-                        <p class="h3"> You cannot manage the forum until you are confirmed as a professor of this course </p>
+                        <p class="h3"> {% trans "You cannot manage the forum until you are confirmed as a professor of this course" %} </p>
                     {% endif %}
                 </div>
             </div>

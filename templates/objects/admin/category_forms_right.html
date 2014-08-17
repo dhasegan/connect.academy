@@ -1,11 +1,12 @@
+{% load i18n %}
 <div class='category-forms'>
-    <h4> Assign an administrator </h4>
+    <h4> {% trans 'Assign an administrator' %} </h4>
     <form action="admin_form_action" method="POST" id="new-admin-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='new_admin'/>
         <div class='form-group'>
             <select name="admin_id" class="form-control" required>
-                    <option value=""> Select a user </option>
+                    <option value=""> {% trans 'Select a user' %} </option>
                 {% for admin in potential_admins %}
                     <option value='{{admin.id}}'> {{admin.first_name}} {{admin.last_name}} ( {{admin.username}} ) </option>
                 {% endfor %}
@@ -21,15 +22,15 @@
         <input type='submit' class='btn btn-primary' value="Assign"/>
     </form>
 
-    <h4>Add a sub-category</h4>
+    <h4>{% trans 'Add a sub-category' %}</h4>
     <form action="admin_form_action" method="POST" id="new-category-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='new_subcat'/>
         <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="Name" required/>
+            <input type="text" class="form-control" name="name" placeholder='{% trans "Name" %}' required/>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="abbrev" placeholder="Abbreviation" required/>
+            <input type="text" class="form-control" name="abbrev" placeholder='{% trans "Abbreviation" %}' required/>
         </div>
         <input type="hidden" name="cat_id"/>
         <div class='text text-success'>
@@ -41,13 +42,13 @@
         <input type="submit" class='btn btn-primary' value="Add"/>
     </form>
 
-    <h4>Move to category</h4>
+    <h4>{% trans 'Move to category' %}</h4>
     <form action="admin_form_action" method="POST" id="move-category-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='move_category'/>
         <div class="form-group">
             <select class="form-control" name="parent_id" required>
-                <option value="">Select a category</option>
+                <option value="">{% trans 'Select a category' %}</option>
                 {% for cat in all_categories %}
                     <option value="{{cat.id}}"> {{cat.name}} </option>
                 {% endfor %}
@@ -65,13 +66,13 @@
 
 
 
-    <h4>Move course to this category</h4>
+    <h4>{% trans 'Move course to this category' %}</h4>
     <form action="admin_form_action" method="POST" id="move-course-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='move_course'/>
         <div class='form-group'>
             <select class="form-control" name="course_id" required>
-                <option value=""> Select a course </option>
+                <option value=""> {% trans 'Select a course' %} </option>
                 {% for course in courses %}
                     <option value="{{course.id}}"> {{course.name}} </option>
                 {% endfor %}

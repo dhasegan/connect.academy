@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class='course-syllabus'>
 	<ol>
 	{% for entry in syllabus %}
@@ -6,7 +7,7 @@
 			
 			<div class="collapse course-topic" id="course-topic{{entry.topic.id}}">
 				{% if entry.topic.description %}
-					<strong> Description: </strong>
+					<strong> {% trans "Description" %}: </strong>
 					<span class='content'>
 						{{ entry.topic.description }}
 					</span>

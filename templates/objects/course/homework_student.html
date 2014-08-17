@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load i18n %}
 
 {% if homework %}
     <div class="course-detail">
@@ -13,18 +14,21 @@
                             {% if hw.homework.description %}
                                 <p> {{ hw.homework.description }} </p>
                             {% endif %}
-                            <div> started on <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
-                            <div> due <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
+                            <div> {% trans "started on" %} <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
+                            <div> {% trans "due" %} <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
                         </div>
                     </div>
                     <div class="col-md-5">
                         {% if hw.previous_submission or hw.can_submit %}
                             <div class="hw-submit">
                                 <div class="hw-stats">
-                                    <div class="text-muted"> {{ hw.stats.submitted }} out of {{ hw.stats.students }} submitted </div>
+                                    <div class="text-muted"> 
+                                        {% blocktrans %}
+                                            {{ hw.stats.submitted }} out of {{ hw.stats.students }} submitted </div>
+                                        {% endblocktrans %}
                                 </div>
                                 {% if hw.previous_submission %}
-                                    <small class="text-success">You already submitted this homework</small>
+                                    <small class="text-success">{% trans "You already submitted this homework" %}</small>
                                 {% endif %}
                                 {% if hw.can_submit %}
                                     

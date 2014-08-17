@@ -1,10 +1,11 @@
+{% load i18n %}
 <div class='course-forms'>
-    <h4> Course Name: </h4>
+    <h4> {% trans 'Course Name' %}: </h4>
     <form action="admin_form_action" method="POST" id="edit-course-form">
         {% csrf_token %}
         <input type='hidden' name='form_type' value='edit_course'/>
         <div class='form-group'>
-            <input type='text' name='name' class='form-control' placeholder='Course Name' required/>
+            <input type='text' name='name' class='form-control' placeholder='{% trans "Course Name" %}' required/>
             <input type='hidden' name='course_id'/>
         </div>
         <div class='text text-success'>
@@ -16,7 +17,7 @@
         <input type='submit' class='btn btn-primary' value="Save"/>
     </form>
 
-    <h4>Professors:</h4>
+    <h4>{% trans 'Professors' %}:</h4>
     <div class="row">
         <ul id="professors-form-container">
         </ul>

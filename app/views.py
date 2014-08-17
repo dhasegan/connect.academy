@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
+from django.conf import settings
 
 from app.models import *
 from app.context_processors import *
@@ -32,7 +33,6 @@ def about(request):
 def dashboard(request):
     context = {
         'page': 'dashboard',
-        'user_auth': request.user
     }
 
     context = dict(context.items() + dashboard_context(request).items())
@@ -48,6 +48,7 @@ def all_comments(request):
     context['comments'] = Review.objects.all()
 
     return render(request, 'pages/comments.html', context)
+
 
 def error_page(request, error_type):
     context = {

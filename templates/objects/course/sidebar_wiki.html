@@ -1,16 +1,17 @@
 {% load humanize %}
+{% load i18n %}
 
 <div class="tab-pane course-wiki fade {% if current_tab == 'wiki' %}in active{% endif %}">
     {% if wiki and can_edit_wiki %}
         <div class="panel panel-default">
             <div class="panel-body">
                 <h4> 
-                    Wiki page 
+                    {% trans "Wiki page" %} 
                     {% if can_edit_wiki %}
-                        <a class='btn btn-primary pull-right' href='{% url "edit_wiki_page" course.slug %}'>Edit Wiki</a>
+                        <a class='btn btn-primary pull-right' href='{% url "edit_wiki_page" course.slug %}'>{% trans "Edit Wiki" %}</a>
                     {% endif %}
                 </h4>
-                Contributors
+                {% trans "Contributors" %}
                 <ul>
                     {% for revision in wiki_revisions %}
                         <li> <a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">r{{ revision.revision }}</a>:

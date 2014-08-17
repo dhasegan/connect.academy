@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="tab-pane course-info fade {% if current_tab == 'info' %}in active{% endif %}">
     <div class="panel panel-default">
         <div class="panel-body">
@@ -24,7 +25,7 @@
                             <h3> <a href="{% url 'course_page' course.slug %}">{{ course.name }}</a> </h3>
                         </div>
                         <div class="course-professors">
-                            <span class="text-muted"> Professor{% if professors|length > 1 %}s{% endif %}:</span>
+                            <span class="text-muted"> {% blocktrans %}Professor{{ professors|pluralize }}{% endblocktrans %}:</span>
                             {% for juser in professors %}
                                 {% if forloop.counter != 1 %}
                                     ;
@@ -43,20 +44,20 @@
                 <div class="row text-center">
                     <div class="col-md-3">
                         {% if course.course_id %}
-                            Course ID: {{ course.course_id }}
+                            {% trans "Course ID" %}: {{ course.course_id }}
                         {% endif %}
                     </div>
                     <div class="col-md-3">
                         {% if course.abbreviation %}
-                            Abbreviation: {{ course.abbreviation }}
+                            {% trans "Abbreviation" %}: {{ course.abbreviation }}
                         {% endif %}
-                        Teaching Assistants <span class="caret"></span>
+                        {% trans "Teaching Assistants" %} <span class="caret"></span>
                     </div>
                     <div class="col-md-3">
-                        Semester: {{ course.category.name }}
+                        {% trans "Semester" %}: {{ course.category.name }}
                     </div>
                     <div class="col-md-3">
-                        Credits: <span class="badge course-credits"> {{ course.credits }} </span>
+                        {% trans "Credits" %}: <span class="badge course-credits"> {{ course.credits }} </span>
                     </div>
                 </div>
                 <hr/>
@@ -65,7 +66,7 @@
 
                 
                 <div class="course-detail course-description">
-                    <h4> Description </h4>
+                    <h4> {% trans "Description" %} </h4>
                     <span class="content">
                         {{ course.description|linebreaks }}
                     </span>
@@ -77,7 +78,7 @@
 
                 {% if syllabus %}
                     <div class="course-detail">
-                        <h4> Syllabus </h4>
+                        <h4> {% trans "Syllabus" %} </h4>
                         <span class="content">
                             {% include 'objects/course/syllabus.html' %}
                         </span>

@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load i18n %}
 
 <div class="answer-box">
     <div class="answer-box-contents">
@@ -7,7 +8,7 @@
                 <span id="upvote_answer_{{ answer.answer.id }}">
                     {% include 'objects/forum/upvote_answer.html' %}
                 </span>
-                Posted by {% if not answer.answer.anonymous %} {% with answer.answer.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} Anonymous {% endif %}.
+                {% trans "Posted by" %} {% if not answer.answer.anonymous %} {% with answer.answer.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} {% trans "Anonymous" %} {% endif %}.
                 {{ answer.answer.datetime|naturaltime }}
             </small>
             <span class="text-muted pull-right">
@@ -20,7 +21,7 @@
         <div class="answer-footer">
             {% block reply_form %}
                 <small class="text-muted">
-                    <a class="getreplyform-link" href="{% url 'forum_reply_form' answer.answer.id %}"> Reply </a>
+                    <a class="getreplyform-link" href="{% url 'forum_reply_form' answer.answer.id %}"> {% trans "Reply" %} </a>
                 </small>
                 <div class="reply-form">
                 </div>

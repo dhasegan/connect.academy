@@ -6,6 +6,7 @@ jQuery( document ).ready(function( $ ) {
     else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
     else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
+
 });
 
 var ConnectGlobal = (function() {
@@ -14,6 +15,8 @@ var ConnectGlobal = (function() {
             dismissableAlerts: $(".dismissable-alert"),
             emailConfirmationLinks: $(".email-confirmation-link"),
             campusnetPopover: $("#campusnet-popover"),
+
+            localeLinks: $('.locale-change-link')
         }
     }, s;
 
@@ -33,6 +36,11 @@ var ConnectGlobal = (function() {
 
         // Tooltip for CampusNet
         s.campusnetPopover.tooltip({title: 'Please log in with your CampusNet credentials!'});
+
+        // Locale change
+        s.localeLinks.click(function(event) {
+            $(this).find('form')[0].submit();
+        });
     };
 
     return me;

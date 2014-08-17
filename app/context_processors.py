@@ -28,6 +28,7 @@ def student_dashboard_context(request, user):
     context = {
         'courses': [],
         'schedule_items': []
+        'user': user
     }
 
     registrations = StudentCourseRegistration.objects.filter(student=user)
@@ -41,7 +42,8 @@ def student_dashboard_context(request, user):
 
 def professor_dashboard_context(request, user):
     context = {
-        'courses': []
+        'courses': [],
+        'user': user
     }
 
     registrations = ProfessorCourseRegistration.objects.filter(professor=user)

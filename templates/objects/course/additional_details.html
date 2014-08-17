@@ -1,6 +1,8 @@
+{% load i18n %}
+
 {% if course.additional_info %}
     <div class="course-detail">
-        <h4> Additional information: </h4>
+        <h4> {% trans "Additional information" %}: </h4>
         <div class="content">
             {{ course.additional_info|linebreaks }}
         </div>
@@ -9,7 +11,7 @@
 
 {% if course.grades %}
     <div class="course-detail">
-        <h4> Grade breakdown: </h4>
+        <h4> {% trans "Grade breakdown" %}: </h4>
         <div class="content">
             {{ course.grades|linebreaks }}
         </div>
@@ -18,7 +20,7 @@
 
 {% if course.grades_info %}
     <div class="course-detail">
-        <h4> Additional Information about grades: </h4>
+        <h4> {% trans "Additional Information about grades" %}: </h4>
         <div class="content">
             {{ course.grades_info|linebreaks }}
         </div>
@@ -27,7 +29,7 @@
 
 {% if course.hours_per_week %}
     <div class="course-detail">
-        <h4> Hours per week: </h4>
+        <h4> {% trans "Hours per week" %}: </h4>
         <span class="content">
             {{ course.hours_per_week|linebreaks }}
         </span>

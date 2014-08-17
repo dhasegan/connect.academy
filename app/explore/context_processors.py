@@ -72,7 +72,8 @@ def course_timeline_context(courses, user):
 
         professors = [pcr.professor for pcr in course.professorcourseregistration_set.filter(is_approved=True)]
 
-        registration_status = course.get_registration_status(user)
+        # # This makes the explore page customizable for everyone
+        # registration_status = course.get_registration_status(user)
         registration = course.get_registration_deadline()
         registration_open = registration.is_open() if registration is not None else False
 
@@ -86,13 +87,14 @@ def course_timeline_context(courses, user):
             'categories': categories,
             'course_path': course_path,
             'overall_rating': course.get_rating(OVERALL_R),
-            'registration_status': registration_status,
+            # 'registration_status': registration_status,
             'registration_open': registration_open
         })
     context['courses'] = sorted(allcourses, key=lambda x: x['overall_rating'], reverse=True)
 
-    uni_category = user.university.get_university_category()
-    context['explore_categories'] = explore_categories_context([uni_category.id])
+    # uni_category = user.university.get_university_category()
+    # context['explore_categories'] = explore_categories_context([uni_category.id])
+    context['explore_categories'] = explore_categories_context([])
 
     context['credits'] = sorted(credits)
     return context

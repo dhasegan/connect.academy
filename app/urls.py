@@ -9,7 +9,7 @@ urlpatterns = patterns('app.views',
     url(r'^about$', 'about'),
     url(r'^all_comments$', 'all_comments', name='all_comments'),
 
-    url(r'^error/(?P<error_type>[\w-]+)', 'error_page', name="error_page")
+    url(r'^error/(?P<error_type>[\w-]+)', 'error_page', name="error_page"),
 )
 
 urlpatterns += patterns('',
@@ -17,12 +17,10 @@ urlpatterns += patterns('',
     url(r'^', include('app.profile.urls')),
     url(r'^', include('versioning.urls')),
     url(r'^course/(?P<slug>[\w-]+)/', include('app.course.urls')),
-    url(r'^admin/', include('app.admin.urls')),
+    url(r'^manage/', include('app.manage.urls')),
     url(r'^forum/', include('app.forum.urls')),
     url(r'^explore/', include('app.explore.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('app.wiki.urls')),
     url(r'^wiki/(?P<slug>[\w-]+)/',include('versioning.urls')),
     url(r'^', include('app.schedule.urls')),
 )
-
-

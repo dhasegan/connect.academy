@@ -164,7 +164,7 @@ def course_page_context(request, course):
     context['course_path'] = course_path
 
     # User - Course Registration status (open|pending|registered|not allowed)
-    registration_status = course.get_registration_status(request.user)
+    registration_status = course.get_registration_status(current_user)
     registration_deadline = course.get_registration_deadline()  # course registration deadline
 
     # Is course registration open?

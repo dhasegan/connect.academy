@@ -1,10 +1,11 @@
+{% load i18n %}
 <div class="tab-pane course-forum fade {% if current_tab == 'connect' %}in active{% endif %}">
     {% include 'objects/forum/bar.html' %}
 
     <div class="tab-content answers-tabs">
         {% if not posts %}
-            <div class="alert alert-success" role="alert">There is no post yet for this course! Why don't you post the first one by 
-                <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">clicking here</a>?
+            <div class="alert alert-success" role="alert">{% trans "There is no post yet for this course! Why don't you post the first one by " %}
+                <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">{% trans "clicking here" %}</a>?
             </div>
         {% endif %}
         {% for post in posts %}

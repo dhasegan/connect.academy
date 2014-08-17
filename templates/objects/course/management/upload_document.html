@@ -1,15 +1,17 @@
+{% load i18n %}
+
 <form class="form" action="{% url 'submit_document' course.slug %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="form-group">
-        <label for="documentName{{course.id}}">Document Name</label>
+        <label for="documentName{{course.id}}">{% trans "Document Name" %}</label>
         <input class="form-control" type="text" name="name" id="documentName{{course.id}}" required>
     </div>
 
     <div class="form-group">
-        <label for="documentTopic{{course.id}}">Course Topic</label>
+        <label for="documentTopic{{course.id}}">{% trans "Course Topic" %}</label>
         <select class="form-control" name="topic_id" id="documentTopic{{course.id}}">
-            <option value=""> No specific topic </option>
+            <option value=""> {% trans "No specific topic" %} </option>
             {% for topic in topics %}
                 <option value="{{topic.id}}"> {{ topic.name }} </option>
             {% endfor %} 
@@ -17,7 +19,7 @@
     </div>
 
     <div class="form-group">
-        <label for="documentDescription{{course.id}}">Description (optional)</label>
+        <label for="documentDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
         <textarea class="form-control" type="text" name="description" id="documentDescription{{course.id}}" rows="3"></textarea>
     </div>
     <div class="form-group">

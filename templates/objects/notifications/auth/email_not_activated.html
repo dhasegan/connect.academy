@@ -1,1 +1,9 @@
-Your account is not yet activated. Please check your email and open the confirmation link that we have sent you. <a class="email-confirmation-link" href="#" data-dismiss="alert" src="{% url 'resend_confirmation_email' %}"> Resend confirmation link </a>
+{% load i18n %}
+{% load connect_extras %}
+
+{% url 'resend_confirmation_email' as resend_email_link %}
+{% with link_start='<a class="email-confirmation-link" href="#" data-dismiss="alert" src="{0}">'|safewrap:resend_email_link %}
+{% blocktrans with "</a>" as link_stop %}
+Your account is not yet activated. Please check your email and open the confirmation that we have sent you. {{link_start}} Resend confirmation link {{link_stop}}
+{% endblocktrans %}
+{% endwith %}

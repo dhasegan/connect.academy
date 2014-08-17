@@ -1,13 +1,14 @@
+{% load i18n %}
 <form role="form" method="post" action="{% url 'forum_new_post' course.slug %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="posttitle-input">Post title</label>
-                <input type="text" class="form-control" id="posttitle-input" placeholder="Your question" name="title">
+                <label for="posttitle-input">{% trans "Post title" %}</label>
+                <input type="text" class="form-control" id="posttitle-input" placeholder='{% trans "Your question" %}' name="title">
             </div>
             <div class="form-group">
-                <label for="postdesc-input">Additional description (optional)</label>
+                <label for="postdesc-input">{% trans "Additional description" %} {% trans "(optional)" %}</label>
                 <textarea type="text" class="form-control" id="postdesc-input" name="description" rows="4" max-length="5000"></textarea>
             </div>
         </div>
@@ -18,13 +19,13 @@
             
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="anonymous"> Anonymous
+                    <input type="checkbox" name="anonymous"> {% trans "Anonymous" %}
                 </label>
             </div>
 
             <input type="hidden" name="forum_pk" value="{{ forum.pk }}">
 
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">{% trans "Submit" %}</button>
         </div>
     </div>
 </form>
