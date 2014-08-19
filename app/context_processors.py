@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.db.models import Q
 
 from app.models import *
 from app.ratings import *
@@ -27,16 +28,28 @@ def user_authenticated(request):
 def student_dashboard_context(request, user):
     context = {
         'courses': [],
-        'schedule_items': []
+        'schedule_items': [],
         'user': user
     }
 
     registrations = StudentCourseRegistration.objects.filter(student=user)
     for reg in registrations:
-        context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved})
+        context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved, 'homework':[]})
 
-    schedule_items = list(CourseAppointment.objects.filter(course__students=user)) +\
-                        list(PersonalAppointment.objects.filter(user=user))
+    today =  datetime.combine(date.today(), datetime.min.time())
+    schedule_items = list(CourseAppointment.objects.filter(course__students=user,
+                            start__gte=pytz.utc.localize( today ))) +\
+                        list(PersonalAppointment.objects.filter(user=user
+                            , start__gte=pytz.utc.localize( today )))
+
+    context['schedule_items'] = schedule_items
+    
+    for reg in context['courses']:
+        if reg['is_approved']:
+            course_hw = reg['course'].coursehomeworkrequest_set
+            reg['homework'] += course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now()))
+
+    context['forum_posts'] = ForumPost.objects.filter(posted_by=user)
 
     return context
 
