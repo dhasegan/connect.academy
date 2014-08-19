@@ -12,6 +12,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
+from django.core.context_processors import csrf
 
 from app.models import *
 
@@ -66,17 +67,20 @@ def view_schedule(request):
 #both professors and students
 @require_POST
 def add_personal_appointment(request):
-	context = {
-		'page':'add_personal_appointment'
-	}
-	return redirect('/')
+    context = {
+        'page':'add_personal_appointment'
+    }
+
+    context.update(csrf(request))
+	
+    return redirect('/')
 
 @require_POST
 def remove_personal_appointment(request):
 	context = {
 		'page':'remove_personal_appointment'
 	}
-	return redirect('/')
+	pass
 
 
 
@@ -86,11 +90,11 @@ def add_course_appointment(request):
 	context = {
 		'page':'add_personal_appointment'
 	}
-	return redirect('/')
+	pass
 
 @require_POST
 def remove_course_appointment(request):
 	context = {
 		'page':'remove_course_appointment'
 	}
-	return redirect('/')
+	pass
