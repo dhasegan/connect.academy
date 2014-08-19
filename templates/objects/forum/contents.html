@@ -4,7 +4,7 @@
     </div>
     <div class="col-md-8">
         <div class="tab-content answers-tabs">
-            {% for post in posts %}
+            {% for post in posts|dictsortreversed:"rating" %}
                 <div class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}" id="answers{{post.question.id}}">
                     {% include "objects/forum/answers.html" %}
                 </div>
