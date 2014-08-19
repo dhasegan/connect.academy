@@ -1,44 +1,15 @@
 {% load i18n %}
-<div class="row">
-{% for course in courses %}
-<div class="col-md-12 course-block-wrapper">
-<div class="panel panel-default">
 
-    <div class="panel-heading">
-        <span class="badge course-credits pull-right"> {{ course.course.credits }} </span>
-        <div class="course-name">
-            <a class="course-block-course-url" href="/course/{{ course.course.slug }}">{{ course.course.name }}</a>
+<div class="row course-page">
+
+    <div class="col-md-4">
+        <div class="student-dashboard-sidebar">
+            {% include 'objects/dashboard/student_sidebar.html' %}
         </div>
     </div>
 
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-10 course-details">
-
-                <div class="course-professors">
-                    <strong> {% trans "Professors" %}: </strong> 
-                    {% for juser in course.course.professors.all|slice:":3" %}
-                        {% include 'objects/user_link.html' %};
-                    {% endfor %}
-                    {% if course.course.professors.all|length > 3 %}
-                        ...
-                    {% endif %}
-                </div>
-                <strong> {% trans "Description" %}: </strong> {{ course.course.description|slice:":180" }} 
-                ...
-                <a class="course-block-course-url" href="/course/{{ course.course.slug }}" slug="{{course.course.slug}}">{% trans "(more)" %}</a>
-                
-
-            </div>
-                {% if course.is_approved %}
-                     <button class="btn btn-success" disabled><b>{% trans "Registered" %}</b></button>
-                {% else %}
-                     <button class="btn btn-primary" disabled><b>{% trans "Pending Registration" %}</b></button>
-                {% endif %}
-        </div>
-
+    <div class="col-md-8">
+        {% include 'objects/dashboard/student_newsfeed.html' %}
     </div>
-</div>
-</div>
-{% endfor %}
+
 </div>

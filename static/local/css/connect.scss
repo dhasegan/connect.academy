@@ -320,8 +320,57 @@ $register-validation-font-size:     11px;
 }
 
 // Dashboard page
+$homework-number-color:         $brand-primary;
+$tables-margin-left:            20px;
+
+
 .dashboard-page {
     .tabpane-contents {
         margin-top: 12px;
     }
+    .sidebar-schedule {
+        max-height: 200px;
+        overflow:auto;
+    }
+    .sidebar-schedule-table {
+        margin-left:$tables-margin-left;
+    }
+    .description-col {
+        padding-left: 10px;
+    }
+    .sidebar-courses-table {
+        margin-left: $tables-margin-left;
+        width:90%;
+        tr {
+            border-bottom: 1px solid white;
+        }
+        .course_name {
+            width:90%;
+        }
+        .homework_number {
+            background-color:$homework-number-color;
+            width:10%;
+            text-align:center;
+            color:white;
+        }
+    }
+
+    .sidebar-forum-posts {
+        margin-left:$tables-margin-left;
+        width:90%;
+        tr {
+            border-bottom: 1px solid white;
+        }
+        .post_name {
+            width:90%;
+        }
+        .likes_number {
+            background-color:$homework-number-color;
+            width:10%;
+            text-align:center;
+            color:white;
+        }
+    }
+
+    
 }

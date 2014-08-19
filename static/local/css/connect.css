@@ -155,3 +155,34 @@
 
 .dashboard-page .tabpane-contents {
   margin-top: 12px; }
+.dashboard-page .sidebar-schedule {
+  max-height: 200px;
+  overflow: auto; }
+.dashboard-page .sidebar-schedule-table {
+  margin-left: 20px; }
+.dashboard-page .description-col {
+  padding-left: 10px; }
+.dashboard-page .sidebar-courses-table {
+  margin-left: 20px;
+  width: 90%; }
+  .dashboard-page .sidebar-courses-table tr {
+    border-bottom: 1px solid white; }
+  .dashboard-page .sidebar-courses-table .course_name {
+    width: 90%; }
+  .dashboard-page .sidebar-courses-table .homework_number {
+    background-color: #428bca;
+    width: 10%;
+    text-align: center;
+    color: white; }
+.dashboard-page .sidebar-forum-posts {
+  margin-left: 20px;
+  width: 90%; }
+  .dashboard-page .sidebar-forum-posts tr {
+    border-bottom: 1px solid white; }
+  .dashboard-page .sidebar-forum-posts .post_name {
+    width: 90%; }
+  .dashboard-page .sidebar-forum-posts .likes_number {
+    background-color: #428bca;
+    width: 10%;
+    text-align: center;
+    color: white; }

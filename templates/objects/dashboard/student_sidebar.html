@@ -1,0 +1,138 @@
+{% load humanize %}
+{% load i18n %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="sidebar-header">
+
+            <hr/>
+            <!-- ######### -->
+            <!-- SCHEDULER -->
+             <!-- ######### -->
+
+            <div class="row">
+                <div class="row text-center">
+                    <span id="dashboard-scheduler-icon" class="glyphicon glyphicon-calendar"> Scheduler </span>
+                </div>
+                <div class="row center-block sidebar-schedule">
+                    
+                        <table class="sidebar-schedule-table">
+                            {% if schedule_items %}
+                                {% for item in schedule_items %}
+                                    <tr> 
+                                        <td class="time-col text-muted">
+                                            {{ item.start|naturaltime }}
+                                            
+                                        </td>
+                                        <td class="description-col">
+                                            {{ item.description|slice:":30" }}
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td> Nothing planned for today :) </td>
+                                </tr>
+                            {% endif %}
+                        </table>
+
+                </div>
+                
+            </div>
+            
+            <hr/>
+
+
+
+
+
+
+            <!-- ######### -->
+            <!--  COURSES  -->
+            <!-- ######### -->
+            <div class="row">
+                <div class="row text-center">
+                    <span id="dashboard-scheduler-icon" class="glyphicon glyphicon-briefcase"> Courses </span>
+                </div>
+
+                <div class="row center-block">
+                    
+                    <table class="sidebar-courses-table">
+                        {% if courses %}
+                            {% for course_item in courses %}
+                                <tr> 
+                                    <td class='course_name'>
+                                        <a href="{% url 'course_page' course_item.course.slug %}"> {{ course_item.course.name }} </a> {% if not course_item.is_approved %} <small class='text text-danger'> (Pending) </small> {% endif %} 
+                                        <div class="row collapse" id="homework-list{{course_item.course.id}}">
+
+                                            <ol>
+                                                {% for hw in course_item.homework %}
+                                                    <li> {{hw.name}} <small> due {{hw.deadline.end|naturaltime}} </small> </li>
+
+                                                {% endfor %}
+                                            </ol>
+                                        </div>
+                                    </td>
+                                    <td class='homework_number'>
+                                        <a class="homework_number" data-toggle="collapse" data-parent=".sidebar-courses-table" href="#homework-list{{course_item.course.id}}">
+                                            {{course_item.homework|length}}
+                                        </a>
+                                    </td>
+                                   
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td> You are not registered in any courses </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                    
+                </div>
+
+            </div>
+            
+            <hr/>
+
+
+
+
+
+            <!-- ######### -->
+            <!--  CONNECT -->
+            <!-- ######### -->
+
+            <div class="row">
+                <div class="row text-center">
+                    <span id="dashboard-scheduler-icon" class="glyphicon glyphicon-globe"> Connect </span>
+                </div>
+                
+                <div class="row center-block">
+                    
+                    <table class="sidebar-forum-posts">
+                        {% if forum_posts %}
+                            {% for post in forum_posts %}     
+                                <tr>
+                                    <td class="post_name"> 
+                                        <a href="{% url 'forum_course' post.forum.course.slug %}"> {{ post.name|slice:":30" }} </a>
+                                    </td>
+                                    <td class="likes_number">
+                                        <span class="glyphicon glyphicon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}
+                                    </td>
+                                </tr>                     
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td> You have not started any discussions yet. </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                    
+                </div>
+
+            </div>
+            
+            <hr/>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+	  <div class = "panel-heading">
+      Newsfeed
+    </div>
+
+
+    <div class="panel-body">
+  		<div class="content wiki-content">
+      			{{wiki.content|safe}}
+  		</div>
+      {% if can_edit_wiki %}
+        <div class="revision">
+            <a href="{% url 'versioning_revision_list' wiki_type_id wiki.id %}">View the list of revisions.</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
