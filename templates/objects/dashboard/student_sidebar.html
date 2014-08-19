@@ -117,7 +117,7 @@
                                         <a href="{% url 'forum_course' post.forum.course.slug %}"> {{ post.name|slice:":30" }} </a>
                                     </td>
                                     <td class="likes_number">
-                                        <span class="glyphicon glyphicon-thumbs-up"></span> {% if post.upvotes %} {{ post.upvotes }} {% else %} 0 {% endif %}
+                                        <span class="glyphicon glyphicon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}
                                     </td>
                                 </tr>                     
                             {% endfor %}
