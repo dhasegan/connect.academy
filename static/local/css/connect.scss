@@ -321,7 +321,7 @@ $register-validation-font-size:     11px;
 
 // Dashboard page
 $homework-number-color:         $brand-primary;
-
+$tables-margin-left:            20px;
 
 
 .dashboard-page {
@@ -333,13 +333,13 @@ $homework-number-color:         $brand-primary;
         overflow:auto;
     }
     .sidebar-schedule-table {
-        margin-left:20px;
+        margin-left:$tables-margin-left;
     }
     .description-col {
         padding-left: 10px;
     }
     .sidebar-courses-table {
-        margin-left:20px;
+        margin-left: $tables-margin-left;
         width:90%;
         tr {
             border-bottom: 1px solid white;
@@ -356,7 +356,7 @@ $homework-number-color:         $brand-primary;
     }
 
     .sidebar-forum-posts {
-        margin-left:20px;
+        margin-left:$tables-margin-left;
         width:90%;
         tr {
             border-bottom: 1px solid white;
