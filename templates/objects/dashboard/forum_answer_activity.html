@@ -25,7 +25,7 @@
 			 <span class="text-muted"> {{activity.timestamp|naturaltime}} </span>
 			 {{ activity.forumansweractivity.forum_answer.text|linebreaks }}
 			<hr/>
-			To read the whole discussion, go to the <a href="{% url 'forum_course' activity.course.slug %}?post={{post.id}}">forum page</a>.
+			To read the whole discussion, go to the <a href="{% url 'forum_course' activity.course.slug %}?post={{activity.forumansweractivity.forum_answer.post.id}}">forum page</a>.
 		</div>
 	</div>
 

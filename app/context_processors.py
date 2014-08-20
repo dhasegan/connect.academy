@@ -49,9 +49,36 @@ def dashboard_activities(user):
         }
         if hasattr(activity,"forumpostactivity"):
             activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, user)
-        elif hasattr(activity, "forumansweractivity"):
-            activity_context["post"] = forum_post_context(activity.forumansweractivity.forum_answer,user)
+        elif hasattr(activity, "homeworkactivity"):
+            nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
+                                                                    is_approved=True).count()
+            current_time = pytz.utc.localize(datetime.now())
+            hw = activity.homeworkactivity.homework
+            course = activity.course
+            current_user = user
+            within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
+            is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
+            is_student = current_user.is_student_of(course)
+            can_submit_homework = is_student and is_allowed and within_deadline
+            
+            homework_submission = None
+            homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
+            if homework_submissions:
+                homework_submission = homework_submissions[0]
 
+            homework_submitted = hw.coursehomeworksubmission_set.all().count()
+
+            activity_context["homework"] = {
+                "homework": hw,
+                "can_submit": can_submit_homework,
+                "is_allowed": is_allowed,
+                "previous_submission": homework_submission,
+                "stats": {
+                    "submitted": homework_submitted,
+                    "students": nr_students
+                }
+            }
+        
         activities_context.append(activity_context)
 
     return activities_context

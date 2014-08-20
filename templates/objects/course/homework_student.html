@@ -6,40 +6,7 @@
        
         <div class="content homework-list">
             {% for hw in homework %}
-                <div class="row">
-                    <div class="col-md-7">
-                    
-                        <div class="homework-content">
-                            <div class="h4 text-primary"> {{ hw.homework.name }} </div>
-                            {% if hw.homework.description %}
-                                <p> {{ hw.homework.description }} </p>
-                            {% endif %}
-                            <div> {% trans "started on" %} <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
-                            <div> {% trans "due" %} <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        {% if hw.previous_submission or hw.can_submit %}
-                            <div class="hw-submit">
-                                <div class="hw-stats">
-                                    <div class="text-muted"> 
-                                        {% blocktrans %}
-                                            {{ hw.stats.submitted }} out of {{ hw.stats.students }} submitted </div>
-                                        {% endblocktrans %}
-                                </div>
-                                {% if hw.previous_submission %}
-                                    <small class="text-success">{% trans "You already submitted this homework" %}</small>
-                                {% endif %}
-                                {% if hw.can_submit %}
-                                    
-                                    {% include "objects/course/homework_submit.html" %}
-      
-                                {% endif %}
-                            </div> 
-                        {% endif %}
-                    </div>
-                </div>
-
+                {% include 'objects/course/homework_block.html' %}
                 <hr>
             {% endfor %}
         </div>
