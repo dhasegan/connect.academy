@@ -32,9 +32,9 @@ def dashboard_activities(user):
 
     # get all answers to posts that the user is following, except those in the users's own courses,
     # to avoid duplication
-
+    # , ~Q(user=user) 
     forum_answer_activities = list(ForumAnswerActivity.objects.filter(
-        Q(forum_answer__post__in=user.posts_following.all()), ~Q(user=user) ).exclude(
+        Q(forum_answer__post__in=user.posts_following.all())).exclude(
             forum_answer__post__forum__course__in = list(user.courses_enrolled.all()) + list(user.courses_managed.all())).reverse())
     
     activities_list = sorted(own_course_activities + forum_answer_activities, 
@@ -50,7 +50,7 @@ def dashboard_activities(user):
         if hasattr(activity,"forumpostactivity"):
             activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, user)
         elif hasattr(activity, "forumansweractivity"):
-            activity_context["post"] = forum_post_context(activity.forumasnwercontext.forum_answer,user)
+            activity_context["post"] = forum_post_context(activity.forumansweractivity.forum_answer,user)
 
         activities_context.append(activity_context)
 
