@@ -3,11 +3,11 @@
 <div class="block"> 
 
 	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
-	posted a homework for 
+	posted a homework on
 		{% if hw.homework.course_topic %}
-			the topic <i> {{hw.homework.course_topic.name}} </i> of 
+			the topic <i> "{{hw.homework.course_topic.name}}"</i> of 
 		{% else %}
-			the course 
+			of the course 
 		{% endif %}
 	<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a> 
 

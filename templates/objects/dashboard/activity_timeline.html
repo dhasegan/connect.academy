@@ -23,7 +23,9 @@
           {% endwith %}
 
         {% elif a.type == "DocumentActivity" %}
-           {% include 'objects/dashboard/homework_activity.html' %}
+          {% with activity.documentactivity.document as document %}
+           {% include 'objects/dashboard/document_activity.html' %}
+          {% endwith %}
         {% endif %}
    
     {% endwith %}

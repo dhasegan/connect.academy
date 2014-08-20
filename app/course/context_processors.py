@@ -139,7 +139,7 @@ def course_syllabus_context(course, current_user):
 def course_page_context(request, course):
     context = {}
     context['course'] = course
-
+    context['hw_redirect_url'] = '/course/' + course.slug
     course_types = dict(COURSE_TYPES)
     # Course type seems to be not working?
     # context['course_type'] = course_types[course.course_type]

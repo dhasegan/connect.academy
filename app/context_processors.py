@@ -28,13 +28,13 @@ def user_authenticated(request):
 def dashboard_activities(user):
     #, ~Q(user=user)
     own_course_activities = list(CourseActivity.objects.filter(
-        Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())) ).reverse())  
+        Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())), ~Q(user=user) ).reverse())  
 
     # get all answers to posts that the user is following, except those in the users's own courses,
     # to avoid duplication
-    # , ~Q(user=user) 
+    # 
     forum_answer_activities = list(ForumAnswerActivity.objects.filter(
-        Q(forum_answer__post__in=user.posts_following.all())).exclude(
+        Q(forum_answer__post__in=user.posts_following.all()), ~Q(user=user) ).exclude(
             forum_answer__post__forum__course__in = list(user.courses_enrolled.all()) + list(user.courses_managed.all())).reverse())
     
     activities_list = sorted(own_course_activities + forum_answer_activities, 
@@ -87,7 +87,8 @@ def student_dashboard_context(request, user):
     context = {
         'courses': [],
         'schedule_items': [],
-        'user': user
+        'user': user,
+        'hw_redirect_url': '/home'
     }
 
     registrations = StudentCourseRegistration.objects.filter(student=user)
@@ -105,7 +106,12 @@ def student_dashboard_context(request, user):
     for reg in context['courses']:
         if reg['is_approved']:
             course_hw = reg['course'].coursehomeworkrequest_set
-            reg['homework'] += course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now()))
+            for homework in course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now())):
+                homework_submitted = CourseHomeworkSubmission.objects.filter(submitter=user,
+                                         homework_request=homework).count() > 0
+                reg['homework'].append({'submitted': homework_submitted,
+                                        'hw': homework})
+                
 
     context['forum_posts'] = ForumPost.objects.filter(posted_by=user).reverse()
 

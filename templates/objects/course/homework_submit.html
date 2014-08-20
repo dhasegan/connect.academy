@@ -43,7 +43,7 @@
 
                 <input type='hidden' name='course_id' value='{{course.id}}'/>
                 <input type='hidden' name='homework_request_id' value='{{hw.homework.id}}' />
-                <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
+                <input type="hidden" name="url" value="{{hw_redirect_url}}">
             </form>
 
         </div>

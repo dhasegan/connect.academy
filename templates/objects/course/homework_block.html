@@ -17,9 +17,13 @@
                             <div class="hw-submit">
                                 <div class="hw-stats">
                                     <div class="text-muted"> 
-                                        {% blocktrans %}
-                                            {{ hw.stats.submitted }} out of {{ hw.stats.students }} submitted </div>
-                                        {% endblocktrans %}
+                                        
+                                        {{ hw.stats.submitted }} 
+                                        {% trans "out of" %}
+                                        {{ hw.stats.students }} 
+                                        {% trans "submitted" %}
+                                    </div>
+                                        
                                 </div>
                                 {% if hw.previous_submission %}
                                     <small class="text-success">{% trans "You already submitted this homework" %}</small>
