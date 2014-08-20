@@ -1,0 +1,19 @@
+{% for a in activities %}
+    
+    {% with a.activity as activity %}
+      
+        {% if a.type == "ForumPostActivity" %}
+          {% with a.post as post %}
+           {% include 'objects/dashboard/forum_post_activity.html' %}
+          {% endwith %}
+        {% elif a.type == "ForumAnswerActivity" %}
+           {% include 'objects/dashboard/forum_answer_activity.html' %}
+        {% elif a.type == "HomeworkActivity" %}
+           {% include 'objects/dashboard/homework_activity.html' %}
+        {% elif a.type == "DocumentActivity" %}
+           {% include 'objects/dashboard/homework_activity.html' %}
+        {% endif %}
+   
+    {% endwith %}
+
+{% endfor %}

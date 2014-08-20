@@ -33,6 +33,9 @@ def forum_course(request, slug):
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
 
+    if 'post' in request.GET and request.GET['post']:
+        context['current_post'] = int(request.GET['post'])
+
     return render(request, "pages/forum/page.html", context)
 
 
@@ -72,6 +75,7 @@ def new_post(request, slug):
                      text=form.cleaned_data['description'], posted_by=user,
                      anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
+    
 
     return redirect("app.forum.views.forum_course", slug=course.slug)
 
@@ -196,6 +200,7 @@ def upvote_post(request):
     voted = len(post.upvoted_by.filter(id=user.id)) > 0
     if not voted:
         post.upvoted_by.add(user)
+        post.followed_by.add(user)
     else:
         post.upvoted_by.remove(user)
 

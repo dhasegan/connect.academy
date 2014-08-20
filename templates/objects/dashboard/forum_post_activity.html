@@ -1,0 +1,26 @@
+{% load humanize %}
+<div class="block"> 
+
+	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+	posted on the forum of <a href="{% url 'course_page' activity.course.slug %}"> {{activity.course.name}} </a> <small class='text-muted'> {{activity.timestamp|naturaltime}} </small>
+	<div class="panel panel-default">
+		
+			<div class="panel-heading">
+		        <a href="{% url 'forum_course' activity.course.slug %}?post={{post.question.id}}"> {{ post.question.name }} </a>
+		        
+	         	<span class="pull-right" id="upvote_post_{{ post.question.id }}">
+                        {% include 'objects/forum/upvote_post.html' %}
+                </span>
+		       
+		    </div>
+
+		    <div class="panel-body">
+		        {% if post.question.text %}
+		            {{ post.question.text|linebreaks }}
+		        {% endif %}
+		    </div>
+
+	</div>
+
+
+</div>

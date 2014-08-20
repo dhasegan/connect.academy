@@ -4,7 +4,7 @@ from django.db.models import Q
 
 from app.models import *
 from app.ratings import *
-
+from app.forum.context_processors import *
 
 def debug(context):
     return {
@@ -24,6 +24,37 @@ def user_authenticated(request):
                 context['warning'] = render_to_string('objects/notifications/auth/email_not_activated.html', {})
 
     return context
+
+def dashboard_activities(user):
+    #, ~Q(user=user)
+    own_course_activities = list(CourseActivity.objects.filter(
+        Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())) ).reverse())  
+
+    # get all answers to posts that the user is following, except those in the users's own courses,
+    # to avoid duplication
+
+    forum_answer_activities = list(ForumAnswerActivity.objects.filter(
+        Q(forum_answer__post__in=user.posts_following.all()), ~Q(user=user) ).exclude(
+            forum_answer__post__forum__course__in = list(user.courses_enrolled.all()) + list(user.courses_managed.all())).reverse())
+    
+    activities_list = sorted(own_course_activities + forum_answer_activities, 
+                key = lambda activity: activity.timestamp, 
+                reverse=True)
+
+    activities_context = []
+    for activity in activities_list:
+        activity_context = {
+            "type": activity.get_subclass_type(),
+            "activity": activity,
+        }
+        if hasattr(activity,"forumpostactivity"):
+            activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, user)
+        elif hasattr(activity, "forumansweractivity"):
+            activity_context["post"] = forum_post_context(activity.forumasnwercontext.forum_answer,user)
+
+        activities_context.append(activity_context)
+
+    return activities_context
 
 def student_dashboard_context(request, user):
     context = {
@@ -49,8 +80,10 @@ def student_dashboard_context(request, user):
             course_hw = reg['course'].coursehomeworkrequest_set
             reg['homework'] += course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now()))
 
-    context['forum_posts'] = ForumPost.objects.filter(posted_by=user)
+    context['forum_posts'] = ForumPost.objects.filter(posted_by=user).reverse()
 
+    context['activities'] = dashboard_activities(user)
+    
     return context
 
 def professor_dashboard_context(request, user):

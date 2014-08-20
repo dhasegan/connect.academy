@@ -56,7 +56,7 @@ class jUser(User):
     #    appointments(<jUser>.appointments.all() returns all the appointments of that <jUser>)
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
-
+    #    posts_following: (<juser>.posts_following.all() returns all forum posts that <juser> is following)
     def is_student(self):
         return self.user_type == USER_TYPE_STUDENT
 
@@ -178,6 +178,7 @@ class Course(models.Model):
     #                 <course> as a prerequisite)
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
     #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
+    #   activities (<course>.activities.all() returns all (newsfeed) activities of <course>)
 
     def get_non_topic_documents(self):
         return self.documents.filter(course_topic=None)
@@ -510,6 +511,10 @@ class CourseDocument(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+    def save(self, *args, **kwargs):
+        super(CourseDocument, self).save(*args, **kwargs)
+        DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
+
 class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
@@ -525,6 +530,10 @@ class CourseHomeworkRequest(models.Model):
 
     def __unicode__(self):
         return str(self.name)
+
+    def save(self, *args, **kwargs):
+        super(CourseHomeworkRequest, self).save(*args, **kwargs)
+        HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
 
 class CourseHomeworkSubmission(models.Model):
     homework_request = models.ForeignKey('CourseHomeworkRequest')
@@ -692,8 +701,15 @@ class ForumPost(models.Model):
     upvoted_by = models.ManyToManyField('jUser', related_name='question_upvoted')
     downvoted_by = models.ManyToManyField('jUser', related_name='question_downvoted')
 
+    followed_by = models.ManyToManyField('jUser', related_name='posts_following')
+
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super(ForumPost, self).save(*args, **kwargs)
+        ForumPostActivity.objects.create(user=self.posted_by, course=self.forum.course, forum_post=self)
+        self.followed_by.add(self.posted_by)
 
 class ForumAnswer(models.Model):
     post = models.ForeignKey('ForumPost')
@@ -710,6 +726,13 @@ class ForumAnswer(models.Model):
 
     def __unicode__(self):
         return self.text
+
+    def save(self, *args, **kwargs):
+        super(ForumAnswer, self).save(*args, **kwargs)
+        ForumAnswerActivity.objects.create(user=self.posted_by, course=self.post.forum.course, 
+                                            forum_answer=self)
+        self.post.followed_by.add(self.posted_by)
+        
 
 class WikiContributions(models.Model):
     user = models.ForeignKey('jUser')
@@ -759,3 +782,47 @@ class CourseAppointment(Appointment):
     course_topic = models.ForeignKey('CourseTopic', related_name='appointments')
     def __str__(self):
         return self.course.name
+
+
+###########################################################################
+############################### NewsFeed ##################################
+###########################################################################
+
+# Base class for all activities
+class CourseActivity(models.Model):
+    timestamp = models.DateTimeField(auto_now=True)
+    course = models.ForeignKey('Course', related_name="activities")
+    user = models.ForeignKey('jUser') # The user who performed the action
+
+    def get_subclass_type(self):
+        if hasattr(self,'forumpostactivity'):
+            return "ForumPostActivity"
+        elif hasattr(self, 'forumansweractivity'):
+            return "ForumAnswerActivity"
+        elif hasattr(self, 'homeworkactivity'):
+            return "HomeworkActivity"
+        elif hasattr(self, 'documentactivity'):
+            return "DocumentActivity"
+        else:
+            return "CourseActivity"
+
+    def __str__(self):
+        return self.get_subclass_type() + " Object"
+# When a user creates a new post
+class ForumPostActivity(CourseActivity):
+    forum_post = models.ForeignKey('ForumPost')
+
+# When a user answers to a post you are following
+class ForumAnswerActivity(CourseActivity):
+    forum_answer = models.ForeignKey('ForumAnswer')
+
+# When a user (prof/TA) posts a new homework
+class HomeworkActivity(CourseActivity):
+    homework = models.ForeignKey('CourseHomeworkRequest')
+
+# When a user uploads a new document
+class DocumentActivity(CourseActivity): 
+    document = models.ForeignKey('CourseDocument')
+
+
+

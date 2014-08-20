@@ -48,6 +48,9 @@ def course_page(request, slug):
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
 
+    if 'post' in request.GET and request.GET['post']:
+        context['current_post'] = int(request.GET['post'])
+
     return render(request, "pages/course.html", context)
 
 
