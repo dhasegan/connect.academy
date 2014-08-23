@@ -20,10 +20,16 @@
     <div class="collapse navbar-collapse navigation-items" id="navbar-collapse-items">
       {% if user_auth %}
         <ul class="nav navbar-nav">
+          {% if user_auth.user_type == 2 %} {% comment %} user is ADMIN {% endcomment %}
+            <li {% if page == 'course_categories' %} class="active" {% endif %}><a href="{% url 'course_categories' %}"> <b>{% trans "Admin" %}</b></a></li>
+          {% endif %}
           <li {% if page == 'dashboard' %} class="active" {% endif %}><a href="{% url 'dashboard' %}"> <b>{% trans "Dashboard" %}</b></a></li>
           <li {% if page == 'explore' %} class="active" {% endif %}><a href="{% url 'explore' %}"><b>{% trans "Explore" %}</b></a></li>
-          <li {% if page == 'all_comments' %} class="active" {% endif %}><a href="{% url 'all_comments' %}"> <b>{% trans "All comments" %}</b></a></li>
           <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}"> <b>{% trans "Schedule" %}</b></a></li>
+
+          {% if page == 'all_comments' %} 
+            <li class="active" ><a href="{% url 'all_comments' %}"> <b>{% trans "All comments" %}</b></a></li>
+          {% endif %}
 
 
         </ul>

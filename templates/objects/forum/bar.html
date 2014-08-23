@@ -1,6 +1,6 @@
 {% load i18n %}
 <nav class="navbar navbar-default forum-bar" role="navigation">
-    {% if page == "forum" %}
+    {% if page == "forum_course" %}
         <p class="navbar-text h4"> {% trans "Forum page of" %}
             <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
         </p>

@@ -19,7 +19,7 @@ def user_authenticated(request):
     context = {}
     if request.user and request.user.is_authenticated():
         user = request.user
-        context["user_auth"] = user
+        context["user_auth"] = jUser.objects.get(id=user.id)
         if not user.is_active:
             if not user.email or user.email == "":
                 context['warning'] = render_to_string('objects/notifications/auth/email_not_set.html', {})
