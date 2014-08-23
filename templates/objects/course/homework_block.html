@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load humanize %}
+<div class="row">
+    <div class="col-md-7">
+        {% include 'objects/course/homework_details.html' %}
+    </div>
+
+    <div class="col-md-5">
+        {% if hw.previous_submission or hw.can_submit %}
+            <div class="hw-submit">
+                <div class="hw-stats">
+                    <div class="text-muted"> 
+                        
+                        {{ hw.stats.submitted }} 
+                        {% trans "out of" %}
+                        {{ hw.stats.students }} 
+                        {% trans "submitted" %}
+                    </div>
+
+                </div>
+                {% if hw.previous_submission %}
+                    <small class="text-success">{% trans "You already submitted this homework" %}</small>
+                {% endif %}
+                {% if hw.can_submit %}
+                    {% include "objects/course/homework_submit.html" %}
+                {% endif %}
+            </div> 
+        {% endif %}
+    </div>
+</div>

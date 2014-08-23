@@ -13,8 +13,8 @@
         <label for="homeworkTopic{{course.id}}">{% trans "Course Topic" %}</label>
         <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}" required>
             <option value=""> {% trans "Please select one" %} </option>
-            {% for topic in topics %}
-                <option value="{{topic.id}}"> {{ topic.name }} </option>
+            {% for topic in syllabus %}
+                <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
             {% endfor %} 
         </select>
     </div>

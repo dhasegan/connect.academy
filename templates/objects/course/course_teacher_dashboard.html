@@ -1,0 +1,89 @@
+{% load i18n %}
+<div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="teacher_pending">
+                    <div class="tabpane-contents pending-registrations">
+                        {% if teacher.is_approved %}
+                            {% include 'objects/course/management/pending_registrations.html' %}
+                        {% else %}
+                            <p class="h3"> {% trans "You cannot approve students' registrations until you are confirmed as a professor of this course" %} </p>
+                        {% endif %} 
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="teacher_registered">
+                    <div class="tabpane-contents registered-students">
+                        {% if teacher.is_approved %}
+                            {% include 'objects/course/management/registered_students.html' %}
+                        {% else %}
+                            <p class="h3"> {% trans "You cannot see registered students until you are confirmed as a professor of this course" %} </p>
+                        {% endif %} 
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="teacher_documents">
+                    <div class="tabpane-contents course-documents">
+                        {% if teacher.is_approved %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% trans "Documents Uploaded" %}
+                                    {% include 'objects/course/documents.html' %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    {% trans "Upload Documents" %}
+                                    {% with course.topics as topics %}
+                                        {% include 'objects/course/management/upload_document.html' %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="h3"> {% trans "You cannot upload documents until you are confirmed as a professor of this course" %} </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="teacher_homework">
+                    <div class="tabpane-contents course-homework">
+                        {% if teacher.is_approved %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% for hw in all_homework %}
+                                        {% include 'objects/course/homework_details.html' %}
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    {% with course.topics as topics %}
+                                        {% include 'objects/course/management/demand_homework.html' %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="h3"> {% trans "You cannot ask for homework until you are confirmed as a professor of this course" %} </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <div class="tab-pane" id="teacher_forum">
+                    <div class="tabpane-contents class-forum">
+                        {% if teacher.is_approved %}
+                            {% include "objects/forum/forum_management.html" %}
+                        {% else %}
+                            <p class="h3"> {% trans "You cannot manage the forum until you are confirmed as a professor of this course" %} </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

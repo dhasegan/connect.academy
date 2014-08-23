@@ -1,0 +1,33 @@
+{% for a in activities %}
+    
+    {% with a.activity as activity %}
+      
+        {% if a.type == "ForumPostActivity" %}
+          
+          {% with a.post as post %}
+            {% with activity.course as course %}
+                {% include 'objects/dashboard/forum_post_activity.html' %}
+            {% endwith %}
+          {% endwith %}
+
+        {% elif a.type == "ForumAnswerActivity" %}
+
+           {% include 'objects/dashboard/forum_answer_activity.html' %}
+           
+        {% elif a.type == "HomeworkActivity" %}
+
+          {% with a.homework as hw %}
+            {% with activity.course as course %}
+              {% include 'objects/dashboard/homework_activity.html' %}
+            {% endwith %}
+          {% endwith %}
+
+        {% elif a.type == "DocumentActivity" %}
+          {% with activity.documentactivity.document as document %}
+           {% include 'objects/dashboard/document_activity.html' %}
+          {% endwith %}
+        {% endif %}
+   
+    {% endwith %}
+
+{% endfor %}

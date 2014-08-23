@@ -1,0 +1,27 @@
+{% load i18n %}
+<div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h4 class="sidebar-name"> {% trans "Teacher dashboard" %} </h4>
+            <nav class="nav-sidebar">
+                <ul class="nav tabs">
+                    <li class="active">
+                        <a href="#teacher_pending" data-toggle="tab">{% trans "Pending Registrations" %} ({{teacher.students.pending|length}})</a>
+                    </li>
+                    <li>
+                        <a href="#teacher_registered" data-toggle="tab">{% trans "Registered Students" %} ({{teacher.students.registered|length}})</a>
+                    </li>
+                    <li>
+                        <a href="#teacher_documents" data-toggle="tab">{% trans "Upload Documents" %}</a>
+                    </li>
+                    <li>
+                        <a href="#teacher_homework" data-toggle="tab">{% trans "Homework" %}</a>
+                    </li>
+                    <li>
+                        <a href="#teacher_forum" data-toggle="tab">{% trans "Forum" %}</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

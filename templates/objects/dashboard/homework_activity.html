@@ -1,0 +1,22 @@
+{% load humanize %}
+{% load i18n %}
+<div class="block"> 
+
+	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+	posted a homework on
+		{% if hw.homework.course_topic %}
+			the topic <i> "{{hw.homework.course_topic.name}}"</i> of 
+		{% else %}
+			of the course 
+		{% endif %}
+	<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a> 
+
+	<small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
+	 
+	<div class="panel panel-default">
+		<div class="panel-body">
+			{% include 'objects/course/homework_block.html' %}
+		</div>
+	</div>
+
+</div>

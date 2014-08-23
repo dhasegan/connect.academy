@@ -14,7 +14,12 @@
                 {% include 'objects/course/course_info.html' %}
                 {% include 'objects/course/course_wiki.html' %}
                 {% include 'objects/course/course_forum.html' %}
-                {% include 'objects/course/course_resources.html' %}
+                {% if current_homework or documents %}
+                    {% include 'objects/course/course_resources.html' %}
+                {% endif %}
+                {% if teacher.is_teacher %}
+                    {% include 'objects/course/course_teacher_dashboard.html' %}
+                {% endif %}
             </div>
         </div>
     </div>

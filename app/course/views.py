@@ -38,7 +38,7 @@ def course_page(request, slug):
     forum = course.forum
     context = dict(context.items() + forum_context(forum, user).items())
 
-    available_pages = ['activity', 'info', 'connect', 'wiki', 'resources']
+    available_pages = ['activity', 'info', 'connect', 'wiki', 'resources', 'teacher']
     if 'page' in request.GET and request.GET['page'] and \
         request.GET['page'] in available_pages:
             context['current_tab'] = request.GET['page']
@@ -47,6 +47,9 @@ def course_page(request, slug):
         tag = request.GET['filter']
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
+
+    if 'post' in request.GET and request.GET['post']:
+        context['current_post'] = int(request.GET['post'])
 
     return render(request, "pages/course.html", context)
 

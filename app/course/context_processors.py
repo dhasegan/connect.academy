@@ -136,10 +136,38 @@ def course_syllabus_context(course, current_user):
     return context
 
 
+# Professor extra settings
+def course_teacher_dashboard(request, course, user):
+    context = {
+        'is_teacher': user.is_professor_of(course)
+    }
+    if not context['is_teacher']:
+        return context
+
+    registrations = ProfessorCourseRegistration.objects.filter(professor=user, course=course)
+    if not registrations:
+        return context
+    prof_reg = registrations[0]
+
+    context ['is_approved'] = prof_reg.is_approved
+
+    if prof_reg.is_approved:
+        context['students'] = {'registered': [], 'pending': []}
+        # for each student registration
+        student_registrations = StudentCourseRegistration.objects.filter(course=course)
+        for student_reg in student_registrations:
+            if student_reg.is_approved:
+                context['students']['registered'].append(student_reg.student)
+            else:
+                context['students']['pending'].append(student_reg.student)
+
+    return context
+
+
 def course_page_context(request, course):
     context = {}
     context['course'] = course
-
+    context['hw_redirect_url'] = '/course/' + course.slug
     course_types = dict(COURSE_TYPES)
     # Course type seems to be not working?
     # context['course_type'] = course_types[course.course_type]
@@ -193,6 +221,9 @@ def course_page_context(request, course):
     context['can_upload_docs'] = current_user.is_professor_of(course)
     # Show documents/homework only if the user is registered and student/prof
     if current_user.is_student_of(course) or current_user.is_professor_of(course):
-        context['current_homework'] = [hw for hw in course_homework_context(course, current_user) if hw['is_allowed']]
+        context['all_homework'] = course_homework_context(course, current_user)
+        context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
+
+    context['teacher'] = course_teacher_dashboard(request, course, current_user)
 
     return context

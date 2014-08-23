@@ -3,8 +3,8 @@
 {% for tag in tags %}
     <div class="radio">
       <label>
-        <input type="radio" name="tagsRadios" id="{{ tag }}" value="{{ tag }}" {% if forloop.counter == 1 %}checked{% endif %}>
-        #{{ tag }}
+        <input type="radio" name="tagsRadios" id="{{ tag.name }}" value="{{ tag.name }}" {% if forloop.counter == 1 %}checked{% endif %}>
+        #{{ tag.name }}
       </label>
     </div>
 {% endfor %}

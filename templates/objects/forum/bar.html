@@ -14,7 +14,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a class="post-filter {% if not current_filter %} hidden {% endif %}" href="#">#{% trans "all" %}</a></li>
                 {% for tag in tags %}
-                    <li><a class="post-filter {% if current_filter == tag %} hidden {% endif %} " href="#">#{{ tag }}</a></li>
+                    <li><a class="post-filter {% if current_filter == tag %} hidden {% endif %} " href="#">#{{ tag.name }}</a></li>
                 {% endfor %}
             </ul>
         </li>

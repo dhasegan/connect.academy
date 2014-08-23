@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if course.students.pending|length > 0 %}
+{% if teacher.students.pending|length > 0 %}
     <form method="POST" action="/approve_student_registrations">
       <div class="row">
         {% csrf_token %}
@@ -10,7 +10,7 @@
                 <li>
                     <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
                 </li>
-              {% for student in course.students.pending %}
+              {% for student in teacher.students.pending %}
                 <li> 
                     <input type='checkbox' name='student-{{student.id}}'> 
                     <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
@@ -18,7 +18,7 @@
                 </li> 
               {% endfor %}
             </ul>
-            <input type='hidden' name='course' value='{{course.course.id}}'/>
+            <input type='hidden' name='course' value='{{course.id}}'/>
         </div>
 
         <div class='col-md-4'> 

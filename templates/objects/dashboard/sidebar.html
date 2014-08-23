@@ -63,14 +63,12 @@
                                 <tr> 
                                     <td class='course_name'>
                                         <a href="{% url 'course_page' course_item.course.slug %}"> {{ course_item.course.name }} </a> {% if not course_item.is_approved %} <small class='text text-danger'> (Pending) </small> {% endif %} 
-                                        <div class="row collapse" id="homework-list{{course_item.course.id}}">
-
-                                            <ol>
-                                                {% for hw in course_item.homework %}
-                                                    <li> {{hw.name}} <small> due {{hw.deadline.end|naturaltime}} </small> </li>
-
-                                                {% endfor %}
-                                            </ol>
+                                        <div class="block collapse" id="homework-list{{course_item.course.id}}">
+                                            
+                                            {% for hw in course_item.homework %}
+                                                <span {% if hw.submitted %}class="text-success"{% else %}class="text-danger"{% endif %}> {{hw.hw.name}} </span> <small class="text-muted"> due {{hw.hw.deadline.end|naturaltime}} </small> <br/>
+                                            {% endfor %}
+                                            
                                         </div>
                                     </td>
                                     <td class='homework_number'>
@@ -114,7 +112,7 @@
                             {% for post in forum_posts %}     
                                 <tr>
                                     <td class="post_name"> 
-                                        <a href="{% url 'forum_course' post.forum.course.slug %}"> {{ post.name|slice:":30" }} </a>
+                                        <a href="{% url 'forum_course' post.forum.course.slug %}?post={{post.id}}"> {{ post.name|slice:":30" }} </a>
                                     </td>
                                     <td class="likes_number">
                                         <span class="glyphicon glyphicon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}

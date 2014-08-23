@@ -1,0 +1,52 @@
+{% load humanize %}
+{% load i18n %}
+<div class="block"> 
+
+	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+	posted on the forum of <a href="{% url 'course_page' activity.course.slug %}"> {{activity.course.name}} </a> <small class='text-muted'> {{activity.timestamp|naturaltime}} </small>
+	<div class="forum-answers">
+	    <div class="panel panel-default">
+	        <div class="panel-body">
+
+	            {% block post_details %}
+	                <div class="post-details">
+	                    <div class="post-header text-muted">
+	                        <span id="upvote_post_{{ post.question.id }}" class="pull-right">
+	                            {% include 'objects/forum/upvote_post.html' %}
+	                        </span>
+	                        {% trans "Posted by" %}
+	                        {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+	                        {% else %}
+	                            {% trans "Anonymous" %}
+	                        {% endif %}
+	                        {% trans "in" %} #{{ post.question.tag.name }}.
+	                        {{ post.question.datetime|naturaltime }}
+	                        
+	                        
+	                    </div>
+	                </div>
+
+	                <h3 class="post-name">
+	                    {{ post.question.name }}
+	                </h3>
+
+	                <div class="post-text">
+	                    {% if post.question.text %}
+	                        {{ post.question.text|linebreaks }}
+	                    {% endif %}
+	                </div>
+
+	                <hr>
+	            {% endblock post_details %}
+
+	           
+	            {% block all_answers %}
+	                <div class="tab-content best-answers">
+	                    To see the best answers, go to the <a href="{% url 'forum_course' course.slug%}?post={{post.question.id}}"> forum post </a>
+	                </div>
+	            {% endblock all_answers %}
+	        </div>
+	    </div>
+	</div>
+
+</div>
