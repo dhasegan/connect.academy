@@ -5,5 +5,3 @@ def format_date(date_string):
 	before = date_string[:23]
 	after = date_string[26:]
 	return before+after
-	
-

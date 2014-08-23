@@ -4,7 +4,9 @@
 {% block extra_js_includes %}
 <script type="text/javascript" src="{{ STATIC_URL }}schedule/libs/date.js"></script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/jquery.weekcalendar.js'></script>
-
+<!--
+  <script type='text/javascript' src='{{STATIC_URL }}schedule/date_format.js'></script>
+-->
 <script type='text/javascript'>
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
@@ -17,6 +19,7 @@
   $(document).ready(function() {
     
     var $calendar = $('#calendar');
+    var id = {{latest_id}}
     
     $('#calendar').weekCalendar({
       data: eventData,
@@ -58,6 +61,8 @@
             },
             buttons: {
                save : function() {
+                  id += 1;
+                  calEvent.id = id;
                   calEvent.start = new Date(startField.val());
                   calEvent.end = new Date(endField.val());
                   calEvent.title = titleField.val();
@@ -68,15 +73,18 @@
                   $dialogContent.dialog("close");
                   
                   $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
                     type:"POST",
                     url:"add_personal_appointment",
                     data: {
-                      'arbitrary-data': 'this is arbitrary data',
-                      'some-form-field': 'test', // from form
-                      'background-color': 'test2',
+                      'title': titleField.val(),
+                      'body': bodyField.val(), 
+                      'start': new Date(startField.val()), 
+                      'end': new Date(endField.val()),
+                      'location' : 'TODO', 
                     },
                     success: function(data){
-                      alert(data);
+                      alert("New Event Added!");
                     }
                   });
                },
@@ -128,7 +136,22 @@
     function prepareFields($dialogContent) {
       $dialogContent.find("input").val("");
       $dialogContent.find("textarea").val("");
-   }
+    }
+    
+    function getCookie(c_name){
+        if (document.cookie.length > 0)
+        {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1)
+            {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start,c_end));
+            }
+        }
+        return "";
+     }
 
     function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
       for (var i = 0; i < timeslotTimes.length; i++) {
@@ -197,7 +220,6 @@
 
 <div id="calendar"></div>
  
-
 <div id="event_edit_container" hidden>
   <form>
     {%csrf_token%}
@@ -213,14 +235,15 @@
       <li>
         <label for="end">End Time:</label><select name="end"><option value="">Select End Time</option></select>
       </li>
-        
-      <li>
-        <label for="title"></label>Title:<input type="text" name="title" />
-      </li>
       
       <li>
-        <label for="body">Body:</label><textarea name="body"></textarea>
+        <label for="body">Description:</label><textarea name="body"></textarea>
       </li>
+
+      <li>
+        <label for="title"></label>Location: <input type="text" name="title"/>
+      </li>
+      
     </ul>
   </form>
 </div>

@@ -1,8 +1,10 @@
 import json
 import time
-import datetime
+from datetime import * #datetime
 import pytz
 from helpers import *
+from dateutil.parser import parse
+from dateutil.tz import tzoffset
 
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
@@ -15,6 +17,9 @@ from django.views.decorators.http import require_GET, require_POST
 from django.core.context_processors import csrf
 
 from app.models import *
+
+#date formatting
+date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 
 @login_required
 def view_schedule(request):
@@ -37,7 +42,6 @@ def view_schedule(request):
     # list of JSON strings
     all_appointments = []
 
-    date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
     # course appointments
     for cappointments in course_appointments:
         for appointment in cappointments:
@@ -62,6 +66,10 @@ def view_schedule(request):
 
     context['appointments'] = json.dumps(all_appointments)
 
+    latest_id = Appointment.objects.latest('id').id
+
+    context['latest_id'] = latest_id
+
     return render(request, "pages/schedule/view_schedule.html", context)
 
 #both professors and students
@@ -70,10 +78,31 @@ def add_personal_appointment(request):
     context = {
         'page':'add_personal_appointment'
     }
-
     context.update(csrf(request))
-	
-    return redirect('/')
+
+    appointment = None
+    if request.is_ajax():
+        user = jUser.objects.filter(username=request.user.username).get()
+        description = request.POST['body']
+        start_time = request.POST['start']
+        end_time = request.POST['end']
+        location = request.POST['title']
+        
+        start = parse(start_time) # from dateutil.parser
+        end = parse(end_time)
+        appointment = PersonalAppointment(start=start \
+                                         ,end=end \
+                                         ,location=location \
+                                         ,description=description \
+                                         ,user=user)
+        appointment.save()
+    else:
+        raise Http404
+
+    return redirect('/') # change this
+
+    
+
 
 @require_POST
 def remove_personal_appointment(request):
