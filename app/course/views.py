@@ -38,7 +38,7 @@ def course_page(request, slug):
     forum = course.forum
     context = dict(context.items() + forum_context(forum, user).items())
 
-    available_pages = ['activity', 'info', 'connect', 'wiki', 'resources']
+    available_pages = ['activity', 'info', 'connect', 'wiki', 'resources', 'teacher']
     if 'page' in request.GET and request.GET['page'] and \
         request.GET['page'] in available_pages:
             context['current_tab'] = request.GET['page']

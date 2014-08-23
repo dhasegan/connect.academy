@@ -1,0 +1,11 @@
+{% load humanize %}
+{% load i18n %}
+
+<div class="homework-content">
+    <div class="h4 text-primary"> {{ hw.homework.name }} </div>
+    {% if hw.homework.description %}
+        <p> {{ hw.homework.description }} </p>
+    {% endif %}
+    <div> {% trans "started on" %} <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
+    <div> {% trans "due" %} <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
+</div>

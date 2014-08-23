@@ -1,7 +1,7 @@
 {% load i18n %}
 
-{% if course.students.registered|length > 0 %}
-    <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.course.slug %}">
+{% if teacher.students.registered|length > 0 %}
+    <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.slug %}">
       <div class="row">
         {% csrf_token %}
         <div class='col-md-6 list-approve'>
@@ -11,7 +11,7 @@
                 <li>
                     <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
                 </li>
-              {% for student in course.students.registered %}
+              {% for student in teacher.students.registered %}
                 <li> 
                     <input type='checkbox' name='user-{{student.id}}'> 
                     <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
@@ -19,7 +19,7 @@
                 </li> 
               {% endfor %}
             </ul>
-            <input type='hidden' name='course' value='{{course.course.id}}'/>
+            <input type='hidden' name='course' value='{{course.id}}'/>
         </div>
 
         <div class='col-md-6'> 

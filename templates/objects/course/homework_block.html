@@ -1,39 +1,30 @@
 {% load i18n %}
 {% load humanize %}
 <div class="row">
-                    <div class="col-md-7">
-                    
-                        <div class="homework-content">
-                            <div class="h4 text-primary"> {{ hw.homework.name }} </div>
-                            {% if hw.homework.description %}
-                                <p> {{ hw.homework.description }} </p>
-                            {% endif %}
-                            <div> {% trans "started on" %} <span class="text-danger"> {{ hw.homework.deadline.start }} </span> </div>
-                            <div> {% trans "due" %} <span class="text-danger"> {{ hw.homework.deadline.end }} </span> <span class="text-muted"> ({{ hw.homework.deadline.end|naturaltime }}) </span> </div>
-                        </div>
+    <div class="col-md-7">
+        {% include 'objects/course/homework_details.html' %}
+    </div>
+
+    <div class="col-md-5">
+        {% if hw.previous_submission or hw.can_submit %}
+            <div class="hw-submit">
+                <div class="hw-stats">
+                    <div class="text-muted"> 
+                        
+                        {{ hw.stats.submitted }} 
+                        {% trans "out of" %}
+                        {{ hw.stats.students }} 
+                        {% trans "submitted" %}
                     </div>
-                    <div class="col-md-5">
-                        {% if hw.previous_submission or hw.can_submit %}
-                            <div class="hw-submit">
-                                <div class="hw-stats">
-                                    <div class="text-muted"> 
-                                        
-                                        {{ hw.stats.submitted }} 
-                                        {% trans "out of" %}
-                                        {{ hw.stats.students }} 
-                                        {% trans "submitted" %}
-                                    </div>
-                                        
-                                </div>
-                                {% if hw.previous_submission %}
-                                    <small class="text-success">{% trans "You already submitted this homework" %}</small>
-                                {% endif %}
-                                {% if hw.can_submit %}
-                                    
-                                    {% include "objects/course/homework_submit.html" %}
-      
-                                {% endif %}
-                            </div> 
-                        {% endif %}
-                    </div>
+
                 </div>
+                {% if hw.previous_submission %}
+                    <small class="text-success">{% trans "You already submitted this homework" %}</small>
+                {% endif %}
+                {% if hw.can_submit %}
+                    {% include "objects/course/homework_submit.html" %}
+                {% endif %}
+            </div> 
+        {% endif %}
+    </div>
+</div>
