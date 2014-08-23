@@ -269,6 +269,9 @@ class CourseTopic(models.Model):
             forum=Forum.objects.get(pk=self.course.id), topic=self)
         super(CourseTopic, self).save(*args, **kwargs)
 
+    def __unicode__(self):
+        return str(self.name)
+
 class Tag(models.Model):
     # Besides name, we might need to add more fancy things to tags (we can group them etc)
     name = models.CharField(max_length = 100)
@@ -774,13 +777,13 @@ class Appointment(models.Model):
 
 class PersonalAppointment(Appointment):
     user = models.ForeignKey('jUser',related_name='appointments')
-    def __str__(self):
+    def __unicode__(self):
         return self.user.name
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
     course_topic = models.ForeignKey('CourseTopic', related_name='appointments')
-    def __str__(self):
+    def __unicode__(self):
         return self.course.name
 
 
@@ -806,7 +809,7 @@ class CourseActivity(models.Model):
         else:
             return "CourseActivity"
 
-    def __str__(self):
+    def __unicode__(self):
         return self.get_subclass_type() + " Object"
 # When a user creates a new post
 class ForumPostActivity(CourseActivity):
