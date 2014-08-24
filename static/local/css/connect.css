@@ -1,9 +1,9 @@
 .connect-navigation .connect-brand .logo {
   float: left;
-  margin-top: -11px;
-  width: 40px; }
+  margin-top: -7px; }
 .connect-navigation .connect-brand .brand-name {
-  padding-left: 7.5px; }
+  padding-left: 7.5px;
+  color: #428bca; }
 .connect-navigation .login-form {
   padding-top: 4px; }
   .connect-navigation .login-form .login-input {

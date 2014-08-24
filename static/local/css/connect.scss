@@ -9,11 +9,11 @@ $campusnet-popover-info-color:      #29ABE2;
     .connect-brand {
         .logo {
             float: left;
-            margin-top: 4px - $navbar-padding-vertical;
-            width: $navbar-height - 10px;
+            margin-top: 8px - $navbar-padding-vertical;
         }
         .brand-name {
             padding-left: $navbar-padding-horizontal / 2;
+            color: $brand-primary;
         }
     }
 
