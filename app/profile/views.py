@@ -17,6 +17,7 @@ import json
 def profile(request, username):
     # stub for profile view
     context = {'page': 'profile'}
+    context.update(csrf(request))
     user = get_object_or_404(jUser, username=username)
     
     context['user'] = user

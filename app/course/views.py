@@ -33,6 +33,7 @@ def course_page(request, slug):
     context = {
         "page": "course",
     }
+    context.update(csrf(request))
     context = dict(context.items() + course_page_context(request, course).items())
 
     forum = course.forum
