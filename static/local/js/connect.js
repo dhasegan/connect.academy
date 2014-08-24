@@ -5,6 +5,7 @@ jQuery( document ).ready(function( $ ) {
 
     if ($('.explore-page').length > 0) { ExplorePage.init(); }
     else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
+    else if ($('.profile-page').length > 0) { ForumPage.init(); } // ForumPage needed to upvote forum posts, add ProfilePage, when needed
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
     else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
 
