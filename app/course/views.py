@@ -336,3 +336,38 @@ def send_mass_email(request, slug):
         return HttpResponse("OK")
     else:
         return HttpResponse("Please select at least one recepient.")
+
+
+
+### ACTIVITIES AJAX URLS #####
+
+@login_required
+def load_course_activities(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = request.user.juser
+
+    activities = course_activities(request,course)
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html
+    }
+
+    return HttpResponse(json.dumps(data))
+
+@login_required
+def load_new_course_activities(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = request.user.juser
+
+    activities = new_course_activities(request,course)
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html,
+    }
+    if activities:
+        data['new_last_id'] = activities[0]['activity'].id
+
+    return HttpResponse(json.dumps(data))
+

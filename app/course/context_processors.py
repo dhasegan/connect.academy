@@ -2,10 +2,12 @@ from django.conf import settings
 
 # For wikis versioning
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from versioning.models import Revision
 
 from app.models import *
 from app.ratings import *
+from app.context_processors import activity_context, paginated
 
 
 def course_ratings_context(course, current_user=None):
@@ -181,6 +183,7 @@ def course_page_context(request, course):
     # Ratings and comments
     context['ratings'] = course_ratings_context(course, current_user)
     context['comments'] = course_reviews_context(course, current_user)
+    context['activities'] = course_activities(request, course)
 
     # Course path
     course_path = None
@@ -227,3 +230,30 @@ def course_page_context(request, course):
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 
     return context
+
+
+def course_activities(request, course):
+    user = request.user.juser
+
+    activities_list = list(CourseActivity.objects.filter(course=course).reverse())
+    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_context = sorted(activities_context,
+                             key=lambda a: a['activity'].timestamp,
+                             reverse=True)
+    return paginated(request,activities_context, 20)
+
+
+
+# loads NEW activities asynchronously, called with ajax
+def new_course_activities(request,course):
+    user = request.user.juser
+    last_id = long(request.GET.get('last_id'))
+    
+    activities_list = list(CourseActivity.objects.filter(course=course, id__gt=last_id).reverse())
+    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_context = sorted(activities_context,
+                         key=lambda a: a['activity'].timestamp,
+                         reverse=True)
+
+
+    return activities_context 

@@ -33,9 +33,17 @@ var ConnectGlobal = (function() {
     me.loadNewActivities = function() {
         var last_id = $(".new_activities_form > input[name='last_id']").val();
         if (last_id) {
+            var action;
+            if ($('.dashboard-page').length > 0) {
+                action = 'load_new_dashboard_activities';
+            }
+            else if ($('.course-page').length > 0) {
+                action = 'load_new_course_activities';
+            }
+            window.console.log(action);
             $.ajax({
                 type: "GET",
-                url: "load_new_dashboard_activities",
+                url: action,
                 data: {"last_id": last_id},
                 success: function(data) {
                     var json_data = $.parseJSON(data);
@@ -77,9 +85,16 @@ var ConnectGlobal = (function() {
             
             if ($(window).scrollTop() == ($(document).height() - $(window).height())) {
                 /* Load more activities */
+                var action;
+                if ($('.dashboard-page').length > 0) {
+                    action = 'load_dashboard_activities';
+                }
+                else if ($('.course-page').length > 0) {
+                    action = 'load_course_activities';
+                }
                 $.ajax({
                     type: "GET",
-                    url: "load_dashboard_activities",
+                    url: action,
                     data: {"page": globals.activities_pagenum + 1},
                     success: function(data) {
                         var json_data = $.parseJSON(data);

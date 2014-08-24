@@ -82,24 +82,27 @@ def dashboard_activities(request,user):
                              key=lambda activity: activity.timestamp,
                              reverse=True)
 
-    activities_context = []
+    activities_context = [activity_context(activity,user) for activity in activities_list]
 
-    for activity in activities_list: 
-        activities_context.append(activity_context(activity,user))
+  
+    return paginated(request,activities_context, 20)
 
-    paginator = Paginator(activities_context, 20) # 20 activities per page
+
+def paginated(request, objects_list, per_page):
+    paginator = Paginator(objects_list, per_page) # 20 activities per page
 
     page = request.GET.get('page')
     try:
-        activities = paginator.page(page).object_list
+        objects = paginator.page(page).object_list
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        activities = paginator.page(1).object_list
+        objects = paginator.page(1).object_list
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        activities = []
+        objects = []
 
-    return activities
+    return objects
+
 
 
 def dashboard_context(request):
@@ -173,15 +176,6 @@ def professor_dashboard_context(request, user):
 
     return context
 
-#def dashboard_context(request):
-#    user = jUser.objects.get(id=request.user.id)
-
-#    if user.user_type == USER_TYPE_STUDENT:
-#        return student_dashboard_context(request, user)
-#    elif user.user_type == USER_TYPE_PROFESSOR:
-#        return professor_dashboard_context(request, user)
-
-#    return {}
 
 # loads NEW activities asynchronously, called with ajax
 def new_dashboard_activities(request,user):
@@ -201,9 +195,7 @@ def new_dashboard_activities(request,user):
                 key = lambda activity: activity.timestamp, 
                 reverse=True)
 
-    activities_context = []
-    for activity in activities_list: 
-        activities_context.append(activity_context(activity,user))
+    activities_context = [activity_context(activity,user) for activity in activities_list]
 
 
     return activities_context 

@@ -11,4 +11,6 @@ urlpatterns = patterns('app.course.views',
     url(r'^vote_review$', 'vote_review', name='vote_review'),
     url(r'^register$', 'register_course', name= 'register_course'),
     url(r'^send_mass_email$','send_mass_email',name='send_mass_email'),
+    url(r'^load_course_activities$', 'load_course_activities', name='load_course_activities'),
+    url(r'^load_new_course_activities$', 'load_new_course_activities', name='load_new_course_activities'),
 )
