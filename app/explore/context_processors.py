@@ -92,9 +92,5 @@ def course_timeline_context(courses, user):
         })
     context['courses'] = sorted(allcourses, key=lambda x: x['overall_rating'], reverse=True)
 
-    # uni_category = user.university.get_university_category()
-    # context['explore_categories'] = explore_categories_context([uni_category.id])
-    context['explore_categories'] = explore_categories_context([])
-
     context['credits'] = sorted(credits)
     return context
