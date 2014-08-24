@@ -2,7 +2,7 @@
 
 {% if documents %}
     <div class="course-detail">
-        <strong> {% trans "Documents" %}: </strong>
+        <strong> {% trans "Resources" %}: </strong>
         <div class="content">
             <ul>
                 {% for document in documents %}
@@ -16,5 +16,7 @@
             </ul>
         </div>
     </div>
+{% else %}
+    {% trans "There are no resources uploaded!" %}
 {% endif %}
 

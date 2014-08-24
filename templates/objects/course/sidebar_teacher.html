@@ -5,20 +5,24 @@
             <h4 class="sidebar-name"> {% trans "Teacher dashboard" %} </h4>
             <nav class="nav-sidebar">
                 <ul class="nav tabs">
-                    <li class="active">
-                        <a href="#teacher_pending" data-toggle="tab">{% trans "Pending Registrations" %} ({{teacher.students.pending|length}})</a>
+                    {% if teacher.students.registered|length > 0 %}
+                        <li class="active">
+                            <a href="#teacher_registered" data-toggle="tab">{% trans "Registered Students" %} ({{teacher.students.registered|length}})</a>
+                        </li>
+                    {% endif %}
+                    {% if teacher.students.pending|length > 0 %}
+                        <li class="{% if teacher.students.registered|length == 0 %}active{% endif %}">
+                            <a href="#teacher_pending" data-toggle="tab">{% trans "Pending Registrations" %} ({{teacher.students.pending|length}})</a>
+                        </li>
+                    {% endif %}
+                    <li class="{% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0  %}active{% endif %}" >
+                        <a href="#teacher_documents" data-toggle="tab">{% trans "Upload Course Resources" %}</a>
                     </li>
                     <li>
-                        <a href="#teacher_registered" data-toggle="tab">{% trans "Registered Students" %} ({{teacher.students.registered|length}})</a>
+                        <a href="#teacher_homework" data-toggle="tab">{% trans "Manage Homework" %}</a>
                     </li>
                     <li>
-                        <a href="#teacher_documents" data-toggle="tab">{% trans "Upload Documents" %}</a>
-                    </li>
-                    <li>
-                        <a href="#teacher_homework" data-toggle="tab">{% trans "Homework" %}</a>
-                    </li>
-                    <li>
-                        <a href="#teacher_forum" data-toggle="tab">{% trans "Forum" %}</a>
+                        <a href="#teacher_forum" data-toggle="tab">{% trans "Manage Forum" %}</a>
                     </li>
                 </ul>
             </nav>

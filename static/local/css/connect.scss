@@ -145,7 +145,7 @@ $course-img-max-size:           150px;
         }
     }
 
-    // Course info page part
+    // Course info page
     .course-info {
         .info-header {
             .course-image {
@@ -212,12 +212,14 @@ $course-img-max-size:           150px;
         }
     }
 
+    // Course wiki page
     .course-wiki {
         .wiki-explanation {
             margin-top: 20px;
         }
     }
 
+    // Course resources page
     .course-resources {
         h3 {
             margin: 0px;
@@ -228,6 +230,27 @@ $course-img-max-size:           150px;
         .homework-list {
             .hw-submit {
                 margin-top: 24px;
+            }
+        }
+    }
+
+    // Course teacher page
+    .course-teacher {
+        .pending-registrations,
+        .registered-students,
+        .course-documents,
+        .course-homework {
+            h3 {
+                margin: 0px;
+            }
+            .top-line {
+                margin-top: 4px;
+            }
+        }
+
+        .registered-students {
+            .email-details {
+                padding-top: 30px;
             }
         }
     }
@@ -325,9 +348,6 @@ $tables-margin-left:            20px;
 
 
 .dashboard-page {
-    .tabpane-contents {
-        margin-top: 12px;
-    }
     .sidebar-schedule {
         max-height: 200px;
         overflow:auto;

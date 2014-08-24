@@ -105,6 +105,18 @@
   margin-top: 4px; }
 .course-page .course-resources .homework-list .hw-submit {
   margin-top: 24px; }
+.course-page .course-teacher .pending-registrations h3,
+.course-page .course-teacher .registered-students h3,
+.course-page .course-teacher .course-documents h3,
+.course-page .course-teacher .course-homework h3 {
+  margin: 0px; }
+.course-page .course-teacher .pending-registrations .top-line,
+.course-page .course-teacher .registered-students .top-line,
+.course-page .course-teacher .course-documents .top-line,
+.course-page .course-teacher .course-homework .top-line {
+  margin-top: 4px; }
+.course-page .course-teacher .registered-students .email-details {
+  padding-top: 30px; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }
@@ -153,8 +165,6 @@
 .course-forum .sidebar-name {
   margin-top: 0px; }
 
-.dashboard-page .tabpane-contents {
-  margin-top: 12px; }
 .dashboard-page .sidebar-schedule {
   max-height: 200px;
   overflow: auto; }

@@ -1,15 +1,22 @@
 {% load i18n %}
 
 {% if teacher.students.pending|length > 0 %}
+
+  <div class="pending-registrations">
+    <h3> Pending Registrations </h3>
+    <hr class="top-line">
+
     <form method="POST" action="/approve_student_registrations">
       <div class="row">
         {% csrf_token %}
         <div class='col-md-8 list-approve'>
         
             <ul>
+              {% if teacher.students.pending|length > 1 %}
                 <li>
                     <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
                 </li>
+              {% endif %}
               {% for student in teacher.students.pending %}
                 <li> 
                     <input type='checkbox' name='student-{{student.id}}'> 
@@ -26,7 +33,7 @@
         </div>
       </div>
     </form>
-      
+  </div>
 {% else %}
   <p class="h3"> {% trans "There are no pending registrations for this course." %} </p>
 {% endif %} 
