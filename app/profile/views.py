@@ -1,24 +1,26 @@
 from django.core.context_processors import csrf
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import render, get_object_or_404, render_to_response
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
-from django.template.loader import render_to_string
-
+from django.template.loader import render_to_string 
+ 
 from app.models import *
 from app.profile.forms import *
+from app.profile.context_processors import *
 
+import json
 
 @require_GET
 @login_required
 def profile(request, username):
     # stub for profile view
     context = {'page': 'profile'}
-    user = jUser.objects.filter(username=username)
-    if user:
-        user = user[0]
-        context['user'] = user
+    user = get_object_or_404(jUser, username=username)
+    
+    context['user'] = user
+    context['activities'] = profile_activities(request,user)
 
     return render(request, "pages/profile.html", context)
 
@@ -134,3 +136,35 @@ def name_change_action(request):
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "first and last name"})
 
     return render(request, "pages/auth/user_account.html", context)
+
+
+
+@login_required
+def load_profile_activities(request, username):
+    user = get_object_or_404(jUser,username=username)
+    
+    activities = profile_activities(request,user)
+
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html
+    }
+
+    return HttpResponse(json.dumps(data))
+
+@login_required
+def load_new_profile_activities(request, username):
+    user = get_object_or_404(jUser, username=username)
+    activities = new_profile_activities(request,user)
+
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html,
+    }
+    if activities:
+        data['new_last_id'] = activities[0]['activity'].id
+
+    return HttpResponse(json.dumps(data))
+

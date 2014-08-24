@@ -40,7 +40,9 @@ var ConnectGlobal = (function() {
             else if ($('.course-page').length > 0) {
                 action = 'load_new_course_activities';
             }
-            window.console.log(action);
+            else if ($('.profile-page').length > 0) {
+                action = 'load_new_profile_activities';
+            }
             $.ajax({
                 type: "GET",
                 url: action,
@@ -91,6 +93,9 @@ var ConnectGlobal = (function() {
                 }
                 else if ($('.course-page').length > 0) {
                     action = 'load_course_activities';
+                }
+                else if ($('.profile-page').length > 0) {
+                    action = 'load_profile_activities';
                 }
                 $.ajax({
                     type: "GET",

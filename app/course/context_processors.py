@@ -1,8 +1,8 @@
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # For wikis versioning
 from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from versioning.models import Revision
 
 from app.models import *

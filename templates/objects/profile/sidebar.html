@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+	<div class="panel-body">
+		<center>
+			{% if user.image %}
+
+			{% else %}
+				<img src="http://placehold.it/200x200"/>
+			{% endif %}
+			<h4>{{user.first_name}} {{user.last_name}}</h4>
+
+    	    <p>
+    	    {{user.university.name}}<br />
+    	    <span class="glyphicon-envelope"> </span> <a href="mailto:{{user.email}}">{{user.email}}</a> <br />
+		</center>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading profile-summary">
+		<center> Summary </center>
+	</div> 
+	<div class="panel-body">
+		
+	</div>
+</div>
