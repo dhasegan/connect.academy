@@ -56,4 +56,29 @@ def error_page(request, error_type):
         'error_type': error_type
     }
 
-    return render(request, 'pages/error.html', context)
+@login_required
+def load_dashboard_activities(request):
+    user = request.user.juser
+    activities = dashboard_activities(request,user)
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html
+    }
+
+    return HttpResponse(json.dumps(data))
+
+@login_required
+def load_new_dashboard_activities(request):
+    user = request.user.juser
+    activities = new_dashboard_activities(request,user)
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html,
+    }
+    if activities:
+        data['new_last_id'] = activities[0]['activity'].id
+
+    return HttpResponse(json.dumps(data))
+
