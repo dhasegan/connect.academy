@@ -105,3 +105,24 @@ class UpvoteAnswer(forms.Form):
         cleaned_data['answer'] = answers[0]
 
         return cleaned_data
+
+class AddExtraTag(forms.Form):
+    tag_name = forms.CharField(max_length=20)
+    course_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(AddExtraTag, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        return cleaned_data
+
+    def clean_tag_name(self):
+        tag_name = self.cleaned_data['tag_name']
+        for ch in tag_name:
+            if not ch.isalnum():
+                raise forms.ValidationError("Only alphanumeric characters are allowed for the tag name!")
+        return tag_name

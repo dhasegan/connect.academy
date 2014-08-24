@@ -108,15 +108,19 @@
 .course-page .course-teacher .pending-registrations h3,
 .course-page .course-teacher .registered-students h3,
 .course-page .course-teacher .course-documents h3,
-.course-page .course-teacher .course-homework h3 {
+.course-page .course-teacher .course-homework h3,
+.course-page .course-teacher .class-forum h3 {
   margin: 0px; }
 .course-page .course-teacher .pending-registrations .top-line,
 .course-page .course-teacher .registered-students .top-line,
 .course-page .course-teacher .course-documents .top-line,
-.course-page .course-teacher .course-homework .top-line {
+.course-page .course-teacher .course-homework .top-line,
+.course-page .course-teacher .class-forum .top-line {
   margin-top: 4px; }
 .course-page .course-teacher .registered-students .email-details {
   padding-top: 30px; }
+.course-page .course-teacher .class-forum .extratag-input {
+  max-width: 130px; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }

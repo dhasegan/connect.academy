@@ -1,4 +1,167 @@
 {% load i18n %}
+
+{% with teacher.forum_stats as stats %}
+
 <div class="forum-management">
-    <p class="h3"> {% trans "There is a forum for this course." %} <a href="{% url 'forum_course' course.slug %}">{% trans "Click here" %}</a> </p>
+
+    {% comment %}
+        General stats
+    {% endcomment %}
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> General stats </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    <tr> <td> Total posts </td> <td> {{ stats.total_posts }} </td> </tr>
+                    <tr> <td> Total answers </td> <td> {{ stats.total_answers }} </td> </tr>
+                    <tr> <td> Total upvotes </td> <td> {{ stats.total_upvotes }} </td> </tr>
+                    <tr> <td> Anonymous posts </td> <td> {{ stats.anon_posts }} </td> </tr>
+                    <tr> <td> Anonymous answers </td> <td> {{ stats.anon_answers }} </td> </tr>
+                    <tr> <td> Upvotes of anonymous content </td> <td> {{ stats.anon_upvotes }} </td> </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> Students' number of posts </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_posts" %}
+                        {% if user_stat.nr_posts > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_posts }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> Students' number of answers </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_answers" %}
+                        {% if user_stat.nr_answers > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_answers }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> Students' received upvotes </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_upvotes" %}
+                        {% if user_stat.nr_upvotes > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_upvotes }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> Tags usage in posts </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for tag_stat in stats.tags_stats|dictsortreversed:"nr_posts" %}
+                        {% if tag_stat.nr_posts > 0 %}
+                            <tr> <td> {{tag_stat.tag.name}} </td> <td> {{ tag_stat.nr_posts }} </td> </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr> 
+
+    <h4> Current tags </h4>
+
+    <div class="row">
+        <div class="col-md-4">
+            <strong> General Tags: </strong>
+            {% for tag_stat in stats.tags_stats %}
+                {% if tag_stat.tag.tag_type == "1" %}
+                    <div>
+                        {{ tag_stat.tag.name }}
+                        {% if tag_stat.nr_posts > 0 %}
+                            <small class="text-muted">({{ tag_stat.nr_posts }})</small>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4">
+            <strong> Topic Tags (from syllabus): </strong>
+            {% for tag_stat in stats.tags_stats %}
+                {% if tag_stat.tag.tag_type == "2" %}
+                    <div>
+                        {{ tag_stat.tag.name }}
+                        {% if tag_stat.nr_posts > 0 %}
+                            <small class="text-muted">({{ tag_stat.nr_posts }})</small>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+
+        <div class="col-md-4">
+            <strong> Extra Tags: </strong>
+            {% for tag_stat in stats.tags_stats %}
+                {% if tag_stat.tag.tag_type == "3" %}
+                    <div>
+                        {{ tag_stat.tag.name }}
+                        {% if tag_stat.nr_posts > 0 %}
+                            <small class="text-muted">({{ tag_stat.nr_posts }})</small>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="add-extratag">
+                <form class="form-inline extratag-form" role="form" method="post" action="{% url 'add_extratag' %}" data-toggle="popover" data-placement="bottom" data-content="The tag can only contain characters 'a' to 'z', 'A' to 'Z' and numbers (20 characters max)!">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">#</div>
+                            <input class="form-control extratag-input" type="text" placeholder="Enter tag name" name="tag_name" maxlength="20">
+                        </div>
+                    </div>
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
+                    <button type="submit" class="btn btn-success">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+{% endwith %}

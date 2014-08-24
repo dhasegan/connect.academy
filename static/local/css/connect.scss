@@ -239,7 +239,8 @@ $course-img-max-size:           150px;
         .pending-registrations,
         .registered-students,
         .course-documents,
-        .course-homework {
+        .course-homework,
+        .class-forum {
             h3 {
                 margin: 0px;
             }
@@ -251,6 +252,12 @@ $course-img-max-size:           150px;
         .registered-students {
             .email-details {
                 padding-top: 30px;
+            }
+        }
+
+        .class-forum {
+            .extratag-input {
+                max-width: 130px;
             }
         }
     }

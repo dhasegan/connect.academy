@@ -8,6 +8,7 @@ from versioning.models import Revision
 from app.models import *
 from app.ratings import *
 from app.context_processors import activity_context, paginated
+from app.forum.context_processors import forum_stats_context
 
 
 def course_ratings_context(course, current_user=None):
@@ -162,6 +163,8 @@ def course_teacher_dashboard(request, course, user):
                 context['students']['registered'].append(student_reg.student)
             else:
                 context['students']['pending'].append(student_reg.student)
+
+    context['forum_stats'] = forum_stats_context(course.forum)
 
     return context
 

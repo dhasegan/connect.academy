@@ -247,3 +247,22 @@ def upvote_answer(request):
         'id_selector': '#upvote_answer_' + str(answer.id)
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@require_POST
+@require_active_user
+@login_required
+def add_extratag(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = AddExtraTag(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    course = form.cleaned_data['course']
+    if not user.is_professor_of(course):
+        raise Http404
+
+    tag = ForumExtraTag(name=form.cleaned_data['tag_name'], forum=course.forum)
+    tag.save()
+
+    return HttpResponse()

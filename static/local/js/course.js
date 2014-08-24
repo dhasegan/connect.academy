@@ -33,6 +33,10 @@ var CoursePage = (function() {
             // Flag review
             reviewFlagSelector: '.review-flag',
             flagButtonSelector: '.flag-btn',
+
+            // Teacher management
+            addExtraTag: $('.add-extratag'),
+            extraTagForm: $('.extratag-form'),
         }
     }, s;
 
@@ -102,6 +106,7 @@ var CoursePage = (function() {
         $(s.reviewFormSelector).submit(this.reviewFormSubmit);
         $(s.upvoteReviewFormSelector).submit(this.upvoteReviewFormSubmit);
         $(s.flagReviewFormSelector).submit(this.flagReviewFormSubmit);
+        s.extraTagForm.submit(this.extraTagFormSubmit);
     };
 
     me.ratingFormSubmit = function(event) {
@@ -156,6 +161,23 @@ var CoursePage = (function() {
             }
         );
     };
+
+    me.extraTagFormSubmit = function(event) {
+        var alphanumeric = /^([a-zA-Z0-9]+)$/;
+        var tagName = $(this).find('.extratag-input').val();
+        if (alphanumeric.test(tagName) == false) {
+            s.extraTagForm.popover('show');
+            event.preventDefault();
+            return ;
+        }
+
+        Utils.SubmitFormAjax(event, this, 
+            function(response) {
+                s.extraTagForm.parent().html(tagName);
+            }, function(jqXHR, textStatus, errorThrown) {
+            }
+        );
+    }
 
     return me;
 }());
