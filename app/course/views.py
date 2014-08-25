@@ -216,8 +216,8 @@ def submit_homework_request(request, slug):
         raise Http404
 
     timezone_minutes = timedelta(minutes=form.cleaned_data['timezone'])
-    start_time = form.cleaned_data['start'] + timezone_minutes
-    end_time = form.cleaned_data['deadline'] + timezone_minutes
+    start_time = form.cleaned_data['start'].replace(tzinfo=pytz.utc) + timezone_minutes
+    end_time = form.cleaned_data['deadline'].replace(tzinfo=pytz.utc) + timezone_minutes
 
     deadline = Deadline(start=start_time, end=end_time)
     deadline.save()

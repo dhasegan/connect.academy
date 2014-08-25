@@ -141,7 +141,7 @@ var CoursePage = (function() {
         });
         s.homeworkForm.ready(function() {
             var tz = $(this).find('input[name="timezone"]');
-            tz.val( moment().zone() )
+            tz.val( moment().zone() );
         });
     };
 

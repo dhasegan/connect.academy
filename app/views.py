@@ -82,3 +82,9 @@ def load_new_dashboard_activities(request):
 
     return HttpResponse(json.dumps(data))
 
+def set_timezone(request):
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
+    else:
+        return render(request, 'pages/set_timezone.html', {'timezones': pytz.common_timezones})

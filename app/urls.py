@@ -11,6 +11,7 @@ urlpatterns = patterns('app.views',
     url(r'^load_dashboard_activities$', 'load_dashboard_activities', name='load_dashboard_activities'),
     url(r'^load_new_dashboard_activities$', 'load_new_dashboard_activities', name='load_new_dashboard_activities'),
     url(r'^error/(?P<error_type>[\w-]+)', 'error_page', name="error_page"),
+    url(r'^set_timezone$', 'set_timezone', name='set_timezone')
 )
 
 urlpatterns += patterns('',
