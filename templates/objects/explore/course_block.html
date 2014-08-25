@@ -53,7 +53,7 @@
                 {% if course.registration_status != 3 %} <!-- if user is allowed to register -->
                     {% with course.registration_status as registration_status %}
                         {% with course.registration_open as registration_open %}
-                            {% with course.course as jcourse %}
+                            {% with course.course as course %}
                                 {%  include 'objects/course/registration.html' %}
                             {% endwith %}
                         {% endwith %}
