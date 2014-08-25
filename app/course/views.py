@@ -270,9 +270,10 @@ def register_course(request, slug):
     context = {
         "page": "register_course"
     }
-    context.update(csrf(request))
-    user = request.user
     course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    context.update(csrf(request))
     registration_deadline = course.get_registration_deadline()
     registration_status = course.get_registration_status(user)
     registration_open = registration_deadline.is_open() if registration_deadline is not None else False
