@@ -28,13 +28,16 @@ def user_authenticated(request):
 
     return context
 
-def activity_context(activity,current_user):
+def activity_context(activity, current_user):
     activity_context = {
         "type": activity.get_subclass_type(),
         "activity": activity,
     }
     if hasattr(activity,"forumpostactivity"):
         activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, current_user)
+    elif hasattr(activity, "forumansweractivity"):
+        answer = activity.forumansweractivity.forum_answer
+        activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
     elif hasattr(activity, "homeworkactivity"):
         nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
                                                                 is_approved=True).count()

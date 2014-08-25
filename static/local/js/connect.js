@@ -1,6 +1,5 @@
 jQuery( document ).ready(function( $ ) {
 
-
     ConnectGlobal.init();
 
     if ($('.explore-page').length > 0) { ExplorePage.init(); }
@@ -8,6 +7,7 @@ jQuery( document ).ready(function( $ ) {
     else if ($('.profile-page').length > 0) { ForumPage.init(); } // ForumPage needed to upvote forum posts, add ProfilePage, when needed
     else if ($('.forum-page').length > 0) { ForumPage.init(); }
     else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
+    else if ($('.dashboard-page').length > 0) { ForumPage.init(); }
 
 });
 

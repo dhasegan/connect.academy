@@ -200,3 +200,8 @@
     width: 10%;
     text-align: center;
     color: white; }
+
+.activity_timeline .activity .end-of-activity {
+  margin-bottom: 2px; }
+.activity_timeline .forum-answer-activity .answer-text {
+  margin-top: 16px; }

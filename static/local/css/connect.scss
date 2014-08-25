@@ -398,6 +398,18 @@ $tables-margin-left:            20px;
             color:white;
         }
     }
+}
 
-    
+// Activity timelines
+.activity_timeline {
+    .activity {
+        .end-of-activity {
+            margin-bottom: 2px;
+        }
+    }
+    .forum-answer-activity {
+        .answer-text {
+            margin-top: 16px;
+        }
+    }
 }
