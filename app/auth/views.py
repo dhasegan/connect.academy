@@ -1,3 +1,5 @@
+import json
+
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
@@ -7,14 +9,13 @@ from django.contrib.auth.tokens import default_token_generator
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.views.defaults import server_error
 from django.db import IntegrityError
+from django.core.urlresolvers import reverse
 
 from app.models import *
 from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
 # from app.auth.specific_login import get_university
-
-import json
 
 @require_POST
 def login_action(request):
@@ -330,4 +331,5 @@ def approve_student_registrations(request):
                 registration.is_approved = True
                 registration.save()
 
-    return redirect('/dashboard')
+    get_params = "?page=teacher"
+    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
