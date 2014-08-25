@@ -23,6 +23,9 @@
 
                 <div class="answer-text">
                     {{ answer.answer.text|linebreaks|truncatechars:"200" }}
+                    {% if answer.answer.text|length > 200 %}
+                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ answer.answer.post.id }}">(more)</a>
+                    {% endif %}
                 </div>
 
                 <hr class="end-of-activity">

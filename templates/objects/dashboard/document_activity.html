@@ -1,28 +1,36 @@
 {% load humanize %}
 {% load i18n %}
 <div class="block"> 
-
-	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
-	uploaded a <a href="{{ document.document.url }}">document</a> on 
-		{% if document.course_topic %}
-			the topic <i> "{{document.course_topic.name}}" </i> of 
-		{% else %}
-			the course 
-		{% endif %}
-	<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a> 
-
-	<small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
+	<div class="activity document-activity">
 	
 		<div class="panel panel-default">
 			<div class="panel-body">
+
 				{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
-				<span class="text-muted"> {{activity.timestamp|naturaltime}} </span>
-				<a href="{{ document.document.url }}"> {{ document.name|linebreaks }} </a>
-				{% if document.description %}
-					{{document.description|linebreaks}}
+				uploaded a <a href="{{ document.document.url }}">document</a>
+				{% if document.course_topic %}
+					on the topic <i> "{{ document.course_topic.name }}" </i> of
+				{% else %}
+					for
 				{% endif %}
+				<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a>
+				<span class="text-muted"> {{activity.timestamp|naturaltime}} </span>
+
+				<div class="document-body">
+					<a href="{{ document.document.url }}"> {{ document.name|linebreaks }} </a>
+					{% if document.description %}
+						{{ document.description|linebreaks|truncatechars:"200" }}
+                        {% if document.description|length > 200 %}
+                            <a href="{% url 'course_page' activity.course.slug %}?page=resources">(more)</a>
+                        {% endif %}
+					{% endif %}
+				</div>
+
+				<hr class="end-of-activity">
+                <a href="{% url 'course_page' activity.course.slug %}?page=resources"> Check all resources </a>
+
 			</div>
 		</div>
-	
 
+	</div>
 </div>
