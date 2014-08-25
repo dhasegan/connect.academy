@@ -146,7 +146,7 @@ class SubmitHomeworkRequestForm(forms.Form):
             else:
                 raise forms.ValidationError("The selected topic does not belong to this course")
         else:
-            raise forms.VaildationError("Please specify the course topic.")
+            cleaned_data["topic"] = None
         
         return cleaned_data
 

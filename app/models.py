@@ -526,7 +526,7 @@ class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     deadline = models.ForeignKey('Deadline')
-    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests")
+    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
 
