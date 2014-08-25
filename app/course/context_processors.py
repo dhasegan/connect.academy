@@ -301,7 +301,8 @@ def activity_context(activity, current_user):
         }
     elif hasattr(activity, "reviewactivity"):
         activity_context["review"] = review_context(activity.reviewactivity.review, current_user)
-        print activity_context["review"]['comment'].course.slug
+    elif hasattr(activity, "wikiactivity"):
+        activity_context['contribution'] = activity.wikiactivity.contribution
     return activity_context
     
 def paginated(request, objects_list, per_page):

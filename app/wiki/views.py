@@ -93,28 +93,21 @@ def save_wiki_page(request, slug):
         wiki = course.wiki
         wiki.content = content
         wiki.save()
-        # add student contribution if it doesn't exist
-        # if it exists, change the date
-        contribs = WikiContributions.objects.filter(wiki=wiki,
-                                                    user=user)
-        if contribs:
-            # the 'modified_by' field has the auto_now keyword,
-            # so it will be updated automatically when calling save()
-            contribs[0].save()
-        else:
-            WikiContributions.objects.create(wiki=wiki,
-                                             user=user).save()
+
         context['success'] = render_to_string('objects/notifications/wiki/wiki_edited.html', {
             'course_name': course.name
         })
     else:
         wiki = WikiPage.objects.create(course=course, content=content)
-        wiki.save()
-        WikiContributions.objects.create(wiki=wiki,
-                                         user=user).save()
         context['success'] = render_to_string('objects/notifications/wiki/wiki_created.html', {
             'course_name': course.name
         })
+
+
+    wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
+    content_object = wiki_ctype.get_object_for_this_type(pk=wiki.id)
+    revision = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk).latest('created_at')
+    WikiContributions.objects.create(wiki=wiki, user=user, revision=revision)
 
     context['course'] = course
     context['content'] = wiki.content

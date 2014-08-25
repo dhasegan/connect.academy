@@ -744,13 +744,14 @@ class ForumAnswer(models.Model):
 class WikiContributions(models.Model):
     user = models.ForeignKey('jUser')
     wiki = models.ForeignKey('WikiPage')
+    revision = models.ForeignKey('versioning.Revision')
 
     def save(self, *args, **kwargs):
         super(WikiContributions, self).save(*args, **kwargs)
         WikiActivity.objects.create(user=self.user, course=self.wiki.course, contribution=self)
 
     def __unicode__(self):
-        return self.user.username + " " + self.wiki.title + " on '" + str(self.modified_on)+"'"
+        return "Contribution " + self.user.username
 
 
 class WikiPage(models.Model):
@@ -758,7 +759,7 @@ class WikiPage(models.Model):
     content = models.TextField()
 
     def __unicode__(self):
-        return "Wiki of course " + str(self.course.name)
+        return "Wiki " + str(self.course.name)
 
     def get_absolute_url(self):
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
