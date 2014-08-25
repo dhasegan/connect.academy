@@ -4,108 +4,11 @@
 
 <div class="forum-management">
 
-    {% comment %}
-        General stats
-    {% endcomment %}
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table table-hover">
-                <thead>
-                    <tr> <th> General stats </th> <th> </th> </tr>
-                </thead>
-                <tbody>
-                    <tr> <td> Total posts </td> <td> {{ stats.total_posts }} </td> </tr>
-                    <tr> <td> Total answers </td> <td> {{ stats.total_answers }} </td> </tr>
-                    <tr> <td> Total upvotes </td> <td> {{ stats.total_upvotes }} </td> </tr>
-                    <tr> <td> Anonymous posts </td> <td> {{ stats.anon_posts }} </td> </tr>
-                    <tr> <td> Anonymous answers </td> <td> {{ stats.anon_answers }} </td> </tr>
-                    <tr> <td> Upvotes of anonymous content </td> <td> {{ stats.anon_upvotes }} </td> </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table table-hover">
-                <thead>
-                    <tr> <th> Students' number of posts </th> <th> </th> </tr>
-                </thead>
-                <tbody>
-                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_posts" %}
-                        {% if user_stat.nr_posts > 0 %}
-                            {% with user_stat.student as juser %}
-                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_posts }} </td> </tr>
-                            {% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table table-hover">
-                <thead>
-                    <tr> <th> Students' number of answers </th> <th> </th> </tr>
-                </thead>
-                <tbody>
-                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_answers" %}
-                        {% if user_stat.nr_answers > 0 %}
-                            {% with user_stat.student as juser %}
-                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_answers }} </td> </tr>
-                            {% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table table-hover">
-                <thead>
-                    <tr> <th> Students' received upvotes </th> <th> </th> </tr>
-                </thead>
-                <tbody>
-                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_upvotes" %}
-                        {% if user_stat.nr_upvotes > 0 %}
-                            {% with user_stat.student as juser %}
-                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_upvotes }} </td> </tr>
-                            {% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table table-hover">
-                <thead>
-                    <tr> <th> Tags usage in posts </th> <th> </th> </tr>
-                </thead>
-                <tbody>
-                    {% for tag_stat in stats.tags_stats|dictsortreversed:"nr_posts" %}
-                        {% if tag_stat.nr_posts > 0 %}
-                            <tr> <td> {{tag_stat.tag.name}} </td> <td> {{ tag_stat.nr_posts }} </td> </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <hr> 
-
-    <h4> Current tags </h4>
+    <h4> {% trans "Current tags" %} </h4>
 
     <div class="row">
         <div class="col-md-4">
-            <strong> General Tags: </strong>
+            <strong> {% trans "General Tags" %}: </strong>
             {% for tag_stat in stats.tags_stats %}
                 {% if tag_stat.tag.tag_type == "1" %}
                     <div>
@@ -119,7 +22,7 @@
         </div>
 
         <div class="col-md-4">
-            <strong> Topic Tags (from syllabus): </strong>
+            <strong> {% trans "Topic Tags (from syllabus)" %}: </strong>
             {% for tag_stat in stats.tags_stats %}
                 {% if tag_stat.tag.tag_type == "2" %}
                     <div>
@@ -134,7 +37,7 @@
 
 
         <div class="col-md-4">
-            <strong> Extra Tags: </strong>
+            <strong> {% trans "Extra Tags" %}: </strong>
             {% for tag_stat in stats.tags_stats %}
                 {% if tag_stat.tag.tag_type == "3" %}
                     <div>
@@ -156,11 +59,111 @@
                         </div>
                     </div>
                     <input type="hidden" name="course_id" value="{{ course.id }}">
-                    <button type="submit" class="btn btn-success">Add</button>
+                    <button type="submit" class="btn btn-success">{% trans "Add" %}</button>
                 </form>
             </div>
         </div>
     </div>
+
+    <hr>
+
+
+    {% comment %}
+        General stats
+    {% endcomment %}
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> {% trans "General statistics" %} </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    <tr> <td> {% trans "Total posts" %} </td> <td> {{ stats.total_posts }} </td> </tr>
+                    <tr> <td> {% trans "Total answers" %} </td> <td> {{ stats.total_answers }} </td> </tr>
+                    <tr> <td> {% trans "Total upvotes" %} </td> <td> {{ stats.total_upvotes }} </td> </tr>
+                    <tr> <td> {% trans "Anonymous posts" %} </td> <td> {{ stats.anon_posts }} </td> </tr>
+                    <tr> <td> {% trans "Anonymous answers" %} </td> <td> {{ stats.anon_answers }} </td> </tr>
+                    <tr> <td> {% trans "Upvotes of anonymous content" %} </td> <td> {{ stats.anon_upvotes }} </td> </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> {% trans "Students' number of posts" %} </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_posts" %}
+                        {% if user_stat.nr_posts > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_posts }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> {% trans "Students' number of answers" %} </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_answers" %}
+                        {% if user_stat.nr_answers > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_answers }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> {% trans "Students' received upvotes" %} </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for user_stat in stats.user_stats|dictsortreversed:"nr_upvotes" %}
+                        {% if user_stat.nr_upvotes > 0 %}
+                            {% with user_stat.student as juser %}
+                                <tr> <td> {% include 'objects/user_link.html' %} </td> <td> {{ user_stat.nr_upvotes }} </td> </tr>
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover">
+                <thead>
+                    <tr> <th> {% trans "Tags usage in posts" %} </th> <th> </th> </tr>
+                </thead>
+                <tbody>
+                    {% for tag_stat in stats.tags_stats|dictsortreversed:"nr_posts" %}
+                        {% if tag_stat.nr_posts > 0 %}
+                            <tr> <td> {{tag_stat.tag.name}} </td> <td> {{ tag_stat.nr_posts }} </td> </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr> 
 
 </div>
 
