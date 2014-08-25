@@ -499,6 +499,10 @@ class Review(models.Model):
     upvoted_by = models.ManyToManyField('jUser', related_name='review_upvoted')
     downvoted_by = models.ManyToManyField('jUser', related_name='review_downvoted')
 
+    def save(self, *args, **kwargs):
+        super(Review, self).save(*args, **kwargs)
+        ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
+
     def __unicode__(self):
         return str(self.review)
 
@@ -741,6 +745,10 @@ class WikiContributions(models.Model):
     user = models.ForeignKey('jUser')
     wiki = models.ForeignKey('WikiPage')
 
+    def save(self, *args, **kwargs):
+        super(WikiContributions, self).save(*args, **kwargs)
+        WikiActivity.objects.create(user=self.user, course=self.wiki.course, contribution=self)
+
     def __unicode__(self):
         return self.user.username + " " + self.wiki.title + " on '" + str(self.modified_on)+"'"
 
@@ -806,6 +814,10 @@ class CourseActivity(models.Model):
             return "HomeworkActivity"
         elif hasattr(self, 'documentactivity'):
             return "DocumentActivity"
+        elif hasattr(self, 'reviewactivity'):
+            return "ReviewActivity"
+        elif hasattr(self, 'wikiactivity'):
+            return "WikiActivity"
         else:
             return "CourseActivity"
 
@@ -827,5 +839,10 @@ class HomeworkActivity(CourseActivity):
 class DocumentActivity(CourseActivity): 
     document = models.ForeignKey('CourseDocument')
 
+# When a user writes a review for a course
+class ReviewActivity(CourseActivity):
+    review = models.ForeignKey('Review')
 
-
+# When a user makes a wiki change
+class WikiActivity(CourseActivity):
+    contribution = models.ForeignKey('WikiContributions')

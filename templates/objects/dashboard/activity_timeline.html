@@ -19,6 +19,10 @@
             {% with activity.documentactivity.document as document %}
              {% include 'objects/dashboard/document_activity.html' %}
             {% endwith %}
+          {% elif a.type == 'ReviewActivity' %}
+            {% with a.review as comment %}
+              {% include 'objects/dashboard/review_activity.html' %}
+            {% endwith %}
           {% endif %}
       {% endwith %}
   {% endfor %}

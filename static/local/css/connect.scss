@@ -186,28 +186,6 @@ $course-img-max-size:           150px;
                  hr {
                     margin-bottom: 12px;
                 }
-                .review {
-                    .review-text {
-                        margin-top: 6px;
-                    }
-                    .review-flag {
-                        overflow: hidden;
-                        .flag-content {
-                            float: right;
-                        }
-                        .flag-review-form {
-                            display: inline;
-                        }
-                        .flag-btn {
-                            &:hover,
-                            &:focus {
-                                .glyphicon-flag {
-                                    color: $brand-danger;
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -258,6 +236,38 @@ $course-img-max-size:           150px;
         .class-forum {
             .extratag-input {
                 max-width: 130px;
+            }
+        }
+    }
+}
+
+// Review display
+
+
+// Activity and info pages
+.course-info .info-body .reviews-display,
+.activity-timeline .review-activity {
+    .review-block {
+        .review {
+            .review-text {
+                margin-top: 6px;
+            }
+            .review-flag {
+                overflow: hidden;
+                .flag-content {
+                    float: right;
+                }
+                .flag-review-form {
+                    display: inline;
+                }
+                .flag-btn {
+                    &:hover,
+                    &:focus {
+                        .glyphicon-flag {
+                            color: $brand-danger;
+                        }
+                    }
+                }
             }
         }
     }
@@ -419,6 +429,11 @@ $tables-margin-left:            20px;
     }
     .document-activity {
         .document-body {
+            margin-top: 16px;
+        }
+    }
+    .review-activity {
+        .review-body {
             margin-top: 16px;
         }
     }

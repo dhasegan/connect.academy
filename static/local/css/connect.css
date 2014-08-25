@@ -87,16 +87,6 @@
     resize: vertical; }
   .course-page .course-info .info-body .reviews-display hr {
     margin-bottom: 12px; }
-  .course-page .course-info .info-body .reviews-display .review .review-text {
-    margin-top: 6px; }
-  .course-page .course-info .info-body .reviews-display .review .review-flag {
-    overflow: hidden; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-content {
-      float: right; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-review-form {
-      display: inline; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:hover .glyphicon-flag, .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:focus .glyphicon-flag {
-      color: #d9534f; }
 .course-page .course-wiki .wiki-explanation {
   margin-top: 20px; }
 .course-page .course-resources h3 {
@@ -121,6 +111,23 @@
   padding-top: 30px; }
 .course-page .course-teacher .class-forum .extratag-input {
   max-width: 130px; }
+
+.course-info .info-body .reviews-display .review-block .review .review-text,
+.activity-timeline .review-activity .review-block .review .review-text {
+  margin-top: 6px; }
+.course-info .info-body .reviews-display .review-block .review .review-flag,
+.activity-timeline .review-activity .review-block .review .review-flag {
+  overflow: hidden; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-content,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-content {
+    float: right; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-review-form,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-review-form {
+    display: inline; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-btn:hover .glyphicon-flag, .course-info .info-body .reviews-display .review-block .review .review-flag .flag-btn:focus .glyphicon-flag,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-btn:hover .glyphicon-flag,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-btn:focus .glyphicon-flag {
+    color: #d9534f; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }
@@ -208,4 +215,6 @@
 .activity-timeline .homework-activity .homework-body {
   margin-top: 8px; }
 .activity-timeline .document-activity .document-body {
+  margin-top: 16px; }
+.activity-timeline .review-activity .review-body {
   margin-top: 16px; }

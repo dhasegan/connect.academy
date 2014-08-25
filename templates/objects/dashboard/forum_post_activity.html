@@ -49,7 +49,7 @@
                     <div class="tab-content best-answers">
                         <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> Reply </a>
                         {% if post.answers|length > 0 %}
-                            .
+                            &middot;
                             <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> Check replies <small> ({{ post.answers|length }}) </small> </a>
                         {% endif %}
                     </div>

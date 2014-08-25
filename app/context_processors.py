@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from app.models import *
 from app.ratings import *
-from app.forum.context_processors import *
+from app.course.context_processors import *
 
 
 def debug(context):
@@ -28,48 +28,8 @@ def user_authenticated(request):
 
     return context
 
-def activity_context(activity, current_user):
-    activity_context = {
-        "type": activity.get_subclass_type(),
-        "activity": activity,
-    }
-    if hasattr(activity,"forumpostactivity"):
-        activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, current_user)
-    elif hasattr(activity, "forumansweractivity"):
-        answer = activity.forumansweractivity.forum_answer
-        activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
-    elif hasattr(activity, "homeworkactivity"):
-        nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
-                                                                is_approved=True).count()
-        current_time = pytz.utc.localize(datetime.now())
-        hw = activity.homeworkactivity.homework
-        course = activity.course
-        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
-        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
-        is_student = current_user.is_student_of(course)
-        can_submit_homework = is_student and is_allowed and within_deadline
-        
-        homework_submission = None
-        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
-        if homework_submissions:
-            homework_submission = homework_submissions[0]
-
-        homework_submitted = hw.coursehomeworksubmission_set.all().count()
-
-        activity_context["homework"] = {
-            "homework": hw,
-            "can_submit": can_submit_homework,
-            "is_allowed": is_allowed,
-            "previous_submission": homework_submission,
-            "stats": {
-                "submitted": homework_submitted,
-                "students": nr_students
-            }
-        }
-    return activity_context
 
 def dashboard_activities(request,user):
-
 
     own_course_activities = list(CourseActivity.objects.filter(
         Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())), ~Q(user=user)).reverse())
@@ -89,23 +49,6 @@ def dashboard_activities(request,user):
 
   
     return paginated(request,activities_context, 20)
-
-
-def paginated(request, objects_list, per_page):
-    paginator = Paginator(objects_list, per_page) # 20 activities per page
-
-    page = request.GET.get('page')
-    try:
-        objects = paginator.page(page).object_list
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        objects = paginator.page(1).object_list
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        objects = []
-
-    return objects
-
 
 
 def dashboard_context(request):
