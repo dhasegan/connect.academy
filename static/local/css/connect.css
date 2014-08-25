@@ -201,11 +201,11 @@
     text-align: center;
     color: white; }
 
-.activity_timeline .activity .end-of-activity {
+.activity-timeline .activity .end-of-activity {
   margin-bottom: 2px; }
-.activity_timeline .forum-answer-activity .answer-text {
+.activity-timeline .forum-answer-activity .answer-text {
   margin-top: 16px; }
-.activity_timeline .homework-activity .homework-body {
+.activity-timeline .homework-activity .homework-body {
   margin-top: 8px; }
-.activity_timeline .document-activity .document-body {
+.activity-timeline .document-activity .document-body {
   margin-top: 16px; }

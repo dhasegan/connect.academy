@@ -7,14 +7,10 @@
                 {% include 'objects/profile/sidebar.html' %}
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class='panel-heading'>
-                    Recent Activity
-                </div>
 
-                {% include 'objects/dashboard/activities_container.html' %}
-            </div>
+        <div class="col-md-8">
+            {% include 'objects/dashboard/activities_container.html' %}
+        </div>
 
     </div>
 {% endblock %}
