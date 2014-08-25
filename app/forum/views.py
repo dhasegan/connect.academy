@@ -53,6 +53,8 @@ def new_post(request, slug):
     context['forum'] = course.forum
     post_tags = course.forum.get_post_tags(user)
     context['tags'] = post_tags
+    context['nr_topictags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_TOPIC)
+    context['nr_extratags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_EXTRA)
 
     # Get request
     if request.method == "GET":

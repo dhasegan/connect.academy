@@ -1,10 +1,36 @@
 {% load i18n %}
 {% trans "Select an appropriate tag for your post" %}:
-{% for tag in tags %}
-    <div class="radio">
-      <label>
-        <input type="radio" name="tagsRadios" id="{{ tag.name }}" value="{{ tag.name }}" {% if forloop.counter == 1 %}checked{% endif %}>
-        #{{ tag.name }}
-      </label>
+
+<div class="row new-post-tags">
+    <div class="col-md-6">
+
+        <strong>{% trans "General tags" %}</strong>:
+        {% for tag in tags %}
+            {% if tag.tag_type == "1" %}
+                {% include "objects/forum/new_post_tag_radio.html" %}
+            {% endif %}
+        {% endfor %}
+
+        {% if has_extratags > 0 %}
+            <strong>{% trans "Extra tags" %}</strong>
+            <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Special discussion tags" %}'></span>:
+            {% for tag in tags %}
+                {% if tag.tag_type == "3" %}
+                    {% include "objects/forum/new_post_tag_radio.html" %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
-{% endfor %}
+
+    <div class="col-md-6">
+        {% if nr_topictags > 0 %}
+            <strong>{% trans "Topic tags" %}</strong>
+            <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Tags representing parts of the syllabus" %}'></span>:
+            {% for tag in tags %}
+                {% if tag.tag_type == "2" %}
+                    {% include "objects/forum/new_post_tag_radio.html" %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

@@ -176,6 +176,15 @@
 .course-forum .sidebar-name {
   margin-top: 0px; }
 
+.forum-new-post-page .new-post-tags {
+  margin-top: 16px; }
+.forum-new-post-page .new-post-reminder {
+  background-color: #eeeeee; }
+  .forum-new-post-page .new-post-reminder .thank-msg {
+    margin-top: 4px; }
+  .forum-new-post-page .new-post-reminder ul > li {
+    margin-top: 4px; }
+
 .dashboard-page .sidebar-schedule {
   max-height: 200px;
   overflow: auto; }
