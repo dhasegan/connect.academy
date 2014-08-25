@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.template import Context, Template, RequestContext
 from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
 
 
 from app.models import *
@@ -75,9 +76,9 @@ def new_post(request, slug):
                      text=form.cleaned_data['description'], posted_by=user,
                      anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
-    
 
-    return redirect("app.forum.views.forum_course", slug=course.slug)
+    get_params = "?page=connect&post=" + str(post.id)
+    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
 
 
 @require_POST

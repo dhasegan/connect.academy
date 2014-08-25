@@ -9,10 +9,10 @@ class LoginForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    fname = forms.CharField()
-    lname = forms.CharField()
+    username = forms.CharField(max_length=30, required=True)
+    fname = forms.CharField(max_length=30)
+    lname = forms.CharField(max_length=30)
     email = forms.EmailField()
-    username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
     password_confirmation = forms.CharField(widget=forms.PasswordInput())  # password confirmation field
     is_professor = forms.BooleanField(required=False)
@@ -23,10 +23,10 @@ class SignupForm(forms.Form):
     def clean(self):
         cleaned_data = super(SignupForm,self).clean()
 
-        email = cleaned_data['email']
-        username = cleaned_data['username']
-        password = cleaned_data['password']
-        password_confirmation = cleaned_data['password_confirmation']
+        email = cleaned_data.get('email')
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+        password_confirmation = cleaned_data.get('password_confirmation')
 
         errors = []
 

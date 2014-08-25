@@ -12,12 +12,12 @@
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="text" name="fname" id="fname" class="form-control input-sm" placeholder='{% trans "First Name" %}' required>
+                        <input type="text" name="fname" id="fname" class="form-control input-sm" placeholder='{% trans "First Name" %}' maxlength="30" required>
                     </div>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="text" name="lname" id="lname" class="form-control input-sm" placeholder='{% trans "Last Name" %}' required>
+                        <input type="text" name="lname" id="lname" class="form-control input-sm" placeholder='{% trans "Last Name" %}' maxlength="30" required>
                     </div>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="text" name="username"  id="username" class="form-control input-sm" placeholder='{% trans "Username" %}' required/>
+                        <input type="text" name="username"  id="username" class="form-control input-sm" placeholder='{% trans "Username" %}' maxlength="30" required/>
                         <div id ="username-ok" class='validation-ok'></div>
                         <div id ="username-error" class='validation-error'></div>
                     </div>

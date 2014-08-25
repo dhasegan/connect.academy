@@ -12,7 +12,7 @@
                 <form method="post" action="/username_change_action" id="username_form">
                     {%csrf_token%}
                     <div class="form-group">
-                        <input type="text" name="new_username" id="new_username" class="form-control input-sm" placeholder='{% trans "New Username" %}' required>
+                        <input type="text" name="new_username" id="new_username" class="form-control input-sm" placeholder='{% trans "New Username" %}' maxlength="30" required>
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
@@ -56,10 +56,10 @@
                 <form method="post" action="/name_change_action" id="name_form">
                     {%csrf_token%}
                     <div class="form-group">
-                        <input type="text" name="new_fname" id="new_fname" class="form-control input-sm" placeholder='{% trans "New First Name" %}' required>
+                        <input type="text" name="new_fname" id="new_fname" class="form-control input-sm" placeholder='{% trans "New First Name" %}' maxlength="30" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="new_lname" id="new_lname" class="form-control input-sm" placeholder='{% trans "New Last Name" %}' required>
+                        <input type="text" name="new_lname" id="new_lname" class="form-control input-sm" placeholder='{% trans "New Last Name" %}' maxlength="30" required>
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>

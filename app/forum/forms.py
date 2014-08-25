@@ -4,7 +4,7 @@ from app.models import *
 
 class SubmitForumPost(forms.Form):
     forum_pk = forms.CharField()
-    title = forms.CharField()
+    title = forms.CharField(max_length=250)
     description = forms.CharField(required=False)
     anonymous = forms.BooleanField(required=False)
     tagsRadios = forms.CharField(required=False)
@@ -28,7 +28,7 @@ class SubmitForumPost(forms.Form):
 
 class SubmitForumAnswer(forms.Form):
     forum_pk = forms.CharField()
-    text = forms.CharField()
+    text = forms.CharField(max_length=5000)
     post_id = forms.CharField()
     parent_answer_id = forms.CharField(required=False)
 

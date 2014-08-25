@@ -42,7 +42,7 @@ class RateCourseForm(forms.Form):
 
 class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
-    comment = forms.CharField()
+    comment = forms.CharField(max_length=5000)
     anonymous = forms.BooleanField(required=False)
 
     def clean(self):
@@ -56,10 +56,10 @@ class SubmitCommentForm(forms.Form):
         return cleaned_data
 
 class SubmitDocumentForm(forms.Form):
-    name = forms.CharField()
+    name = forms.CharField(max_length=200)
     document = forms.FileField()
     topic_id = forms.CharField(required=False)
-    description = forms.CharField(required=False)
+    description = forms.CharField(max_length=1000, required=False)
     course_id = forms.CharField()
     url = forms.CharField()
 
@@ -121,8 +121,8 @@ class SubmitHomeworkForm(forms.Form):
         return content
 
 class SubmitHomeworkRequestForm(forms.Form):
-    name = forms.CharField()
-    description = forms.CharField(required=False)
+    name = forms.CharField(max_length=200)
+    description = forms.CharField(max_length=1000, required=False)
     topic_id = forms.CharField(required=False)
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
