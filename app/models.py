@@ -26,6 +26,10 @@ USER_TYPES = (
     (USER_TYPE_ADMIN, "admin")
 )
 
+def determine_profilepic_filename(instance,filename):
+        name,extension = filename.split(".")
+        return "users/%s/%s" % (instance.username, "profile_picture." + extension)
+
 # Inheriting from Base Class 'User'
 class jUser(User):
 
@@ -33,7 +37,7 @@ class jUser(User):
     university = models.ForeignKey('University',null = True) 
     
     summary = models.CharField(max_length=500, null=True) 
-    profile_picture = models.ImageField(upload_to='users', null=True)    
+    profile_picture = models.ImageField(upload_to = determine_profilepic_filename, null=True)    
     # For professors only 
     # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)
@@ -59,6 +63,8 @@ class jUser(User):
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
     #    posts_following: (<juser>.posts_following.all() returns all forum posts that <juser> is following)
+
+    
     def is_student(self):
         return self.user_type == USER_TYPE_STUDENT
 

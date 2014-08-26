@@ -426,6 +426,28 @@ $tables-margin-left:            20px;
     }
 }
 
+// Profile page
+
+$profile-picture-width:     200px;
+$profile-picture-height:    200px;
+
+.profile-page {
+    .summary-textarea {
+        width:100%;
+    }
+    .profile-picture {
+        width: $profile-picture-width;
+        height: $profile-picture-height;
+    }
+    .profile-picture-input {
+        width: $profile-picture-width;
+    }
+    .profile-picture-submit {
+        width: $profile-picture-width;
+    }
+}
+
+
 // Activity timelines
 .activity-timeline {
     .activity {

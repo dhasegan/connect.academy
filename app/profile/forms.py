@@ -21,3 +21,6 @@ class ChangeNameForm(forms.Form):
 
 class EditSummaryForm(forms.Form):
 	summary = forms.CharField(max_length=300, required=False)
+
+class ProfilePictureForm(forms.Form):
+	picture = forms.ImageField()

@@ -217,6 +217,16 @@
     text-align: center;
     color: white; }
 
+.profile-page .summary-textarea {
+  width: 100%; }
+.profile-page .profile-picture {
+  width: 200px;
+  height: 200px; }
+.profile-page .profile-picture-input {
+  width: 200px; }
+.profile-page .profile-picture-submit {
+  width: 200px; }
+
 .activity-timeline .activity .end-of-activity {
   margin-bottom: 2px; }
 .activity-timeline .forum-answer-activity .answer-text {

@@ -182,7 +182,7 @@ def edit_summary(request):
     user.summary = summary
     user.save()
 
-    html = render_to_string('objects/profile/summary.html', {"user": user, "own_profile": True})
+    html = render_to_string('objects/profile/summary.html', {"user": user})
     print html
     context = {
         "status": "OK",
@@ -190,3 +190,20 @@ def edit_summary(request):
     }
     #context.update(csrf(request))
     return HttpResponse(json.dumps(context))
+
+@login_required
+def new_profile_picture(request):
+    form = ProfilePictureForm(request.POST, request.FILES)
+    if not form.is_valid():
+        raise Http404
+
+    user = request.user.juser
+    user.profile_picture = form.cleaned_data['picture']
+    user.save()
+
+    data = {
+        'status': "OK",
+        'image_url': user.profile_picture.url
+    }
+
+    return HttpResponse(json.dumps(data))

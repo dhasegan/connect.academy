@@ -1,10 +1,11 @@
 <div class="panel panel-default">
 	<div class="panel-body">
 		<center>
-			{% if user.image %}
-
-			{% else %}
-				<img src="http://placehold.it/200x200"/>
+						
+			<img class="profile-picture" id="profile-picture" src="{% if user.profile_picture %}{{user.profile_picture.url}}{% else %}http://placehold.it/200x200{% endif %}" />
+			
+			{% if own_profile %}
+				{% include 'objects/profile/new_profile_picture_form.html' %}
 			{% endif %}
 			<h4>{{user.first_name}} {{user.last_name}}</h4>
 
