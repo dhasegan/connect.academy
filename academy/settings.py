@@ -325,3 +325,7 @@ VALID_TIME_INPUTS = ['%d/%m/%Y %H:%M:%S',    # '25/10/2006 14:30:59'
 
 MERIT_JUDGEMENT = 2
 AGE_JUDGEMENT = 300000
+
+### Jacobs specific settings
+import json
+JACOBS_USERNAME_TO_EMAIL = json.load( open(SETTINGS_ROOT + "jacobs_username_to_email.json") )
