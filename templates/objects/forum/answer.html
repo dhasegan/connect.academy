@@ -1,7 +1,7 @@
 {% load humanize %}
 {% load i18n %}
 
-<div class="answer-box">
+<div class="answer-box {% if current_answer == answer.answer.id %}focus-answer{% endif %}" id="answer{{answer.answer.id}}">
     <div class="answer-box-contents">
         <div class="answer-header">
             <small class="text-muted">

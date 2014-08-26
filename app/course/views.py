@@ -48,9 +48,26 @@ def course_page(request, slug):
         tag = request.GET['filter']
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
+        if 'current_tab' not in context:
+            context['current_tab'] = 'connect'
 
     if 'post' in request.GET and request.GET['post']:
-        context['current_post'] = int(request.GET['post'])
+        post_id = int(request.GET['post'])
+        posts = ForumPost.objects.filter(id=post_id)
+        if len(posts) and posts[0].forum == forum:
+            context['current_post'] = post_id
+            if 'current_tab' not in context:
+                context['current_tab'] = 'connect'
+
+    if 'answer' in request.GET and request.GET['answer']:
+        answer_id = int(request.GET['answer'])
+        answers = ForumAnswer.objects.filter(id=answer_id)
+        if len(answers) and answers[0].post.forum == forum:
+            context['current_post'] = answers[0].post.id
+            context['current_answer'] = answer_id
+            if 'current_tab' not in context:
+                context['current_tab'] = 'connect'
+
 
     if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
         context['review_course_tab'] = True

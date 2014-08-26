@@ -157,6 +157,9 @@
 .course-forum .answers-tabs .answer-box {
   margin: 8px 4px;
   background-color: #eeeeee; }
+  .forum-page .answers-tabs .answer-box.focus-answer,
+  .course-forum .answers-tabs .answer-box.focus-answer {
+    background-color: #e1edf7; }
   .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
   .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
@@ -169,6 +172,9 @@
   .forum-page .answers-tabs .answer-box .child-answers .answer-box,
   .course-forum .answers-tabs .answer-box .child-answers .answer-box {
     background-color: white; }
+    .forum-page .answers-tabs .answer-box .child-answers .answer-box.focus-answer,
+    .course-forum .answers-tabs .answer-box .child-answers .answer-box.focus-answer {
+      background-color: #e1edf7; }
 .forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
 .course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }

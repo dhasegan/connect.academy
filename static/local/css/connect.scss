@@ -327,6 +327,9 @@ $register-validation-font-size:     11px;
         .answer-box {
             margin: 8px 4px;
             background-color: $gray-lighter;
+            &.focus-answer { 
+                background-color: lighten($brand-primary, 40%);
+            }
 
             .answer-header .upvote-answer-form {
                 display: inline;
@@ -341,6 +344,9 @@ $register-validation-font-size:     11px;
             .child-answers {
                 .answer-box {
                     background-color: white;
+                    &.focus-answer { 
+                        background-color: lighten($brand-primary, 40%);
+                    }
                 }
             }
         }
