@@ -241,6 +241,12 @@
 .profile-page .profile-picture-submit {
   width: 200px; }
 
+.manage-account-page h4 {
+  margin-top: 2px;
+  margin-bottom: 6px; }
+.manage-account-page hr {
+  margin-top: 4px; }
+
 .activity-timeline .activity .end-of-activity {
   margin-bottom: 2px; }
 .activity-timeline .forum-answer-activity .answer-text {
