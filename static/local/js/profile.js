@@ -33,7 +33,11 @@ var ProfilePage = (function() {
                     json_data = $.parseJSON(data);
                     if (json_data.status == "OK") {
                         url = json_data.image_url + "?timestamp=" + new Date().getTime();
-                        $(s.profilePictureSelector).attr("src", url).fadeIn();
+                        $(s.profilePictureSelector)
+                        .fadeOut(400, function() {
+                            $(s.profilePictureSelector).attr('src',url);
+                        })
+                        .fadeIn(400);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown){
