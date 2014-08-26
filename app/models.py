@@ -19,11 +19,12 @@ from django import forms
 USER_TYPE_STUDENT = 0
 USER_TYPE_PROFESSOR = 1
 USER_TYPE_ADMIN = 2 # The administator of at least 1 category, who is not a professor
-
+USER_TYPE_ALUMNUS = 3 
 USER_TYPES = (
     (USER_TYPE_STUDENT, "student"),
     (USER_TYPE_PROFESSOR, "professor"),
-    (USER_TYPE_ADMIN, "admin")
+    (USER_TYPE_ADMIN, "admin"),
+    (USER_TYPE_ALUMNUS, "alumnus"),
 )
 
 def determine_profilepic_filename(instance,filename):
@@ -73,6 +74,8 @@ class jUser(User):
 
     def is_admin(self):
         return self.user_type == USER_TYPE_ADMIN
+    def is_alumnus(self):
+        return self.user_type == USER_TYPE_ALUMNUS
 
     def is_student_of(self, course):
         if not self.is_student():
@@ -445,11 +448,19 @@ class Category(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+
+DOMAIN_TYPE_STANDARD = 1
+DOMAIN_TYPE_ALUMNI = 2
+DOMAIN_TYPES = (
+    (DOMAIN_TYPE_STANDARD, "standard"),
+    (DOMAIN_TYPE_ALUMNI, "alumni"),
+)
+
 class Domain(models.Model):
     # University Domain
     name = models.CharField(max_length=200,unique = True)
     university = models.ForeignKey('University', related_name='domains')
-
+    domain_type = models.IntegerField(choices=DOMAIN_TYPES, default=DOMAIN_TYPE_STANDARD)
     def __unicode__(self):
         return str(self.name)
 

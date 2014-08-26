@@ -42,8 +42,11 @@ class SignupForm(forms.Form):
         if len(password) < 6:
             errors.append(forms.ValidationError("Password is too short."))
         
+        cleaned_data['is_alumnus'] = False
         try:
             emailID, domain = email.split('@')
+            if Domain.objects.get(name=domain).domain_type == DOMAIN_TYPE_ALUMNI:
+                cleaned_data['is_alumnus'] = True
         except ValueError:
             errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
 
