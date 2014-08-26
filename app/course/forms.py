@@ -175,3 +175,8 @@ class VoteReviewForm(forms.Form):
         if not vtype in ['upvote', 'downvote']:
             raise forms.ValidationError("Wrong vote type!")
         return vtype
+
+class UpdateInfoForm(forms.Form):
+    description = forms.CharField(required=False, max_length=5000)
+    additional_info = forms.CharField(required=False, max_length=5000)
+    abbreviation = forms.CharField(required=False, max_length=50)

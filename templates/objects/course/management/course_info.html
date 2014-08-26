@@ -1,0 +1,144 @@
+{% load i18n %}
+
+<div class="modify-description">
+    {% if course.description %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseDescription">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Description" %}: </strong>
+
+    <div class="collapse collapseDescription {% if course.description %}in{% endif %}">
+        {{ course.description|linebreaks }}
+    </div>
+
+    <div class="collapse collapseDescription {% if not course.description %}in{% endif %}">
+        <form role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <textarea class="form-control" rows="3" name="description" maxlength="5000">{{ course.description }}</textarea>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="modify-abbreviation">
+    {% if course.abbreviation %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseAbbrev">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Abbreviation" %}: </strong>
+    <span class="collapse collapseAbbrev {% if course.abbreviation %}in{% endif %}">
+        {{ course.abbreviation }}
+    </span>
+    <span class="collapse collapseAbbrev {% if not course.abbreviation %}in{% endif %}">
+        <form class="form-inline" role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <input class="form-control" name="abbreviation" type="text" value="{% if course.abbreviation %}{{ course.abbreviation }}{% endif %}" maxlength="20">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </span>
+</div>
+
+<hr>
+
+<div class="modify-additional">
+    {% if course.additional_info %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseAdditional">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Additional information" %}: </strong>
+
+    <div class="collapse collapseAdditional {% if course.additional_info %}in{% endif %}">
+        {{ course.additional_info|linebreaks }}
+    </div>
+
+    <div class="collapse collapseAdditional {% if not course.additional_info %}in{% endif %}">
+        <form role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <textarea class="form-control" rows="3" name="additional_info" maxlength="5000">{% if course.additional_info %}{{ course.additional_info }}{% endif %}</textarea>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+syllabus
+TA's
+
+{% comment %}
+
+<div class="modify-grades">
+    {% if course.grades %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseGrades">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Grade breakdown" %}: </strong>
+
+    <div class="collapse collapseGrades {% if course.grades %}in{% endif %}">
+        {{ course.grades|linebreaks }}
+    </div>
+
+    <div class="collapse collapseGrades {% if not course.grades %}in{% endif %}">
+        <form role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <textarea class="form-control" rows="3" name="grades">{% if course.grades %}{{ course.grades }}{% endif %}</textarea>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="modify-gradesinfo">
+    {% if course.grades_info %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseGradesinfo">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Additional Information about grades" %}: </strong>
+
+    <div class="collapse collapseGradesinfo {% if course.grades_info %}in{% endif %}">
+        {{ course.grades_info|linebreaks }}
+    </div>
+
+    <div class="collapse collapseGradesinfo {% if not course.grades_info %}in{% endif %}">
+        <form role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <textarea class="form-control" rows="3" name="grades_info">{% if course.grades_info %}{{ course.grades_info }}{% endif %}</textarea>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="modify-hoursperweek">
+    {% if course.hours_per_week %}
+        <a class="pull-right" data-toggle="collapse" href=".collapseHours">
+            <span class="glyphicon glyphicon-cog"></span> modify
+        </a>
+    {% endif %}
+    <strong> {% trans "Hours per week" %}: </strong>
+
+    <div class="collapse collapseHours {% if course.hours_per_week %}in{% endif %}">
+        {{ course.hours_per_week|linebreaks }}
+    </div>
+
+    <div class="collapse collapseHours {% if not course.hours_per_week %}in{% endif %}">
+        <form role="form" method="post" action="{% url 'update_info' course.slug %}">
+            {% csrf_token %}
+            <textarea class="form-control" rows="3" name="hours_per_week">{% if course.hours_per_week %}{{ course.hours_per_week }}{% endif %}</textarea>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+    
+{% endcomment %}
