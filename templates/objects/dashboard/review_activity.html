@@ -15,9 +15,9 @@
                 </div>
 
                 <hr class="end-of-activity">
-                <a href="{% url 'course_page' activity.course.slug %}?page=info"> Submit review </a> &middot;
-                <a href="{% url 'course_page' activity.course.slug %}?page=info"> Rate course </a> &middot;
-                <a href="{% url 'course_page' activity.course.slug %}?page=info"> Check all reviews </a>
+                <a href="{% url 'course_page' activity.course.slug %}?page=info&amp;review_course_tab=True#course_reviews"> Submit review </a> &middot;
+                <a href="{% url 'course_page' activity.course.slug %}?page=info&amp;review_course_tab=True#course_reviews"> Rate course </a> &middot;
+                <a href="{% url 'course_page' activity.course.slug %}?page=info#course_reviews"> Check all reviews </a>
 
             </div>
         </div>

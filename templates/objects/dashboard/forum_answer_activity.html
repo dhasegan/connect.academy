@@ -8,7 +8,11 @@
                     {% include 'objects/forum/upvote_answer.html' %}
                 </span>
 
-                {% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                {% if not answer.answer.anonymous %} 
+                    {% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                {% else %}
+                    {% trans "Anonymous" %}
+                {% endif %}
                 replied to 
                     {% if answer.answer.post.posted_by.id == user.id %}
                         your
@@ -29,7 +33,7 @@
                 </div>
 
                 <hr class="end-of-activity">
-                <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ answer.answer.post.id }}"> Reply </a>
+                <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;answer={{ answer.answer.id }}#answer{{ answer.answer.id }}"> Reply </a>
             </div>
         </div>
     </div>

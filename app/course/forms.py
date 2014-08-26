@@ -175,3 +175,38 @@ class VoteReviewForm(forms.Form):
         if not vtype in ['upvote', 'downvote']:
             raise forms.ValidationError("Wrong vote type!")
         return vtype
+
+class UpdateInfoForm(forms.Form):
+    description = forms.CharField(required=False, max_length=5000)
+    additional_info = forms.CharField(required=False, max_length=5000)
+    abbreviation = forms.CharField(required=False, max_length=50)
+
+class UpdateSyllabusForm(forms.Form):
+    entry_name = forms.CharField()
+    entry_description = forms.CharField()
+    entry_id = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super(UpdateSyllabusForm, self).clean()
+
+        entry_id = cleaned_data.get("entry_id")
+        if entry_id:
+            entries = CourseTopic.objects.filter(id=entry_id)
+            if len(entries) != 1:
+                raise forms.ValidationError("Not a valid number of entries with this entry_id!")
+            cleaned_data['course_topic'] = entries[0]
+
+        return cleaned_data
+
+class DeleteSyllabusEntryForm(forms.Form):
+    entry_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(DeleteSyllabusEntryForm, self).clean()
+
+        entries = CourseTopic.objects.filter(id=cleaned_data.get("entry_id"))
+        if len(entries) != 1:
+            raise forms.ValidationError("Not a valid number of entries with this entry_id!")
+        cleaned_data['course_topic'] = entries[0]
+
+        return cleaned_data

@@ -48,9 +48,39 @@ def course_page(request, slug):
         tag = request.GET['filter']
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
+        if 'current_tab' not in context:
+            context['current_tab'] = 'connect'
 
     if 'post' in request.GET and request.GET['post']:
-        context['current_post'] = int(request.GET['post'])
+        post_id = int(request.GET['post'])
+        posts = ForumPost.objects.filter(id=post_id)
+        if len(posts) and posts[0].forum == forum:
+            context['current_post'] = post_id
+            if 'current_tab' not in context:
+                context['current_tab'] = 'connect'
+
+    if 'answer' in request.GET and request.GET['answer']:
+        answer_id = int(request.GET['answer'])
+        answers = ForumAnswer.objects.filter(id=answer_id)
+        if len(answers) and answers[0].post.forum == forum:
+            context['current_post'] = answers[0].post.id
+            context['current_answer'] = answer_id
+            if 'current_tab' not in context:
+                context['current_tab'] = 'connect'
+
+
+    if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
+        context['review_course_tab'] = True
+
+    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details']
+    if 'teacher_page' in request.GET and request.GET['teacher_page'] and \
+        request.GET['teacher_page'] in available_teacher_pages:
+            context['current_teacher_tab'] = request.GET['teacher_page']
+            if 'current_tab' not in context:
+                context['current_tab'] = 'teacher'
+
+    if 'current_tab' not in context and not len(context['activities']):
+        context['current_tab'] = 'info'
 
     return render(request, "pages/course.html", context)
 
@@ -339,7 +369,75 @@ def send_mass_email(request, slug):
     else:
         return HttpResponse("Please select at least one recepient.")
 
+@require_POST
+@require_active_user
+@login_required
+def update_info(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
 
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = UpdateInfoForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    if 'description' in form.cleaned_data and form.cleaned_data['description']:
+        course.description = form.cleaned_data['description']
+    if 'additional_info' in form.cleaned_data and form.cleaned_data['additional_info']:
+        course.additional_info = form.cleaned_data['additional_info']
+    if 'abbreviation' in form.cleaned_data and form.cleaned_data['abbreviation']:
+        course.abbreviation = form.cleaned_data['abbreviation']
+    course.save()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
+
+@require_POST
+@require_active_user
+@login_required
+def update_syllabus(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = UpdateSyllabusForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    if 'course_topic' in form.cleaned_data and form.cleaned_data['course_topic']:
+        topic = form.cleaned_data['course_topic']
+        topic.name = form.cleaned_data['entry_name']
+        topic.description = form.cleaned_data['entry_description']
+        topic.save()
+    else:
+        CourseTopic.objects.create(name=form.cleaned_data['entry_name'], description=form.cleaned_data['entry_description'], course=course)
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def delete_syllabus_entry(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = DeleteSyllabusEntryForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    form.cleaned_data['course_topic'].delete()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
 
 ### ACTIVITIES AJAX URLS #####
 

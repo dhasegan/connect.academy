@@ -99,18 +99,24 @@
 .course-page .course-teacher .registered-students h3,
 .course-page .course-teacher .course-documents h3,
 .course-page .course-teacher .course-homework h3,
-.course-page .course-teacher .class-forum h3 {
+.course-page .course-teacher .class-forum h3,
+.course-page .course-teacher .course-details h3 {
   margin: 0px; }
 .course-page .course-teacher .pending-registrations .top-line,
 .course-page .course-teacher .registered-students .top-line,
 .course-page .course-teacher .course-documents .top-line,
 .course-page .course-teacher .course-homework .top-line,
-.course-page .course-teacher .class-forum .top-line {
+.course-page .course-teacher .class-forum .top-line,
+.course-page .course-teacher .course-details .top-line {
   margin-top: 4px; }
 .course-page .course-teacher .registered-students .email-details {
   padding-top: 30px; }
 .course-page .course-teacher .class-forum .extratag-input {
   max-width: 130px; }
+.course-page .course-teacher .course-details .modify-syllabus .delete-syllabus-entry-form {
+  margin-left: 12px; }
+.course-page .course-teacher .course-details .modify-syllabus li {
+  margin-top: 16px; }
 
 .course-info .info-body .reviews-display .review-block .review .review-text,
 .activity-timeline .review-activity .review-block .review .review-text {
@@ -157,6 +163,9 @@
 .course-forum .answers-tabs .answer-box {
   margin: 8px 4px;
   background-color: #eeeeee; }
+  .forum-page .answers-tabs .answer-box.focus-answer,
+  .course-forum .answers-tabs .answer-box.focus-answer {
+    background-color: #e1edf7; }
   .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
   .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
@@ -169,6 +178,9 @@
   .forum-page .answers-tabs .answer-box .child-answers .answer-box,
   .course-forum .answers-tabs .answer-box .child-answers .answer-box {
     background-color: white; }
+    .forum-page .answers-tabs .answer-box .child-answers .answer-box.focus-answer,
+    .course-forum .answers-tabs .answer-box .child-answers .answer-box.focus-answer {
+      background-color: #e1edf7; }
 .forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
 .course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }

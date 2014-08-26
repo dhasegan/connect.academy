@@ -218,7 +218,8 @@ $course-img-max-size:           150px;
         .registered-students,
         .course-documents,
         .course-homework,
-        .class-forum {
+        .class-forum,
+        .course-details {
             h3 {
                 margin: 0px;
             }
@@ -236,6 +237,17 @@ $course-img-max-size:           150px;
         .class-forum {
             .extratag-input {
                 max-width: 130px;
+            }
+        }
+
+        .course-details {
+            .modify-syllabus {
+                .delete-syllabus-entry-form {
+                    margin-left: 12px;
+                }
+                li {
+                    margin-top: 16px;
+                }
             }
         }
     }
@@ -327,6 +339,9 @@ $register-validation-font-size:     11px;
         .answer-box {
             margin: 8px 4px;
             background-color: $gray-lighter;
+            &.focus-answer { 
+                background-color: lighten($brand-primary, 40%);
+            }
 
             .answer-header .upvote-answer-form {
                 display: inline;
@@ -341,6 +356,9 @@ $register-validation-font-size:     11px;
             .child-answers {
                 .answer-box {
                     background-color: white;
+                    &.focus-answer { 
+                        background-color: lighten($brand-primary, 40%);
+                    }
                 }
             }
         }
