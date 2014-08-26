@@ -29,6 +29,7 @@ def login_action(request):
     # login_user is the username OR email of the user attempting login.
     login_user = form.cleaned_data['user_auth']
     login_pass = form.cleaned_data['password']
+    new_user = False
 
     # Using jUserBackend, which also tries to find a match for the email address.
     user = authenticate(username=login_user, password=login_pass)
@@ -47,6 +48,7 @@ def login_action(request):
                 user.is_active = False
                 user.save()
                 send_email_confirmation(request, user)
+                new_user = True
 
             user = authenticate(username=login_user, password=login_pass)
 
@@ -56,7 +58,9 @@ def login_action(request):
             return render(request, "pages/welcome_page.html", context)
 
     login(request, user)
-    return redirect("/home")
+    if new_user:
+        return redirect( reverse('explore') )
+    return redirect( reverse('dashboard') )
 
 
 @login_required

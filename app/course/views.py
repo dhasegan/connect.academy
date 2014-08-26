@@ -52,6 +52,9 @@ def course_page(request, slug):
     if 'post' in request.GET and request.GET['post']:
         context['current_post'] = int(request.GET['post'])
 
+    if 'current_tab' not in context and not len(context['activities']):
+        context['current_tab'] = 'info'
+
     return render(request, "pages/course.html", context)
 
 
