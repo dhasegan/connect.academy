@@ -11,6 +11,13 @@
                 <label for="postdesc-input">{% trans "Additional description" %} {% trans "(optional)" %}</label>
                 <textarea type="text" class="form-control" id="postdesc-input" name="description" rows="4" maxlength="5000"></textarea>
             </div>
+            <div class="new-post-reminder">
+                <span class="thank-msg"> Thank you for contributing to <strong>Connect</strong>! When submitting a new post keep in mind: </span>
+                <ol>
+                    <li> <i> Be specific </i>... (to be continued) </li>
+                    <li>Be kind to your professor and fellow students</li>
+                </ol>
+            </div>
         </div>
         <div class="col-md-6">
             {% include 'objects/forum/new_post_tags.html' %}

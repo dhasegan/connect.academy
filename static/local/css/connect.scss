@@ -359,6 +359,22 @@ $register-validation-font-size:     11px;
     }
 }
 
+.forum-new-post-page {
+    .new-post-tags {
+        margin-top: 16px;
+    }
+
+    .new-post-reminder {
+        background-color: $gray-lighter;
+        .thank-msg {
+            margin-top: 4px;
+        }
+        ul > li {
+            margin-top: 4px;
+        }
+    }
+}
+
 // Dashboard page
 $homework-number-color:         $brand-primary;
 $tables-margin-left:            20px;

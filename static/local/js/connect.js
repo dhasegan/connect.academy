@@ -18,7 +18,8 @@ var ConnectGlobal = (function() {
             emailConfirmationLinks: $(".email-confirmation-link"),
             campusnetPopover: $("#campusnet-popover"),
             localeLinks: $('.locale-change-link'),
-            activities: $('.recent_activities')
+            activities: $('.recent_activities'),
+            helpsigns: $('.help-sign')
         },
         global_variables: {
             activities_pagenum: 1
@@ -83,6 +84,8 @@ var ConnectGlobal = (function() {
         s.localeLinks.click(function(event) {
             $(this).find('form')[0].submit();
         });
+
+        s.helpsigns.tooltip();
 
         $(document).scroll(function () {
             

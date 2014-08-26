@@ -15,7 +15,8 @@ from app.models import *
 from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
-# from app.auth.specific_login import get_university
+from app.auth.specific_login import get_university
+from django.conf import settings
 
 @require_POST
 def login_action(request):
@@ -32,21 +33,20 @@ def login_action(request):
     # Using jUserBackend, which also tries to find a match for the email address.
     user = authenticate(username=login_user, password=login_pass)
     if user is None:
-        # >>>>> NO campusnet logins for now: Revise this code
-        # auth_univ = get_university(login_user, login_pass)
-
-        auth_univ = None
+        auth_univ = get_university(login_user, login_pass)
         if auth_univ:
+            # CN success
+            if not login_user in settings.JACOBS_USERNAME_TO_EMAIL:
+                context['error'] = render_to_string("objects/notifications/auth/CN_connected_but_no_email.html", {})
+                return render(request, "pages/welcome_page.html", context)
             users = jUser.objects.filter(username=login_user)
             if not users:
-                universities = University.objects.filter(domains__name=auth_univ["domain"])
-                if not universities:
-                    raise IntegrityError
-                university = universities[0]
-
-                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university)
-                user.is_active = False  # Account inactive until confirmed
+                university = University.objects.get(name=auth_univ["name"])
+                email = settings.JACOBS_USERNAME_TO_EMAIL[login_user]
+                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=email)
+                user.is_active = False
                 user.save()
+                send_email_confirmation(request, user)
 
             user = authenticate(username=login_user, password=login_pass)
 
@@ -61,7 +61,6 @@ def login_action(request):
 
 @login_required
 def logout_action(request):
-
     logout(request)
     return redirect('/')
 
