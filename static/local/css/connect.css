@@ -11,7 +11,7 @@
     max-height: 27px;
     margin-left: 8px; }
   .connect-navigation .login-form #campusnet-popover {
-    color: #29abe2; }
+    color: #29ABE2; }
 
 .nav-sidebar li {
   background-color: white; }
@@ -42,11 +42,11 @@
 .explore-page .courses-sequence .course-panel .block-header .course-name {
   font-size: 18px; }
 .explore-page .courses-sequence .course-panel .block-header .course-rating {
-  background-color: #33424d; }
+  background-color: #33424D; }
   .explore-page .courses-sequence .course-panel .block-header .course-rating .yellow-star {
-    color: #eeda74; }
+    color: #EEDA74; }
 .explore-page .courses-sequence .course-panel .block-header .course-credits {
-  background-color: #92209b;
+  background-color: #92209B;
   margin-left: 10px;
   width: 46px;
   height: 20px; }
@@ -72,15 +72,15 @@
   margin: 4px; }
 .course-page .course-info .info-header .course-rating .rating-badge {
   margin-bottom: 4px;
-  background-color: #33424d; }
+  background-color: #33424D; }
   .course-page .course-info .info-header .course-rating .rating-badge .yellow-star {
-    color: #eeda74; }
+    color: #EEDA74; }
 .course-page .course-info .info-header .course-rating .rating-nrs {
   font-size: 10px; }
 .course-page .course-info .info-bar hr {
   margin: 8px 0px; }
 .course-page .course-info .info-bar .course-credits {
-  background-color: #92209b; }
+  background-color: #92209B; }
 .course-page .course-info .info-body {
   margin-top: 20px; }
   .course-page .course-info .info-body .review-submit {
@@ -218,3 +218,5 @@
   margin-top: 16px; }
 .activity-timeline .review-activity .review-body {
   margin-top: 16px; }
+
+/*# sourceMappingURL=connect.css.map */

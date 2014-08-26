@@ -18,3 +18,6 @@ class ChangeNameForm(forms.Form):
     new_fname = forms.CharField(max_length=30, required=True)
     new_lname = forms.CharField(max_length=30, required=True)  # maybe we can omit the required = True of this field ?
     password = forms.CharField(required=True, widget=forms.PasswordInput())
+
+class EditSummaryForm(forms.Form):
+	summary = forms.CharField(max_length=300, required=False)

@@ -21,6 +21,7 @@ def profile(request, username):
     user = get_object_or_404(jUser, username=username)
     
     context['user'] = user
+    context['own_profile'] = request.user.id == user.id
     context['activities'] = profile_activities(request,user)
 
     return render(request, "pages/profile.html", context)
@@ -169,3 +170,23 @@ def load_new_profile_activities(request, username):
 
     return HttpResponse(json.dumps(data))
 
+@login_required
+def edit_summary(request):
+    form = EditSummaryForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    summary = form.cleaned_data['summary']
+    user = request.user.juser
+
+    user.summary = summary
+    user.save()
+
+    html = render_to_string('objects/profile/summary.html', {"user": user, "own_profile": True})
+    print html
+    context = {
+        "status": "OK",
+        "html" : html,
+    }
+    #context.update(csrf(request))
+    return HttpResponse(json.dumps(context))

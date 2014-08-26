@@ -1,0 +1,7 @@
+<form id="edit-summary-form" method="POST" action="/edit_profile_summary">
+	{% csrf_token %}
+	<div class="form-group">
+		<textarea rows="5" name="summary" placeholder="Write a short summary about yourself..."></textarea>
+	</div>
+	<input type="submit" class="btn btn-default" value="Save" />
+</form>

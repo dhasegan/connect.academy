@@ -32,6 +32,8 @@ class jUser(User):
     user_type = models.IntegerField(choices=USER_TYPES, default=USER_TYPE_STUDENT)
     university = models.ForeignKey('University',null = True) 
     
+    summary = models.CharField(max_length=500, null=True) 
+    profile_picture = models.ImageField(upload_to='users', null=True)    
     # For professors only 
     # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)

@@ -9,4 +9,5 @@ urlpatterns = patterns('app.profile.views',
     url(r'^name_change_action$', 'name_change_action', name='name_change_action'),
     url(r'^profile/(?P<username>[\w-]+)/load_profile_activities$', 'load_profile_activities', name='load_profile_activities'),
     url(r'^profile/(?P<username>[\w-]+)/load_new_profile_activities$', 'load_new_profile_activities', name='load_new_profile_activities'),
+    url(r'^edit_profile_summary$', 'edit_summary', name='edit_summary'),
 )

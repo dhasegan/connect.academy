@@ -8,18 +8,20 @@
 			{% endif %}
 			<h4>{{user.first_name}} {{user.last_name}}</h4>
 
-    	    <p>
     	    {{user.university.name}}<br />
     	    <span class="glyphicon-envelope"> </span> <a href="mailto:{{user.email}}">{{user.email}}</a> <br />
 		</center>
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading profile-summary">
-		<center> Summary </center>
-	</div> 
-	<div class="panel-body">
-		
+{% if user.summary or own_profile %}
+	<div class="panel panel-default">
+		<div class="panel-body" id="summary-container">
+			{% if user.summary %}
+				{% include 'objects/profile/summary.html' %}
+			{% elif own_profile %}
+				{% include 'objects/profile/edit_summary.html' %}
+			{% endif %}
+		</div>
 	</div>
-</div>
+{% endif %}
