@@ -28,3 +28,7 @@
         </div>
     </div>
 </form>
+
+{% if user_auth.answer_posted.all.count < 2 %}
+    {% include 'objects/reminders/reviewing.html' %}
+{% endif %}

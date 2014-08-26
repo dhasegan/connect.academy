@@ -1,0 +1,12 @@
+<div class="new-post-reminder">
+    <span class="thank-msg"> Thank you for contributing to <strong>Connect</strong>! Before posting, please be reminded to:  </span>
+    <ol>
+        {% block titles %}
+            <li>Use relevant and accurate titles.</li>
+        {% endblock titles %}
+        <li>Double check for existing duplicates of your post and grammar errors.</li>
+        <li>Treat others as you want to be treated.</li>
+        <li>Vote responsibly.</li>
+    </ol>
+    <span class="further-msg"> For more details, check our <a href="{% url 'conduct_code' %}">Posting Guidelines</a>. This message will self-distruct after your 2nd post! </span>
+</div>

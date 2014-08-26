@@ -54,6 +54,12 @@ def all_comments(request):
 
     return render(request, 'pages/comments.html', context)
 
+def conduct_code(request):
+    context = {
+        'page': 'conduct_code'
+    }
+
+    return render(request, 'pages/conduct_code.html', context)
 
 def error_page(request, error_type):
     context = {

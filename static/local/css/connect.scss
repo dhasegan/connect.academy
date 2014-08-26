@@ -381,15 +381,16 @@ $register-validation-font-size:     11px;
     .new-post-tags {
         margin-top: 16px;
     }
+}
 
-    .new-post-reminder {
-        background-color: $gray-lighter;
-        .thank-msg {
-            margin-top: 4px;
-        }
-        ul > li {
-            margin-top: 4px;
-        }
+.new-post-reminder {
+    background-color: $gray-lighter;
+    padding: 12px 8px;
+    .thank-msg {
+        margin-top: 8px;
+    }
+    ol > li {
+        margin-top: 4px;
     }
 }
 

@@ -1,4 +1,5 @@
 {% load i18n %}
+
 <form class="submit-review-form" role="form" action="{% url 'submit_review' course.slug %}" method="post">
     <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
     <input type="hidden" name="course_id" value="{{course.id}}">
@@ -15,3 +16,7 @@
         </div>
     </div>
 </form>
+
+{% if user_auth.reviews_posted.all.count < 2 %}
+    {% include 'objects/reminders/reviewing.html' %}
+{% endif %}

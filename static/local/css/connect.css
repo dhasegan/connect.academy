@@ -11,7 +11,7 @@
     max-height: 27px;
     margin-left: 8px; }
   .connect-navigation .login-form #campusnet-popover {
-    color: #29ABE2; }
+    color: #29abe2; }
 
 .nav-sidebar li {
   background-color: white; }
@@ -42,11 +42,11 @@
 .explore-page .courses-sequence .course-panel .block-header .course-name {
   font-size: 18px; }
 .explore-page .courses-sequence .course-panel .block-header .course-rating {
-  background-color: #33424D; }
+  background-color: #33424d; }
   .explore-page .courses-sequence .course-panel .block-header .course-rating .yellow-star {
-    color: #EEDA74; }
+    color: #eeda74; }
 .explore-page .courses-sequence .course-panel .block-header .course-credits {
-  background-color: #92209B;
+  background-color: #92209b;
   margin-left: 10px;
   width: 46px;
   height: 20px; }
@@ -72,15 +72,15 @@
   margin: 4px; }
 .course-page .course-info .info-header .course-rating .rating-badge {
   margin-bottom: 4px;
-  background-color: #33424D; }
+  background-color: #33424d; }
   .course-page .course-info .info-header .course-rating .rating-badge .yellow-star {
-    color: #EEDA74; }
+    color: #eeda74; }
 .course-page .course-info .info-header .course-rating .rating-nrs {
   font-size: 10px; }
 .course-page .course-info .info-bar hr {
   margin: 8px 0px; }
 .course-page .course-info .info-bar .course-credits {
-  background-color: #92209B; }
+  background-color: #92209b; }
 .course-page .course-info .info-body {
   margin-top: 20px; }
   .course-page .course-info .info-body .review-submit {
@@ -190,11 +190,13 @@
 
 .forum-new-post-page .new-post-tags {
   margin-top: 16px; }
-.forum-new-post-page .new-post-reminder {
-  background-color: #eeeeee; }
-  .forum-new-post-page .new-post-reminder .thank-msg {
-    margin-top: 4px; }
-  .forum-new-post-page .new-post-reminder ul > li {
+
+.new-post-reminder {
+  background-color: #eeeeee;
+  padding: 12px 8px; }
+  .new-post-reminder .thank-msg {
+    margin-top: 8px; }
+  .new-post-reminder ol > li {
     margin-top: 4px; }
 
 .dashboard-page .sidebar-schedule {
@@ -249,5 +251,3 @@
   margin-top: 16px; }
 .activity-timeline .review-activity .review-body {
   margin-top: 16px; }
-
-/*# sourceMappingURL=connect.css.map */
