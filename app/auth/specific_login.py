@@ -30,9 +30,9 @@ def get_university(username, password):
         payload = university['payload']
         payload["usrname"] = username
         payload["pass"] = password
-        response = requests.post(url, data=payload)
+        response = requests.post(university['url'], data=payload)
 
-        if response.find('Wrong username or password') == -1 and response.find('Access denied') == -1:
+        if response.content.find('Wrong username or password') == -1 and response.content.find('Access denied') == -1:
             university_context = {
                 "name": university["name"],
                 "domain": university["domain"]
