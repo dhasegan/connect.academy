@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="course-detail course-reviews">
+<div class="course-detail course-reviews" id="course_reviews">
     <div class="submititems pull-right">
         <a data-toggle="collapse" href="#submitreview">
             <button type="submit" class="btn-xs btn-success expand-review-submit">{% trans "Submit a review" %}</button>
@@ -15,11 +15,11 @@
             The submit review/rating form
         {% endcomment %}
         {% if user_auth %}
-            <div class="collapse submit-rating-wrapper" id="submitrating">
+            <div class="collapse submit-rating-wrapper {% if review_course_tab %}in{% endif %}" id="submitrating">
                 <hr>
                 {% include 'objects/course/submit_ratings.html' %}
             </div>
-            <div class="collapse submit-review-wrapper" id="submitreview">
+            <div class="collapse submit-review-wrapper {% if review_course_tab %}in{% endif %}" id="submitreview">
                 <hr>
                 {% include 'objects/course/submit_review.html' %}
             </div>

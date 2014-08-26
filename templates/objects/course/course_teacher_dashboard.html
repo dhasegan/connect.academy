@@ -10,7 +10,7 @@
             <div class="tab-content">
 
                 {% if teacher.students.registered|length > 0 %}
-                    <div class="tab-pane active fade in" id="teacher_registered">
+                    <div class="tab-pane fade {% if not current_teacher_tab or current_teacher_tab == 'registered' %}active in{% endif %}" id="teacher_registered">
                         <div class="tabpane-contents registered-students">
                             {% include 'objects/course/management/registered_students.html' %}
                         </div>
@@ -18,7 +18,7 @@
                 {% endif %}
 
                 {% if teacher.students.pending|length > 0 %}
-                    <div class="tab-pane fade {% if teacher.students.registered|length == 0 %}in active{% endif %}" id="teacher_pending">
+                    <div class="tab-pane fade {% if teacher.students.registered|length == 0 or current_teacher_tab == 'pending' %}in active{% endif %}" id="teacher_pending">
                         <div class="tabpane-contents pending-registrations">
                             {% include 'objects/course/management/pending_registrations.html' %}
                         </div>
@@ -26,7 +26,7 @@
                 {% endif %}
 
 
-                <div class="tab-pane fade {% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0  %}in active{% endif %}" id="teacher_documents">
+                <div class="tab-pane fade {% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0 %}in active{% elif current_teacher_tab == 'upload' %}in active{% endif %}" id="teacher_documents">
                     <div class="tabpane-contents course-documents">
 
                         <div class="row">
@@ -55,7 +55,7 @@
 
                 </div>
 
-                <div class="tab-pane fade" id="teacher_homework">
+                <div class="tab-pane fade {% if current_teacher_tab == 'homework' %}in active{% endif %}" id="teacher_homework">
                     <div class="tabpane-contents course-homework">
 
                         <div class="row">
@@ -87,7 +87,7 @@
                 </div>
 
 
-                <div class="tab-pane fade" id="teacher_forum">
+                <div class="tab-pane fade {% if current_teacher_tab == 'forum' %}in active{% endif %}" id="teacher_forum">
                     <div class="tabpane-contents class-forum">
                         <h3> {% trans "Forum statistics" %} </h3>
                         <hr class="top-line">

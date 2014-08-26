@@ -52,6 +52,16 @@ def course_page(request, slug):
     if 'post' in request.GET and request.GET['post']:
         context['current_post'] = int(request.GET['post'])
 
+    if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
+        context['review_course_tab'] = True
+
+    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum']
+    if 'teacher_page' in request.GET and request.GET['teacher_page'] and \
+        request.GET['teacher_page'] in available_teacher_pages:
+            context['current_teacher_tab'] = request.GET['teacher_page']
+            if 'current_tab' not in context:
+                context['current_tab'] = 'teacher'
+
     if 'current_tab' not in context and not len(context['activities']):
         context['current_tab'] = 'info'
 
