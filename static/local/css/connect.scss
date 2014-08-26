@@ -239,6 +239,17 @@ $course-img-max-size:           150px;
                 max-width: 130px;
             }
         }
+
+        .course-details {
+            .modify-syllabus {
+                .delete-syllabus-entry-form {
+                    margin-left: 12px;
+                }
+                li {
+                    margin-top: 16px;
+                }
+            }
+        }
     }
 }
 

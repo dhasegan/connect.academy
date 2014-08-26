@@ -113,6 +113,10 @@
   padding-top: 30px; }
 .course-page .course-teacher .class-forum .extratag-input {
   max-width: 130px; }
+.course-page .course-teacher .course-details .modify-syllabus .delete-syllabus-entry-form {
+  margin-left: 12px; }
+.course-page .course-teacher .course-details .modify-syllabus li {
+  margin-top: 16px; }
 
 .course-info .info-body .reviews-display .review-block .review .review-text,
 .activity-timeline .review-activity .review-block .review .review-text {

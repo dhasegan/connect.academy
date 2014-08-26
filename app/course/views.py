@@ -394,7 +394,50 @@ def update_info(request, slug):
 
     return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
 
+@require_POST
+@require_active_user
+@login_required
+def update_syllabus(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
 
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = UpdateSyllabusForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    if 'course_topic' in form.cleaned_data and form.cleaned_data['course_topic']:
+        topic = form.cleaned_data['course_topic']
+        topic.name = form.cleaned_data['entry_name']
+        topic.description = form.cleaned_data['entry_description']
+        topic.save()
+    else:
+        CourseTopic.objects.create(name=form.cleaned_data['entry_name'], description=form.cleaned_data['entry_description'], course=course)
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def delete_syllabus_entry(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = DeleteSyllabusEntryForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    form.cleaned_data['course_topic'].delete()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
 
 ### ACTIVITIES AJAX URLS #####
 

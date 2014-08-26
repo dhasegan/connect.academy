@@ -15,7 +15,7 @@
     <div class="collapse collapseDescription {% if not course.description %}in{% endif %}">
         <form role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
-            <textarea class="form-control" rows="3" name="description" maxlength="5000">{{ course.description }}</textarea>
+            <textarea class="form-control" rows="3" name="description" maxlength="5000" required>{{ course.description }}</textarea>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -36,7 +36,7 @@
     <span class="collapse collapseAbbrev {% if not course.abbreviation %}in{% endif %}">
         <form class="form-inline" role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
-            <input class="form-control" name="abbreviation" type="text" value="{% if course.abbreviation %}{{ course.abbreviation }}{% endif %}" maxlength="20">
+            <input class="form-control" name="abbreviation" type="text" value="{% if course.abbreviation %}{{ course.abbreviation }}{% endif %}" maxlength="20" required>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </span>
@@ -59,7 +59,7 @@
     <div class="collapse collapseAdditional {% if not course.additional_info %}in{% endif %}">
         <form role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
-            <textarea class="form-control" rows="3" name="additional_info" maxlength="5000">{% if course.additional_info %}{{ course.additional_info }}{% endif %}</textarea>
+            <textarea class="form-control" rows="3" name="additional_info" maxlength="5000" required>{% if course.additional_info %}{{ course.additional_info }}{% endif %}</textarea>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -67,7 +67,49 @@
 
 <hr>
 
-syllabus
+<h4> {% trans "Syllabus" %}: </h4>
+
+<div class="modify-syllabus">
+    <ol>
+        {% for entry in syllabus %}
+        <li>
+            <form role="form" class="form-inline pull-right delete-syllabus-entry-form" method="post" action="{% url 'delete_syllabus_entry' course.slug %}">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-xs">delete</button>
+                <input type="hidden" name="entry_id" value="{{ entry.topic.id }}" required>
+            </form>
+            <a class="pull-right" data-toggle="collapse" href=".collapseEntry{{ entry.topic.id }}">
+                <span class="glyphicon glyphicon-cog"></span> modify
+            </a>
+            <div class="collapse collapseEntry{{ entry.topic.id }} in">
+                <div> {{ entry.topic.name }} </div>
+                {{ entry.topic.description }}
+            </div>
+
+            <div class="collapse collapseEntry{{ entry.topic.id }}">
+                <form role="form" method="post" action="{% url 'update_syllabus' course.slug %}">
+                    {% csrf_token %}
+                    <input type="text" name="entry_name" value="{{ entry.topic.name }}" maxlength="200" required>
+                    <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required>{{ entry.topic.description }}</textarea>
+                    <input type="hidden" name="entry_id" value="{{ entry.topic.id }}">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+        <li>
+            <div class="">
+                <form role="form" method="post" action="{% url 'update_syllabus' course.slug %}">
+                    {% csrf_token %}
+                    <input type="text" name="entry_name" value="" maxlength="200" required>
+                    <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required></textarea>
+                    <button type="submit" class="btn btn-primary">New Entry</button>
+                </form>
+            </div>
+        </li>
+    </ol>
+</div>
+
 TA's
 
 {% comment %}

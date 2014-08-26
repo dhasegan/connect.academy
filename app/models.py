@@ -264,9 +264,15 @@ class CourseTopic(models.Model):
         # list of the primary keys (ids) of the topics.
 
     def save(self, *args, **kwargs):
-        tag_name = ForumTag.create_tag_name(self.name)
-        ForumTopicTag.objects.get_or_create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
-            forum=Forum.objects.get(pk=self.course.id), topic=self)
+        tags = ForumTopicTag.objects.filter(topic=self)
+        if not len(tags):
+            tag_name = ForumTag.create_tag_name(self.name)
+            ForumTopicTag.objects.create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
+                forum=Forum.objects.get(pk=self.course.id), topic=self)
+        else:
+            tag = tags[0]
+            tag.name = ForumTag.create_tag_name(self.name)
+            tag.save()
         super(CourseTopic, self).save(*args, **kwargs)
 
     def __unicode__(self):
