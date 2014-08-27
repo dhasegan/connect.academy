@@ -1,8 +1,9 @@
 # Django settings for academy project.
 from django.utils.translation import ugettext_lazy
 
-from os import environ, path
 import boto
+from os import environ, path
+from urlparse import urlparse
 
 DEBUG = environ.get('ACADEMY_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
@@ -191,13 +192,15 @@ LOGGING = {
 
 ######################## Redis Cache
 
+redis_url = urlparse(environ.get('REDISCLOUD_URL'))
+
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.cache.RedisCache' if not DEBUG else 'django.core.cache.backends.dummy.DummyCache',
-        'LOCATION': environ.get('REDIS_LOCATION', ''), # '/var/run/redis/redis.sock'
+        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port) if not DEBUG else '', # '/var/run/redis/redis.sock'
         'OPTIONS': {
-            'DB': environ.get('REDIS_DATABASE', ''),
-            'PASSWORD': environ.get('REDIS_PASSWORD', ''),
+            'PASSWORD': redis_url.password if not DEBUG else '',
+            'DB': 0
         }
     }
 }
@@ -256,8 +259,11 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = "pipeline.compressors.yuglify.YuglifyCompressor" if not DEBUG else None
 
 PIPELINE_COMPILERS = (
-  'pipeline.compilers.sass.SASSCompiler' if DEBUG else "",
+  'pipeline.compilers.sass.SASSCompiler',
 )
+
+PIPELINE_SASS_BINARY = PROJECT_ROOT + "/thirdparty/sass/bin/sass"
+PIPELINE_YUGLIFY_BINARY = PROJECT_ROOT + "/thirdparty/node_modules/yuglify/bin/yuglify"
 
 PIPELINE_CSS = {
     'bootstrap': {
