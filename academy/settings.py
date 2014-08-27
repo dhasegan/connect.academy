@@ -194,7 +194,11 @@ LOGGING = {
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.cache.RedisCache' if not DEBUG else 'django.core.cache.backends.dummy.DummyCache',
-        'LOCATION': '/var/run/redis/redis.sock' if not DEBUG else ''
+        'LOCATION': environ.get('REDIS_LOCATION', ''), # '/var/run/redis/redis.sock'
+        'OPTIONS': {
+            'DB': environ.get('REDIS_DATABASE', ''),
+            'PASSWORD': environ.get('REDIS_PASSWORD', ''),
+        }
     }
 }
 
@@ -252,7 +256,7 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = "pipeline.compressors.yuglify.YuglifyCompressor" if not DEBUG else None
 
 PIPELINE_COMPILERS = (
-  'pipeline.compilers.sass.SASSCompiler',
+  'pipeline.compilers.sass.SASSCompiler' if DEBUG else "",
 )
 
 PIPELINE_CSS = {
