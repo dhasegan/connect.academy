@@ -237,7 +237,7 @@ MEDIA_URL = '/media/'
 
 AWS_ACCESS_KEY_ID = environ.get('ACADEMY_AWS_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = environ.get('ACADEMY_AWS_SECRET_ACCESS_KEY', '')
-AWS_STORAGE_BUCKET_NAME = 'academy'
+AWS_STORAGE_BUCKET_NAME = 'connect-academy'
 AWS_PRELOAD_METADATA = True
 
 # Connect to s3 in production
