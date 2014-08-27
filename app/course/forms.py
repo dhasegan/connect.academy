@@ -182,8 +182,8 @@ class UpdateInfoForm(forms.Form):
     abbreviation = forms.CharField(required=False, max_length=50)
 
 class UpdateSyllabusForm(forms.Form):
-    entry_name = forms.CharField()
-    entry_description = forms.CharField()
+    entry_name = forms.CharField(max_length=200)
+    entry_description = forms.CharField(max_length=500)
     entry_id = forms.CharField(required=False)
 
     def clean(self):
