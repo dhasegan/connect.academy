@@ -1,5 +1,9 @@
 import json
+import urllib2
+from urlparse import urlparse
 
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
@@ -10,13 +14,13 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from django.views.defaults import server_error
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from app.models import *
 from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
 from app.auth.specific_login import get_university
-from django.conf import settings
 
 @require_POST
 def login_action(request):
@@ -37,14 +41,27 @@ def login_action(request):
         auth_univ = get_university(login_user, login_pass)
         if auth_univ:
             # CN success
-            if not login_user in settings.JACOBS_USERNAME_TO_EMAIL:
+            if not login_user in settings.JACOBS_USER_DETAILS:
                 context['error'] = render_to_string("objects/notifications/auth/CN_connected_but_no_email.html", {})
                 return render(request, "pages/welcome_page.html", context)
             users = jUser.objects.filter(username=login_user)
             if not users:
                 university = University.objects.get(name=auth_univ["name"])
-                email = settings.JACOBS_USERNAME_TO_EMAIL[login_user]
-                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=email)
+                user_details = settings.JACOBS_USER_DETAILS[login_user]
+                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=user_details['email'], \
+                                                 first_name=user_details['first_name'], last_name=user_details['last_name'])
+                if 'description' in user_details:
+                    user.summary = user_details['description']
+                if 'photourl' in user_details:
+                    photo_url = user_details['photourl']
+                    photo_ext = urlparse(photo_url).path.split('/')[-1].split('.')[-1]
+                    photo_name = login_user + "." + photo_ext
+
+                    img_temp = NamedTemporaryFile(delete=True)
+                    img_temp.write(urllib2.urlopen(photo_url).read())
+                    img_temp.flush()
+
+                    user.profile_picture.save(photo_name, File(img_temp), save=False)
                 user.is_active = False
                 user.save()
                 send_email_confirmation(request, user)

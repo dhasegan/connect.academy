@@ -27,7 +27,7 @@ USER_TYPES = (
     (USER_TYPE_ALUMNUS, "alumnus"),
 )
 
-def determine_profilepic_filename(instance,filename):
+def determine_profilepic_filename(instance, filename):
         name,extension = filename.split(".")
         return "users/%s/%s" % (instance.username, "profile_picture." + extension)
 
@@ -38,7 +38,7 @@ class jUser(User):
     university = models.ForeignKey('University',null = True) 
     
     summary = models.CharField(max_length=500, null=True) 
-    profile_picture = models.ImageField(upload_to = determine_profilepic_filename, null=True)    
+    profile_picture = models.ImageField(upload_to=determine_profilepic_filename, null=True)
     # For professors only 
     # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)

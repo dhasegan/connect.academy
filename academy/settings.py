@@ -329,4 +329,4 @@ AGE_JUDGEMENT = 300000
 
 ### Jacobs specific settings
 import json
-JACOBS_USERNAME_TO_EMAIL = json.load( open(SETTINGS_ROOT + "jacobs_username_to_email.json") )
+JACOBS_USER_DETAILS = json.load( open(SETTINGS_ROOT + "jacobs_user_details.json") )
