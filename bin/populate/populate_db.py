@@ -63,14 +63,12 @@ for courseDetails in coursesList:
             current_category = children[0]
         else:
             print "Error! Cannot find category for course " + courseDetails['CourseName']
+    cid = 1
+    if 'CourseID' in courseDetails and courseDetails['CourseID']:
+        cid = int(courseDetails['CourseID'])
     # Create the Course class
-    course = Course(course_id = courseDetails['CourseID'],
-                    # course_type = ctype,
-                    name = courseDetails['CourseName'],
-                    credits = credits,
-                    university=univ,
-                    category = current_category,
-                    external_link = courseDetails['CampunetLink'])
+    course = Course.objects.create(course_id = cid, name = courseDetails['CourseName'], credits = credits,
+                    university=univ, category = current_category, external_link = courseDetails['CampunetLink'])
     if 'Official Course Description' in courseDetails:
         course.description = courseDetails['Official Course Description']
     if 'Course Name Abbreviation' in courseDetails and courseDetails['Course Name Abbreviation']:
