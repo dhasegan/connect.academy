@@ -9,22 +9,33 @@ coursesList = json.load(courseDetailsString)
 f.close()
 
 for courseDetails in coursesList:
-    print courseDetails['CourseName']
+    # print courseDetails['CourseName']
     if len(Course.objects.filter(name=courseDetails['CourseName'])) > 0:
         continue
     # Setup instructors
     dbProfs = []
     instructors = courseDetails['Instructors'].split("; ")
     for instructor in instructors:
-        prof = False
-        profs = Professor.objects.filter(name=instructor)
-        if len(profs) > 0:
-            prof = profs[0]
+        last_name = instructor.split(' ')[-1]
+        profs = jUser.objects.filter(last_name__contains=last_name)
+        if len(profs) == 1:
+            dbProfs.append(profs[0])
+        elif len(profs) > 1:
+            tents = []
+            for p in profs:
+                ok = False
+                first_names = p.first_name.split(" ")
+                for fn in first_names:
+                    if fn in instructor:
+                        ok = True
+                if ok:
+                    tents.append(p)
+            if len(tents) == 0 or len(tents) > 1:
+                print "Couldnt find professor for course " + courseDetails['CourseName']
+            else:
+                dbProfs.append(tents[0])
         else:
-            prof = Professor(name=unicode(instructor))
-            prof.save()
-        if prof:
-            dbProfs.append(prof)
+            print "Couldnt find professor for course " + courseDetails['CourseName']
     # Get Course type
     ctype = False
     for CTYPE in COURSE_TYPES:
