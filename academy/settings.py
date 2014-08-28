@@ -192,12 +192,14 @@ LOGGING = {
 
 ######################## Redis Cache
 
-redis_url = urlparse(environ.get('REDISCLOUD_URL'))
+REDISCLOUD_URL = environ.get('REDISCLOUD_URL')
+if REDISCLOUD_URL:
+    redis_url = urlparse(REDISCLOUD_URL)
 
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.cache.RedisCache' if not DEBUG else 'django.core.cache.backends.dummy.DummyCache',
-        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port) if not DEBUG else '', # '/var/run/redis/redis.sock'
+        'BACKEND': 'redis_cache.cache.RedisCache' if REDISCLOUD_URL else 'django.core.cache.backends.dummy.DummyCache',
+        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port) if REDISCLOUD_URL else '', # '/var/run/redis/redis.sock'
         'OPTIONS': {
             'PASSWORD': redis_url.password if not DEBUG else '',
             'DB': 0
