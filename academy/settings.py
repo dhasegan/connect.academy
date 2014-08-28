@@ -201,7 +201,7 @@ CACHES = {
         'BACKEND': 'redis_cache.cache.RedisCache' if REDISCLOUD_URL else 'django.core.cache.backends.dummy.DummyCache',
         'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port) if REDISCLOUD_URL else '', # '/var/run/redis/redis.sock'
         'OPTIONS': {
-            'PASSWORD': redis_url.password if not DEBUG else '',
+            'PASSWORD': redis_url.password if REDISCLOUD_URL else '',
             'DB': 0
         }
     }

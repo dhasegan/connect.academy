@@ -5,13 +5,14 @@ import re
 import sys
 import os
 import lxml.html
+import chardet
 from collections import deque
 import HTMLParser
 _htmlparser = HTMLParser.HTMLParser()
 unescape = _htmlparser.unescape
 
 BASE_URL = "https://campusnet.jacobs-university.de"
-START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A9PnS7.Eby4LCWWmmtOcbYKUQ-so-sF48wtHtVNWX9aIeYmoSh5mej--SCbT.jubdlAouHy3dHzwyr-O.ufj3NVAYCNiJr0CFcBNwA3xADclRCTyqC0Oip8drT0F="
+START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A9YySH..76KIWqEjheRYANS.nDWnW-UEBJkynWmCsx0heBMeK6jgn2yRCzJ2nmsHB6TZFq2H609HAw-3S.VqAIWivPCz8zBYotVvOtPfPTTHXJJa0mf65IbTCOIa="
 
 def cleanLink(link):
     return unescape(link)
@@ -34,6 +35,10 @@ while queue:
 
     page = urllib.urlopen(link)
     page = page.read()
+    encoding = chardet.detect(page)['encoding']
+    if encoding != 'unicode':
+        page = page.decode(encoding)
+        page = page.encode('utf-8', 'ignore')
 
     indexStart = page.find('class="auditRegistrationList"')
     indexStop = page.find('</ul>', indexStart)
@@ -53,19 +58,14 @@ while queue:
     queue.extend(newLinks)
 
 
-fileHandle = open('crawler/courses', 'w')
+fileHandle = open('courses', 'w')
 for course in courses:
-    sys.stdout = fileHandle
-    print ('%s' % (course))
-sys.stdout = sys.__stdout__
+    fileHandle.write(str(course) + "\n")
 fileHandle.close()
 
-fileHandle = open('crawler/courseNames', 'w')
+fileHandle = open('courseNames', 'w')
 for course in courseNames:
-    sys.stdout = fileHandle
     # Hacked way to avoid some bad characters
-    course = course.replace('\xe9', 'e').replace('\xa0', ' ').strip()
-
-    print ('%s' % (course))
-sys.stdout = sys.__stdout__
+    # course = course.replace('\xe9', 'e').replace('\xa0', ' ').strip()
+    fileHandle.write(str(course) + "\n")
 fileHandle.close()

@@ -4,6 +4,8 @@ import re
 import sys
 import os
 import lxml.html
+import json
+import chardet
 from collections import deque
 from htmlentitydefs import name2codepoint
 from HTMLParser import HTMLParser
@@ -67,7 +69,7 @@ class MyHTMLParser(HTMLParser):
     def handle_entityref(self, name):
         if self.insideTable:
             if name in name2codepoint:
-                self.tableData += chr(name2codepoint[name])
+                self.tableData += unichr(name2codepoint[name])
             else:
                 self.tableData += "&" + name
     def getCourseInfo(self):
@@ -86,8 +88,8 @@ importantFields = [ 'Instructors', 'Type', 'Org-unit', 'Course Name Abbreviation
                     'Credits', 'Min. | Max. participants', 'Partial Grades', 'Official Course Description',
                     'Additional Information', 'This course is divided into the following sections',
                     'Further Grading Information']
-linksFile = open('crawler/courses', 'r')
-namesFile = open('crawler/courseNames', 'r')
+linksFile = open('courses', 'r')
+namesFile = open('courseNames', 'r')
 
 coursesList = []
 
@@ -97,12 +99,17 @@ for link in linksFile:
     courseName = namesFile.readline()
     print courseName[:-1]
     # Download the page
-    page = urllib.urlopen(link)
-    page = page.read()
+    connection = urllib.urlopen(link)
+    page = connection.read()
+    encoding = chardet.detect(page)['encoding']
+    if encoding != 'unicode':
+        page = page.decode(encoding)
+        page = page.encode('utf-8', 'ignore')
     # Parse the page
     parser = MyHTMLParser()
     parser.feed(page)
     uglyCourseInfo = parser.getCourseInfo()
+    test = json.dumps(uglyCourseInfo)
     # Delete the extra stuff and make it a dictionary
     courseInfo = dict(map(lambda x: (cleanuper(x[0]),cleanuper(x[1])), uglyCourseInfo.iteritems() ))
     if not 'Course offering details' in courseInfo:
@@ -112,6 +119,10 @@ for link in linksFile:
     # Get main details about the course
     details = courseInfo['Course offering details']
     detailsMap = {}
+    if 'Appointments' in courseInfo:
+        detailsMap['Appointments'] = courseInfo['Appointments']
+    if 'Literature' in courseInfo:
+        detailsMap['Literature'] = courseInfo['Literature']
     # For each field found put it in the map
     for field in importantFields:
         length = len(details)
@@ -120,7 +131,7 @@ for link in linksFile:
             stopIdx = min( [ (details.find(f+":") if details.find(f+":") >= startIdx else length) for f in importantFields] )
             if startIdx <= stopIdx:
                 if startIdx < stopIdx:
-                    detailsMap[field] = unicode(details[startIdx:stopIdx], errors='ignore').strip()
+                    detailsMap[field] = details[startIdx:stopIdx].strip()
             else:
                 print "Error: Start after stop"
     # Parse the Catalogue information
@@ -136,13 +147,14 @@ for link in linksFile:
     courseNameOnly = detailsMap['Name'][7:]
     detailsMap['CourseID'] = courseID
     detailsMap['CourseName'] = courseNameOnly
-    # Add to our list
+    detailsMap['CampunetLink'] = link
+    # Add to our list if it can
     coursesList.append(detailsMap)
+    text = json.dumps(detailsMap)
 
 linksFile.close()
 namesFile.close()
 
-import json
-outputFile = open('crawler/courseDetails', 'w')
+outputFile = open('courseDetails', 'w')
 outputFile.write( json.dumps(coursesList) )
 outputFile.close()

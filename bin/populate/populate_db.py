@@ -2,13 +2,11 @@
 # Insert results into the DB
 
 from app.models import *
-from json import loads
+import json
 
-f = open('crawler/courseDetails')
-courseDetailsString = f.readline()
+f = open('courseDetails')
+coursesList = json.load(courseDetailsString)
 f.close()
-
-coursesList = loads(courseDetailsString)
 
 for courseDetails in coursesList:
     print courseDetails['CourseName']
