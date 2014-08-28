@@ -1,23 +1,33 @@
-{% for a in activities %}
-    {% with a.activity as activity %}
-        {% if a.type == "ForumPostActivity" %}
-          {% with a.post as post %}
-            {% with activity.course as course %}
-                {% include 'objects/dashboard/forum_post_activity.html' %}
+<div class="activity-timeline">
+  {% for a in activities %}
+      {% with a.activity as activity %}
+          {% if a.type == "ForumPostActivity" %}
+            {% with a.post as post %}
+              {% include 'objects/dashboard/forum_post_activity.html' %}
             {% endwith %}
-          {% endwith %}
-        {% elif a.type == "ForumAnswerActivity" %}
-           {% include 'objects/dashboard/forum_answer_activity.html' %}
-        {% elif a.type == "HomeworkActivity" %}
-          {% with a.homework as hw %}
-            {% with activity.course as course %}
-              {% include 'objects/dashboard/homework_activity.html' %}
+          {% elif a.type == "ForumAnswerActivity" %}
+            {% with a.answer as answer %}
+             {% include 'objects/dashboard/forum_answer_activity.html' %}
             {% endwith %}
-          {% endwith %}
-        {% elif a.type == "DocumentActivity" %}
-          {% with activity.documentactivity.document as document %}
-           {% include 'objects/dashboard/document_activity.html' %}
-          {% endwith %}
-        {% endif %}
-    {% endwith %}
-{% endfor %}
+          {% elif a.type == "HomeworkActivity" %}
+            {% with a.homework as hw %}
+              {% with activity.course as course %}
+                {% include 'objects/dashboard/homework_activity.html' %}
+              {% endwith %}
+            {% endwith %}
+          {% elif a.type == "DocumentActivity" %}
+            {% with activity.documentactivity.document as document %}
+             {% include 'objects/dashboard/document_activity.html' %}
+            {% endwith %}
+          {% elif a.type == 'ReviewActivity' %}
+            {% with a.review as comment %}
+              {% include 'objects/dashboard/review_activity.html' %}
+            {% endwith %}
+          {% elif a.type == 'WikiActivity' %}
+            {% with a.contribution as contribution %}
+              {% include 'objects/dashboard/wiki_activity.html' %}
+            {% endwith %}
+          {% endif %}
+      {% endwith %}
+  {% endfor %}
+</div>

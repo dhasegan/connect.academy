@@ -3,75 +3,97 @@
 {% load i18n %}
 
 {% block content %}
+<div class="manage-account-page">
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default" id="change_username_container">
-            <div class="panel-heading" id="username_header">{% trans "Change Username" %}</div>
-            <div class="panel-body">
-                <form method="post" action="/username_change_action" id="username_form">
-                    {%csrf_token%}
-                    <div class="form-group">
-                        <input type="text" name="new_username" id="new_username" class="form-control input-sm" placeholder='{% trans "New Username" %}' required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" id="change_username_button" class="btn btn-primary" autocomplete="off">
-                            {% trans "Change Username" %}
-                        </button>
-                    </div>
-                </form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4> Manage account of {% with user_auth as juser %} {% include "objects/user_link.html" %} {% endwith %}</h4>
+                    <hr>
+
+                    <nav class="nav-sidebar">
+                        <ul class="nav tabs">
+                            <li class="active"><a href="#change_username_container" role="tab" data-toggle="tab">{% trans "Change username" %}</a></li>
+                            <li class=""><a href="#change_password_container" role="tab" data-toggle="tab">{% trans "Change password" %}</a></li>
+                            <li class=""><a href="#change_name_container" role="tab" data-toggle="tab">{% trans "Change name" %}</a></li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
 
-        <div class="panel panel-default" id="change_password_container">
-            <div class="panel-heading" id="password_header">{% trans "Change Password" %}</div>
-            <div class="panel-body">
-                <form method="post" action="/password_change_action" id="password_form" role="form">
-                    {%csrf_token%}
-                    <div class="form-group">
-                        <input type="password" name="old_pass" id="old_password" class="form-control input-sm" placeholder='{% trans "Old Password" %}' required>
+
+        <div class="col-md-8">
+            <div class="tab-content">
+                <div class="panel panel-default tab-pane fade in active" id="change_username_container">
+                    <div class="panel-body">
+                        <h4>{% trans "Change Username" %}</h4>
+                        <hr>
+                        <form method="post" action="/username_change_action" id="username_form">
+                            {%csrf_token%}
+                            <div class="form-group">
+                                <input type="text" name="new_username" id="new_username" class="form-control input-sm" placeholder='{% trans "New Username" %}' maxlength="30" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="change_username_button" class="btn btn-primary" autocomplete="off">
+                                    {% trans "Change Username" %}
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <input type="password" name="new_pass" id="new_password" class="form-control input-sm" placeholder='{% trans "New Password" %}' required>
+                </div>
+
+                <div class="panel panel-default tab-pane fade" id="change_password_container">
+                    <div class="panel-body">
+                        <h4>{% trans "Change Password" %}</h4>
+                        <hr>
+                        <form method="post" action="/password_change_action" id="password_form" role="form">
+                            {%csrf_token%}
+                            <div class="form-group">
+                                <input type="password" name="old_pass" id="old_password" class="form-control input-sm" placeholder='{% trans "Old Password" %}' required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="new_pass" id="new_password" class="form-control input-sm" placeholder='{% trans "New Password" %}' required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="confirm_new_pass" id="confirm_new_pass" class="form-control input-sm" placeholder='{% trans "Confirm New Password" %}' autocomplete="off" required>
+                            </div>
+                            <button type="submit" id="change_password_button" class="btn btn-primary" autocomplete="off">
+                                {% trans "Change Password" %}
+                            </button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <input type="password" name="confirm_new_pass" id="confirm_new_pass" class="form-control input-sm" placeholder='{% trans "Confirm New Password" %}' autocomplete="off" required>
+                </div>
+
+                <div class="panel panel-default tab-pane fade" id="change_name_container">
+                    <div class="panel-body">
+                        <h4>{% trans "Change Name" %}</h4>
+                        <hr>
+                        <form method="post" action="/name_change_action" id="name_form">
+                            {%csrf_token%}
+                            <div class="form-group">
+                                <input type="text" name="new_fname" id="new_fname" class="form-control input-sm" placeholder='{% trans "New First Name" %}' maxlength="30" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="new_lname" id="new_lname" class="form-control input-sm" placeholder='{% trans "New Last Name" %}' maxlength="30" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
+                            </div>
+                            <button type="submit" id="change_name_button" autocomplete="off" class="btn btn-primary">
+                                {% trans "Change Name" %}
+                            </button>
+                        </form>
                     </div>
-                    <button type="submit" id="change_password_button" class="btn btn-primary" autocomplete="off">
-                        {% trans "Change Password" %}
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 
-
-    <div class="col-md-6">
-        <div class="panel panel-default" id="change_name_container">
-            <div class="panel-heading" id="name_header">{% trans "Change Name" %}</div>
-            <div class="panel-body">
-                <form method="post" action="/name_change_action" id="name_form">
-                    {%csrf_token%}
-                    <div class="form-group">
-                        <input type="text" name="new_fname" id="new_fname" class="form-control input-sm" placeholder='{% trans "New First Name" %}' required>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="new_lname" id="new_lname" class="form-control input-sm" placeholder='{% trans "New Last Name" %}' required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
-                    </div>
-                    <button type="submit" id="change_name_button" autocomplete="off" class="btn btn-primary">
-                        {% trans "Change Name" %}
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
-
 
 {% endblock %}

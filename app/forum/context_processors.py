@@ -121,3 +121,77 @@ def forum_discussion_context(forum, post, answer, current_user):
         'course': forum.course,
         'discussion_answer_id': answer.id
     }
+
+def forum_stats_context(forum):
+    posts = ForumPost.objects.filter(forum=forum)
+    answers = []
+    for post in posts:
+        answers += post.forumanswer_set.all()
+
+    total_upvotes = 0
+    anon_posts = 0
+    anon_answers = 0
+    anon_upvotes = 0
+
+    posters = []
+    for post in posts:
+        if not post.anonymous and not post.posted_by in posters:
+            posters.append(post.posted_by)
+        if post.anonymous:
+            anon_posts += 1
+            anon_upvotes += post.upvoted_by.all().count()
+        total_upvotes += post.upvoted_by.all().count()
+    for answer in answers:
+        if not answer.anonymous and not answer.posted_by in posters:
+            posters.append(answer.posted_by)
+        if answer.anonymous:
+            anon_answers += 1
+            anon_upvotes += answer.upvoted_by.all().count()
+        total_upvotes += answer.upvoted_by.all().count()
+
+    user_stats = []
+    for poster in posters:
+        nr_posts = 0
+        nr_answers = 0
+        nr_upvotes = 0
+        for post in posts:
+            if not post.anonymous and post.posted_by == poster:
+                nr_posts += 1
+                nr_upvotes += post.upvoted_by.all().count()
+        for answer in answers:
+            if not answer.anonymous and answer.posted_by == poster:
+                nr_answers += 1
+                nr_upvotes += answer.upvoted_by.all().count()
+
+        user_stats.append({
+            'student': poster,
+            'nr_posts': nr_posts,
+            'nr_answers': nr_answers,
+            'nr_activity': nr_posts + nr_answers,
+            'nr_upvotes': nr_upvotes,
+        })
+
+    context = {
+        'total_posts': len(posts),
+        'total_answers': len(answers),
+        'total_upvotes': total_upvotes,
+        'anon_posts': anon_posts,
+        'anon_answers': anon_answers,
+        'anon_upvotes': anon_upvotes,
+        'user_stats': user_stats
+    }
+
+    tags = list(ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY))
+    tags += list(forum.forumtopictag_set.all())
+    tags += list(forum.forumextratag_set.all())
+
+    tags_stats = []
+    for tag in tags:
+        tags_stats.append({
+            'tag': tag,
+            'nr_posts': tag.forumpost_set.filter(forum=forum).count()
+        })
+    context['tags_stats'] = tags_stats
+
+
+    return context

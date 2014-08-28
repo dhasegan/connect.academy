@@ -1,6 +1,11 @@
 {% load i18n %}
 
 {% if teacher.students.registered|length > 0 %}
+
+  <div class="registered-students">
+    <h3> Registered students </h3>
+    <hr class="top-line">
+
     <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.slug %}">
       <div class="row">
         {% csrf_token %}
@@ -8,9 +13,11 @@
                           <h4> {% trans "Send an e-mail to" %}: </h4>
 
             <ul>
+              {% if teacher.students.registered|length > 0 %}
                 <li>
                     <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
                 </li>
+              {% endif %}
               {% for student in teacher.students.registered %}
                 <li> 
                     <input type='checkbox' name='user-{{student.id}}'> 
@@ -22,7 +29,7 @@
             <input type='hidden' name='course' value='{{course.id}}'/>
         </div>
 
-        <div class='col-md-6'> 
+        <div class='col-md-6 email-details'> 
           <input type='text' class='form-control' name='subject' placeholder='{% trans "Subject" %}'/> <br/>
           <textarea class="form-control" rows="10" cols='40' max-length="5000" placeholder='{% trans "Email Body" %}' name="email" required></textarea><br/>
           <input class='btn btn-primary' value='Send email' type='submit'/> 
@@ -31,8 +38,9 @@
         </div>
       </div>
     </form>
+  </div>
       
 {% else %}
-  <p class="h3"> {% trans "There are no pending registrations for this course." %} </p>
+  <p class="h3"> {% trans "There are no registered students for this course." %} </p>
 {% endif %} 
    

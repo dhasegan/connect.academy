@@ -6,13 +6,13 @@
     <div class="form-group">
         <label for="homeworkName{{course.id}}">{% trans "Homework Name" %}</label>
         <small> {% trans "(Example: Homework1, Project1, ... )" %} </small>
-        <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" required>
+        <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" maxlength="200" required>
     </div>
 
     <div class="form-group">
         <label for="homeworkTopic{{course.id}}">{% trans "Course Topic" %}</label>
-        <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}" required>
-            <option value=""> {% trans "Please select one" %} </option>
+        <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}">
+            <option value=""> {% trans "No specific topic" %} </option>
             {% for topic in syllabus %}
                 <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
             {% endfor %} 
@@ -21,7 +21,7 @@
 
     <div class="form-group">
         <label for="homeworkDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
-        <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" rows="3"></textarea>
+        <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" maxlength="1000" rows="3"></textarea>
     </div>
 
     <div class="form-group">
@@ -51,7 +51,7 @@
     <input type="hidden" name="timezone" value="">
 
     <input type="hidden" name="course_id" value="{{ course.id }}">
-    <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
+    <input type="hidden" name="url" value="{% url 'course_page' course.slug %}?page=resources">
 
     <input class="btn btn-primary" type="submit" value="Request" />
 </form>

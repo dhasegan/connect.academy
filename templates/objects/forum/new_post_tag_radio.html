@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<div class="radio">
+    <label>
+        <input type="radio" name="tagsRadios" id="{{ tag.name }}" value="{{ tag.name }}" {% if forloop.counter == 1 %}checked{% endif %}>
+        #{{ tag.name }}
+    </label>
+
+    {% if tag.name == "general" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "The public tag: Anyone can submit and view posts with this tag" %}'></span>
+    {% elif tag.name == "announcement" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Only professors and TAs can post with this tag" %}'></span>
+    {% elif tag.name == "askprof" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Only professors and TAs can view posts with this tag" %}'></span>
+    {% elif tag.name == "meta" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Discussions about the administration of the course" %}'></span>
+    {% endif %}
+</div>

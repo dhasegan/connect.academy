@@ -1,24 +1,28 @@
 from django.core.context_processors import csrf
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import render, get_object_or_404, render_to_response
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
-from django.template.loader import render_to_string
-
+from django.template.loader import render_to_string 
+ 
 from app.models import *
 from app.profile.forms import *
+from app.profile.context_processors import *
 
+import json
 
 @require_GET
 @login_required
 def profile(request, username):
     # stub for profile view
     context = {'page': 'profile'}
-    user = jUser.objects.filter(username=username)
-    if user:
-        user = user[0]
-        context['user'] = user
+    context.update(csrf(request))
+    user = get_object_or_404(jUser, username=username)
+    
+    context['user'] = user
+    context['own_profile'] = request.user.id == user.id
+    context['activities'] = profile_activities(request,user)
 
     return render(request, "pages/profile.html", context)
 
@@ -134,3 +138,72 @@ def name_change_action(request):
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "first and last name"})
 
     return render(request, "pages/auth/user_account.html", context)
+
+
+
+@login_required
+def load_profile_activities(request, username):
+    user = get_object_or_404(jUser,username=username)
+    
+    activities = profile_activities(request,user)
+
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html
+    }
+
+    return HttpResponse(json.dumps(data))
+
+@login_required
+def load_new_profile_activities(request, username):
+    user = get_object_or_404(jUser, username=username)
+    activities = new_profile_activities(request,user)
+
+    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    data = {
+        'status': "OK",
+        'html': html,
+    }
+    if activities:
+        data['new_last_id'] = activities[0]['activity'].id
+
+    return HttpResponse(json.dumps(data))
+
+@login_required
+def edit_summary(request):
+    form = EditSummaryForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    summary = form.cleaned_data['summary']
+    user = request.user.juser
+
+    user.summary = summary
+    user.save()
+
+    html = render_to_string('objects/profile/summary.html', {"user": user})
+    print html
+    context = {
+        "status": "OK",
+        "html" : html,
+    }
+    #context.update(csrf(request))
+    return HttpResponse(json.dumps(context))
+
+@login_required
+def new_profile_picture(request):
+    form = ProfilePictureForm(request.POST, request.FILES)
+    if not form.is_valid():
+        raise Http404
+
+    user = request.user.juser
+    user.profile_picture = form.cleaned_data['picture']
+    user.save()
+
+    data = {
+        'status': "OK",
+        'image_url': user.profile_picture.url
+    }
+
+    return HttpResponse(json.dumps(data))

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.template import Context, Template, RequestContext
 from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
 
 
 from app.models import *
@@ -52,6 +53,8 @@ def new_post(request, slug):
     context['forum'] = course.forum
     post_tags = course.forum.get_post_tags(user)
     context['tags'] = post_tags
+    context['nr_topictags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_TOPIC)
+    context['nr_extratags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_EXTRA)
 
     # Get request
     if request.method == "GET":
@@ -75,9 +78,9 @@ def new_post(request, slug):
                      text=form.cleaned_data['description'], posted_by=user,
                      anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
-    
 
-    return redirect("app.forum.views.forum_course", slug=course.slug)
+    get_params = "?page=connect&post=" + str(post.id)
+    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
 
 
 @require_POST
@@ -247,3 +250,22 @@ def upvote_answer(request):
         'id_selector': '#upvote_answer_' + str(answer.id)
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@require_POST
+@require_active_user
+@login_required
+def add_extratag(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = AddExtraTag(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    course = form.cleaned_data['course']
+    if not user.is_professor_of(course):
+        raise Http404
+
+    tag = ForumExtraTag(name=form.cleaned_data['tag_name'], forum=course.forum)
+    tag.save()
+
+    return HttpResponse()

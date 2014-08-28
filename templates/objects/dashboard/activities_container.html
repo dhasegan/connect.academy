@@ -1,0 +1,7 @@
+ <div class="recent_activities">
+    	<form class="new_activities_form" method="GET" action="load_new_dashboard_activities">
+    		<input type="hidden" name="last_id" value="{{activities.0.activity.id}}" />
+    	</form>
+  		{% include 'objects/dashboard/activity_timeline.html' %}
+
+ </div>

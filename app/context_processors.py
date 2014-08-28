@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from app.models import *
 from app.ratings import *
-from app.forum.context_processors import *
+from app.course.context_processors import *
 
 
 def debug(context):
@@ -19,7 +19,7 @@ def user_authenticated(request):
     context = {}
     if request.user and request.user.is_authenticated():
         user = request.user
-        context["user_auth"] = user
+        context["user_auth"] = jUser.objects.get(id=user.id)
         if not user.is_active:
             if not user.email or user.email == "":
                 context['warning'] = render_to_string('objects/notifications/auth/email_not_set.html', {})
@@ -28,45 +28,8 @@ def user_authenticated(request):
 
     return context
 
-def activity_context(activity,current_user):
-    activity_context = {
-        "type": activity.get_subclass_type(),
-        "activity": activity,
-    }
-    if hasattr(activity,"forumpostactivity"):
-        activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, current_user)
-    elif hasattr(activity, "homeworkactivity"):
-        nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
-                                                                is_approved=True).count()
-        current_time = pytz.utc.localize(datetime.now())
-        hw = activity.homeworkactivity.homework
-        course = activity.course
-        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
-        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
-        is_student = current_user.is_student_of(course)
-        can_submit_homework = is_student and is_allowed and within_deadline
-        
-        homework_submission = None
-        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
-        if homework_submissions:
-            homework_submission = homework_submissions[0]
-
-        homework_submitted = hw.coursehomeworksubmission_set.all().count()
-
-        activity_context["homework"] = {
-            "homework": hw,
-            "can_submit": can_submit_homework,
-            "is_allowed": is_allowed,
-            "previous_submission": homework_submission,
-            "stats": {
-                "submitted": homework_submitted,
-                "students": nr_students
-            }
-        }
-    return activity_context
 
 def dashboard_activities(request,user):
-
 
     own_course_activities = list(CourseActivity.objects.filter(
         Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())), ~Q(user=user)).reverse())
@@ -82,24 +45,10 @@ def dashboard_activities(request,user):
                              key=lambda activity: activity.timestamp,
                              reverse=True)
 
-    activities_context = []
+    activities_context = [activity_context(activity,user) for activity in activities_list]
 
-    for activity in activities_list: 
-        activities_context.append(activity_context(activity,user))
-
-    paginator = Paginator(activities_context, 20) # 20 activities per page
-
-    page = request.GET.get('page')
-    try:
-        activities = paginator.page(page).object_list
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        activities = paginator.page(1).object_list
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        activities = []
-
-    return activities
+  
+    return paginated(request,activities_context, 20)
 
 
 def dashboard_context(request):
@@ -173,15 +122,6 @@ def professor_dashboard_context(request, user):
 
     return context
 
-#def dashboard_context(request):
-#    user = jUser.objects.get(id=request.user.id)
-
-#    if user.user_type == USER_TYPE_STUDENT:
-#        return student_dashboard_context(request, user)
-#    elif user.user_type == USER_TYPE_PROFESSOR:
-#        return professor_dashboard_context(request, user)
-
-#    return {}
 
 # loads NEW activities asynchronously, called with ajax
 def new_dashboard_activities(request,user):
@@ -201,9 +141,7 @@ def new_dashboard_activities(request,user):
                 key = lambda activity: activity.timestamp, 
                 reverse=True)
 
-    activities_context = []
-    for activity in activities_list: 
-        activities_context.append(activity_context(activity,user))
+    activities_context = [activity_context(activity,user) for activity in activities_list]
 
 
     return activities_context 

@@ -1,30 +1,20 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
-
-    <div class="profile-page">
-        <div id="profile_sidebar">
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
-                    <div class="well well-sm">
-                        <div class="row">
-                            <div class="col-sm-6 col-md-4">
-                                <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
-                            </div>
-
-                    	    <h4>{{user.first_name}} {{user.last_name}}</h4>
-                    	    <small><cite title="San Francisco, USA">San Francisco, USA <i class="glyphicon glyphicon-map-marker">
-                    	    </i></cite></small>
-                    	    <p>
-                    	    <i class="glyphicon glyphicon-envelope"></i>{{user.email}}<br />
-                    	    <i class="glyphicon glyphicon-globe"></i><a href="http://www.jquery2dotnet.com">www.jquery2dotnet.com</a>
-                    	    <br />
-                    	    <i class="glyphicon glyphicon-gift"></i>June 02, 1988</p>
-                		</div>
-                    </div>
-                </div>
+    <div class="row profile-page">
+        <div class="col-md-4">
+            <div class="profile-sidebar">
+                {% include 'objects/profile/sidebar.html' %}
             </div>
         </div>
-    </div>
 
+        <div class="col-md-8">
+            {% include 'objects/dashboard/activities_container.html' %}
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js_includes %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
 {% endblock %}

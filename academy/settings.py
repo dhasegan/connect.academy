@@ -1,8 +1,9 @@
 # Django settings for academy project.
 from django.utils.translation import ugettext_lazy
 
-from os import environ, path
 import boto
+from os import environ, path
+from urlparse import urlparse
 
 DEBUG = environ.get('ACADEMY_DEBUG_STATE', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
@@ -111,6 +112,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "versioning.middleware.VersioningMiddleware",
+    "app.middleware.TimezoneMiddleware",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -190,10 +192,18 @@ LOGGING = {
 
 ######################## Redis Cache
 
+REDISCLOUD_URL = environ.get('REDISCLOUD_URL')
+if REDISCLOUD_URL:
+    redis_url = urlparse(REDISCLOUD_URL)
+
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.cache.RedisCache' if not DEBUG else 'django.core.cache.backends.dummy.DummyCache',
-        'LOCATION': '/var/run/redis/redis.sock' if not DEBUG else ''
+        'BACKEND': 'redis_cache.cache.RedisCache' if REDISCLOUD_URL else 'django.core.cache.backends.dummy.DummyCache',
+        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port) if REDISCLOUD_URL else '', # '/var/run/redis/redis.sock'
+        'OPTIONS': {
+            'PASSWORD': redis_url.password if REDISCLOUD_URL else '',
+            'DB': 0
+        }
     }
 }
 
@@ -232,7 +242,7 @@ MEDIA_URL = '/media/'
 
 AWS_ACCESS_KEY_ID = environ.get('ACADEMY_AWS_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = environ.get('ACADEMY_AWS_SECRET_ACCESS_KEY', '')
-AWS_STORAGE_BUCKET_NAME = 'academy'
+AWS_STORAGE_BUCKET_NAME = 'connect-academy'
 AWS_PRELOAD_METADATA = True
 
 # Connect to s3 in production
@@ -253,6 +263,9 @@ PIPELINE_JS_COMPRESSOR = "pipeline.compressors.yuglify.YuglifyCompressor" if not
 PIPELINE_COMPILERS = (
   'pipeline.compilers.sass.SASSCompiler',
 )
+
+PIPELINE_SASS_BINARY = PROJECT_ROOT + "/thirdparty/sass/bin/sass"
+PIPELINE_YUGLIFY_BINARY = PROJECT_ROOT + "/thirdparty/node_modules/yuglify/bin/yuglify"
 
 PIPELINE_CSS = {
     'bootstrap': {
@@ -290,6 +303,7 @@ PIPELINE_JS = {
             'local/js/course.js',
             'local/js/explore.js',
             'local/js/welcome.js',
+            'local/js/profile.js',
             'local/js/connect.js',
         ),
         'output_filename': 'js/connect.min.js',
@@ -324,3 +338,7 @@ VALID_TIME_INPUTS = ['%d/%m/%Y %H:%M:%S',    # '25/10/2006 14:30:59'
 
 MERIT_JUDGEMENT = 2
 AGE_JUDGEMENT = 300000
+
+### Jacobs specific settings
+import json
+JACOBS_USER_DETAILS = json.load( open(SETTINGS_ROOT + "jacobs_user_details.json") )

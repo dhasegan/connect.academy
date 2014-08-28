@@ -42,7 +42,7 @@ class RateCourseForm(forms.Form):
 
 class SubmitCommentForm(forms.Form):
     course_id = forms.CharField()
-    comment = forms.CharField()
+    comment = forms.CharField(max_length=5000)
     anonymous = forms.BooleanField(required=False)
 
     def clean(self):
@@ -56,10 +56,10 @@ class SubmitCommentForm(forms.Form):
         return cleaned_data
 
 class SubmitDocumentForm(forms.Form):
-    name = forms.CharField()
+    name = forms.CharField(max_length=200)
     document = forms.FileField()
     topic_id = forms.CharField(required=False)
-    description = forms.CharField(required=False)
+    description = forms.CharField(max_length=1000, required=False)
     course_id = forms.CharField()
     url = forms.CharField()
 
@@ -121,8 +121,8 @@ class SubmitHomeworkForm(forms.Form):
         return content
 
 class SubmitHomeworkRequestForm(forms.Form):
-    name = forms.CharField()
-    description = forms.CharField(required=False)
+    name = forms.CharField(max_length=200)
+    description = forms.CharField(max_length=1000, required=False)
     topic_id = forms.CharField(required=False)
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
@@ -146,7 +146,7 @@ class SubmitHomeworkRequestForm(forms.Form):
             else:
                 raise forms.ValidationError("The selected topic does not belong to this course")
         else:
-            raise forms.VaildationError("Please specify the course topic.")
+            cleaned_data["topic"] = None
         
         return cleaned_data
 
@@ -175,3 +175,38 @@ class VoteReviewForm(forms.Form):
         if not vtype in ['upvote', 'downvote']:
             raise forms.ValidationError("Wrong vote type!")
         return vtype
+
+class UpdateInfoForm(forms.Form):
+    description = forms.CharField(required=False, max_length=5000)
+    additional_info = forms.CharField(required=False, max_length=5000)
+    abbreviation = forms.CharField(required=False, max_length=50)
+
+class UpdateSyllabusForm(forms.Form):
+    entry_name = forms.CharField(max_length=200)
+    entry_description = forms.CharField(max_length=500)
+    entry_id = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super(UpdateSyllabusForm, self).clean()
+
+        entry_id = cleaned_data.get("entry_id")
+        if entry_id:
+            entries = CourseTopic.objects.filter(id=entry_id)
+            if len(entries) != 1:
+                raise forms.ValidationError("Not a valid number of entries with this entry_id!")
+            cleaned_data['course_topic'] = entries[0]
+
+        return cleaned_data
+
+class DeleteSyllabusEntryForm(forms.Form):
+    entry_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(DeleteSyllabusEntryForm, self).clean()
+
+        entries = CourseTopic.objects.filter(id=cleaned_data.get("entry_id"))
+        if len(entries) != 1:
+            raise forms.ValidationError("Not a valid number of entries with this entry_id!")
+        cleaned_data['course_topic'] = entries[0]
+
+        return cleaned_data

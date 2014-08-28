@@ -11,11 +11,16 @@ var ForumPage = (function() {
 
             // Answers tabs
             postAnswerFormSelector: '.forumpostnewanswer-form',
+            postAnswerButtonSelector: '.newanswer-btn',
             getReplyLinkSelector: '.getreplyform-link',
             discussionLinkSelector: '.discussion-link',
             bestanswersLinkSelector: '.bestanswers-link',
             upvotePostFormSelector: '.upvote-post-form',
             upvoteAnswerFormSelector: '.upvote-answer-form',
+
+            // New post page
+            newPostForm: $('.forumnewpost-form'),
+            newPostButton: $('.newpost-btn'),
         }
     }, s;
 
@@ -39,6 +44,11 @@ var ForumPage = (function() {
             s.currentPostFilter.find(s.postFilterNameSelector).text(this.text);
 
             ForumPage.indexPosts();
+        });
+
+        // On new post submit
+        s.newPostForm.submit( function(event) {
+            s.newPostButton.attr('disabled', 'disabled');
         });
     };
 
@@ -71,6 +81,7 @@ var ForumPage = (function() {
     me.onRefreshAnswerTab = function(SubtreeDOM) {
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
+            $(this).find(s.postAnswerButtonSelector).attr('disabled', 'disabled');
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);

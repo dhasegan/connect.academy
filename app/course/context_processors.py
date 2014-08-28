@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # For wikis versioning
 from django.contrib.contenttypes.models import ContentType
@@ -6,6 +7,7 @@ from versioning.models import Revision
 
 from app.models import *
 from app.ratings import *
+from app.forum.context_processors import forum_stats_context, forum_answer_context, forum_post_context
 
 
 def course_ratings_context(course, current_user=None):
@@ -161,6 +163,8 @@ def course_teacher_dashboard(request, course, user):
             else:
                 context['students']['pending'].append(student_reg.student)
 
+    context['forum_stats'] = forum_stats_context(course.forum)
+
     return context
 
 
@@ -181,6 +185,7 @@ def course_page_context(request, course):
     # Ratings and comments
     context['ratings'] = course_ratings_context(course, current_user)
     context['comments'] = course_reviews_context(course, current_user)
+    context['activities'] = course_activities(request, course)
 
     # Course path
     course_path = None
@@ -227,3 +232,90 @@ def course_page_context(request, course):
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 
     return context
+
+
+def course_activities(request, course):
+    user = request.user.juser
+
+    activities_list = list(CourseActivity.objects.filter(course=course).reverse())
+    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_context = sorted(activities_context,
+                             key=lambda a: a['activity'].timestamp,
+                             reverse=True)
+    return paginated(request,activities_context, 20)
+
+
+
+# loads NEW activities asynchronously, called with ajax
+def new_course_activities(request,course):
+    user = request.user.juser
+    last_id = long(request.GET.get('last_id'))
+    
+    activities_list = list(CourseActivity.objects.filter(course=course, id__gt=last_id).reverse())
+    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_context = sorted(activities_context,
+                         key=lambda a: a['activity'].timestamp,
+                         reverse=True)
+
+
+    return activities_context 
+
+
+def activity_context(activity, current_user):
+    activity_context = {
+        "type": activity.get_subclass_type(),
+        "activity": activity,
+    }
+    if hasattr(activity,"forumpostactivity"):
+        activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, current_user)
+    elif hasattr(activity, "forumansweractivity"):
+        answer = activity.forumansweractivity.forum_answer
+        activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
+    elif hasattr(activity, "homeworkactivity"):
+        nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
+                                                                is_approved=True).count()
+        current_time = pytz.utc.localize(datetime.now())
+        hw = activity.homeworkactivity.homework
+        course = activity.course
+        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
+        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
+        is_student = current_user.is_student_of(course)
+        can_submit_homework = is_student and is_allowed and within_deadline
+        
+        homework_submission = None
+        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
+        if homework_submissions:
+            homework_submission = homework_submissions[0]
+
+        homework_submitted = hw.coursehomeworksubmission_set.all().count()
+
+        activity_context["homework"] = {
+            "homework": hw,
+            "can_submit": can_submit_homework,
+            "is_allowed": is_allowed,
+            "previous_submission": homework_submission,
+            "stats": {
+                "submitted": homework_submitted,
+                "students": nr_students
+            }
+        }
+    elif hasattr(activity, "reviewactivity"):
+        activity_context["review"] = review_context(activity.reviewactivity.review, current_user)
+    elif hasattr(activity, "wikiactivity"):
+        activity_context['contribution'] = activity.wikiactivity.contribution
+    return activity_context
+    
+def paginated(request, objects_list, per_page):
+    paginator = Paginator(objects_list, per_page) # 20 activities per page
+
+    page = request.GET.get('page')
+    try:
+        objects = paginator.page(page).object_list
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        objects = paginator.page(1).object_list
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        objects = []
+
+    return objects

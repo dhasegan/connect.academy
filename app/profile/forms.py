@@ -10,11 +10,17 @@ class ChangePasswordForm(forms.Form):
 
 
 class ChangeUsernameForm(forms.Form):
-    new_username = forms.CharField(required=True)
+    new_username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput())
 
 
 class ChangeNameForm(forms.Form):
-    new_fname = forms.CharField(required=True)
-    new_lname = forms.CharField(required=True)  # maybe we can omit the required = True of this field ?
+    new_fname = forms.CharField(max_length=30, required=True)
+    new_lname = forms.CharField(max_length=30, required=True)  # maybe we can omit the required = True of this field ?
     password = forms.CharField(required=True, widget=forms.PasswordInput())
+
+class EditSummaryForm(forms.Form):
+	summary = forms.CharField(max_length=300, required=False)
+
+class ProfilePictureForm(forms.Form):
+	picture = forms.ImageField()

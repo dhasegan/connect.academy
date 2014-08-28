@@ -9,11 +9,11 @@ $campusnet-popover-info-color:      #29ABE2;
     .connect-brand {
         .logo {
             float: left;
-            margin-top: 4px - $navbar-padding-vertical;
-            width: $navbar-height - 10px;
+            margin-top: 8px - $navbar-padding-vertical;
         }
         .brand-name {
             padding-left: $navbar-padding-horizontal / 2;
+            color: $brand-primary;
         }
     }
 
@@ -145,7 +145,7 @@ $course-img-max-size:           150px;
         }
     }
 
-    // Course info page part
+    // Course info page
     .course-info {
         .info-header {
             .course-image {
@@ -186,38 +186,18 @@ $course-img-max-size:           150px;
                  hr {
                     margin-bottom: 12px;
                 }
-                .review {
-                    .review-text {
-                        margin-top: 6px;
-                    }
-                    .review-flag {
-                        overflow: hidden;
-                        .flag-content {
-                            float: right;
-                        }
-                        .flag-review-form {
-                            display: inline;
-                        }
-                        .flag-btn {
-                            &:hover,
-                            &:focus {
-                                .glyphicon-flag {
-                                    color: $brand-danger;
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
 
+    // Course wiki page
     .course-wiki {
         .wiki-explanation {
             margin-top: 20px;
         }
     }
 
+    // Course resources page
     .course-resources {
         h3 {
             margin: 0px;
@@ -228,6 +208,78 @@ $course-img-max-size:           150px;
         .homework-list {
             .hw-submit {
                 margin-top: 24px;
+            }
+        }
+    }
+
+    // Course teacher page
+    .course-teacher {
+        .pending-registrations,
+        .registered-students,
+        .course-documents,
+        .course-homework,
+        .class-forum,
+        .course-details {
+            h3 {
+                margin: 0px;
+            }
+            .top-line {
+                margin-top: 4px;
+            }
+        }
+
+        .registered-students {
+            .email-details {
+                padding-top: 30px;
+            }
+        }
+
+        .class-forum {
+            .extratag-input {
+                max-width: 130px;
+            }
+        }
+
+        .course-details {
+            .modify-syllabus {
+                .delete-syllabus-entry-form {
+                    margin-left: 12px;
+                }
+                li {
+                    margin-top: 16px;
+                }
+            }
+        }
+    }
+}
+
+// Review display
+
+
+// Activity and info pages
+.course-info .info-body .reviews-display,
+.activity-timeline .review-activity {
+    .review-block {
+        .review {
+            .review-text {
+                margin-top: 6px;
+            }
+            .review-flag {
+                overflow: hidden;
+                .flag-content {
+                    float: right;
+                }
+                .flag-review-form {
+                    display: inline;
+                }
+                .flag-btn {
+                    &:hover,
+                    &:focus {
+                        .glyphicon-flag {
+                            color: $brand-danger;
+                        }
+                    }
+                }
             }
         }
     }
@@ -287,6 +339,9 @@ $register-validation-font-size:     11px;
         .answer-box {
             margin: 8px 4px;
             background-color: $gray-lighter;
+            &.focus-answer { 
+                background-color: lighten($brand-primary, 40%);
+            }
 
             .answer-header .upvote-answer-form {
                 display: inline;
@@ -301,6 +356,9 @@ $register-validation-font-size:     11px;
             .child-answers {
                 .answer-box {
                     background-color: white;
+                    &.focus-answer { 
+                        background-color: lighten($brand-primary, 40%);
+                    }
                 }
             }
         }
@@ -319,15 +377,29 @@ $register-validation-font-size:     11px;
     }
 }
 
+.forum-new-post-page {
+    .new-post-tags {
+        margin-top: 16px;
+    }
+}
+
+.new-post-reminder {
+    background-color: $gray-lighter;
+    padding: 12px 8px;
+    .thank-msg {
+        margin-top: 8px;
+    }
+    ol > li {
+        margin-top: 4px;
+    }
+}
+
 // Dashboard page
 $homework-number-color:         $brand-primary;
 $tables-margin-left:            20px;
 
 
 .dashboard-page {
-    .tabpane-contents {
-        margin-top: 12px;
-    }
     .sidebar-schedule {
         max-height: 200px;
         overflow:auto;
@@ -371,6 +443,65 @@ $tables-margin-left:            20px;
             color:white;
         }
     }
+}
 
-    
+// Profile page
+
+$profile-picture-width:     200px;
+$profile-picture-height:    200px;
+
+.profile-page {
+    .summary-textarea {
+        width:100%;
+    }
+    .profile-picture {
+        width: $profile-picture-width;
+        height: $profile-picture-height;
+    }
+    .profile-picture-input {
+        width: $profile-picture-width;
+    }
+    .profile-picture-submit {
+        width: $profile-picture-width;
+    }
+}
+
+// Manage account page
+.manage-account-page {
+    h4 {
+        margin-top: 2px;
+        margin-bottom: 6px;
+    }
+    hr {
+        margin-top: 4px;
+    }
+}
+
+// Activity timelines
+.activity-timeline {
+    .activity {
+        .end-of-activity {
+            margin-bottom: 2px;
+        }
+    }
+    .forum-answer-activity {
+        .answer-text {
+            margin-top: 16px;
+        }
+    }
+    .homework-activity {
+        .homework-body {
+            margin-top: 8px;
+        }
+    }
+    .document-activity {
+        .document-body {
+            margin-top: 16px;
+        }
+    }
+    .review-activity {
+        .review-body {
+            margin-top: 16px;
+        }
+    }
 }

@@ -1,1 +1,1 @@
-<a href="{% url 'profile' juser.username %}">{{ juser.first_name }} {{ juser.last_name }}</a>
+<a href="{% url 'profile' juser.username %}">{% if juser.first_name and juser.last_name %}{{ juser.first_name }} {{ juser.last_name }}{% else %}{{ juser.username }}{% endif %}</a>

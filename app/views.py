@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from app.models import *
 from app.context_processors import *
@@ -37,6 +38,10 @@ def dashboard(request):
 
     context = dict(context.items() + dashboard_context(request).items())
 
+    if not len(context['activities']) and not len(context['schedule_items']) and \
+        not len(context['courses']) and not len(context['forum_posts']):
+            return redirect( reverse('explore') )
+
     return render(request, "pages/dashboard.html", context)
 
 
@@ -49,6 +54,12 @@ def all_comments(request):
 
     return render(request, 'pages/comments.html', context)
 
+def conduct_code(request):
+    context = {
+        'page': 'conduct_code'
+    }
+
+    return render(request, 'pages/conduct_code.html', context)
 
 def error_page(request, error_type):
     context = {
@@ -82,3 +93,9 @@ def load_new_dashboard_activities(request):
 
     return HttpResponse(json.dumps(data))
 
+def set_timezone(request):
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
+    else:
+        return render(request, 'pages/set_timezone.html', {'timezones': pytz.common_timezones})

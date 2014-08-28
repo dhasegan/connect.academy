@@ -1,0 +1,22 @@
+{
+  "name": "connect.academy",
+  "version": "1.0.0",
+  "description": "Connecting students",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dhasegan/connect.academy.git"
+  },
+  "keywords": [
+    "education"
+  ],
+  "author": "Daniel Hasegan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhasegan/connect.academy/issues"
+  },
+  "homepage": "https://github.com/dhasegan/connect.academy"
+}

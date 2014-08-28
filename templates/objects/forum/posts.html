@@ -3,7 +3,8 @@
     <ul class="nav tabs">
         {% for post in posts|dictsortreversed:"rating" %}
             <li class="forum-post {% if current_post == post.question.id %}active{% elif forloop.counter == 1 and not current_post  %}active{% endif %} ptag-{{ post.question.tag.name }}">
-                <a href="#answers{{post.question.id}}" role="tab" data-toggle="tab"> {{ post.question.name }}
+                <a href="#answers{{post.question.id}}" role="tab" data-toggle="tab"> 
+                    <span>{{ post.question.name|truncatechars:40 }}</span>
                     {% if not post.question.anonymous %}
                         <small class="pull-right post-author">
                             by {{ post.question.posted_by.last_name }}

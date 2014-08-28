@@ -1,6 +1,3 @@
 <div class="tab-pane course-activity fade {% if not current_tab or current_tab == 'activity' %}in active{% endif %}">
-    <div class="panel panel-default">
-        <div class="panel-body">
-        </div>
-    </div>
+    {% include 'objects/dashboard/activities_container.html' %}
 </div>

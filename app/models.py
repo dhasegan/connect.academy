@@ -19,12 +19,17 @@ from django import forms
 USER_TYPE_STUDENT = 0
 USER_TYPE_PROFESSOR = 1
 USER_TYPE_ADMIN = 2 # The administator of at least 1 category, who is not a professor
-
+USER_TYPE_ALUMNUS = 3 
 USER_TYPES = (
     (USER_TYPE_STUDENT, "student"),
     (USER_TYPE_PROFESSOR, "professor"),
-    (USER_TYPE_ADMIN, "admin")
+    (USER_TYPE_ADMIN, "admin"),
+    (USER_TYPE_ALUMNUS, "alumnus"),
 )
+
+def determine_profilepic_filename(instance, filename):
+        name,extension = filename.split(".")
+        return "users/%s/%s" % (instance.username, "profile_picture." + extension)
 
 # Inheriting from Base Class 'User'
 class jUser(User):
@@ -32,6 +37,8 @@ class jUser(User):
     user_type = models.IntegerField(choices=USER_TYPES, default=USER_TYPE_STUDENT)
     university = models.ForeignKey('University',null = True) 
     
+    summary = models.CharField(max_length=500, null=True) 
+    profile_picture = models.ImageField(upload_to=determine_profilepic_filename, null=True)
     # For professors only 
     # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)
@@ -57,6 +64,8 @@ class jUser(User):
 
     #    contributed_to: (<juser>.contributed_to.all()) returns all the wikis the user has contributed to)
     #    posts_following: (<juser>.posts_following.all() returns all forum posts that <juser> is following)
+
+    
     def is_student(self):
         return self.user_type == USER_TYPE_STUDENT
 
@@ -65,6 +74,8 @@ class jUser(User):
 
     def is_admin(self):
         return self.user_type == USER_TYPE_ADMIN
+    def is_alumnus(self):
+        return self.user_type == USER_TYPE_ALUMNUS
 
     def is_student_of(self, course):
         if not self.is_student():
@@ -169,6 +180,7 @@ class Course(models.Model):
     tags = models.ManyToManyField('Tag', related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
     prerequisites = models.ManyToManyField('self', related_name='next_courses')
+    external_link = models.CharField(max_length=200, null=True, blank=True)
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)
@@ -264,9 +276,15 @@ class CourseTopic(models.Model):
         # list of the primary keys (ids) of the topics.
 
     def save(self, *args, **kwargs):
-        tag_name = ForumTag.create_tag_name(self.name)
-        ForumTopicTag.objects.get_or_create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
-            forum=Forum.objects.get(pk=self.course.id), topic=self)
+        tags = ForumTopicTag.objects.filter(topic=self)
+        if not len(tags):
+            tag_name = ForumTag.create_tag_name(self.name)
+            ForumTopicTag.objects.create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
+                forum=Forum.objects.get(pk=self.course.id), topic=self)
+        else:
+            tag = tags[0]
+            tag.name = ForumTag.create_tag_name(self.name)
+            tag.save()
         super(CourseTopic, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -431,11 +449,19 @@ class Category(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+
+DOMAIN_TYPE_STANDARD = 1
+DOMAIN_TYPE_ALUMNI = 2
+DOMAIN_TYPES = (
+    (DOMAIN_TYPE_STANDARD, "standard"),
+    (DOMAIN_TYPE_ALUMNI, "alumni"),
+)
+
 class Domain(models.Model):
     # University Domain
     name = models.CharField(max_length=200,unique = True)
     university = models.ForeignKey('University', related_name='domains')
-
+    domain_type = models.IntegerField(choices=DOMAIN_TYPES, default=DOMAIN_TYPE_STANDARD)
     def __unicode__(self):
         return str(self.name)
 
@@ -499,6 +525,10 @@ class Review(models.Model):
     upvoted_by = models.ManyToManyField('jUser', related_name='review_upvoted')
     downvoted_by = models.ManyToManyField('jUser', related_name='review_downvoted')
 
+    def save(self, *args, **kwargs):
+        super(Review, self).save(*args, **kwargs)
+        ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
+
     def __unicode__(self):
         return str(self.review)
 
@@ -522,7 +552,7 @@ class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     deadline = models.ForeignKey('Deadline')
-    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests")
+    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
 
@@ -740,9 +770,14 @@ class ForumAnswer(models.Model):
 class WikiContributions(models.Model):
     user = models.ForeignKey('jUser')
     wiki = models.ForeignKey('WikiPage')
+    revision = models.ForeignKey('versioning.Revision')
+
+    def save(self, *args, **kwargs):
+        super(WikiContributions, self).save(*args, **kwargs)
+        WikiActivity.objects.create(user=self.user, course=self.wiki.course, contribution=self)
 
     def __unicode__(self):
-        return self.user.username + " " + self.wiki.title + " on '" + str(self.modified_on)+"'"
+        return "Contribution " + self.user.username
 
 
 class WikiPage(models.Model):
@@ -750,7 +785,7 @@ class WikiPage(models.Model):
     content = models.TextField()
 
     def __unicode__(self):
-        return "Wiki of course " + str(self.course.name)
+        return "Wiki " + str(self.course.name)
 
     def get_absolute_url(self):
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
@@ -806,6 +841,10 @@ class CourseActivity(models.Model):
             return "HomeworkActivity"
         elif hasattr(self, 'documentactivity'):
             return "DocumentActivity"
+        elif hasattr(self, 'reviewactivity'):
+            return "ReviewActivity"
+        elif hasattr(self, 'wikiactivity'):
+            return "WikiActivity"
         else:
             return "CourseActivity"
 
@@ -827,5 +866,10 @@ class HomeworkActivity(CourseActivity):
 class DocumentActivity(CourseActivity): 
     document = models.ForeignKey('CourseDocument')
 
+# When a user writes a review for a course
+class ReviewActivity(CourseActivity):
+    review = models.ForeignKey('Review')
 
-
+# When a user makes a wiki change
+class WikiActivity(CourseActivity):
+    contribution = models.ForeignKey('WikiContributions')

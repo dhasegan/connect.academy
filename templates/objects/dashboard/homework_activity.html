@@ -1,21 +1,28 @@
 {% load humanize %}
 {% load i18n %}
 <div class="block"> 
+	<div class="activity homework-activity">
+		<div class="panel panel-default">
+			<div class="panel-body">
 
-	{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
-	posted a homework on
-		{% if hw.homework.course_topic %}
-			the topic <i> "{{hw.homework.course_topic.name}}"</i> of 
-		{% else %}
-			of the course 
-		{% endif %}
-	<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a> 
+				{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+				posted a homework
+				{% if hw.homework.course_topic %}
+					on the topic <i> "{{ hw.homework.course_topic.name }}"</i> of
+				{% else %}
+					for
+				{% endif %}
+				<a href="{% url 'course_page' activity.course.slug %}">{{activity.course.name}}</a>
+				<small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
 
-	<small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
-	 
-	<div class="panel panel-default">
-		<div class="panel-body">
-			{% include 'objects/course/homework_block.html' %}
+				<div class="homework-body">
+					{% include 'objects/course/homework_block.html' %}
+				</div>
+
+				<hr class="end-of-activity">
+                <a href="{% url 'course_page' activity.course.slug %}?page=resources"> Check all homework </a>
+
+			</div>
 		</div>
 	</div>
 

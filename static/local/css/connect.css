@@ -1,9 +1,9 @@
 .connect-navigation .connect-brand .logo {
   float: left;
-  margin-top: -11px;
-  width: 40px; }
+  margin-top: -7px; }
 .connect-navigation .connect-brand .brand-name {
-  padding-left: 7.5px; }
+  padding-left: 7.5px;
+  color: #428bca; }
 .connect-navigation .login-form {
   padding-top: 4px; }
   .connect-navigation .login-form .login-input {
@@ -87,16 +87,6 @@
     resize: vertical; }
   .course-page .course-info .info-body .reviews-display hr {
     margin-bottom: 12px; }
-  .course-page .course-info .info-body .reviews-display .review .review-text {
-    margin-top: 6px; }
-  .course-page .course-info .info-body .reviews-display .review .review-flag {
-    overflow: hidden; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-content {
-      float: right; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-review-form {
-      display: inline; }
-    .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:hover .glyphicon-flag, .course-page .course-info .info-body .reviews-display .review .review-flag .flag-btn:focus .glyphicon-flag {
-      color: #d9534f; }
 .course-page .course-wiki .wiki-explanation {
   margin-top: 20px; }
 .course-page .course-resources h3 {
@@ -105,6 +95,45 @@
   margin-top: 4px; }
 .course-page .course-resources .homework-list .hw-submit {
   margin-top: 24px; }
+.course-page .course-teacher .pending-registrations h3,
+.course-page .course-teacher .registered-students h3,
+.course-page .course-teacher .course-documents h3,
+.course-page .course-teacher .course-homework h3,
+.course-page .course-teacher .class-forum h3,
+.course-page .course-teacher .course-details h3 {
+  margin: 0px; }
+.course-page .course-teacher .pending-registrations .top-line,
+.course-page .course-teacher .registered-students .top-line,
+.course-page .course-teacher .course-documents .top-line,
+.course-page .course-teacher .course-homework .top-line,
+.course-page .course-teacher .class-forum .top-line,
+.course-page .course-teacher .course-details .top-line {
+  margin-top: 4px; }
+.course-page .course-teacher .registered-students .email-details {
+  padding-top: 30px; }
+.course-page .course-teacher .class-forum .extratag-input {
+  max-width: 130px; }
+.course-page .course-teacher .course-details .modify-syllabus .delete-syllabus-entry-form {
+  margin-left: 12px; }
+.course-page .course-teacher .course-details .modify-syllabus li {
+  margin-top: 16px; }
+
+.course-info .info-body .reviews-display .review-block .review .review-text,
+.activity-timeline .review-activity .review-block .review .review-text {
+  margin-top: 6px; }
+.course-info .info-body .reviews-display .review-block .review .review-flag,
+.activity-timeline .review-activity .review-block .review .review-flag {
+  overflow: hidden; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-content,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-content {
+    float: right; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-review-form,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-review-form {
+    display: inline; }
+  .course-info .info-body .reviews-display .review-block .review .review-flag .flag-btn:hover .glyphicon-flag, .course-info .info-body .reviews-display .review-block .review .review-flag .flag-btn:focus .glyphicon-flag,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-btn:hover .glyphicon-flag,
+  .activity-timeline .review-activity .review-block .review .review-flag .flag-btn:focus .glyphicon-flag {
+    color: #d9534f; }
 
 .welcome-page .home-image-container .home-image {
   width: 100% !important; }
@@ -134,6 +163,9 @@
 .course-forum .answers-tabs .answer-box {
   margin: 8px 4px;
   background-color: #eeeeee; }
+  .forum-page .answers-tabs .answer-box.focus-answer,
+  .course-forum .answers-tabs .answer-box.focus-answer {
+    background-color: #e1edf7; }
   .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
   .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
@@ -146,6 +178,9 @@
   .forum-page .answers-tabs .answer-box .child-answers .answer-box,
   .course-forum .answers-tabs .answer-box .child-answers .answer-box {
     background-color: white; }
+    .forum-page .answers-tabs .answer-box .child-answers .answer-box.focus-answer,
+    .course-forum .answers-tabs .answer-box .child-answers .answer-box.focus-answer {
+      background-color: #e1edf7; }
 .forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
 .course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }
@@ -153,8 +188,17 @@
 .course-forum .sidebar-name {
   margin-top: 0px; }
 
-.dashboard-page .tabpane-contents {
-  margin-top: 12px; }
+.forum-new-post-page .new-post-tags {
+  margin-top: 16px; }
+
+.new-post-reminder {
+  background-color: #eeeeee;
+  padding: 12px 8px; }
+  .new-post-reminder .thank-msg {
+    margin-top: 8px; }
+  .new-post-reminder ol > li {
+    margin-top: 4px; }
+
 .dashboard-page .sidebar-schedule {
   max-height: 200px;
   overflow: auto; }
@@ -186,3 +230,30 @@
     width: 10%;
     text-align: center;
     color: white; }
+
+.profile-page .summary-textarea {
+  width: 100%; }
+.profile-page .profile-picture {
+  width: 200px;
+  height: 200px; }
+.profile-page .profile-picture-input {
+  width: 200px; }
+.profile-page .profile-picture-submit {
+  width: 200px; }
+
+.manage-account-page h4 {
+  margin-top: 2px;
+  margin-bottom: 6px; }
+.manage-account-page hr {
+  margin-top: 4px; }
+
+.activity-timeline .activity .end-of-activity {
+  margin-bottom: 2px; }
+.activity-timeline .forum-answer-activity .answer-text {
+  margin-top: 16px; }
+.activity-timeline .homework-activity .homework-body {
+  margin-top: 8px; }
+.activity-timeline .document-activity .document-body {
+  margin-top: 16px; }
+.activity-timeline .review-activity .review-body {
+  margin-top: 16px; }

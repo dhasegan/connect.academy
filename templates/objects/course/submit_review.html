@@ -1,11 +1,12 @@
 {% load i18n %}
+
 <form class="submit-review-form" role="form" action="{% url 'submit_review' course.slug %}" method="post">
     <input type="hidden" name="url" value="{% url 'course_page' course.slug %}">
     <input type="hidden" name="course_id" value="{{course.id}}">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-9">
-            <textarea class="form-control review-submit" rows="10" max-length="5000" placeholder='{% trans "Write a review..." %}' name="comment"></textarea>
+            <textarea class="form-control review-submit" rows="10" maxlength="5000" placeholder='{% trans "Write a review..." %}' name="comment"></textarea>
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-primary submit-btn">{% trans "Submit" %}</button>
@@ -15,3 +16,7 @@
         </div>
     </div>
 </form>
+
+{% if user_auth.reviews_posted.all.count < 2 %}
+    {% include 'objects/reminders/reviewing.html' %}
+{% endif %}
