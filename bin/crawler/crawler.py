@@ -12,7 +12,7 @@ _htmlparser = HTMLParser.HTMLParser()
 unescape = _htmlparser.unescape
 
 BASE_URL = "https://campusnet.jacobs-university.de"
-START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A9YySH..76KIWqEjheRYANS.nDWnW-UEBJkynWmCsx0heBMeK6jgn2yRCzJ2nmsHB6TZFq2H609HAw-3S.VqAIWivPCz8zBYotVvOtPfPTTHXJJa0mf65IbTCOIa="
+START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A-5RE3rsgtmbwhCnue6FHmTm2lLK6gpCGwRk1f-bBo.PmO91UZNDmw02LBNSORORBlGYB-nVBmoMEwkzT2mKUNhxeebaadQLLNsdPQcogz0tlBEMpBxNKF.eTRF9="
 
 def cleanLink(link):
     return unescape(link)

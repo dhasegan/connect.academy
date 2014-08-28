@@ -66,12 +66,13 @@ class MyHTMLParser(HTMLParser):
             c = chr(int(name))
         if self.insideTable:
             self.tableData += c
-    def handle_entityref(self, name):
-        if self.insideTable:
-            if name in name2codepoint:
-                self.tableData += unichr(name2codepoint[name])
-            else:
-                self.tableData += "&" + name
+    # def handle_entityref(self, name):
+    #     print name, chr(name2codepoint[name])
+    #     if self.insideTable:
+    #         if name in name2codepoint:
+    #             self.tableData += unichr(name2codepoint[name])
+    #         else:
+    #             self.tableData += "&" + name
     def getCourseInfo(self):
         return self.courseInfo
 
@@ -138,7 +139,7 @@ for link in linksFile:
     if 'Contained in course catalogues' in courseInfo:
         catalogue = courseInfo['Contained in course catalogues']
         startIdx = catalogue.find('> ')
-        detailsMap['Catalogue'] = catalogue[startIdx+2:].strip()
+        detailsMap['Catalogue'] = "Spring > " + catalogue[startIdx+2:].strip()
     else:
         print "Error: No label 'Contained in course catalogues'"
     detailsMap['Name'] = courseName.strip()
@@ -155,6 +156,6 @@ for link in linksFile:
 linksFile.close()
 namesFile.close()
 
-outputFile = open('courseDetails', 'w')
+outputFile = open('courseDetailsSpring', 'w')
 outputFile.write( json.dumps(coursesList) )
 outputFile.close()
