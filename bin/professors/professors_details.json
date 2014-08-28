@@ -434,9 +434,9 @@
     "amai": {
         "account": "amai",
         "eid": "36420",
-        "fname": "Mai",
+        "fname": "Andreas",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~amai",
-        "lname": "Andreas",
+        "lname": "Mai",
         "title": "Lecturer"
     },
     "amaterny": {
@@ -491,9 +491,9 @@
         "account": "anmueller",
         "eid": "923",
         "email": "an.mueller@jacobs-university.de",
-        "fname": "M\u00fcller",
+        "fname": "Anja",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~anmueller",
-        "lname": "Anja",
+        "lname": "M\u00fcller",
         "phone": "3101",
         "room": "Research I, 59",
         "title": "Further Lecturer;Assistant"
@@ -526,9 +526,9 @@
         "account": "aschlueter",
         "eid": "20945",
         "email": "a.schlueter@jacobs-university.de (server-side forwarding is set)",
-        "fname": "Schl\u00fcter",
+        "fname": "Achim",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~aschlueter",
-        "lname": "Achim",
+        "lname": "Schl\u00fcter",
         "title": "Professor"
     },
     "aschoop": {
@@ -799,9 +799,9 @@
         "account": "bprem",
         "eid": "38805",
         "email": "b.prem@jacobs-university.de (server-side forwarding is set)",
-        "fname": "Prem",
+        "fname": "Berenike",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~bprem",
-        "lname": "Berenike",
+        "lname": "Prem",
         "title": "Lecturer"
     },
     "cbuengeler": {
@@ -927,9 +927,9 @@
     "csattler": {
         "account": "csattler",
         "eid": "9846",
-        "fname": "Sattler",
+        "fname": "Carl-Diedrich",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~csattler",
-        "lname": "Carl-Diedrich",
+        "lname": "Sattler",
         "title": "Lecturer"
     },
     "ctiel": {
@@ -1128,9 +1128,9 @@
         "account": "dkuester",
         "eid": "912",
         "email": "d.kuester@jacobs-university.de",
-        "fname": "K\u00fcster",
+        "fname": "Dennis",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~dkuester",
-        "lname": "Dennis",
+        "lname": "K\u00fcster",
         "phone": "3033",
         "room": "Research IV, 154",
         "title": "Research Associate"
@@ -1475,9 +1475,9 @@
         "account": "fgloeckner",
         "eid": "871",
         "email": "f.gloeckner@jacobs-university.de",
-        "fname": "Gl\u00f6ckner",
+        "fname": "Frank Oliver",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~fgloeckner",
-        "lname": "Frank Oliver",
+        "lname": "Gl\u00f6ckner",
         "phone": "3167",
         "room": "Research II, 91",
         "title": "Professor"
@@ -1534,9 +1534,9 @@
         "account": "fhu",
         "eid": "972",
         "email": "f.hu@jacobs-university.de (server-side forwarding is set)",
-        "fname": "Hu",
+        "fname": "Fangning",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~fhu",
-        "lname": "Fangning",
+        "lname": "Hu",
         "phone": "3545",
         "room": "Research I",
         "title": "Lecturer"
@@ -1593,9 +1593,9 @@
         "account": "frosenkoet",
         "eid": "1966",
         "email": "f.rosenkoetter@jacobs-university.de",
-        "fname": "Rosenk\u00f6tter",
+        "fname": "Frank",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~frosenkoet",
-        "lname": "Frank",
+        "lname": "Rosenk\u00f6tter",
         "phone": "3526",
         "room": "Research III, 59",
         "title": "Further Lecturer;Technician"
@@ -1603,9 +1603,9 @@
     "fwittmann": {
         "account": "fwittmann",
         "eid": "35907",
-        "fname": "Wittmann",
+        "fname": "Florian",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~fwittmann",
-        "lname": "Florian",
+        "lname": "Wittmann",
         "title": "Lecturer"
     },
     "gabreu": {
@@ -1684,9 +1684,9 @@
         "account": "ggoedecke",
         "eid": "38325",
         "email": "g.goedecke@jacobs-university.de",
-        "fname": "G\u00f6decke",
+        "fname": "Georgia",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~ggoedecke",
-        "lname": "Georgia",
+        "lname": "G\u00f6decke",
         "room": "RLH, 273",
         "title": "Lecturer"
     },
@@ -2030,18 +2030,18 @@
         "account": "hruediger",
         "eid": "25630",
         "email": "h.ruediger@jacobs-university.de",
-        "fname": "R\u00fcdiger",
+        "fname": "Hans Michael",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~hruediger",
-        "lname": "Hans Michael",
+        "lname": "R\u00fcdiger",
         "title": "Lecturer"
     },
     "hstueben": {
         "account": "hstueben",
         "eid": "7154",
         "email": "h.stueben@jacobs-university.de",
-        "fname": "St\u00fcben",
+        "fname": "Hinnerk",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~hstueben",
-        "lname": "Hinnerk",
+        "lname": "St\u00fcben",
         "title": "Lecturer"
     },
     "hweingart": {
@@ -2432,9 +2432,9 @@
         "account": "jverriere",
         "eid": "27778",
         "email": "j.verriere@jacobs-university.de",
-        "fname": "Verri\u00e9re",
+        "fname": "Julien",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~jverriere",
-        "lname": "Julien",
+        "lname": "Verri\u00e9re",
         "room": "Reimar L\u00fcst Hall, 214",
         "title": "Lecturer"
     },
@@ -2466,9 +2466,9 @@
         "account": "jwittmann",
         "eid": "24266",
         "email": "j.wittmann@jacobs-university.de",
-        "fname": "Wittmann",
+        "fname": "J\u00fcrgen",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~jwittmann",
-        "lname": "J\u00fcrgen",
+        "lname": "Wittmann",
         "title": "Lecturer"
     },
     "kboehnke": {
@@ -2690,9 +2690,9 @@
     "kmartens": {
         "account": "kmartens",
         "eid": "12127",
-        "fname": "Martens",
+        "fname": "Kerstin",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~kmartens",
-        "lname": "Kerstin",
+        "lname": "Martens",
         "title": "Lecturer"
     },
     "kmetfies": {
@@ -2771,9 +2771,9 @@
         "account": "kschoemann",
         "eid": "952",
         "email": "k.schoemann@jacobs-university.de",
-        "fname": "Sch\u00f6mann",
+        "fname": "Klaus",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~kschoemann",
-        "lname": "Klaus",
+        "lname": "Sch\u00f6mann",
         "phone": "4750",
         "room": "Research V, 41",
         "title": "Adjunct Professor"
@@ -3190,18 +3190,18 @@
         "account": "mhoebig",
         "eid": "17164",
         "email": "m.hoebig@jacobs-university.de",
-        "fname": "H\u00f6big",
+        "fname": "Michael",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mhoebig",
-        "lname": "Michael",
+        "lname": "H\u00f6big",
         "title": "Lecturer"
     },
     "mhuett": {
         "account": "mhuett",
         "eid": "1917",
         "email": "m.huett@jacobs-university.de",
-        "fname": "H\u00fctt",
+        "fname": "Marc-Thorsten",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mhuett",
-        "lname": "Marc-Thorsten",
+        "lname": "H\u00fctt",
         "phone": "3238",
         "room": "Research II, 117",
         "title": "Professor"
@@ -3354,9 +3354,9 @@
         "account": "mmueller",
         "eid": "207",
         "email": "m.mueller@jacobs-university.de",
-        "fname": "M\u00fcller",
+        "fname": "Marion G.",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mmueller",
-        "lname": "Marion G.",
+        "lname": "M\u00fcller",
         "phone": "3463",
         "room": "Research IV, 54",
         "title": "Professor"
@@ -3437,9 +3437,9 @@
         "account": "mrosenberg",
         "eid": "39245",
         "email": "m.rosenberg@jacobs-university.de",
-        "fname": "Rosenberg",
+        "fname": "Matthias",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mrosenberg",
-        "lname": "Matthias",
+        "lname": "Rosenberg",
         "title": "Lecturer"
     },
     "mschreier": {
@@ -3734,9 +3734,9 @@
         "account": "oodag",
         "eid": "682",
         "email": "o.odag@jacobs-university.de",
-        "fname": "Odag",
+        "fname": "\u00d6zen",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~oodag",
-        "lname": "\u00d6zen",
+        "lname": "Odag",
         "phone": "3453",
         "room": "South Hall, 315",
         "title": "University Lecturer"
@@ -3745,9 +3745,9 @@
         "account": "otrache",
         "eid": "28987",
         "email": "o.trache@jacobs-university.de (server-side forwarding is set)",
-        "fname": "Trach\u00e9",
+        "fname": "Oph\u00e9lie",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~otrache",
-        "lname": "Oph\u00e9lie",
+        "lname": "Trach\u00e9",
         "room": "Reimar L\u00fcst Hall, 214",
         "title": "Lecturer"
     },
@@ -4018,9 +4018,9 @@
     "pvauhkonen": {
         "account": "pvauhkonen",
         "eid": "36598",
-        "fname": "Vauhkonen",
+        "fname": "Petri",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~pvauhkonen",
-        "lname": "Petri",
+        "lname": "Vauhkonen",
         "title": "external Instructor"
     },
     "pzarrath": {
@@ -4195,9 +4195,9 @@
         "account": "rgerdes",
         "eid": "2895",
         "email": "r.gerdes@jacobs-university.de",
-        "fname": "Gerdes",
+        "fname": "R\u00fcdiger",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~rgerdes",
-        "lname": "R\u00fcdiger",
+        "lname": "Gerdes",
         "phone": "3256",
         "room": "Research III, 101",
         "title": "Adjunct Professor"
@@ -4662,9 +4662,9 @@
         "account": "speik",
         "eid": "1001",
         "email": "s.peik@jacobs-university.de",
-        "fname": "Peik",
+        "fname": "S\u00f6ren",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~speik",
-        "lname": "S\u00f6ren",
+        "lname": "Peik",
         "title": "Lecturer"
     },
     "sspringer": {
@@ -4959,9 +4959,9 @@
         "account": "tpreusser",
         "eid": "11520",
         "email": "t.preusser@jacobs-university.de",
-        "fname": "Preu\u00dfer",
+        "fname": "Tobias",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~tpreusser",
-        "lname": "Tobias",
+        "lname": "Preu\u00dfer",
         "phone": "3214",
         "room": "Research I, 132",
         "title": "Professor"
@@ -4994,9 +4994,9 @@
         "account": "ukleinekat",
         "eid": "66",
         "email": "u.kleinekathoefer@jacobs-university.de",
-        "fname": "Kleinekath\u00f6fer",
+        "fname": "Ulrich",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~ukleinekat",
-        "lname": "Ulrich",
+        "lname": "Kleinekath\u00f6fer",
         "phone": "3523",
         "room": "Research III, 49",
         "title": "Professor"
@@ -5245,9 +5245,9 @@
         "account": "whe",
         "eid": "38970",
         "email": "w.he@jacobs-university.de",
-        "fname": "He",
+        "fname": "Weihua",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~whe",
-        "lname": "Weihua",
+        "lname": "He",
         "phone": "3043",
         "room": "Research IV, 101",
         "title": "Visiting Professor"
