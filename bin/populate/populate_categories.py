@@ -9,8 +9,6 @@ f.close()
 univ = University.objects.filter(name__contains="Jacobs")[0]
 category = univ.get_university_category()
 
-# categories_tree = {}
-
 abbreviations = {
     'Electrical Engineering and Computer Science': 'EECS',
     'Life Sciences': 'Life',
