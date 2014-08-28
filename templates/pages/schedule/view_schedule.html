@@ -4,9 +4,7 @@
 {% block extra_js_includes %}
 <script type="text/javascript" src="{{ STATIC_URL }}schedule/libs/date.js"></script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/jquery.weekcalendar.js'></script>
-<!--
-  <script type='text/javascript' src='{{STATIC_URL }}schedule/date_format.js'></script>
--->
+
 <script type='text/javascript'>
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
@@ -81,10 +79,10 @@
                       'body': bodyField.val(), 
                       'start': new Date(startField.val()), 
                       'end': new Date(endField.val()),
-                      'location' : 'TODO', 
+                      //'location' : 'TODO', 
                     },
                     success: function(data){
-                      alert("New Event Added!");
+                      
                     }
                   });
                },
@@ -111,8 +109,87 @@
         displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
       },
 
+      // to modify existing calEvents (or remove them)
       eventClick: function(calEvent, $event) {
-        displayMessage('<strong>Clicked Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+        
+        if (calEvent.readOnly) {
+            return;
+         }
+         
+         debugger;
+
+         var $dialogContent = $("#event_edit_container");
+         prepareFields($dialogContent);
+         var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+         var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
+         var bodyField = $dialogContent.find("textarea[name='body']").val(calEvent.body);
+
+         $dialogContent.dialog({
+            modal: true,
+            title: "Edit",
+            close: function() {
+               $dialogContent.dialog("destroy");
+               $dialogContent.hide();
+               $('#calendar').weekCalendar("removeUnsavedEvents");
+            },
+            buttons: {
+              save : function() {
+                  calEvent.start = new Date(startField.val());
+                  calEvent.end = new Date(endField.val());
+                  calEvent.title = titleField.val();
+                  calEvent.body = bodyField.val();
+                  
+                  
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"edit_personal_appointment",
+                    data: {
+                      'id' : calEvent.id,
+                      'title': titleField.val(),
+                      'body': bodyField.val(), 
+                      'start': new Date(startField.val()), 
+                      'end': new Date(endField.val()),
+                      //'location' : 'TODO', 
+                    },
+                    success: function(){
+                      
+                    }
+                  });
+
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                  $dialogContent.dialog("close");
+                  
+
+               },
+
+              "delete" : function() {
+                  
+                  $calendar.weekCalendar("removeEvent", calEvent.id);
+                  $dialogContent.dialog("destroy");
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"remove_personal_appointment",
+                    data: {
+                      'id' : calEvent.id,
+                    },
+                    success: function(){
+                    }
+                  });
+               },
+               
+              cancel : function() {
+                  $dialogContent.dialog("close");
+               }
+            }
+         }).show();
+
+         var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+         $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+         setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
       },
 
       eventMouseover: function(calEvent, $event) {

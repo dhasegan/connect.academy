@@ -18,6 +18,12 @@ from django.core.context_processors import csrf
 
 from app.models import *
 
+'''
+################################# ADD GUARDS IF THE USER LEAVES THE START AND THE END BLANK ##############################################################
+                                                        IN THE VIEWS BELOW 
+'''
+
+
 #date formatting
 date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 
@@ -28,7 +34,10 @@ def view_schedule(request):
     }
 
     # get the CourseAppointments of the courses the user is registered in
+    
+    # need to fix this too 
     user = get_object_or_404(jUser, id=request.user.id)
+    
     courses_enrolled = user.courses_enrolled.all()
 
     course_appointments = []
@@ -52,7 +61,9 @@ def view_schedule(request):
             if appointment.course_topic.name:
             	data['title'] = appointment.course_topic.name 
             else:
-            	data['title']= appointment.description
+            	data['title']= appointment.location
+
+            data['body'] = appointment.description
             
             all_appointments.append(data)
 
@@ -61,12 +72,19 @@ def view_schedule(request):
         data['id'] = appointment.id
         data['start'] = format_date(appointment.start.strftime(date_format))
         data['end'] = format_date(appointment.end.strftime(date_format))
-        data['title'] = appointment.description
+        data['title'] = appointment.location
+        data['body'] = appointment.description
+        
         all_appointments.append(data)
 
     context['appointments'] = json.dumps(all_appointments)
 
-    latest_id = Appointment.objects.latest('id').id
+    #need the largest id in the Appointment table.
+    latest_id = 0
+    try:
+        latest_id = Appointment.objects.latest('id').id
+    except Exception:
+        pass
 
     context['latest_id'] = latest_id
 
@@ -80,7 +98,6 @@ def add_personal_appointment(request):
     }
     context.update(csrf(request))
 
-    appointment = None
     if request.is_ajax():
         user = jUser.objects.filter(username=request.user.username).get()
         description = request.POST['body']
@@ -101,19 +118,63 @@ def add_personal_appointment(request):
 
     return redirect('/') # change this
 
+@require_POST
+def edit_personal_appointment(request):
+    context = {
+        'page':'edit_personal_appointment'
+    }
+    context.update(csrf(request))
     
+    if request.is_ajax():
+        id_to_edit = request.POST['id']
+        new_description = request.POST['body']
+        new_location = request.POST['title']
+        new_start_time = request.POST['start']
+        new_end_time = request.POST['end']
+
+        start = parse(new_start_time)
+        end = parse(new_end_time)
+        
+        appointment = Appointment.objects.filter(id=id_to_edit).get()
+        
+        appointment.description = new_description
+        appointment.location = new_location
+        appointment.start = start
+        appointment.end = end
+        appointment.save()
+    else:
+        raise Http404
+
+    return redirect('/') #change this too.
 
 
 @require_POST
 def remove_personal_appointment(request):
-	context = {
-		'page':'remove_personal_appointment'
-	}
-	pass
+    context = {
+        'page':'remove_personal_appointment'
+    }
+    context.update(csrf(request))
+
+    if request.is_ajax():
+        id_to_delete = request.POST['id']
+        Appointment.objects.filter(id=id_to_delete).delete()
+    else:
+        raise Http404
+
+    return redirect('/') #change this
 
 
 
-#only for professors assigned to the course
+
+
+
+
+
+
+
+
+
+
 @require_POST
 def add_course_appointment(request):
 	context = {
