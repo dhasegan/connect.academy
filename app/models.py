@@ -180,6 +180,7 @@ class Course(models.Model):
     tags = models.ManyToManyField('Tag', related_name='courses')
     majors = models.ManyToManyField('Major', related_name='courses')
     prerequisites = models.ManyToManyField('self', related_name='next_courses')
+    external_link = models.CharField(max_length=200, null=True, blank=True)
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)
