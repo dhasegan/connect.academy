@@ -183,7 +183,6 @@ def edit_summary(request):
     user.save()
 
     html = render_to_string('objects/profile/summary.html', {"user": user})
-    print html
     context = {
         "status": "OK",
         "html" : html,

@@ -1,0 +1,61 @@
+Couldnt find professor for course Mathematics Colloquium
+Couldnt find professor for course Graduate Seminar (IH): Interdisciplinary Research Colloquium
+Couldnt find professor for course French A1.1
+Couldnt find professor for course French B1.2 (1)
+Couldnt find professor for course French B2.2 (1)
+Couldnt find professor for course Computer Networks
+Couldnt find professor for course Programming in Java
+Couldnt find professor for course Guided Research Proposal Computer Science
+Couldnt find professor for course General Information and Communication Technology I
+Couldnt find professor for course Internet of Things Lab
+Couldnt find professor for course Computer Networks Project A
+Couldnt find professor for course Master/Doctorate Thesis Proposal
+Couldnt find professor for course Marine Biotechnology
+Couldnt find professor for course Fundamentals of Engineering Design (Intersession)
+Couldnt find professor for course Basics of Manufacturing Technology (Intersession)
+Couldnt find professor for course Guided Industrial Project
+Couldnt find professor for course Project Management
+Couldnt find professor for course Mathematical Methods for Logistics and Economy
+Couldnt find professor for course Guided Research Mathematics I
+Couldnt find professor for course Guided Research Applied and Computational Mathematics
+Couldnt find professor for course Graduate Research Seminar Mathematical Sciences
+Couldnt find professor for course Problems in Computational Analysis
+Couldnt find professor for course Waste Management and Technology (Intersession)
+Couldnt find professor for course Introduction to Chemistry Research I
+Couldnt find professor for course Guided Research Chemistry
+Couldnt find professor for course Supramolecular Chemistry
+Couldnt find professor for course Fundamentals of International Business
+Couldnt find professor for course Organization
+Couldnt find professor for course North American History
+Couldnt find professor for course Art, Literature, and Society: Hegel's Aesthetics and its Followers (Marx, Lukacs, Adorno) (Intersession)
+Couldnt find professor for course International Law
+Couldnt find professor for course Graduate Seminar (IR): International Law and Legalization
+Couldnt find professor for course Culture and Cognition
+Couldnt find professor for course Introduction to Social Psychology
+Couldnt find professor for course Graduate Seminar (IR): War and Peace
+Couldnt find professor for course Foundations of Cultural Analysis - Humanities Methods Course
+Couldnt find professor for course ILME Research Colloquium
+Couldnt find professor for course French B1.1 (2)
+Couldnt find professor for course French B2.1 (2)
+Couldnt find professor for course French C1 - Les évolutions récentes de la société francaise
+Couldnt find professor for course Operating Systems
+Couldnt find professor for course Guided Research Computer Science
+Couldnt find professor for course CSE Seminar II
+Couldnt find professor for course CSE Research Project II
+Couldnt find professor for course Internet Measurement and Management Lab
+Couldnt find professor for course General Logistics II
+Couldnt find professor for course BSc Thesis Seminar
+Couldnt find professor for course Terminal Management and Operations
+Couldnt find professor for course Orientation Course International Logistics II
+Couldnt find professor for course Orientation Course International Logistics IV
+Couldnt find professor for course Introduction to Chemistry Research II
+Couldnt find professor for course Advanced Inorganic Chemistry II (Coordination Chemistry)
+Couldnt find professor for course Advanced Inorganic Chemistry Lab
+Couldnt find professor for course BSc Thesis Chemistry
+Couldnt find professor for course Organometallic Chemistry
+Couldnt find professor for course Nanomolecular Science
+Couldnt find professor for course Marketing
+Couldnt find professor for course Artistic Avant-Gardes: Transcultural Modernities
+Couldnt find professor for course Women Artists of the Avant-Garde
+Couldnt find professor for course Bachelor Thesis Seminar
+Couldnt find professor for course Introduction to Project Management I (0,4 credits)

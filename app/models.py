@@ -247,9 +247,9 @@ class Course(models.Model):
 
 
     def save(self, *args, **kwargs):
+        super(Course, self).save(*args, **kwargs)
         self.slug = slugify(self.name)
         Forum.objects.get_or_create(course=self)
-        super(Course, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return str(self.name)
