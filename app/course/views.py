@@ -245,9 +245,13 @@ def submit_homework_request(request, slug):
     if not user in form.cleaned_data['course'].professors.all():
         raise Http404
 
-    timezone_minutes = timedelta(minutes=form.cleaned_data['timezone'])
-    start_time = form.cleaned_data['start'].replace(tzinfo=pytz.utc) + timezone_minutes
-    end_time = form.cleaned_data['deadline'].replace(tzinfo=pytz.utc) + timezone_minutes
+    local_timezone = timezone.get_current_timezone()
+    if timezone.is_naive(form.cleaned_data['start']):
+        form.cleaned_data['start'] = timezone.make_aware(form.cleaned_data['start'], local_timezone)
+    if timezone.is_naive(form.cleaned_data['deadline']):
+        form.cleaned_data['deadline'] = timezone.make_aware(form.cleaned_data['deadline'], local_timezone) 
+    start_time = timezone.localtime(form.cleaned_data['start'], pytz.utc)
+    end_time = timezone.localtime(form.cleaned_data['deadline'], pytz.utc)
 
     deadline = Deadline(start=start_time, end=end_time)
     deadline.save()
@@ -445,9 +449,11 @@ def delete_syllabus_entry(request, slug):
 def load_course_activities(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
-
     activities = course_activities(request,course)
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    
+    context = { "activities" : activities }
+    context.update(csrf(request))
+    html = render_to_string('objects/dashboard/activity_timeline.html', context )
     data = {
         'status': "OK",
         'html': html
@@ -459,9 +465,11 @@ def load_course_activities(request, slug):
 def load_new_course_activities(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
-
     activities = new_course_activities(request,course)
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    context = { "activities" : activities }
+    context.update(csrf(request))
+
+    html = render_to_string('objects/dashboard/activity_timeline.html', context )
     data = {
         'status': "OK",
         'html': html,

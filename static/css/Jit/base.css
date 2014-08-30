@@ -2,11 +2,14 @@
 
 #center-container {
     height:620px;
+
 }
 
 #left-container, #right-container {
-    max-height: 620px;
+    max-height:620px;
+    overflow-y:scroll;
 }
+
 
 .category-forms, .course-forms {
     display:none;

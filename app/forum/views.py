@@ -216,7 +216,7 @@ def upvote_post(request):
     }
     response_data = {
         'html': render_to_string('objects/forum/upvote_post.html', RequestContext(request, context)),
-        'id_selector': '#upvote_post_' + str(post.id)
+        'id_selectors': ['#upvote_post_' + str(post.id), '#upvote_post_activity_' + str(post.id)]
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
@@ -247,7 +247,7 @@ def upvote_answer(request):
     }
     response_data = {
         'html': render_to_string('objects/forum/upvote_answer.html', RequestContext(request, context)),
-        'id_selector': '#upvote_answer_' + str(answer.id)
+        'id_selectors': ['#upvote_answer_' + str(answer.id), '#upvote_answer_activity_' + str(answer.id)]
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 

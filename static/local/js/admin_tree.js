@@ -18,6 +18,12 @@ var AdminTree = (function() {
             categoryIdSelector: ".category-forms form input[type='hidden'][name='cat_id']",
             registrationStatusSelector: ".category-forms form small[class='registration_deadline_status']",
             adminsContainerSelector: "#admins-form-container",
+
+            registrationStartDatetime: $('.registration-start-datetime'),
+            registrationDeadlineDatetime: $('.registration-end-datetime'),
+            registrationDatetimeInput: $('.registration-datetime-input'),
+            registrationForm: $('.cr-deadline-form'),
+            
             // node styles
             categoryNotSelectedColor: "#0b56a8",
             categorySelectedColor: "#29ABE2",
@@ -107,10 +113,36 @@ var AdminTree = (function() {
         })();
 
         s = this.settings;
+
+        s.registrationStartDatetime.datetimepicker({
+            defaultDate: moment().startOf("hour"),
+            minDate: moment(),
+            maxDate: moment().add("years", 1),
+            pick12HourFormat: false
+        });
+        s.registrationDeadlineDatetime.datetimepicker({
+            defaultDate: moment().add("weeks", 1).endOf("day"),
+            minDate: moment(),
+            maxDate: moment().add("years", 1),
+            pick12HourFormat: false
+        });
+
         this.bindUIActions();
     };
 
     me.bindUIActions = function() {
+
+        s.registrationDatetimeInput.click(function() {
+            var $parent = $(this.parentNode);
+            var $button = $parent.find(".registration-datetime-button");
+            $button.parent().data("DateTimePicker").show();
+        });
+        s.registrationForm.ready(function() {
+            var tz = $(this).find('input[name="timezone"]');
+            tz.val( moment().zone() );
+        });
+
+
         $(s.categoryFormsSelector + ", " + s.courseFormsSelector).on("submit", "form", function(event){
         var form = $(this);
         var data = form.serialize();
@@ -262,6 +294,19 @@ var AdminTree = (function() {
                         st.graph.addAdjacence(parent,category,{});
                         st.refresh();
                     }
+                    else if (form.attr("id") == "course-registration-deadline-form") {
+                        var registration_status = data.data.registration_open;
+                        var msg;
+                        if (registration_status) {
+                            // Registration is open
+                            msg = "Open until " + data.data.open_until;
+                        }
+                        else {
+                            msg = "Closed";
+                        }
+                        jQuery(s.registrationStatusSelector).html(msg);
+
+                    }
 
                     /*************************************/
                     /********** COURSE FORMS *************/
@@ -355,7 +400,8 @@ var AdminTree = (function() {
                     $('.text-danger',form).show();
                     $('.text-danger',form).html(message);
                     $('.text-danger',form).delay(4000).fadeOut(400);
-                }            
+                }
+                window.console.log(data);            
             }
         });
     }); 

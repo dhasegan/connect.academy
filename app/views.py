@@ -66,6 +66,7 @@ def error_page(request, error_type):
         'page': 'error_page',
         'error_type': error_type
     }
+    return HttpResponse(json.dumps(context))
 
 @login_required
 def load_dashboard_activities(request):
@@ -83,7 +84,9 @@ def load_dashboard_activities(request):
 def load_new_dashboard_activities(request):
     user = request.user.juser
     activities = new_dashboard_activities(request,user)
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    context = { "activities" : activities }
+    context.update(csrf(request))
+    html = render_to_string('objects/dashboard/activity_timeline.html', context  )
     data = {
         'status': "OK",
         'html': html,

@@ -1,4 +1,6 @@
 from django import forms
+from django.utils import timezone
+import pytz
 import json
 
 from app.models import *
@@ -348,8 +350,38 @@ class AddCourseForm(CategoryForm):
 		return json.dumps(return_dict)
 
 
+class CourseRegistrationDeadlineForm(CategoryForm):
+	start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+	end = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+	timezone = forms.IntegerField()
+	def execute_action(self):
+		local_timezone = timezone.get_current_timezone()
+		if timezone.is_naive(self.cleaned_data['start']):
+			self.cleaned_data['start'] = timezone.make_aware(self.cleaned_data['start'], local_timezone)
+		if timezone.is_naive(self.cleaned_data['end']):
+			self.cleaned_data['end'] = timezone.make_aware(self.cleaned_data['end'], local_timezone) 
+		start_time = timezone.localtime(self.cleaned_data['start'], pytz.utc)
+		end_time = timezone.localtime(self.cleaned_data['end'], pytz.utc)
+		category = Category.objects.get(id=self.cleaned_data['cat_id'])
+		return_dict = {}
+		if category and start_time and end_time:
+		    registration_deadline = CourseRegistrationDeadline.objects.create(start=start_time, end=end_time)
+		    category.registration_deadline = registration_deadline
+		    category.save()
+		    return_dict['status'] = "OK"
+		    return_dict['message'] = "Created course registration deadline for <b>%s</b>" % category.name
+		    return_dict['data'] = { 'registration_open': category.get_registration_deadline().is_open() }
+		    if return_dict['data']['registration_open']:
+		    	deadline = timezone.localtime(registration_deadline.end)
+		    	time_to_display = datetime.strftime(deadline, "%d/%m/%Y %H:%M (%Z)")
+		    	return_dict['data']['open_until'] = time_to_display
+		else:
+			return_dict = {
+				'status': "Error",
+				'message': "Error processing form"
+			}
 
-
+		return json.dumps(return_dict)
 
 
 ######################################################################

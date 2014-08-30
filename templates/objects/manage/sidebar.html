@@ -1,0 +1,26 @@
+<div class="col-md-4">
+    <div class="admin-sidebar">
+        <div class="sidebar-body">
+            <div class="sidebar-tabs">
+                <nav class="nav-sidebar">
+                    <ul class="nav tabs">
+                        {% if activities|length %}
+                            <li class="{% if not current_tab or current_tab == 'activity' %}active{% endif %}"><a href=".course-activity" role="tab" data-toggle="tab">{% trans "Activity log" %}</a></li>
+                        {% endif %}
+                        <li class="{% if current_tab == 'info' %}active{% endif %}"><a href=".course-info" role="tab" data-toggle="tab">{% trans "Course info" %}</a></li>
+                        <li class="{% if current_tab == 'wiki' %}active{% endif %}"><a href=".course-wiki" role="tab" data-toggle="tab">{% trans "Wiki" %}</a></li>
+                        <li class="{% if current_tab == 'connect' %}active{% endif %}"><a href=".course-forum" role="tab" data-toggle="tab">{% trans "Connect" %}</a></li>
+
+                        {% if current_homework or documents %}
+                            <li class="{% if current_tab == 'resources' %}active{% endif %}"><a href=".course-resources" role="tab" data-toggle="tab">{% trans "Resources and Assignments" %}</a></li>
+                        {% endif %}
+
+                        {% if teacher.is_teacher %}
+                            <li class="{% if current_tab == 'teacher' %}active{% endif %}"><a href=".course-teacher" role="tab" data-toggle="tab">{% trans "Teacher" %}</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 from datetime import * #datetime
 import pytz # timezones
+from django.utils import timezone
 import versioning
 import re 
 
@@ -247,8 +248,8 @@ class Course(models.Model):
 
 
     def save(self, *args, **kwargs):
-        super(Course, self).save(*args, **kwargs)
         self.slug = slugify(self.name)
+        super(Course, self).save(*args, **kwargs)
         Forum.objects.get_or_create(course=self)
 
     def __unicode__(self):
@@ -365,7 +366,7 @@ class Category(models.Model):
 
         return allcourses
 
-    # get_registration_deadline(): Finds the course registration deadline for this category
+    # get_registration_deadline (): Finds the course registration deadline for this category
     # (by climbing up to the root of the tree until a category with a deadline is found)
     def get_registration_deadline(self):
         if self.registration_deadline is not None:
@@ -390,7 +391,9 @@ class Category(models.Model):
         }
         registration_deadline = self.get_registration_deadline()
         if registration_deadline is not None and registration_deadline.is_open():
-            tree['data']['registration_deadline'] = "Open until " + str(registration_deadline.end)
+            deadline = timezone.localtime(registration_deadline.end)
+            time_to_display = datetime.strftime(deadline, "%d/%m/%Y %H:%M (%Z)")
+            tree['data']['registration_deadline'] = "Open until " + time_to_display
         else:
             tree['data']['registration_deadline'] = "Closed"
 
@@ -466,13 +469,13 @@ class Domain(models.Model):
         return str(self.name)
 
 class Deadline(models.Model):
-    start = models.DateTimeField(default=pytz.utc.localize(datetime.now()))
+    start = models.DateTimeField(default=timezone.now())
     end = models.DateTimeField()
 
 class CourseRegistrationDeadline(Deadline):
     # need to change the field above to non-nullable.
     def is_open(self):
-        now = pytz.utc.localize(datetime.now())  #using utc as reference time zone
+        now = timezone.now()  #using utc as reference time zone
         if now >= self.start and now < self.end:
             return True
         else:

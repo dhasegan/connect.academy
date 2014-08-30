@@ -34,10 +34,10 @@
 {% block extra_js_includes %}
 	<script type="text/javascript" src="{{ STATIC_URL }}js/Jit/jit.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
     	var json = {{ category_tree|safe }};
     </script>
+    <script type="text/javascript" src="{{ STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
     {% compressed_js 'admin_tree' %}
 
 {% endblock %}
