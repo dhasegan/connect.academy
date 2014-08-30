@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/dhasegan/connect.academy/issues"
   },
-  "homepage": "https://github.com/dhasegan/connect.academy"
+  "homepage": "https://github.com/dhasegan/connect.academy",
+  "dependencies": {
+    "nopt": "^3.0.1",
+    "path": "^0.4.9",
+    "yuglify": "^0.1.4"
+  },
+  "devDependencies": {}
 }
