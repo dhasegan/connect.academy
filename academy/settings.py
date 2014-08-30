@@ -264,6 +264,7 @@ PIPELINE_COMPILERS = (
   'pipeline.compilers.sass.SASSCompiler',
 )
 
+
 PIPELINE_SASS_BINARY = PROJECT_ROOT + "/thirdparty/sass/bin/sass"
 PIPELINE_YUGLIFY_BINARY = PROJECT_ROOT + "/thirdparty/node_modules/yuglify/bin/yuglify"
 

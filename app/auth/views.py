@@ -50,7 +50,8 @@ def login_action(request):
                 user_details = settings.JACOBS_USER_DETAILS[login_user]
                 user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=user_details['email'], \
                                                  first_name=user_details['first_name'], last_name=user_details['last_name'], 
-                                                 user_type=USER_TYPE_PROFESSOR, is_active=True)
+                                                 user_type=USER_TYPE_PROFESSOR)
+                user.is_active = True
                 if 'description' in user_details:
                     user.summary = user_details['description']
                 if 'photourl' in user_details:
