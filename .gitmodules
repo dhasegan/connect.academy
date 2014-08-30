@@ -1,0 +1,6 @@
+[submodule "thirdparty/node_modules/yuglify"]
+	path = thirdparty/node_modules/yuglify
+	url = https://github.com/yui/yuglify
+[submodule "thirdparty/sass"]
+	path = thirdparty/sass
+	url = https://github.com/sass/sass
