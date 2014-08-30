@@ -232,7 +232,7 @@ COURSE_DOCUMENT_MAX_UPLOAD_SIZE = "5242880"
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-MEDIA_ROOT = PROJECT_ROOT + 'media/'
+MEDIA_ROOT = PROJECT_ROOT + '/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
