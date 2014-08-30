@@ -130,14 +130,15 @@ var ForumPage = (function() {
             })
         });
         // Upvote posts and answers
-        var $upvote_posts = SubtreeDOM.find(s.upvotePostFormSelector);
-        var $upvote_answers = SubtreeDOM.find(s.upvoteAnswerFormSelector);
-        ($upvote_posts.add($upvote_answers)).click(function(event) {
+        
+        var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
+        $(document).on("click", upvote_selector, function(event) {
             Utils.SubmitFormAjax(event, this,
                 function(result) {
-                    $(result.id_selector).html(result.html);
-
-                    ForumPage.onRefreshAnswerTab($(result.id_selector));
+                    for (idx in result.id_selectors) {
+                        $(result.id_selectors[idx]).html(result.html);
+                    }
+                    
                 }, 
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus);

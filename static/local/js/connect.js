@@ -2,12 +2,7 @@ jQuery( document ).ready(function( $ ) {
 
     ConnectGlobal.init();
 
-    if ($('.explore-page').length > 0) { ExplorePage.init(); }
-    else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
-    else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); } // ForumPage needed to upvote forum posts, add ProfilePage, when needed
-    else if ($('.forum-page').length > 0) { ForumPage.init(); }
-    else if ($('.welcome-page').length > 0) { WelcomePage.init(); }
-    else if ($('.dashboard-page').length > 0) { ForumPage.init(); }
+
 
 });
 
@@ -22,7 +17,7 @@ var ConnectGlobal = (function() {
             helpsigns: $('.help-sign')
         },
         global_variables: {
-            activities_pagenum: 1
+            activities_pagenum: 1 // max page number of already loaded activities
         },
     }, s, globals;
 
@@ -30,6 +25,13 @@ var ConnectGlobal = (function() {
         s = this.settings;
         globals = this.global_variables;
         this.bindUIActions();
+
+            if ($('.explore-page').length > 0) { ExplorePage.init(); }
+            else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
+            else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); } // ForumPage needed to upvote forum posts
+            else if ($('.forum-page').length > 0) { ForumPage.init(); } 
+            else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
+            else if ($('.dashboard-page').length > 0) { ForumPage.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
     };
 
     me.loadNewActivities = function() {
@@ -60,6 +62,8 @@ var ConnectGlobal = (function() {
                         //s.activities.prepend(html).slideDown("slow");
 
                     }
+                    //bind UI actions again to catch the newly loaded activities
+
                 },
                 complete: function() {   
                     setTimeout(me.loadNewActivities, 10000);       
@@ -120,7 +124,8 @@ var ConnectGlobal = (function() {
                 });
             }
         });
-
+    
+        // Every 10 seconds, check if there are any new activities
         setTimeout(this.loadNewActivities, 10000);
 
 

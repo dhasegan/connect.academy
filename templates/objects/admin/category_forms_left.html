@@ -27,15 +27,17 @@
     </div>
 
 <!--################### COURSE REGISTRATION DEADLINE ################### -->
-<form class="form" class="cr-deadline-form" action="admin_form_action" method="post">
+<form class="form" class="cr-deadline-form" id="course-registration-deadline-form" action="admin_form_action" method="post">
     {% csrf_token %}
+    <input type="hidden" name="cat_id"/>
+    <input type="hidden" name="form_type" value="course_registration_deadline"/>
     <h4> {% trans 'Course Registration' %} </h4>
     <small> {% trans 'Status' %}: </small> <small class='registration_deadline_status'> </small>
     <div class="form-group">
         <label>{% trans 'Start' %}</label>
-        <div class='input-group date' data-date-format="DD/MM/YYYY HH:mm">
-            <input type='text' class="form-control" name="start" />
-            <span class="input-group-addon">
+        <div class='input-group date registration-start-datetime' data-date-format="DD/MM/YYYY HH:mm">
+            <input type='text' class="form-control registration-datetime-input" name="start" />
+            <span class="input-group-addon registration-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
@@ -43,9 +45,9 @@
 
     <div class="form-group">
         <label>{% trans 'Deadline' %}</label>
-        <div class='input-group date' data-date-format="DD/MM/YYYY HH:mm">
-            <input type='text' class="form-control" name="end" />
-            <span class="input-group-addon">
+        <div class='input-group date registration-end-datetime' data-date-format="DD/MM/YYYY HH:mm">
+            <input type='text' class="form-control registration-datetime-input" name="end" />
+            <span class="input-group-addon registration-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
@@ -57,7 +59,13 @@
 
     <input type="hidden" name="timezone" value="">
 
-    <input type="hidden" name="course_id" value="{{ course.id }}">
+    <div class='text text-success'>
+    </div>
+    <div class='text text-warning'>
+    </div>
+    <div class='text text-danger'>
+    </div>
+
 
     <input class="btn btn-primary" type="submit" value="Set Deadline" />
 </form>

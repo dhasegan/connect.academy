@@ -49,7 +49,8 @@ def login_action(request):
                 university = University.objects.get(name=auth_univ["name"])
                 user_details = settings.JACOBS_USER_DETAILS[login_user]
                 user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=user_details['email'], \
-                                                 first_name=user_details['first_name'], last_name=user_details['last_name'])
+                                                 first_name=user_details['first_name'], last_name=user_details['last_name'], 
+                                                 user_type=USER_TYPE_PROFESSOR, is_active=True)
                 if 'description' in user_details:
                     user.summary = user_details['description']
                 if 'photourl' in user_details:
@@ -62,7 +63,6 @@ def login_action(request):
                     img_temp.flush()
 
                     user.profile_picture.save(photo_name, File(img_temp), save=False)
-                user.is_active = False
                 user.save()
                 send_email_confirmation(request, user)
                 new_user = True

@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.core.mail import send_mail
 from django.db.models import Q
 
+
 from app.models import *
 from app.context_processors import *
 from app.decorators import *
@@ -58,7 +59,7 @@ def course_categories(request):
         courses += list(cat.get_all_courses())
     context['courses'] = courses
 
-    return render(request, 'pages/admin.html', context)
+    return render(request, 'pages/manage/categories.html', context)
 
 # The admin forms.
 #    Key: The value of the 'form_type' input of the form
@@ -80,6 +81,7 @@ forms = {
     'edit_course': EditCourseForm,
     'delete_course': DeleteCourseForm,
     'move_category': MoveCategoryForm,
+    'course_registration_deadline': CourseRegistrationDeadlineForm,
 }
 
 
@@ -116,4 +118,20 @@ def admin_form_action(request):
         print dict(request.POST)
         print form.errors
         raise Http404
+
+def user_management(request):
+    context = {
+        'page': 'user_management'
+    }
+    context['users'] = jUser.objects.all()
+    context['courses'] = []
+
+    for course in Course.objects.all():
+        context.courses.append({
+                'course': course,
+                'student_registrations': StudentCourseRegistration.objects.filter(course=course),
+                'professor_registrations': ProfessorCourseRegistration.objects.filter(course=course)
+            })
+
+    return render(request, 'pages/manage/users')
 
