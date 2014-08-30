@@ -7,6 +7,7 @@ Welcome aboard! You about to begin a journey that will revolutionize education f
 
 - Learn how to use Google
 - Clone the git repository
+- Get git submodules `git submodule update`
 - Set up the virtual environment `virtualenv venv`
 - Activate the virtual environment `source venv/bin/activate`
 - install the required packages
