@@ -15,6 +15,7 @@ Welcome aboard! You about to begin a journey that will revolutionize education f
     pip install -r requirements.txt
   ```
 . if you have problems installing something, check the external libraries wiki for extra info
+- and node requirements `npm install`
 - Set up the DB 
   
   > mkdir academy/db
