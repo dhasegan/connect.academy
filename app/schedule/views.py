@@ -64,6 +64,7 @@ def view_schedule(request):
             	data['title']= appointment.location
 
             data['body'] = appointment.description
+            data['data'] = 'course'
             
             all_appointments.append(data)
 
@@ -74,6 +75,7 @@ def view_schedule(request):
         data['end'] = format_date(appointment.end.strftime(date_format))
         data['title'] = appointment.location
         data['body'] = appointment.description
+        data['data'] = 'personal'
         
         all_appointments.append(data)
 
@@ -117,7 +119,7 @@ def add_personal_appointment(request):
     else:
         raise Http404
 
-    return redirect('/') # change this
+    return HttpResponse("")
 
 @require_POST
 def edit_personal_appointment(request):
@@ -146,7 +148,7 @@ def edit_personal_appointment(request):
     else:
         raise Http404
 
-    return redirect('/') #change this too.
+    return HttpResponse("")
 
 
 @require_POST
@@ -162,18 +164,12 @@ def remove_personal_appointment(request):
     else:
         raise Http404
 
-    return redirect('/') #change this
+    return HttpResponse("")
 
 
-
-
-
-
-
-
-
-
-
+'''
+========================================= STUBS ========================================================================
+'''
 
 #only for professors
 @require_POST
@@ -181,17 +177,7 @@ def add_course_appointment(request):
     context = {
         'page':'add_course_appointment'
     }
-
-    context.update(csrf(request))
-
-    if request.is_ajax():
-        user = jUsers.objecs.filter(username=request.user.username).get()
-        if user.is_professor():
-            pass
-        else:
-            raise Http404
-    else:
-        pass
+    pass
 
 @require_POST
 def remove_course_appointment(request):
@@ -199,30 +185,3 @@ def remove_course_appointment(request):
 		'page':'remove_course_appointment'
 	}
 	pass
-
-'''
-    IDEA
-
-
-        Suppose a user clicks on the schedule screen. 
-            The user might be :
-                1) Student
-                2) Professor
-                3) Admin (not relevant)
-                4) Alumnus (not relevant)
-
-        If the user is a student, a "add personal appointment" form is rendered.
-        If the user is a professor, a screen which enables him to choose between adding
-        a personal appointment or a course appointment is rendered.
-
-        TODO(s):    
-            * Add AJAX for finding out the type of the user upon the request to add
-              appointment (make use of the existing ajax calls)
-
-            * Define the new popup.
-
-            * Decouple the JS from the html file 
-
-            * Change the appointments 
-            
-'''

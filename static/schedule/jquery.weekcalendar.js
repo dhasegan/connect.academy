@@ -49,7 +49,7 @@
         timeSeparator: ' to ',
         startParam: 'start',
         endParam: 'end',
-        businessHours: {start: 8, end: 18, limitDisplay: false},
+        businessHours: {start: 8, end: 18, limitDisplay: true},
         newEventText: 'New Event',
         timeslotHeight: 20,
         defaultEventLength: 2,
@@ -59,9 +59,9 @@
         showHeader: true,
         buttons: true,
         buttonText: {
-          today: 'today',
-          lastWeek: 'previous',
-          nextWeek: 'next'
+          today: 'This Week',
+          lastWeek: 'Previous Week',
+          nextWeek: 'Next Week'
         },
         switchDisplay: {},
         scrollToHourMillis: 500,
@@ -133,7 +133,7 @@
           }
         },
         eventBody: function(calEvent, calendar) {
-          return calEvent.title;
+          return calEvent.body + " @ " + calEvent.title;
         },
         shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         longMonths: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
