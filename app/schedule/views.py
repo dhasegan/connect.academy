@@ -90,6 +90,7 @@ def view_schedule(request):
 
     return render(request, "pages/schedule/view_schedule.html", context)
 
+
 #both professors and students
 @require_POST
 def add_personal_appointment(request):
@@ -174,13 +175,23 @@ def remove_personal_appointment(request):
 
 
 
-
+#only for professors
 @require_POST
 def add_course_appointment(request):
-	context = {
-		'page':'add_personal_appointment'
-	}
-	pass
+    context = {
+        'page':'add_course_appointment'
+    }
+
+    context.update(csrf(request))
+
+    if request.is_ajax():
+        user = jUsers.objecs.filter(username=request.user.username).get()
+        if user.is_professor():
+            pass
+        else:
+            raise Http404
+    else:
+        pass
 
 @require_POST
 def remove_course_appointment(request):
@@ -188,3 +199,30 @@ def remove_course_appointment(request):
 		'page':'remove_course_appointment'
 	}
 	pass
+
+'''
+    IDEA
+
+
+        Suppose a user clicks on the schedule screen. 
+            The user might be :
+                1) Student
+                2) Professor
+                3) Admin (not relevant)
+                4) Alumnus (not relevant)
+
+        If the user is a student, a "add personal appointment" form is rendered.
+        If the user is a professor, a screen which enables him to choose between adding
+        a personal appointment or a course appointment is rendered.
+
+        TODO(s):    
+            * Add AJAX for finding out the type of the user upon the request to add
+              appointment (make use of the existing ajax calls)
+
+            * Define the new popup.
+
+            * Decouple the JS from the html file 
+
+            * Change the appointments 
+            
+'''

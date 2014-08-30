@@ -98,7 +98,6 @@
         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
         $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
         setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
-
       },
 
       eventDrop: function(calEvent, $event) {
@@ -176,6 +175,7 @@
                       'id' : calEvent.id,
                     },
                     success: function(){
+                      alert("Successfuly removed event");
                     }
                   });
                },
@@ -323,6 +323,14 @@
       
     </ul>
   </form>
+</div>
+
+<div id="event_chooser" hidden>
+  <form>
+    {% csrf_token %}
+    What type of appointment would you like to add ? <br/>
+  </form>
+
 </div>
 
 {% endblock %}
