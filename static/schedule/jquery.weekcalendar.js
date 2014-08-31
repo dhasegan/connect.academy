@@ -727,6 +727,8 @@
                 calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button> &nbsp; &nbsp;';
                 calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button> &nbsp; &nbsp;';
               calendarNavHtml += '</div>';
+              calendarNavHtml += "<br/>";
+              calendarNavHtml += "<br/>";
             calendarNavHtml += '</div>';
 
             $(calendarNavHtml).appendTo($calendarContainer);
