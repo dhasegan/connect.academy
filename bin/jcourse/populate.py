@@ -105,8 +105,7 @@ for rating in ratings:
         posters = jUser.objects.filter(username=rating['posted_by'])
         if len(posters):
             posted_by = posters[0]
-    r = Rating.objects.create(course=course, user=posted_by,
-        rating=rating['rating'], rating_type=rating['rating_type'])
+    r = Rating.objects.create(course=course, user=posted_by, rating=rating['rating'], rating_type=rating['rating_type'])
     if 'professor' in rating:
         prof_lname = rating['professor'].split(" ")[-1]
         professors = course.professors.filter(last_name__contains=prof_lname)
