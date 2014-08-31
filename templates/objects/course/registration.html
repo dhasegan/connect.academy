@@ -29,7 +29,7 @@
 
 {% if registration_open or user_auth.user_type == 1 %}
     {% if registration_status == 0 %} <!-- open -->
-        <a data-toggle="modal" href="#registrationModal{{course.id}}" class="btn btn-success registration-btn" id='register_button{{course.id}}'>
+        <a data-toggle="modal" href="#registrationModal{{course.id}}" class="btn btn-primary registration-btn" id='register_button{{course.id}}'>
             {% if user_auth.user_type == 0 %} <!-- Student -->
                 {% trans "Register" %}
             {% elif user_auth.user_type == 1 %} <!-- Professor -->

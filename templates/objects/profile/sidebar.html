@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default sidebar">
 	<div class="panel-body">
 		<center>
 						
@@ -16,7 +16,7 @@
 </div>
 
 {% if user.summary or own_profile %}
-	<div class="panel panel-default">
+	<div class="panel panel-default sidebar">
 		<div class="panel-body" id="summary-container">
 			{% if user.summary %}
 				{% include 'objects/profile/summary.html' %}

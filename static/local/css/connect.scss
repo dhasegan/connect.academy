@@ -2,12 +2,24 @@
 @import "../../bootstrap/stylesheets/bootstrap/variables";
 @import "../../bootstrap/stylesheets/bootstrap/mixins";
 
+// Global variables 
+$connect-dark-blue:     #151621;
+$connect-light-blue:    #4099FF;
+$connect-gray:          #E3E3E3;
+
+
+
+
+
+
+
 // Navigation bar
 $campusnet-popover-info-color:      #29ABE2;
 $login-input-padding:           3px;
 
 .connect-navigation {
     border-bottom: 1px solid white;
+    background-color: $connect-dark-blue;
     .connect-brand {
     
         .logo {
@@ -39,6 +51,23 @@ $login-input-padding:           3px;
 
     .navbar-tabs {
         width: 48%;
+        li {
+            a {
+                color: white;
+                width: 100px;
+                text-align:center;
+                &:hover {
+                    font-weight: bold;
+                }
+                
+            }
+            &.active {
+                a {
+                    font-weight: bold;
+                }
+            }
+
+        }
     }
 
 }
@@ -46,36 +75,52 @@ $login-input-padding:           3px;
 
 
 
-$nav-sidebar-bg:                    white;
-$nav-sidebar-active-link:           $brand-primary;
+$nav-sidebar-bg:                    transparent;
+$nav-sidebar-active-link:           $connect-light-blue;
 $nav-sidebar-active-focus-link:     darken($nav-sidebar-active-link, 8%);
-$nav-sidebar-focus-link:            $gray-lighter;
+$nav-sidebar-focus-link:            transparentize($connect-gray, 0.5);
 
-.nav-sidebar {
-    li {
-        background-color: $nav-sidebar-bg;
-        > a {
-            color: $gray;
-            white-space: nowrap;
-            overflow: hidden;
-            border-bottom: 1px solid $gray-lighter;
 
-            &:hover,
-            &:focus {
-                background-color: $nav-sidebar-focus-link;
+.sidebar {
+    background-color: $connect-dark-blue;
+    color: white;
+
+    a {
+        color: white;
+    }
+    .sidebar-header {
+        color: $connect-gray;
+    }
+    .nav-sidebar {
+
+        background-color: $connect-dark-blue;
+
+        li {
+            background-color: $nav-sidebar-bg;
+            > a {
+                color: white;
+                white-space: nowrap;
+                overflow: hidden;
+                border-bottom: 1px solid $gray-lighter;
+
+                &:hover,
+                &:focus {
+                    background-color: $nav-sidebar-focus-link;
+                    background-opacity: 50%;
+                }
             }
-        }
 
-        &.active {
-            a {
-                cursor: default;
-                background-color: $nav-sidebar-active-link; 
-                color: #fff;
-            }
+            &.active {
+                a {
+                    cursor: default;
+                    background-color: $nav-sidebar-active-link; 
+                    color: #fff;
+                }
 
-            a:hover, 
-            a:focus {
-                background-color: $nav-sidebar-active-focus-link;
+                a:hover, 
+                a:focus {
+                    background-color: $nav-sidebar-active-focus-link;
+                }
             }
         }
     }
@@ -423,7 +468,7 @@ $tables-margin-left:            20px;
         margin-left: $tables-margin-left;
         width:90%;
         tr {
-            border-bottom: 1px solid white;
+            margin-bottom:2px;
         }
         .course_name {
             width:90%;
@@ -440,7 +485,7 @@ $tables-margin-left:            20px;
         margin-left:$tables-margin-left;
         width:90%;
         tr {
-            border-bottom: 1px solid white;
+            margin-bottom:2px;
         }
         .post_name {
             width:90%;

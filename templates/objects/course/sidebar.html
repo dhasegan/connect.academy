@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="panel panel-default">
+<div class="panel panel-default sidebar">
     {% include 'objects/course/registration.html' %}
     <div class="panel-body">
         <div class="sidebar-header">
@@ -12,7 +12,7 @@
                 {% for juser in professors %}
                     <div class="text-right">
                         {% if forloop.counter == 1 %}
-                            <span class="text-muted"> {% blocktrans %}Professor{{ professors|pluralize }}{% endblocktrans %}:</span>
+                            <span> {% blocktrans %}Professor{{ professors|pluralize }}{% endblocktrans %}:</span>
                         {% endif %}
                         {% include 'objects/user_link.html' %}
                     </div>

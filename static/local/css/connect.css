@@ -1,5 +1,6 @@
 .connect-navigation {
-  border-bottom: 1px solid white; }
+  border-bottom: 1px solid white;
+  background-color: #151621; }
   .connect-navigation .connect-brand .logo {
     float: left;
     margin-top: -7px; }
@@ -18,23 +19,41 @@
       color: #29ABE2; }
   .connect-navigation .navbar-tabs {
     width: 48%; }
+    .connect-navigation .navbar-tabs li a {
+      color: white;
+      width: 100px;
+      text-align: center; }
+      .connect-navigation .navbar-tabs li a:hover {
+        font-weight: bold; }
+    .connect-navigation .navbar-tabs li.active a {
+      font-weight: bold; }
 
-.nav-sidebar li {
-  background-color: white; }
-  .nav-sidebar li > a {
-    color: #555555;
-    white-space: nowrap;
-    overflow: hidden;
-    border-bottom: 1px solid #eeeeee; }
-    .nav-sidebar li > a:hover, .nav-sidebar li > a:focus {
-      background-color: #eeeeee; }
-  .nav-sidebar li.active a {
-    cursor: default;
-    background-color: #428bca;
-    color: #fff; }
-  .nav-sidebar li.active a:hover,
-  .nav-sidebar li.active a:focus {
-    background-color: #3276b1; }
+.sidebar {
+  background-color: #151621;
+  color: white; }
+  .sidebar a {
+    color: white; }
+  .sidebar .sidebar-header {
+    color: #E3E3E3; }
+  .sidebar .nav-sidebar {
+    background-color: #151621; }
+    .sidebar .nav-sidebar li {
+      background-color: transparent; }
+      .sidebar .nav-sidebar li > a {
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        border-bottom: 1px solid #eeeeee; }
+        .sidebar .nav-sidebar li > a:hover, .sidebar .nav-sidebar li > a:focus {
+          background-color: rgba(227, 227, 227, 0.5);
+          background-opacity: 50%; }
+      .sidebar .nav-sidebar li.active a {
+        cursor: default;
+        background-color: #4099FF;
+        color: #fff; }
+      .sidebar .nav-sidebar li.active a:hover,
+      .sidebar .nav-sidebar li.active a:focus {
+        background-color: #1783ff; }
 
 .explore-page .search-sidebar #credits-slider .ui-slider-range,
 .explore-page .search-sidebar #ratings-slider .ui-slider-range {
@@ -217,7 +236,7 @@
   margin-left: 20px;
   width: 90%; }
   .dashboard-page .sidebar-courses-table tr {
-    border-bottom: 1px solid white; }
+    margin-bottom: 2px; }
   .dashboard-page .sidebar-courses-table .course_name {
     width: 90%; }
   .dashboard-page .sidebar-courses-table .homework_number {
@@ -229,7 +248,7 @@
   margin-left: 20px;
   width: 90%; }
   .dashboard-page .sidebar-forum-posts tr {
-    border-bottom: 1px solid white; }
+    margin-bottom: 2px; }
   .dashboard-page .sidebar-forum-posts .post_name {
     width: 90%; }
   .dashboard-page .sidebar-forum-posts .likes_number {
