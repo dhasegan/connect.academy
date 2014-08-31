@@ -22,7 +22,7 @@ var WelcomePage = (function() {
 
             passwordConfirmationSelector: "#password_confirmation",
             passwordConfirmationSuccessSelector: "#password_confirmation-ok",
-            passwordConfirmationErrorSelector: "#password-confirmation-error",
+            passwordConfirmationErrorSelector: "#password_confirmation-error",
         
             universityByEmailLink:'/university_by_email',
             checkUsernameLink: '/check_username',

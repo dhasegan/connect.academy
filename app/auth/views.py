@@ -77,6 +77,7 @@ def login_action(request):
         if not auth_univ or user is None:
             # User not found neither on our database nor on campusnet
             context['error'] = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
+            context['page'] = "welcome"
             return render(request, "pages/welcome_page.html", context)
 
     login(request, user)
@@ -216,6 +217,14 @@ def university_by_email(request):
 
     email = request.GET["email"]
 
+    if len(email) == 0:
+        return_dict = {
+            "status": "Error",
+            "message": "E-mail cannot be empty"
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+
     if jUser.objects.filter(email=email).count() > 0:
         return_dict = {
             "status": "Error",
@@ -292,28 +301,32 @@ def validate_registration(request):
         _, domain = email.split('@')
     except ValueError:
         return_dict = {
-            "status": "Error"
+            "status": "Error",
+            "message": "Not a valid e-mail address"
         }
         return HttpResponse(json.dumps(return_dict))
 
     if jUser.objects.filter(email=email).count() > 0:
         return_dict = {
-            "status": "Error"
+            "status": "Error",
+            "message": "E-mail address exists"
         }
         return HttpResponse(json.dumps(return_dict))
     elif jUser.objects.filter(username=username).count() > 0:
         return_dict = {
-            "status": "Error"
+            "status": "Error",
+            "message": "Username exists."
         }
         return HttpResponse(json.dumps(return_dict))
     elif University.objects.filter(domains__name=domain).count() == 0:
         return_dict = {
-            "status": "Error"
+            "status": "Error",
+            "message": "University not found"
         }
         return HttpResponse(json.dumps(return_dict))
     else:
         return_dict = {
-            "status": "OK"
+            "status": "OK",
         }
         return HttpResponse(json.dumps(return_dict))
 

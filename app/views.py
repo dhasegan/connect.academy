@@ -23,12 +23,6 @@ def welcome(request):
     return render(request, "pages/welcome_page.html", context)
 
 
-def about(request):
-    context = {
-        "page": "about",
-    }
-    return render(request, "pages/about.html", context)
-
 
 @login_required
 def dashboard(request):

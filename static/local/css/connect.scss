@@ -4,8 +4,10 @@
 
 // Navigation bar
 $campusnet-popover-info-color:      #29ABE2;
+$login-input-padding:           3px;
 
 .connect-navigation {
+    border-bottom: 1px solid white;
     .connect-brand {
     
         .logo {
@@ -25,12 +27,24 @@ $campusnet-popover-info-color:      #29ABE2;
             max-width: 150px;
             max-height: 27px;
             margin-left: 8px;
+            padding-top: $login-input-padding;
+            padding-bottom: $login-input-padding;
+
         }
         #campusnet-popover {
             color: $campusnet-popover-info-color;
         }
+
     }
+
+    .navbar-tabs {
+        width: 48%;
+    }
+
 }
+
+
+
 
 $nav-sidebar-bg:                    white;
 $nav-sidebar-active-link:           $brand-primary;
@@ -291,34 +305,28 @@ $register-panel-padding-top:        75px;
 $register-panel-heading-color:      #282828;
 $register-validation-font-size:     11px;
 
-.welcome-page {
+.register-panel {
+    .register-heading {
+        background-color: $register-panel-heading-color;
+        color: white;
+        text-align: center;
 
-    .home-image-container {
-        .home-image {
-            width: 100% !important;
-        }
     }
-
-    .register-sidebar {
-        padding-top: $register-panel-padding-top;
-
-        .register-panel {
-            .register-heading {
-                background-color: $register-panel-heading-color;
-                color: white;
-                text-align: center;
-            }
-            .validation-ok {
-                color: $brand-success;
-                font-size: $register-validation-font-size;
-            }
-            .validation-error {
-                color: $brand-danger;
-                font-size: $register-validation-font-size;
-            }
-        }
+    .validation-ok {
+        color: $brand-success;
+        font-size: $register-validation-font-size;
+        font-weight:bold;
+    }
+    .validation-error {
+        color: $brand-danger;
+        font-size: $register-validation-font-size;
+        font-weight:bold;
     }
 }
+
+.welcome-page-navbar {
+        margin-bottom:0px
+    }
 
 // Forum page
 .forum-page,

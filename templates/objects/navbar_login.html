@@ -1,9 +1,7 @@
 {% load i18n %}
 
 {% if not user_auth %}
-    <ul class="nav navbar-nav navbar-right">
-        {% include 'objects/language.html' %}
-    </ul>
+   
 
     <form class="navbar-form navbar-right login-form" method="post" action="/login">
         {% csrf_token %}
@@ -17,8 +15,11 @@
         <div class="form-group">
           <input type="password" class="form-control login-input" placeholder='{% trans "Password" %}' name="password" required>
         </div>
-        <button type="submit" class="btn btn-default"  id="login_button"  height="27px"><b> {% trans "Login" %} </b></button>
+        <button type="submit" class="btn btn-default login-input"  id="login_button"  height="27px"><b> {% trans "Login" %} </b></button>
+        <a data-toggle="modal" href="#register_modal" class="btn btn-default login-input" id='register_button'> <b>{% trans "Register" %} </b> </a>
     </form>
+    {% include 'objects/welcome/register_form.html' %}
+
 
 {% else %}
   <ul class="nav navbar-nav navbar-right">

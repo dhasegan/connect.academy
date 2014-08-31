@@ -17,19 +17,30 @@
     {% compressed_css 'connect' %}
 
     {% block extra_css_includes %}
+    
     {% endblock %}
   </head>
-  <body id="body_image">
+  <body {% if page == "welcome" %} data-spy="scroll" data-offset="0" data-target="#navbar-main" {% endif %}>
 
     {% include 'objects/navbar.html' %}
-      <div class="container" id="main_content_container">
-        {% include 'objects/notifications/alerts.html' %}
+     {% if page != "welcome" %} 
+     <div class="container" id="main_content_container"> 
+     {% endif %}
 
-        <div class="main-content">
-          {% block content %}
-          {% endblock %}
-        </div>
-      </div>
+        {% include 'objects/notifications/alerts.html' %} 
+
+        {% if page != "welcome" %}
+        <div class="main-content"> 
+        {% endif %}
+            {% block content %}
+            {% endblock %}
+        {% if page != "welcome" %} 
+        </div> 
+        {% endif %}
+     
+      {% if page != "welcome" %}
+      </div> 
+      {% endif %}
     {% comment %}
       This is not letting me see some stuff at the bottom of the page. needs to be fixed. (Tomas)
       {% include 'objects/footer.html' %}
