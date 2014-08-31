@@ -7,6 +7,8 @@ professors = json.load( open('bin/professors/professors_details.json') )
 univ = University.objects.filter(name__contains="Jacobs")[0]
 
 for username, details in professors.iteritems():
+    if jUser.objects.filter(username=username).count() > 0:
+        continue
     user = jUser.objects.create_user(username=username, first_name=details['fname'], last_name=details['lname'],
         password="theotherside01", user_type=USER_TYPE_PROFESSOR, university=univ, is_confirmed=True)
     if "email" in details:

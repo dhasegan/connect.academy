@@ -579,6 +579,15 @@
         "title": "",
         "year": ""
     },
+    "aveit": {
+        "account": "aveit",
+        "eid": "38804",
+        "email": "a.veit@jacobs-university.de",
+        "fname": "Alexander",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~aveit",
+        "lname": "Veit",
+        "title": "Lecturer"
+    },
     "avonrohden": {
         "account": "avonrohden",
         "birthday": "",
@@ -1423,6 +1432,15 @@
         "title": "",
         "year": "16"
     },
+    "fbue": {
+        "account": "fbue",
+        "eid": "34993",
+        "email": "f.bue@jacobs-university.de",
+        "fname": "Fr\u00e9d\u00e9ric",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~fbue",
+        "lname": "Bu\u00e9",
+        "title": "Lecturer"
+    },
     "fdeutsch": {
         "account": "fdeutsch",
         "birthday": "",
@@ -1690,6 +1708,26 @@
         "room": "RLH, 273",
         "title": "Lecturer"
     },
+    "gkloeck": {
+        "account": "gkloeck",
+        "eid": "34971",
+        "email": "g.kloeck@jacobs-university.de",
+        "fname": "Gerd",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~gkloeck",
+        "lname": "Kl\u00f6ck",
+        "title": "Lecturer"
+    },
+    "gmoellerin": {
+        "account": "gmoellerin",
+        "eid": "24049",
+        "email": "g.moellering@jacobs-university.de",
+        "fname": "Guido",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~gmoellerin",
+        "lname": "M\u00f6llering",
+        "phone": "3035",
+        "room": "Research IV, 79",
+        "title": "Associate Professor"
+    },
     "gmuskhelis": {
         "account": "gmuskhelis",
         "birthday": "",
@@ -1738,6 +1776,17 @@
         "title": "",
         "year": ""
     },
+    "gpfander": {
+        "account": "gpfander",
+        "eid": "90",
+        "email": "g.pfander@jacobs-university.de",
+        "fname": "G\u00f6tz",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~gpfander",
+        "lname": "Pfander",
+        "phone": "3211",
+        "room": "Research I, 112",
+        "title": "Associate Professor"
+    },
     "gress": {
         "account": "gress",
         "birthday": "",
@@ -1761,6 +1810,17 @@
         "status": "",
         "title": "Professor",
         "year": ""
+    },
+    "groeschent": {
+        "account": "groeschent",
+        "eid": "12122",
+        "email": "g.roeschenthaler@jacobs-university.de",
+        "fname": "Gerd-Volker",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~groeschent",
+        "lname": "R\u00f6schenthaler",
+        "phone": "3138",
+        "room": "Research III, 86",
+        "title": "Wisdom Professor"
     },
     "hblunck": {
         "account": "hblunck",
@@ -2260,6 +2320,17 @@
         "title": "Lecturer",
         "year": ""
     },
+    "iwuensche": {
+        "account": "iwuensche",
+        "eid": "27",
+        "email": "i.wunsche@jacobs-university.de",
+        "fname": "Isabel",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~iwuensche",
+        "lname": "W\u00fcnsche",
+        "phone": "3311",
+        "room": "Research IV, 107",
+        "title": "Professor"
+    },
     "jahting": {
         "account": "jahting",
         "birthday": "",
@@ -2427,6 +2498,17 @@
         "status": "",
         "title": "Academic Affairs Project Coordinator",
         "year": ""
+    },
+    "jschoenwae": {
+        "account": "jschoenwae",
+        "eid": "133",
+        "email": "j.schoenwaelder@jacobs-university.de",
+        "fname": "J\u00fcrgen",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~jschoenwae",
+        "lname": "Sch\u00f6nw\u00e4lder",
+        "phone": "3401",
+        "room": "Research I, 87",
+        "title": "Associate Professor"
     },
     "jverriere": {
         "account": "jverriere",
@@ -3194,6 +3276,17 @@
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mhoebig",
         "lname": "H\u00f6big",
         "title": "Lecturer"
+    },
+    "mhuelsmann": {
+        "account": "mhuelsmann",
+        "eid": "5793",
+        "email": "m.huelsmann@jacobs-university.de",
+        "fname": "Michael",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~mhuelsmann",
+        "lname": "H\u00fclsmann",
+        "phone": "3190",
+        "room": "South Hall, 140",
+        "title": "Associate Professor"
     },
     "mhuett": {
         "account": "mhuett",
@@ -4691,6 +4784,15 @@
         "title": "Associate Professor",
         "year": ""
     },
+    "svanderlug": {
+        "account": "svanderlug",
+        "eid": "39219",
+        "email": "s.vanderlugt@jacobs-university.de",
+        "fname": "Sanne",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~svanderlug",
+        "lname": "Van der Lugt",
+        "title": "Student;Further Lecturer"
+    },
     "svasylkevy": {
         "account": "svasylkevy",
         "birthday": "",
@@ -5024,6 +5126,17 @@
         "status": "",
         "title": "Professor",
         "year": ""
+    },
+    "ukuehnen": {
+        "account": "ukuehnen",
+        "eid": "127",
+        "email": "u.kuehnen@jacobs-university.de",
+        "fname": "Ulrich",
+        "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~ukuehnen",
+        "lname": "K\u00fchnen",
+        "phone": "3426",
+        "room": "Research IV, 39",
+        "title": "Associate Professor"
     },
     "upagel": {
         "account": "upagel",

@@ -7,6 +7,7 @@ Welcome aboard! You about to begin a journey that will revolutionize education f
 
 - Learn how to use Google
 - Clone the git repository
+- Get git submodules `git submodule update`
 - Set up the virtual environment `virtualenv venv`
 - Activate the virtual environment `source venv/bin/activate`
 - install the required packages
@@ -14,6 +15,7 @@ Welcome aboard! You about to begin a journey that will revolutionize education f
     pip install -r requirements.txt
   ```
 . if you have problems installing something, check the external libraries wiki for extra info
+- and node requirements `npm install`
 - Set up the DB 
   
   > mkdir academy/db

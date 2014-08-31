@@ -88,6 +88,6 @@ for courseDetails in coursesList:
 
 
     for dbProf in dbProfs:
-        ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
+        pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
 
  

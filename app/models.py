@@ -520,7 +520,7 @@ class Rating(models.Model):
 class Review(models.Model):
     course = models.ForeignKey('Course')
     review = models.CharField(max_length=5000)
-    datetime = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField()
 
     posted_by = models.ForeignKey('jUser', related_name='reviews_posted')
     anonymous = models.BooleanField(default=False)
@@ -529,6 +529,8 @@ class Review(models.Model):
     downvoted_by = models.ManyToManyField('jUser', related_name='review_downvoted')
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.datetime = timezone.now()
         super(Review, self).save(*args, **kwargs)
         ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
 
@@ -542,12 +544,14 @@ class CourseDocument(models.Model):
     course_topic = models.ForeignKey('CourseTopic', null=True, related_name="documents")
     course = models.ForeignKey('Course', related_name="documents")
     submitter = models.ForeignKey('jUser')
-    submit_time = models.DateTimeField(auto_now=True)
+    submit_time = models.DateTimeField()
 
     def __unicode__(self):
         return str(self.name)
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.submit_time = timezone.now()
         super(CourseDocument, self).save(*args, **kwargs)
         DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
 
@@ -577,10 +581,12 @@ class CourseHomeworkSubmission(models.Model):
 
     course = models.ForeignKey('Course')
     submitter = models.ForeignKey('jUser')
-    submit_time = models.DateTimeField(auto_now=True)
+    submit_time = models.DateTimeField()
     name = models.CharField(max_length=200)
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.submit_time = timezone.now()
         self.name = slugify(self.submitter.first_name + "-" + self.submitter.last_name + "-" + self.homework_request.name)
         super(CourseHomeworkSubmission, self).save(*args, **kwargs)
 
@@ -727,7 +733,7 @@ class ForumPost(models.Model):
     name = models.CharField(max_length=250)
     forum = models.ForeignKey('Forum')
     text = models.CharField(max_length=5000, blank=True, null=True)
-    datetime = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField()
 
     tag = models.ForeignKey('ForumTag')
 
@@ -743,6 +749,8 @@ class ForumPost(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
         ForumPostActivity.objects.create(user=self.posted_by, course=self.forum.course, forum_post=self)
         self.followed_by.add(self.posted_by)
@@ -750,7 +758,7 @@ class ForumPost(models.Model):
 class ForumAnswer(models.Model):
     post = models.ForeignKey('ForumPost')
     text = models.CharField(max_length=5000)
-    datetime = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField()
 
     parent_answer = models.ForeignKey('ForumAnswer', null=True, blank=True)
 
@@ -764,6 +772,8 @@ class ForumAnswer(models.Model):
         return self.text
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.datetime = timezone.now()
         super(ForumAnswer, self).save(*args, **kwargs)
         ForumAnswerActivity.objects.create(user=self.posted_by, course=self.post.forum.course, 
                                             forum_answer=self)
@@ -831,7 +841,7 @@ class CourseAppointment(Appointment):
 
 # Base class for all activities
 class CourseActivity(models.Model):
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField()
     course = models.ForeignKey('Course', related_name="activities")
     user = models.ForeignKey('jUser') # The user who performed the action
 
@@ -871,6 +881,12 @@ class CourseActivity(models.Model):
 
     def __unicode__(self):
         return self.get_subclass_type() + " Object"
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.timestamp = timezone.now()
+        super(CourseActivity, self).save(*args, **kwargs)
+
 # When a user creates a new post
 class ForumPostActivity(CourseActivity):
     forum_post = models.ForeignKey('ForumPost')
