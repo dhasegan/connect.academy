@@ -19,6 +19,9 @@
 .wc-toolbar button {
     margin-top: 0;
     margin-bottom: 0;
+    color:white;
+    background-color:#4099FF;
+    border:none;
 }
 
 .wc-toolbar .wc-title {
@@ -48,7 +51,7 @@
 
 .wc-grid-timeslot-header,
 .wc-header .wc-time-column-header {
-    width: 45px;
+    width: 75px;
 }
 
 .wc-header .wc-scrollbar-shim {
@@ -164,7 +167,7 @@ table.wc-time-slots {
 }
 
 .wc-hour-header {
-    text-align: right;
+    text-align: center;
 }
 .wc-hour-header.ui-state-active,
 .wc-hour-header.ui-state-default{
@@ -283,3 +286,4 @@ table.wc-time-slots {
 *:first-child+html .wc-grid-row-oddeven{top:2px;}
 *:first-child+html .wc-grid-row-freebusy{top:1px;}
 *:first-child+html .wc-time-slots .wc-today{/* due to rendering issues, no background */background:none;}
+

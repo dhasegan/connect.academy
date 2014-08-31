@@ -7,7 +7,7 @@ $(document).ready(function() {
     timeslotsPerHour: 4,
     allowCalEventOverlap: true,
     overlapEventsSeparate: true,
-    totalEventsWidthPercentInOneColumn : 95,
+    totalEventsWidthPercentInOneColumn : 100,
     
     
     height: function($calendar) {
@@ -81,7 +81,6 @@ $(document).ready(function() {
       var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
       $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
       setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
-      $(window).resize().resize(); //fixes a bug in modal overlay size ??
     },
 
     eventDrop: function(calEvent, $event) {
@@ -175,7 +174,6 @@ $(document).ready(function() {
        var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
        $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
        setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
-       $(window).resize().resize(); //fixes a bug in modal overlay size ??
     },
 
     eventMouseover: function(calEvent, $event) {
