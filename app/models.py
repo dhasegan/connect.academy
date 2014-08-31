@@ -246,6 +246,14 @@ class Course(models.Model):
             return None
         return sum([cur.rating for cur in ratings]) / len(ratings)
 
+    def get_catalogue(self):
+        course_path = None
+        university_category = self.university.get_university_category()
+        category = self.category
+        while category is not None and category != university_category:
+            course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
+            category = category.parent
+        return course_path
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -529,10 +537,13 @@ class Review(models.Model):
     downvoted_by = models.ManyToManyField('jUser', related_name='review_downvoted')
 
     def save(self, *args, **kwargs):
+        just_created = False
         if not self.id:
             self.datetime = timezone.now()
+            just_created = True
         super(Review, self).save(*args, **kwargs)
-        ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
+        if just_created:
+            ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
 
     def __unicode__(self):
         return str(self.review)

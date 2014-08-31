@@ -2,84 +2,58 @@
 {% load humanize %}
 
 {% block extra_js_includes %}
-<script type="text/javascript" src="{{ STATIC_URL }}jquery_schedule/libs/date.js"></script>
-<script type='text/javascript' src='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.js'></script>
+<script type="text/javascript" src="{{ STATIC_URL }}schedule/libs/date.js"></script>
+<script type='text/javascript' src='{{ STATIC_URL }}schedule/jquery.weekcalendar.js'></script>
 
 <script type='text/javascript'>
-  var year = new Date().getFullYear();
-  var month = new Date().getMonth();
-  var day = new Date().getDate();
+  year = new Date().getFullYear();
+  month = new Date().getMonth();
+  day = new Date().getDate();
 
-  var eventData = {
+  eventData = {
     events : {{appointments|safe}}
   };
 
-  $(document).ready(function() {
-    $('#calendar').weekCalendar({
-      data: eventData,
-
-      timeslotsPerHour: 4,
-      allowCalEventOverlap: true,
-      overlapEventsSeparate: true,
-      totalEventsWidthPercentInOneColumn : 95,
-
-      height: function($calendar) {
-        return $(window).height() - $('h1').outerHeight(true);
-      },
-      eventRender: function(calEvent, $event) {
-        if (calEvent.end.getTime() < new Date().getTime()) {
-          $event.css('backgroundColor', '#aaa');
-          $event.find('.time').css({
-            backgroundColor: '#999',
-            border:'1px solid #888'
-          });
-        }
-      },
-      eventNew: function(calEvent, $event) {
-        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
-      },
-      eventDrop: function(calEvent, $event) {
-        displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-      },
-      eventResize: function(calEvent, $event) {
-        displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-      },
-      eventClick: function(calEvent, $event) {
-        displayMessage('<strong>Clicked Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-      },
-      eventMouseover: function(calEvent, $event) {
-        displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-      },
-      eventMouseout: function(calEvent, $event) {
-        displayMessage('<strong>Mouseout Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
-      },
-      noEvents: function() {
-        displayMessage('There are no events for this week');
-      }
-    });
-
-    function displayMessage(message) {
-      $('#message').html(message).fadeIn();
-    }
-
-  });
+  id = {{ latest_id }};
 </script>
+<script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
 {% endblock %}
 
 
 {% block content %}
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
-<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}jquery_schedule/jquery.weekcalendar.css' /> 
-  <p class="description">
-    NOTES: <br/>
-    This calendar demonstrates a basic calendar. Events triggered are
-    displayed in the message area. Appointments in the past are shaded grey.
-    <br/>
-    This calendar demonstrates overlapped events with little space on right to
-    create new events  (new option <i>"totalEventsWidthPercentInOneColumn"</i>)
-  </p>
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/jquery.weekcalendar.css' /> 
+<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/skins/gcalendar.css' /> 
 
-  <div id="calendar"></div>
+<!-- The calendar -->
+
+<div id="calendar"></div>
+<div id="event_edit_container" hidden>
+  <form>
+    {%csrf_token%}
+    <ul>
+      <li>
+        Date: <span class="date_holder"></span> 
+      </li>
+        
+      <li>
+        <label for="start">Start Time:</label><select name="start"><option value="">Select Start Time</option></select>
+      </li>
+      
+      <li>
+        <label for="end">End Time:</label><select name="end"><option value="">Select End Time</option></select>
+      </li>
+      
+      <li>
+        <label for="body">Description:</label><textarea name="body"></textarea>
+      </li>
+
+      <li>
+        <label for="title"></label>Location: <input type="text" name="title"/>
+      </li>
+      
+    </ul>
+  </form>
+</div>
 {% endblock %}

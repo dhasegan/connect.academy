@@ -188,13 +188,8 @@ def course_page_context(request, course):
     context['activities'] = course_activities(request, course)
 
     # Course path
-    course_path = None
-    university_category = course.university.get_university_category()
-    category = course.category
-    while category is not None and category != university_category:
-        course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
-        category = category.parent
-    context['course_path'] = course_path
+    context['course_path'] = course.get_catalogue()
+    context['semester'] = context['course_path'].split(" > ")[0]
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(current_user)

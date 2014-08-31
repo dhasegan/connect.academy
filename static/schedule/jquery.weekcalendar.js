@@ -39,7 +39,7 @@
         minBodyHeight: 100,
         firstDayOfWeek: function(calendar) {
                   if ($(calendar).weekCalendar('option', 'daysToShow') != 5) {
-                    return 0;
+                    return 1;
                   } else {
                     //workweek
                     return 1;
@@ -49,7 +49,7 @@
         timeSeparator: ' to ',
         startParam: 'start',
         endParam: 'end',
-        businessHours: {start: 8, end: 18, limitDisplay: false},
+        businessHours: {start: 7, end: 23, limitDisplay: true},
         newEventText: 'New Event',
         timeslotHeight: 20,
         defaultEventLength: 2,
@@ -59,9 +59,9 @@
         showHeader: true,
         buttons: true,
         buttonText: {
-          today: 'today',
-          lastWeek: 'previous',
-          nextWeek: 'next'
+          today: 'This Week',
+          lastWeek: 'Previous Week',
+          nextWeek: 'Next Week'
         },
         switchDisplay: {},
         scrollToHourMillis: 500,
@@ -133,7 +133,19 @@
           }
         },
         eventBody: function(calEvent, calendar) {
-          return calEvent.title;
+          if(calEvent.title === 'undefined' && calEvent.body ==='undefined'){
+            return "";
+          }
+          
+          if(calEvent.body === 'undefined'){
+            return calEvent.title;  
+          }
+          
+          if(calEvent.title === 'undefined'){
+            return calEvent.body;
+          }
+          
+          return calEvent.body + " @ " + calEvent.title;
         },
         shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         longMonths: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -565,7 +577,7 @@
           var calendarHeight = options.height(this.element);
           var headerHeight = this.element.find('.wc-header').outerHeight();
           var navHeight = this.element.find('.wc-toolbar').outerHeight();
-          var scrollContainerHeight = Math.max(calendarHeight - navHeight - headerHeight, options.minBodyHeight);
+          var scrollContainerHeight = this.element.find('.wc-time-slots').outerHeight();
           var timeslotHeight = this.element.find('.wc-time-slots').outerHeight();
           this.element.find('.wc-scrollable-grid').height(scrollContainerHeight);
           if (timeslotHeight <= scrollContainerHeight) {
@@ -699,12 +711,13 @@
 
             calendarNavHtml += '<div class=\"ui-widget-header wc-toolbar\">';
               calendarNavHtml += '<div class=\"wc-display\"></div>';
-              calendarNavHtml += '<div class=\"wc-nav\">';
-                calendarNavHtml += '<button class=\"wc-prev\">' + options.buttonText.lastWeek + '</button>';
-                calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button>';
-                calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button>';
+              calendarNavHtml += '<h3 class=\"wc-title\"></h3>';
+              calendarNavHtml += '<br>'
+              calendarNavHtml += '<div class=\"wc-nav\" id=\"navigation_week\">';
+                calendarNavHtml += '<button class=\"wc-prev\">' + options.buttonText.lastWeek + '</button> &nbsp; &nbsp;';
+                calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button> &nbsp; &nbsp;';
+                calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button> &nbsp; &nbsp;';
               calendarNavHtml += '</div>';
-              calendarNavHtml += '<h1 class=\"wc-title\"></h1>';
             calendarNavHtml += '</div>';
 
             $(calendarNavHtml).appendTo($calendarContainer);
@@ -864,8 +877,8 @@
           Find a way to handle it
         */
         $calendarContainer.find('.wc-time-header-cell').css({
-          height: (options.timeslotHeight * options.timeslotsPerHour) - 11,
-          padding: 5
+          height: (options.timeslotHeight * options.timeslotsPerHour) - 1,
+          padding: 0
         });
         //add the user data to every impacted column
         if (showAsSeparatedUser) {

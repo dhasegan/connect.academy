@@ -416,6 +416,11 @@ class Populator:
         populator.populate_forum_upvotes()
         print "ok"
 
+        print "populate_appointments..."
+        Populator.populate_appointments()
+        print "ok"
+
+
     @staticmethod
     def populate_xsmall():
         populator = Populator()
@@ -432,6 +437,11 @@ class Populator:
         populator.populate_forum_upvotes()
         print "ok"
 
+        print "populate_appointments..."
+        Populator.populate_appointments()
+        print "ok"
+
+
     def populate_course_intense():
         populator = Populator()
         populator.populate_database(nr_universities=10, nr_students=50, nr_categories=200,
@@ -440,6 +450,7 @@ class Populator:
         print "populate_registrations... "
         populator.populate_registrations()
         print "ok"
+
 
     @staticmethod
     def populate_course_appointments():
@@ -489,10 +500,10 @@ class Populator:
 
     @staticmethod
     def populate_appointments():
-        print "Populating course appointments ..."
+        print "\tPopulating course appointments ..."
         status_course = Populator.populate_course_appointments()
-        print "Populating personal appointments ..."
+        print "\tPopulating personal appointments ..."
         status_person = Populator.populate_personal_appointments()
 
         if status_course and status_person:
-            print "Successfully populated the appointment tables"
+            print "\tSuccessfully populated the appointment tables"
