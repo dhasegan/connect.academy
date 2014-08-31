@@ -448,22 +448,23 @@ $tables-margin-left:            20px;
 
 // Profile page
 
-$profile-picture-height:    200px;
+$profile-picture-width:    200px;
+
 
 .profile-page {
     .summary-textarea {
         width:100%;
     }
     .profile-picture {
-        height: $profile-picture-height;
+        width: $profile-picture-width;
     }
-/*    .profile-picture-input {
+  .profile-picture-input {
         width: $profile-picture-width;
     }
     .profile-picture-submit {
         width: $profile-picture-width;
     }
-*/
+
 }
 
 // Manage account page

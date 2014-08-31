@@ -231,18 +231,14 @@
     text-align: center;
     color: white; }
 
-.profile-page {
-  /*    .profile-picture-input {
-          width: $profile-picture-width;
-      }
-      .profile-picture-submit {
-          width: $profile-picture-width;
-      }
-  */ }
-  .profile-page .summary-textarea {
-    width: 100%; }
-  .profile-page .profile-picture {
-    height: 200px; }
+.profile-page .summary-textarea {
+  width: 100%; }
+.profile-page .profile-picture {
+  width: 200px; }
+.profile-page .profile-picture-input {
+  width: 200px; }
+.profile-page .profile-picture-submit {
+  width: 200px; }
 
 .manage-account-page h4 {
   margin-top: 2px;

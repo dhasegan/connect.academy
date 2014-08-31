@@ -1,4 +1,7 @@
 
+from django.utils import timezone
+import pytz
+
 # Insert results into the DB
 
 from app.models import *
@@ -82,6 +85,9 @@ for courseDetails in coursesList:
     if additional_info:
         course.additional_info = additional_info[0:5000]
     course.save()
+
+
     for dbProf in dbProfs:
         ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
 
+ 

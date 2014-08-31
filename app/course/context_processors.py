@@ -238,6 +238,7 @@ def course_activities(request, course):
     user = request.user.juser
 
     activities_list = list(CourseActivity.objects.filter(course=course).reverse())
+    activities_list = [a for a in activities_list if a.can_view(user)]
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
                              key=lambda a: a['activity'].timestamp,
@@ -252,6 +253,8 @@ def new_course_activities(request,course):
     last_id = long(request.GET.get('last_id'))
     
     activities_list = list(CourseActivity.objects.filter(course=course, id__gt=last_id).reverse())
+    activities_list = [a for a in activities_list if a.can_view(user)]
+    
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
                          key=lambda a: a['activity'].timestamp,

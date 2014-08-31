@@ -45,8 +45,9 @@ def dashboard_activities(request,user):
                              key=lambda activity: activity.timestamp,
                              reverse=True)
 
-    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_list = [a for a in activities_list if a.can_view(user)]
 
+    activities_context = [activity_context(activity,user) for activity in activities_list]
   
     return paginated(request,activities_context, 20)
 
@@ -140,6 +141,8 @@ def new_dashboard_activities(request,user):
     activities_list = sorted(own_course_activities + forum_answer_activities, 
                 key = lambda activity: activity.timestamp, 
                 reverse=True)
+
+    activities_list = [a for a in activities_list if a.can_view(user)]
 
     activities_context = [activity_context(activity,user) for activity in activities_list]
 
