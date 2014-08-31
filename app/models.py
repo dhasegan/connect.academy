@@ -246,6 +246,14 @@ class Course(models.Model):
             return None
         return sum([cur.rating for cur in ratings]) / len(ratings)
 
+    def get_catalogue(self):
+        course_path = None
+        university_category = self.university.get_university_category()
+        category = self.category
+        while category is not None and category != university_category:
+            course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
+            category = category.parent
+        return course_path
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -833,7 +841,7 @@ class PersonalAppointment(Appointment):
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
-    course_topic = models.ForeignKey('CourseTopic', related_name='appointments')
+    course_topic = models.ForeignKey('CourseTopic', related_name='appointments', null=True)
     def __unicode__(self):
         return self.course.name
 
@@ -863,6 +871,24 @@ class CourseActivity(models.Model):
             return "WikiActivity"
         else:
             return "CourseActivity"
+
+    def can_view(self,user):
+        activity_type = self.get_subclass_type()
+        if activity_type != "ForumPostActivity" and activity_type != "ForumAnswerActivity":
+            return True
+        elif activity_type == "ForumPostActivity":
+            tag = self.forumpostactivity.forum_post.tag
+            if tag.can_view(self.course,user):
+                return True
+            else:
+                return False
+        else:
+            # activity_type == ForumAnswerActivity
+            tag = self.forumansweractivity.forum_answer.post.tag
+            if tag.can_view(self.course,user):
+                return True
+            else:
+                return False
 
     def __unicode__(self):
         return self.get_subclass_type() + " Object"

@@ -10,6 +10,67 @@ from collections import deque
 from htmlentitydefs import name2codepoint
 from HTMLParser import HTMLParser
 
+# helper for appointments parser
+def get_match_indeces(pattern, string):
+    return [(m.start(0), m.end(0)) for m in re.finditer(pattern, string)]
+
+# Appointments Parser
+def parse_appointments(course_dict):
+    appointments = []
+    if "Appointments" in course_dict:
+        profs = json.load( open('../professors/professors_details.json'))
+        raw_appointments = course_dict["Appointments"].replace("Appointments Date From To Room Instructors", "")
+        date_pattern = "(Mon|Tue|Wed|Th|Fri|Sat|Sun), \d(\d)?\. (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(\.)? \d\d\d\d \d\d:\d\d \d\d:\d\d"
+        matches = get_match_indeces(date_pattern, raw_appointments)
+        for i in range(len(matches)):
+            current_appointment = ""
+            if i + 1 < len(matches):
+                # from the start of this match to the start of the next match
+                current_appointment = raw_appointments[matches[i][0]:matches[i+1][0]-3] #-3 to skip the number before the appointment date
+            else:
+                # from the start of this match to the end of the string
+                current_appointment = raw_appointments[matches[i][0]:]
+            match = get_match_indeces(date_pattern, current_appointment)[0]
+            
+            dates_string = current_appointment[match[0]:match[1]]
+            start_time = dates_string[-11:-6]
+            end_time = dates_string[-5:]
+            
+            date_info = dates_string[:-11]
+            _, date = date_info.split(", ")
+            
+            # Start and end times
+            start_datetime = date + start_time
+            end_datetime = date + end_time
+
+        
+
+            location = current_appointment[match[1]+1:]
+            #location = location.decode("utf-8") 
+            # clean prof names from location
+            if "Instructors" in course_dict:      
+                for prof in course_dict['Instructors'].split("; "):
+                    #prof = prof.decode("utf-8")
+                    location = location.replace(prof,"")
+                    location = location.replace(";", "")
+                
+            for prof in profs:
+                name =  profs[prof]["fname"]+ " " + profs[prof]["lname"]
+                location = location.replace(name, u"")
+            
+            # just in case some of these things have remained
+            location = location.replace("Prof.", "")
+            location = location.replace("Dr.", "")
+
+            appointment = {
+                "start": start_datetime,
+                "end": end_datetime,
+                "location": location,
+                "description": course_dict["CourseName"]
+            }
+            appointments.append(appointment)
+    return appointments
+
 # create a subclass and override the handler methods
 class MyHTMLParser(HTMLParser):
     def __init__(self):
@@ -83,6 +144,7 @@ def cleanuper(content):
     no_tabs = no_unix_newlines.replace("\t", " ")
     no_extra_spaces = re.sub(r'  +', ' ', no_tabs)
     formatted = no_extra_spaces.replace('<br>', '\n')
+
     return formatted
 
 importantFields = [ 'Instructors', 'Type', 'Org-unit', 'Course Name Abbreviation', 'Hours per week',
@@ -111,6 +173,7 @@ for link in linksFile:
     parser.feed(page)
     uglyCourseInfo = parser.getCourseInfo()
     test = json.dumps(uglyCourseInfo)
+
     # Delete the extra stuff and make it a dictionary
     courseInfo = dict(map(lambda x: (cleanuper(x[0]),cleanuper(x[1])), uglyCourseInfo.iteritems() ))
     if not 'Course offering details' in courseInfo:
@@ -121,7 +184,7 @@ for link in linksFile:
     details = courseInfo['Course offering details']
     detailsMap = {}
     if 'Appointments' in courseInfo:
-        detailsMap['Appointments'] = courseInfo['Appointments']
+        detailsMap["Appointments"] = courseInfo['Appointments']
     if 'Literature' in courseInfo:
         detailsMap['Literature'] = courseInfo['Literature']
     # For each field found put it in the map
@@ -139,7 +202,7 @@ for link in linksFile:
     if 'Contained in course catalogues' in courseInfo:
         catalogue = courseInfo['Contained in course catalogues']
         startIdx = catalogue.find('> ')
-        detailsMap['Catalogue'] = "Spring > " + catalogue[startIdx+2:].strip()
+        detailsMap['Catalogue'] = "Fall > " + catalogue[startIdx+2:].strip()
     else:
         print "Error: No label 'Contained in course catalogues'"
     detailsMap['Name'] = courseName.strip()
@@ -149,6 +212,11 @@ for link in linksFile:
     detailsMap['CourseID'] = courseID
     detailsMap['CourseName'] = courseNameOnly
     detailsMap['CampunetLink'] = link
+
+    #### parse Appointments
+    appointments = parse_appointments(detailsMap)
+    detailsMap["Appointments"] = appointments
+
     # Add to our list if it can
     coursesList.append(detailsMap)
     text = json.dumps(detailsMap)
@@ -156,6 +224,6 @@ for link in linksFile:
 linksFile.close()
 namesFile.close()
 
-outputFile = open('courseDetailsSpring', 'w')
+outputFile = open('courseDetailsFall', 'w')
 outputFile.write( json.dumps(coursesList) )
 outputFile.close()

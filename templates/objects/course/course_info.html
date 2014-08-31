@@ -44,17 +44,17 @@
                 <div class="row text-center">
                     <div class="col-md-3">
                         {% if course.course_id %}
-                            {% trans "Course ID" %}: {{ course.course_id }}
+                            {% trans "Course ID" %}: <a href="{{course.external_link}}"> {{ course.course_id }} </a>
                         {% endif %}
                     </div>
                     <div class="col-md-3">
                         {% if course.abbreviation %}
-                            {% trans "Abbreviation" %}: {{ course.abbreviation }}
+                            {% trans "Abbrev" %}: {{ course.abbreviation }}
                         {% endif %}
-                        {% trans "Teaching Assistants" %} <span class="caret"></span>
+                        {# {% trans "Teaching Assistants" %} <span class="caret"></span> #}
                     </div>
                     <div class="col-md-3">
-                        {% trans "Semester" %}: {{ course.category.name }}
+                        {% trans "Semester" %}: {{ semester }}
                     </div>
                     <div class="col-md-3">
                         {% trans "Credits" %}: <span class="badge course-credits"> {{ course.credits }} </span>

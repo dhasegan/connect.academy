@@ -22,7 +22,9 @@
                             <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>
                             {% trans "in" %} 
                             {% with post.question.tag as tag %}
-                                {% include "objects/tag_link.html" %}
+                                {% with activity.course as course %}
+                                    {% include "objects/tag_link.html" %}
+                                {% endwith %}
                             {% endwith %}
                             
                             

@@ -1,4 +1,5 @@
-
+from django.utils import timezone
+import pytz
 from app.models import *
 import json
 
@@ -7,7 +8,12 @@ coursesList = json.load(f)
 f.close()
 
 univ = University.objects.filter(name__contains="Jacobs")[0]
-category = univ.get_university_category()
+try:
+    category = univ.get_university_category()
+except:
+    connect_cat = Category.objects.create(parent=None, level = 0, name="Connect.Academy", abbreviation="connect")
+    category = Category.objects.create(parent=connect_cat, level=1, name="Jacobs University Bremen", abbreviation="jacobs")
+
 
 abbreviations = {
     'Electrical Engineering and Computer Science': 'EECS',

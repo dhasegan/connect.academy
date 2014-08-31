@@ -1,4 +1,3 @@
-
 # Insert results into the DB
 
 from app.models import *
@@ -6,13 +5,13 @@ import json
 
 f = open('bin/combiner/courseDetails')
 coursesList = json.load(f)
+
 f.close()
 
 univ = University.objects.filter(name__contains="Jacobs")[0]
 category = univ.get_university_category()
-
 for courseDetails in coursesList:
-    # print courseDetails['CourseName']
+    #print courseDetails['CourseName']
     if len(Course.objects.filter(name=courseDetails['CourseName'])) > 0:
         continue
     # Setup instructors
@@ -84,4 +83,3 @@ for courseDetails in coursesList:
     course.save()
     for dbProf in dbProfs:
         pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
-

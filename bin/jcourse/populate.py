@@ -42,6 +42,8 @@ jack = jUser.objects.get(username="jack")
 
 not_found_reviews = []
 
+# !!!!!!!!!!!!!! IMPORTANT BUG TO FIX!!!!!!!!!!!!!!!!!!1
+# This populator creates 2 activity reviews for each review. Beware of the double poster
 for review in reviews:
     cid = review['course_id'].replace("APS", "999")
     courses = Course.objects.filter(course_id=cid)

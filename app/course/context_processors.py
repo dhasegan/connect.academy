@@ -188,13 +188,8 @@ def course_page_context(request, course):
     context['activities'] = course_activities(request, course)
 
     # Course path
-    course_path = None
-    university_category = course.university.get_university_category()
-    category = course.category
-    while category is not None and category != university_category:
-        course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
-        category = category.parent
-    context['course_path'] = course_path
+    context['course_path'] = course.get_catalogue()
+    context['semester'] = context['course_path'].split(" > ")[0]
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(current_user)
@@ -238,6 +233,7 @@ def course_activities(request, course):
     user = request.user.juser
 
     activities_list = list(CourseActivity.objects.filter(course=course).reverse())
+    activities_list = [a for a in activities_list if a.can_view(user)]
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
                              key=lambda a: a['activity'].timestamp,
@@ -252,6 +248,8 @@ def new_course_activities(request,course):
     last_id = long(request.GET.get('last_id'))
     
     activities_list = list(CourseActivity.objects.filter(course=course, id__gt=last_id).reverse())
+    activities_list = [a for a in activities_list if a.can_view(user)]
+    
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
                          key=lambda a: a['activity'].timestamp,
