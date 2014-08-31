@@ -119,7 +119,7 @@ $nav-sidebar-focus-link:            transparentize($connect-gray, 0.5);
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                border-bottom: 1px solid $gray-lighter;
+                //border-bottom: 1px solid $gray-lighter;
 
                 &:hover,
                 &:focus {
@@ -237,7 +237,12 @@ $course-img-max-size:           150px;
 
             }
             .course-name {
-                h3 { margin: 4px; }
+                h3 { 
+                    margin: 4px;
+                    a {
+                        color: $connect-dark-blue;
+                    }
+                }
             }
             .course-rating {
                 .rating-badge {

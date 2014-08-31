@@ -56,8 +56,7 @@
       .sidebar .nav-sidebar li > a {
         color: white;
         white-space: nowrap;
-        overflow: hidden;
-        border-bottom: 1px solid #eeeeee; }
+        overflow: hidden; }
         .sidebar .nav-sidebar li > a:hover, .sidebar .nav-sidebar li > a:focus {
           background-color: rgba(227, 227, 227, 0.5);
           background-opacity: 50%; }
@@ -111,6 +110,8 @@
   max-width: 150px; }
 .course-page .course-info .info-header .course-name h3 {
   margin: 4px; }
+  .course-page .course-info .info-header .course-name h3 a {
+    color: #151621; }
 .course-page .course-info .info-header .course-rating .rating-badge {
   margin-bottom: 4px;
   background-color: #33424D; }
