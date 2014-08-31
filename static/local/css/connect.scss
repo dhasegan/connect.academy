@@ -7,6 +7,21 @@ $connect-dark-blue:     #151621;
 $connect-light-blue:    $brand-primary;
 $connect-gray:          #E3E3E3;
 
+$heading-font-family: 'Source Sans Pro', sans-serif;
+$h3-size: 17px ;
+$h4-size: 16px ;
+
+h3{
+    font-family: $heading-font-family;
+    font-size: $h3-size;
+}
+
+
+h4{
+    font-family: $heading-font-family;
+    font-size: $h4-size;
+}
+
 .panel-default {
     .panel-heading {
         background-color: $connect-gray;
@@ -27,7 +42,8 @@ $connect-gray:          #E3E3E3;
 // Navigation bar
 $campusnet-popover-info-color:      #29ABE2;
 $login-input-padding:           3px;
-
+$navbar-clickable-links:    'Source Sans Pro', sans-serif;
+$navbar-font-size:      17px;
 .connect-navigation {
     border-bottom: 1px solid white;
     background-color: $connect-dark-blue;
@@ -67,6 +83,8 @@ $login-input-padding:           3px;
                 color: white;
                 width: 100px;
                 text-align:center;
+                font-family: $navbar-clickable-links;
+                font-size: $navbar-font-size;
                 &:hover {
                     font-weight: bold;
                 }
@@ -151,6 +169,8 @@ $course-rating-badge-color:         #33424D;
 $course-credits-badge-color:        $connect-light-blue;
 $search-courses-color:          transparentize($connect-gray, 0.8);
 $search-courses-border-color:   darken($connect-gray, 50%);
+$course-name-font-family:      'Source Sans Pro', sans-serif;
+$course-name-font-size:         17px;
 .explore-page {
     .search-sidebar {
         #credits-slider,
@@ -181,6 +201,8 @@ $search-courses-border-color:   darken($connect-gray, 50%);
             .block-header {
                 .course-name {
                     font-size: 18px;
+                    font-family: $course-name-font-family;
+                    font-size:  $course-name-font-size;
                 }
                 .course-rating {
                     background-color: $course-rating-badge-color;
@@ -377,12 +399,14 @@ $course-img-max-size:           150px;
 $register-panel-padding-top:        75px;
 $register-panel-heading-color:      #282828;
 $register-validation-font-size:     11px;
+$register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
 
 .register-panel {
     .register-heading {
         background-color: $register-panel-heading-color;
         color: white;
         text-align: center;
+        font-family: $register-panel-heading-font-family;
 
     }
     .validation-ok {
@@ -398,7 +422,9 @@ $register-validation-font-size:     11px;
 }
 
 .welcome-page-navbar {
-        margin-bottom:0px
+        margin-bottom:0px;
+        font-family: $navbar-clickable-links;
+        font-size: $navbar-font-size;
     }
 
 $tag-color: $connect-gray;
