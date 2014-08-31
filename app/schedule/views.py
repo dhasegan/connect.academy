@@ -5,6 +5,7 @@ import pytz
 from helpers import *
 from dateutil.parser import parse
 from dateutil.tz import tzoffset
+from django.utils.timezone import utc
 
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
@@ -110,8 +111,21 @@ def add_personal_appointment(request):
         
         start = parse(start_time) # from dateutil.parser
         end = parse(end_time)
-        appointment = PersonalAppointment(start=start \
-                                         ,end=end \
+
+        local_timezone = timezone.get_current_timezone() # the current client timezone
+
+        if timezone.is_naive(start):
+            start = timezone.make_aware(start,local_timezone)
+        if timezone.is_naive(end):
+            end = timezone.make_aware(end,local_timezone)
+
+        start_utc = timezone.localtime(start,pytz.utc)
+        end_utc = timezone.localtime(end,pytz.utc)   
+
+
+
+        appointment = PersonalAppointment(start=start_utc\
+                                         ,end=end_utc \
                                          ,location=location \
                                          ,description=description \
                                          ,user=user)
@@ -138,12 +152,22 @@ def edit_personal_appointment(request):
         start = parse(new_start_time)
         end = parse(new_end_time)
         
+        local_timezone = timezone.get_current_timezone()
+
+        if timezone.is_naive(start):
+            start = timezone.make_aware(start,local_timezone)
+        if timezone.is_naive(end):
+            end = timezone.make_aware(end,local_timezone)
+
+        start_utc = timezone.localtime(start,pytz.utc)
+        end_utc = timezone.localtime(end,pytz.utc)
+
         appointment = Appointment.objects.filter(id=id_to_edit).get()
         
         appointment.description = new_description
         appointment.location = new_location
-        appointment.start = start
-        appointment.end = end
+        appointment.start = start_utc
+        appointment.end = end_utc
         appointment.save()
     else:
         raise Http404

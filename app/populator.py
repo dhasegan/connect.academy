@@ -466,7 +466,7 @@ class Populator:
             course_topics = course.course_topics.all()
             for i in range(len(course_topics)):
                 topic = course_topics[i]
-                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
+                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(7,22),minutes=random.randint(0,59))
                 end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
                 d = "CourseAppointment " + str(index)
@@ -489,7 +489,7 @@ class Populator:
         index = 0
         for user in users:
             for i in range(random.randint(1,5)):
-                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(0,22),minutes=random.randint(0,59))
+                start = current_date + timedelta(days=random.randint(0,6),hours=random.randint(7,22),minutes=random.randint(0,59))
                 end = start + timedelta(hours=random.randint(1,3))
                 l = "Location " + str(index)
                 d = "PersonalAppointment " + str(index)

@@ -73,13 +73,22 @@
         allowEventCreation: true,
         hourLine: false,
         deletable: function(calEvent, element) {
-          return true;
+          if(calEvent.data === 'course')
+            return false;
+          if(calEvent.data === 'personal')
+            return true;
         },
         draggable: function(calEvent, element) {
-          return true;
+          if(calEvent.data === 'course')
+            return false;
+          if(calEvent.data === 'personal')
+            return true;
         },
         resizable: function(calEvent, element) {
-          return true;
+          if(calEvent.data === 'course')
+            return false;
+          if(calEvent.data === 'personal')
+            return true;
         },
         eventClick: function(calEvent, element, dayFreeBusyManager, 
                                                       calendar, clickEvent) {
@@ -133,15 +142,15 @@
           }
         },
         eventBody: function(calEvent, calendar) {
-          if(calEvent.title === 'undefined' && calEvent.body ==='undefined'){
+          if( (calEvent.title === 'undefined' || calEvent.title === "") && (calEvent.body ==='undefined' || calEvent.body === "") ) {
             return "";
           }
           
-          if(calEvent.body === 'undefined'){
+          if(calEvent.body === 'undefined' || calEvent.body === ""){
             return calEvent.title;  
           }
           
-          if(calEvent.title === 'undefined'){
+          if(calEvent.title === 'undefined' || calEvent.title === ""){
             return calEvent.body;
           }
           

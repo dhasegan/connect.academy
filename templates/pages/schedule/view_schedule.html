@@ -14,7 +14,8 @@
     events : {{appointments|safe}}
   };
 
-  id = {{ latest_id }};
+  var id = {{ latest_id }};
+
 </script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
 {% endblock %}

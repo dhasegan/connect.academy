@@ -42,7 +42,6 @@ $(document).ready(function() {
           },
           buttons: {
              save : function() {
-                id += 1;
                 calEvent.id = id;
                 calEvent.start = new Date(startField.val());
                 calEvent.end = new Date(endField.val());
@@ -62,11 +61,23 @@ $(document).ready(function() {
                     'body': bodyField.val(), 
                     'start': new Date(startField.val()), 
                     'end': new Date(endField.val()),
-                    //'location' : 'TODO', 
                   },
                   success: function(){
                     //alert("Appointment added successfully");
+                    id += 1;
+
+                    eventData.events.push({
+                      'id' : calEvent.id,
+                      'title': titleField.val(),
+                      'body': bodyField.val(), 
+                      'start': new Date(startField.val()), 
+                      'end': new Date(endField.val()),
+                      'data':'personal',
+                    });
+
+                    $calendar.weekCalendar("refresh");
                   }
+
                 });
              },
 
@@ -94,7 +105,7 @@ $(document).ready(function() {
     // to modify existing calEvents (or remove them)
     eventClick: function(calEvent, $event) {
       
-      if (calEvent.readOnly) {
+      if (calEvent.readOnly || calEvent.data === 'course') {
           return;
        }
     
@@ -131,7 +142,6 @@ $(document).ready(function() {
                     'body': bodyField.val(), 
                     'start': new Date(startField.val()), 
                     'end': new Date(endField.val()),
-                    //'location' : 'TODO', 
                   },
                   success: function(){
                     //alert("Successfuly edited event");
@@ -139,6 +149,7 @@ $(document).ready(function() {
                 });
 
                 $calendar.weekCalendar("updateEvent", calEvent);
+                $calendar.weekCalendar("refresh");
                 $dialogContent.dialog("close");
                 
 
@@ -160,6 +171,16 @@ $(document).ready(function() {
                     if(calEvent.id === id){
                       id -= 1;
                     }
+
+                    for(var i = 0 ; i < eventData.events.length; i++){
+                      var e = eventData.events[i];
+                      if(e.id === calEvent.id){
+                        eventData.events.splice(i,1);
+                      }
+                    }
+
+                    data:eventData;
+
                   }
                 });
              },
