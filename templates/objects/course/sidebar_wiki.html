@@ -3,27 +3,33 @@
 
 <div class="tab-pane course-wiki fade {% if current_tab == 'wiki' %}in active{% endif %}">
     {% if wiki and can_edit_wiki %}
-        <div class="panel panel-default">
+        <div class="panel panel-default sidebar">
             <div class="panel-body">
-                <h4> 
-                    {% trans "Wiki page" %} 
-                    {% if can_edit_wiki %}
-                        <a class='btn btn-primary pull-right' href='{% url "edit_wiki_page" course.slug %}'>{% trans "Edit Wiki" %}</a>
-                    {% endif %}
-                </h4>
+                <div class="sidebar-header">
+                    <h4> 
+                        {% trans "Wiki page" %} 
+                        {% if can_edit_wiki %}
+                            <a class='btn btn-primary pull-right' href='{% url "edit_wiki_page" course.slug %}'>{% trans "Edit Wiki" %}</a>
+                        {% endif %}
+                    </h4>
+                </div>
+                <br>
+                <br>
                 {% trans "Contributors" %}
-                <ul>
-                    {% for revision in wiki_revisions %}
-                        <li> <a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">r{{ revision.revision }}</a>:
-                            {% with revision.editor as juser %}
-                                {% include 'objects/user_link.html' %}
-                            {% endwith %}
-                            <span class="text-muted pull-right">
-                                {{ revision.created_at|naturaltime }}
-                            </span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="sidebar-tabs">
+                    <ul>
+                        {% for revision in wiki_revisions %}
+                            <li> <a href="{% url 'versioning_revision_reapply' pk=revision.pk %}">r{{ revision.revision }}</a>:
+                                {% with revision.editor as juser %}
+                                    {% include 'objects/user_link.html' %}
+                                {% endwith %}
+                                <span class="text-muted pull-right">
+                                    {{ revision.created_at|naturaltime }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     {% endif %}

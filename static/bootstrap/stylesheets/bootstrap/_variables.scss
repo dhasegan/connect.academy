@@ -17,7 +17,7 @@ $gray:                   lighten(#000, 33.5%) !default; // #555
 $gray-light:             lighten(#000, 46.7%) !default; // #777
 $gray-lighter:           lighten(#000, 93.5%) !default; // #eee
 
-$brand-primary:         #428bca !default;
+$brand-primary:         #4099FF !default;
 $brand-success:         #5cb85c !default;
 $brand-info:            #5bc0de !default;
 $brand-warning:         #f0ad4e !default;
@@ -30,7 +30,7 @@ $brand-danger:          #d9534f !default;
 
 //** Background color for `<body>`.
 $body-bg:                   #fff !default;
-$body-bg-image:             url(../../project_papper.png);
+$body-bg-image:             url(../../graphy.png);
 $body-bg-repeat:            repeat;
 //** Global text color on `<body>`.
 $text-color:            $gray-dark !default;

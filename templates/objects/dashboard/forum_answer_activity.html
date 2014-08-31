@@ -8,8 +8,12 @@
                     {% include 'objects/forum/upvote_answer.html' %}
                 </span>
 
-                {% if not answer.answer.anonymous %} 
-                    {% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                {% if not answer.answer.anonymous %}
+                    {% if answer.answer.post.posted_by.id == user.id %} 
+                        You
+                    {% else %}
+                        {% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                    {% endif %}
                 {% else %}
                     {% trans "Anonymous" %}
                 {% endif %}

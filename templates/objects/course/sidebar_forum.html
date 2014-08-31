@@ -2,10 +2,17 @@
 
 <div class="tab-pane course-forum fade {% if current_tab == 'connect' %}in active{% endif %}">
     {% if posts %}
-        <div class="panel panel-default">
+        <div class="panel panel-default sidebar">
             <div class="panel-body">
-                <h4 class="sidebar-name"> {% trans "Forum posts" %} </h4>
-                {% include "objects/forum/posts.html" %}
+            	<div class="sidebar-header">
+            		<h4 class="sidebar-name"> {% trans "Forum posts" %} </h4>
+            	</div>
+            	<br>
+            	<br>
+            	<div class="sidebar-tabs">
+	                
+	                {% include "objects/forum/posts.html" %}
+	             </div>
             </div>
         </div>
     {% endif %}

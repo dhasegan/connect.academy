@@ -4,13 +4,24 @@
 
 // Global variables 
 $connect-dark-blue:     #151621;
-$connect-light-blue:    #4099FF;
+$connect-light-blue:    $brand-primary;
 $connect-gray:          #E3E3E3;
 
-
-
-
-
+.panel-default {
+    .panel-heading {
+        background-color: $connect-gray;
+        border-bottom: 1px solid $connect-light-blue;
+        a {
+            color: $connect-dark-blue;
+        }
+    }
+}
+.btn-primary {
+    background-color: $connect-light-blue;
+    &:hover {
+        background-color: darken($connect-light-blue,8%); 
+    } 
+}
 
 
 // Navigation bar
@@ -28,7 +39,7 @@ $login-input-padding:           3px;
         }
         .brand-name {
             padding-left: $navbar-padding-horizontal / 2;
-            color: $brand-primary;
+            color: $connect-light-blue;
         }
     }
 
@@ -90,7 +101,14 @@ $nav-sidebar-focus-link:            transparentize($connect-gray, 0.5);
     }
     .sidebar-header {
         color: $connect-gray;
+        text-align:center;
     }
+
+    .sidebar-tabs {
+        margin: 0px -15px;
+    }
+
+    
     .nav-sidebar {
 
         background-color: $connect-dark-blue;
@@ -130,19 +148,26 @@ $nav-sidebar-focus-link:            transparentize($connect-gray, 0.5);
 $course-block-img-max-size:         100px;
 $course-rating-star-color:          #EEDA74;
 $course-rating-badge-color:         #33424D;
-$course-credits-badge-color:        #92209B;
-
+$course-credits-badge-color:        $connect-light-blue;
+$search-courses-color:          transparentize($connect-gray, 0.8);
+$search-courses-border-color:   darken($connect-gray, 50%);
 .explore-page {
     .search-sidebar {
         #credits-slider,
         #ratings-slider {
             .ui-slider-range {
-                background: $brand-primary;
+                background: $connect-light-blue;
             }
 
             .ui-slider-handle {
-                border-color: darken($brand-primary, 20%);
+                border: darken($connect-light-blue, 20%);
             }
+        }
+
+        #search_courses {
+            background-color: $search-courses-color;
+            border: none;
+            color:white;
         }
 
         .credits-slider-values,
@@ -199,9 +224,7 @@ $course-img-max-size:           150px;
         .sidebar-body {
             margin-top: 120px;
             margin-bottom: 20px;
-            .sidebar-tabs {
-                margin: 0px -15px;
-            }
+            
         }
     }
 
@@ -373,12 +396,62 @@ $register-validation-font-size:     11px;
         margin-bottom:0px
     }
 
+$tag-color: $connect-gray;
+$tag-hover-color: $connect-light-blue;
+$tag-bg-color: $connect-dark-blue;
+$dropdown-menu-bg-color: $connect-dark-blue;
 // Forum page
 .forum-page,
 .course-forum {
     .forum-bar {
+        background-color: $connect-dark-blue;
+        color: $connect-gray;
         .new-post-btn {
             margin-right: 8px;
+        }
+        a {
+            color: white;  
+        }
+        ul {
+            .dropdown {
+                &:hover {
+                    a {
+                        color: $tag-hover-color;
+                    }
+                }
+                &.open {
+
+                    > a {
+                        background-color: $tag-bg-color;
+                        color: $tag-hover-color;
+                    }
+
+                    .dropdown-menu {
+                        background-color:$dropdown-menu-bg-color;
+                        li {
+                            > a {
+                                color: $tag-color;
+                            }
+                            :hover {
+                                color: $tag-hover-color;
+                                background-color: $tag-bg-color;
+                            }
+                        }
+                    }
+                        
+                }
+                a {
+                    color: $connect-gray;
+                }
+            }
+        }
+        .dropdown-menu {
+            li > a {
+                color: $connect-dark-blue;
+            }
+        }
+        p {
+            color:$connect-gray;
         }
     }
 
@@ -394,7 +467,7 @@ $register-validation-font-size:     11px;
             margin: 8px 4px;
             background-color: $gray-lighter;
             &.focus-answer { 
-                background-color: lighten($brand-primary, 40%);
+                background-color: lighten($connect-light-blue, 40%);
             }
 
             .answer-header .upvote-answer-form {
@@ -411,7 +484,7 @@ $register-validation-font-size:     11px;
                 .answer-box {
                     background-color: white;
                     &.focus-answer { 
-                        background-color: lighten($brand-primary, 40%);
+                        background-color: lighten($connect-light-blue, 40%);
                     }
                 }
             }
@@ -449,7 +522,7 @@ $register-validation-font-size:     11px;
 }
 
 // Dashboard page
-$homework-number-color:         $brand-primary;
+$homework-number-color:         $connect-light-blue;
 $tables-margin-left:            20px;
 
 
@@ -467,8 +540,11 @@ $tables-margin-left:            20px;
     .sidebar-courses-table {
         margin-left: $tables-margin-left;
         width:90%;
-        tr {
-            margin-bottom:2px;
+        tr > td {
+            border-bottom: 2px solid $connect-dark-blue;
+            padding-bottom: 5px;
+            padding-top:5px;
+
         }
         .course_name {
             width:90%;

@@ -1,3 +1,14 @@
+.panel-default .panel-heading {
+  background-color: #E3E3E3;
+  border-bottom: 1px solid #4099FF; }
+  .panel-default .panel-heading a {
+    color: #151621; }
+
+.btn-primary {
+  background-color: #4099FF; }
+  .btn-primary:hover {
+    background-color: #1783ff; }
+
 .connect-navigation {
   border-bottom: 1px solid white;
   background-color: #151621; }
@@ -6,7 +17,7 @@
     margin-top: -7px; }
   .connect-navigation .connect-brand .brand-name {
     padding-left: 7.5px;
-    color: #428bca; }
+    color: #4099FF; }
   .connect-navigation .login-form {
     padding-top: 4px; }
     .connect-navigation .login-form .login-input {
@@ -34,7 +45,10 @@
   .sidebar a {
     color: white; }
   .sidebar .sidebar-header {
-    color: #E3E3E3; }
+    color: #E3E3E3;
+    text-align: center; }
+  .sidebar .sidebar-tabs {
+    margin: 0px -15px; }
   .sidebar .nav-sidebar {
     background-color: #151621; }
     .sidebar .nav-sidebar li {
@@ -57,10 +71,14 @@
 
 .explore-page .search-sidebar #credits-slider .ui-slider-range,
 .explore-page .search-sidebar #ratings-slider .ui-slider-range {
-  background: #428bca; }
+  background: #4099FF; }
 .explore-page .search-sidebar #credits-slider .ui-slider-handle,
 .explore-page .search-sidebar #ratings-slider .ui-slider-handle {
-  border-color: #245682; }
+  border: #0065d9; }
+.explore-page .search-sidebar #search_courses {
+  background-color: rgba(227, 227, 227, 0.2);
+  border: none;
+  color: white; }
 .explore-page .search-sidebar .credits-slider-values,
 .explore-page .search-sidebar .ratings-slider-values {
   margin-top: 15px; }
@@ -71,7 +89,7 @@
   .explore-page .courses-sequence .course-panel .block-header .course-rating .yellow-star {
     color: #EEDA74; }
 .explore-page .courses-sequence .course-panel .block-header .course-credits {
-  background-color: #92209B;
+  background-color: #4099FF;
   margin-left: 10px;
   width: 46px;
   height: 20px; }
@@ -88,8 +106,6 @@
 .course-page .course-sidebar .sidebar-body {
   margin-top: 120px;
   margin-bottom: 20px; }
-  .course-page .course-sidebar .sidebar-body .sidebar-tabs {
-    margin: 0px -15px; }
 .course-page .course-info .info-header .course-image {
   max-height: 150px;
   max-width: 150px; }
@@ -105,7 +121,7 @@
 .course-page .course-info .info-bar hr {
   margin: 8px 0px; }
 .course-page .course-info .info-bar .course-credits {
-  background-color: #92209B; }
+  background-color: #4099FF; }
 .course-page .course-info .info-body {
   margin-top: 20px; }
   .course-page .course-info .info-body .review-submit {
@@ -176,9 +192,42 @@
 .welcome-page-navbar {
   margin-bottom: 0px; }
 
-.forum-page .forum-bar .new-post-btn,
-.course-forum .forum-bar .new-post-btn {
-  margin-right: 8px; }
+.forum-page .forum-bar,
+.course-forum .forum-bar {
+  background-color: #151621;
+  color: #E3E3E3; }
+  .forum-page .forum-bar .new-post-btn,
+  .course-forum .forum-bar .new-post-btn {
+    margin-right: 8px; }
+  .forum-page .forum-bar a,
+  .course-forum .forum-bar a {
+    color: white; }
+  .forum-page .forum-bar ul .dropdown:hover a,
+  .course-forum .forum-bar ul .dropdown:hover a {
+    color: #4099FF; }
+  .forum-page .forum-bar ul .dropdown.open > a,
+  .course-forum .forum-bar ul .dropdown.open > a {
+    background-color: #151621;
+    color: #4099FF; }
+  .forum-page .forum-bar ul .dropdown.open .dropdown-menu,
+  .course-forum .forum-bar ul .dropdown.open .dropdown-menu {
+    background-color: #151621; }
+    .forum-page .forum-bar ul .dropdown.open .dropdown-menu li > a,
+    .course-forum .forum-bar ul .dropdown.open .dropdown-menu li > a {
+      color: #E3E3E3; }
+    .forum-page .forum-bar ul .dropdown.open .dropdown-menu li :hover,
+    .course-forum .forum-bar ul .dropdown.open .dropdown-menu li :hover {
+      color: #4099FF;
+      background-color: #151621; }
+  .forum-page .forum-bar ul .dropdown a,
+  .course-forum .forum-bar ul .dropdown a {
+    color: #E3E3E3; }
+  .forum-page .forum-bar .dropdown-menu li > a,
+  .course-forum .forum-bar .dropdown-menu li > a {
+    color: #151621; }
+  .forum-page .forum-bar p,
+  .course-forum .forum-bar p {
+    color: #E3E3E3; }
 .forum-page .answers-tabs .post-name,
 .course-forum .answers-tabs .post-name {
   margin-top: 8px; }
@@ -191,7 +240,7 @@
   background-color: #eeeeee; }
   .forum-page .answers-tabs .answer-box.focus-answer,
   .course-forum .answers-tabs .answer-box.focus-answer {
-    background-color: #e1edf7; }
+    background-color: white; }
   .forum-page .answers-tabs .answer-box .answer-header .upvote-answer-form,
   .course-forum .answers-tabs .answer-box .answer-header .upvote-answer-form {
     display: inline; }
@@ -206,7 +255,7 @@
     background-color: white; }
     .forum-page .answers-tabs .answer-box .child-answers .answer-box.focus-answer,
     .course-forum .answers-tabs .answer-box .child-answers .answer-box.focus-answer {
-      background-color: #e1edf7; }
+      background-color: white; }
 .forum-page .answers-tabs .best-answers .answer-box .answer-footer .reply-form,
 .course-forum .answers-tabs .best-answers .answer-box .answer-footer .reply-form {
   display: none; }
@@ -235,12 +284,14 @@
 .dashboard-page .sidebar-courses-table {
   margin-left: 20px;
   width: 90%; }
-  .dashboard-page .sidebar-courses-table tr {
-    margin-bottom: 2px; }
+  .dashboard-page .sidebar-courses-table tr > td {
+    border-bottom: 2px solid #151621;
+    padding-bottom: 5px;
+    padding-top: 5px; }
   .dashboard-page .sidebar-courses-table .course_name {
     width: 90%; }
   .dashboard-page .sidebar-courses-table .homework_number {
-    background-color: #428bca;
+    background-color: #4099FF;
     width: 10%;
     text-align: center;
     color: white; }
@@ -252,7 +303,7 @@
   .dashboard-page .sidebar-forum-posts .post_name {
     width: 90%; }
   .dashboard-page .sidebar-forum-posts .likes_number {
-    background-color: #428bca;
+    background-color: #4099FF;
     width: 10%;
     text-align: center;
     color: white; }
