@@ -44,7 +44,7 @@ def view_schedule(request):
             data['id'] = appointment.id
             data['start'] = format_date(appointment.start.strftime(date_format))
             data['end'] = format_date(appointment.end.strftime(date_format))
-            if appointment.course_topic.name:
+            if appointment.course_topic:
             	data['title'] = appointment.course_topic.name 
             else:
             	data['title']= appointment.description

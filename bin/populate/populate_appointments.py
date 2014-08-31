@@ -11,10 +11,7 @@ import json
 f = open('bin/combiner/courseDetails')
 coursesList = json.load(f)
 f.close()
-
-univ = University.objects.filter(name__contains="Jacobs")[0]
-category = univ.get_university_category()
-
+#print len(coursesList)
 for courseDetails in coursesList:
     if "Appointments" in courseDetails:
         for appointment in courseDetails["Appointments"]:
@@ -33,5 +30,6 @@ for courseDetails in coursesList:
             aware_end = timezone.make_aware(end, pytz.timezone("Europe/Berlin"))
             utc_start = timezone.localtime(aware_start, pytz.utc)
             utc_end = timezone.localtime(aware_end, pytz.utc)
+            course = Course.objects.get(name=courseDetails["CourseName"])
             CourseAppointment.objects.create(start=utc_start, end=utc_end, location=location, 
                                             description=description, course=course) 

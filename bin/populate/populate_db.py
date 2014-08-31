@@ -1,7 +1,3 @@
-
-from django.utils import timezone
-import pytz
-
 # Insert results into the DB
 
 from app.models import *
@@ -9,13 +5,13 @@ import json
 
 f = open('bin/combiner/courseDetails')
 coursesList = json.load(f)
+
 f.close()
 
 univ = University.objects.filter(name__contains="Jacobs")[0]
 category = univ.get_university_category()
-
 for courseDetails in coursesList:
-    # print courseDetails['CourseName']
+    #print courseDetails['CourseName']
     if len(Course.objects.filter(name=courseDetails['CourseName'])) > 0:
         continue
     # Setup instructors
@@ -85,9 +81,5 @@ for courseDetails in coursesList:
     if additional_info:
         course.additional_info = additional_info[0:5000]
     course.save()
-
-
     for dbProf in dbProfs:
         pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
-
- 

@@ -20,7 +20,6 @@ def parse_appointments(course_dict):
     if "Appointments" in course_dict:
         profs = json.load( open('../professors/professors_details.json'))
         raw_appointments = course_dict["Appointments"].replace("Appointments Date From To Room Instructors", "")
-
         date_pattern = "(Mon|Tue|Wed|Th|Fri|Sat|Sun), \d(\d)?\. (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(\.)? \d\d\d\d \d\d:\d\d \d\d:\d\d"
         matches = get_match_indeces(date_pattern, raw_appointments)
         for i in range(len(matches)):
@@ -47,11 +46,11 @@ def parse_appointments(course_dict):
         
 
             location = current_appointment[match[1]+1:]
-            location = location.decode("utf-8") 
+            #location = location.decode("utf-8") 
             # clean prof names from location
             if "Instructors" in course_dict:      
                 for prof in course_dict['Instructors'].split("; "):
-                    prof = prof.decode("utf-8")
+                    #prof = prof.decode("utf-8")
                     location = location.replace(prof,"")
                     location = location.replace(";", "")
                 
@@ -184,7 +183,6 @@ for link in linksFile:
     # Get main details about the course
     details = courseInfo['Course offering details']
     detailsMap = {}
-    appointments = ""
     if 'Appointments' in courseInfo:
         detailsMap["Appointments"] = courseInfo['Appointments']
     if 'Literature' in courseInfo:
