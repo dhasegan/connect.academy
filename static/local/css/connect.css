@@ -31,29 +31,20 @@
   .connect-navigation .navbar-tabs {
     width: 48%; }
     .connect-navigation .navbar-tabs li a {
-      font-family: 'Source Sans Pro', sans-serif;
-      font-size: 17px;
       color: white;
       width: 100px;
       text-align: center; }
       .connect-navigation .navbar-tabs li a:hover {
-        font-weight: bold; 
-        font-family: 'Source Sans Pro', sans-serif;
-        font-size: 17px;
-      }
-      
+        font-weight: bold; }
     .connect-navigation .navbar-tabs li.active a {
-      font-weight: bold; 
-      font-family: 'Source Sans Pro', sans-serif;
-      font-size: 17px;
-    }
+      font-weight: bold; }
 
 .sidebar {
   background-color: #151621;
   color: white; }
   .sidebar a {
     color: white; }
-  .sidebar .side*bar-header {
+  .sidebar .sidebar-header {
     color: #E3E3E3;
     text-align: center; }
   .sidebar .sidebar-tabs {
@@ -141,10 +132,7 @@
 .course-page .course-wiki .wiki-explanation {
   margin-top: 20px; }
 .course-page .course-resources h3 {
-  margin: 0px; 
-  font-family: 'Source Sans Pro Light',sans-serif;
-  font-size: 20px;
-}
+  margin: 0px; }
 .course-page .course-resources .top-line {
   margin-top: 4px; }
 .course-page .course-resources .homework-list .hw-submit {
@@ -155,9 +143,7 @@
 .course-page .course-teacher .course-homework h3,
 .course-page .course-teacher .class-forum h3,
 .course-page .course-teacher .course-details h3 {
-  font-family: 'Source Sans Pro Light',sans-serif;
-  font-size: 17px;
-}
+  margin: 0px; }
 .course-page .course-teacher .pending-registrations .top-line,
 .course-page .course-teacher .registered-students .top-line,
 .course-page .course-teacher .course-documents .top-line,
@@ -326,18 +312,19 @@
 .profile-page .summary-textarea {
   width: 100%; }
 .profile-page .profile-picture {
-  width: 200px; }
+  width: 200px;
+  max-height: 300px; }
 .profile-page .profile-picture-input {
   width: 200px; }
 .profile-page .profile-picture-submit {
   width: 200px; }
+.profile-page #summary-container #edit-summary-form textarea {
+  background-color: rgba(227, 227, 227, 0.2);
+  border: none; }
 
 .manage-account-page h4 {
   margin-top: 2px;
-  margin-bottom: 6px; 
-  font-family: 'Source Sans Pro Light',sans-serif;
-  font-size: 17px;
-}
+  margin-bottom: 6px; }
 .manage-account-page hr {
   margin-top: 4px; }
 
