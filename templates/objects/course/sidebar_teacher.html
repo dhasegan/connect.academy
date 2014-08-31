@@ -1,34 +1,40 @@
 {% load i18n %}
 <div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
-    <div class="panel panel-default">
+    <div class="panel panel-default sidebar">
         <div class="panel-body">
-            <h4 class="sidebar-name"> {% trans "Teacher dashboard" %} </h4>
-            <nav class="nav-sidebar">
-                <ul class="nav tabs">
-                    {% if teacher.students.registered|length > 0 %}
-                        <li class="{% if not current_teacher_tab or current_teacher_tab == 'registered' %}active{% endif %}">
-                            <a href="#teacher_registered" data-toggle="tab">{% trans "Registered Students" %} ({{teacher.students.registered|length}})</a>
+            <div class="sidebar-header">
+                <h4 class="sidebar-name"> {% trans "Teacher dashboard" %} </h4>
+            </div>
+            <br>
+            <br>
+            <div class="sidebar-tabs">
+                <nav class="nav-sidebar">
+                    <ul class="nav tabs">
+                        {% if teacher.students.registered|length > 0 %}
+                            <li class="{% if not current_teacher_tab or current_teacher_tab == 'registered' %}active{% endif %}">
+                                <a href="#teacher_registered" data-toggle="tab">{% trans "Registered Students" %} ({{teacher.students.registered|length}})</a>
+                            </li>
+                        {% endif %}
+                        {% if teacher.students.pending|length > 0 %}
+                            <li class="{% if teacher.students.registered|length == 0 or current_teacher_tab == 'pending' %}active{% endif %}">
+                                <a href="#teacher_pending" data-toggle="tab">{% trans "Pending Registrations" %} ({{teacher.students.pending|length}})</a>
+                            </li>
+                        {% endif %}
+                        <li class="{% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0  %}active{% elif current_teacher_tab == 'upload' %}active{% endif %}" >
+                            <a href="#teacher_documents" data-toggle="tab">{% trans "Upload Course Resources" %}</a>
                         </li>
-                    {% endif %}
-                    {% if teacher.students.pending|length > 0 %}
-                        <li class="{% if teacher.students.registered|length == 0 or current_teacher_tab == 'pending' %}active{% endif %}">
-                            <a href="#teacher_pending" data-toggle="tab">{% trans "Pending Registrations" %} ({{teacher.students.pending|length}})</a>
+                        <li class="{% if current_teacher_tab == 'homework' %}active{% endif %}">
+                            <a href="#teacher_homework" data-toggle="tab">{% trans "Manage Homework" %}</a>
                         </li>
-                    {% endif %}
-                    <li class="{% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0  %}active{% elif current_teacher_tab == 'upload' %}active{% endif %}" >
-                        <a href="#teacher_documents" data-toggle="tab">{% trans "Upload Course Resources" %}</a>
-                    </li>
-                    <li class="{% if current_teacher_tab == 'homework' %}active{% endif %}">
-                        <a href="#teacher_homework" data-toggle="tab">{% trans "Manage Homework" %}</a>
-                    </li>
-                    <li class="{% if current_teacher_tab == 'forum' %}active{% endif %}">
-                        <a href="#teacher_forum" data-toggle="tab">{% trans "Manage Forum" %}</a>
-                    </li>
-                    <li class="{% if current_teacher_tab == 'details' %}active{% endif %}">
-                        <a href="#teacher_details" data-toggle="tab">{% trans "Manage Course Info" %}</a>
-                    </li>
-                </ul>
-            </nav>
+                        <li class="{% if current_teacher_tab == 'forum' %}active{% endif %}">
+                            <a href="#teacher_forum" data-toggle="tab">{% trans "Manage Forum" %}</a>
+                        </li>
+                        <li class="{% if current_teacher_tab == 'details' %}active{% endif %}">
+                            <a href="#teacher_details" data-toggle="tab">{% trans "Manage Course Info" %}</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
