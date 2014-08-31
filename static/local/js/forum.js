@@ -136,6 +136,7 @@ var ForumPage = (function() {
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     for (idx in result.id_selectors) {
+                        //window.console.log(idx);
                         $(result.id_selectors[idx]).html(result.html);
                     }
                     
