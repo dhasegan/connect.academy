@@ -591,8 +591,11 @@ $tables-margin-left:            20px;
     .sidebar-forum-posts {
         margin-left:$tables-margin-left;
         width:90%;
-        tr {
-            margin-bottom:2px;
+        tr > td {
+            border-bottom: 2px solid $connect-dark-blue;
+            padding-bottom: 5px;
+            padding-top:5px;
+
         }
         .post_name {
             width:90%;
