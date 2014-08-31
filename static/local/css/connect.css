@@ -20,11 +20,17 @@
   .connect-navigation .navbar-tabs {
     width: 48%; }
     .connect-navigation .navbar-tabs li a {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 17px;
       color: white;
       width: 100px;
       text-align: center; }
       .connect-navigation .navbar-tabs li a:hover {
-        font-weight: bold; }
+        font-weight: bold; 
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 17px;
+      }
+      
     .connect-navigation .navbar-tabs li.active a {
       font-weight: bold; }
 
@@ -94,7 +100,10 @@
   max-height: 150px;
   max-width: 150px; }
 .course-page .course-info .info-header .course-name h3 {
-  margin: 4px; }
+  margin: 4px;
+  font-family: "Source Sans Pro Light";
+  font-size: 20px;
+}
 .course-page .course-info .info-header .course-rating .rating-badge {
   margin-bottom: 4px;
   background-color: #33424D; }
@@ -115,7 +124,10 @@
 .course-page .course-wiki .wiki-explanation {
   margin-top: 20px; }
 .course-page .course-resources h3 {
-  margin: 0px; }
+  margin: 0px; 
+  font-family: "Source Sans Pro Light";
+  font-size: 20px;
+}
 .course-page .course-resources .top-line {
   margin-top: 4px; }
 .course-page .course-resources .homework-list .hw-submit {
@@ -126,7 +138,10 @@
 .course-page .course-teacher .course-homework h3,
 .course-page .course-teacher .class-forum h3,
 .course-page .course-teacher .course-details h3 {
-  margin: 0px; }
+  font-family: "Source Sans Pro Light";
+  font-size: 20px;
+  margin: 0px; 
+}
 .course-page .course-teacher .pending-registrations .top-line,
 .course-page .course-teacher .registered-students .top-line,
 .course-page .course-teacher .course-documents .top-line,
@@ -268,7 +283,10 @@
 
 .manage-account-page h4 {
   margin-top: 2px;
-  margin-bottom: 6px; }
+  margin-bottom: 6px; 
+  font-family: "Source Sans Pro Light";
+  font-size: 20px;
+}
 .manage-account-page hr {
   margin-top: 4px; }
 
