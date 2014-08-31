@@ -20,7 +20,7 @@
     
     {% endblock %}
   </head>
-  <body {% if page == "welcome" %} data-spy="scroll" data-offset="0" data-target="#navbar-main" {% endif %}>
+  <body {% if page == "welcome" %} data-spy="scroll" data-offset="0" style="background-color: white; background-image:none;" data-target="#navbar-main" {% endif %}>
 
     {% include 'objects/navbar.html' %}
      {% if page != "welcome" %} 
