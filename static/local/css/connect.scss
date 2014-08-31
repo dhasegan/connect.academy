@@ -583,7 +583,7 @@ $tables-margin-left:            20px;
 // Profile page
 
 $profile-picture-width:    200px;
-
+$profile-picture-max-height: 300px;
 
 .profile-page {
     .summary-textarea {
@@ -591,12 +591,21 @@ $profile-picture-width:    200px;
     }
     .profile-picture {
         width: $profile-picture-width;
+        max-height: 300px;
     }
-  .profile-picture-input {
+    .profile-picture-input {
         width: $profile-picture-width;
     }
     .profile-picture-submit {
         width: $profile-picture-width;
+    }
+    #summary-container {
+        #edit-summary-form {
+             textarea {
+                background-color: transparentize($connect-gray, 0.8);
+                border:none;
+            }
+        }
     }
 
 }
