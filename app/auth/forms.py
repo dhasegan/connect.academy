@@ -17,8 +17,8 @@ class SignupForm(forms.Form):
     password_confirmation = forms.CharField(widget=forms.PasswordInput())  # password confirmation field
     is_professor = forms.BooleanField(required=False)
 
-    class Meta:
-        model = jUser
+    #class Meta: # Don't ask django to check agains jUser, because fake users with that email might exist
+    #    model = jUser
 
     def clean(self):
         cleaned_data = super(SignupForm,self).clean()
@@ -30,10 +30,10 @@ class SignupForm(forms.Form):
 
         errors = []
 
-        if jUser.objects.filter(username = username).count() > 0:
+        if jUser.objects.filter(username = username, is_fake=False ).count() > 0:
             errors.append(forms.ValidationError("A user with that username already exists."))
         
-        if jUser.objects.filter(email = email).count() > 0:
+        if jUser.objects.filter(email = email, is_fake = False).count() > 0:
             errors.append(forms.ValidationError("A user with that e-mail address already exists."))
         
         if password != password_confirmation:
@@ -50,15 +50,23 @@ class SignupForm(forms.Form):
         except ValueError:
             errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
 
-        universities = University.objects.filter(domains__name=domain)
-        if not universities:
+        university = University.objects.get(domains__name=domain)
+        if not university:
             errors.append(forms.ValidationError("Sorry, we don't have any university with the domain of your \
                 e-mail address. Please check if you made any errors or come back soon."))
 
         if errors:
             raise forms.ValidationError(errors)
 
-        cleaned_data['university'] = universities[0]
+        if jUser.objects.get(email = email, is_fake = True):
+            cleaned_data['has_fake_account'] = True
+        else:
+            cleaned_data['has_fake_account'] = False
+
+        cleaned_data['university'] = university
+
+        print errors
+
         return cleaned_data
 
 

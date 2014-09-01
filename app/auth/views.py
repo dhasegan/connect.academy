@@ -182,6 +182,7 @@ def signup_action(request):
     lname = form.cleaned_data["lname"]
     is_professor = form.cleaned_data["is_professor"]
     is_alumnus = form.cleaned_data['is_alumnus']
+    has_fake_account = form.cleaned_data['has_fake_account']
     university = form.cleaned_data["university"]
 
     if is_alumnus:
@@ -191,13 +192,24 @@ def signup_action(request):
     else:
         user_type = USER_TYPE_STUDENT
 
-    user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
-                                     first_name=fname, last_name=lname)
-    user.is_active = False  # not active until e-mail address is confirmed
-    user.save()
-
+    if has_fake_account:
+        user = jUser.objects.get(email = email)
+        print user.username
+        user.set_password(password)
+        # If they have chosen a different username, let them keep it if it is free
+        if username != user.username and jUser.objects.filter(username=username).count() == 0:
+            user.username = username
+        user.is_active = False
+        user.is_fake = False
+        user.save()
+    else:
+        user = jUser.objects.create_user(username=user.username, user_type=user_type, password=password, email=email, university=university,
+                                     first_name=fname, last_name=lname, is_active = False)
+    
+        user.save()
     # Authenticate user
-    auth_user = authenticate(username=username, password=password)
+    print 
+    auth_user = authenticate(username=user.username, password=password)
     if auth_user is not None:
         login(request, auth_user)
         send_email_confirmation(request, request.user)
@@ -225,7 +237,7 @@ def university_by_email(request):
         return HttpResponse(json.dumps(return_dict))
 
 
-    if jUser.objects.filter(email=email).count() > 0:
+    if jUser.objects.filter(email=email, is_fake = False).count() > 0:
         return_dict = {
             "status": "Error",
             "message": "E-mail address exists"
@@ -273,7 +285,7 @@ def check_username(request):
             "message": "Username is required"
         }
         return HttpResponse(json.dumps(return_dict))
-    if jUser.objects.filter(username=username).count() > 0:
+    if jUser.objects.filter(username=username, is_fake = False).count() > 0:
         return_dict = {
             "status": "Error",
             "message": "Username exists"
@@ -306,13 +318,13 @@ def validate_registration(request):
         }
         return HttpResponse(json.dumps(return_dict))
 
-    if jUser.objects.filter(email=email).count() > 0:
+    if jUser.objects.filter(email=email, is_fake=False).count() > 0:
         return_dict = {
             "status": "Error",
             "message": "E-mail address exists"
         }
         return HttpResponse(json.dumps(return_dict))
-    elif jUser.objects.filter(username=username).count() > 0:
+    elif jUser.objects.filter(username=username, is_fake = False).count() > 0:
         return_dict = {
             "status": "Error",
             "message": "Username exists."

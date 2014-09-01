@@ -43,6 +43,9 @@ class jUser(User):
     # For professors only 
     # True if they have been confirmed to be professors)
     is_confirmed = models.NullBooleanField(default = False)
+
+    # True if it's a fake account (one that we created before user login/registration (e.g: some professors))
+    is_fake = models.NullBooleanField(default = False)
     # Courses the user is enrolled to
     courses_enrolled = models.ManyToManyField('Course', related_name='students', 
                                                through = 'StudentCourseRegistration')
