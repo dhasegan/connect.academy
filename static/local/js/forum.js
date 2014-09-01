@@ -50,6 +50,24 @@ var ForumPage = (function() {
         s.newPostForm.submit( function(event) {
             s.newPostButton.attr('disabled', 'disabled');
         });
+
+        var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
+
+        $(".course-details > .tab-content").on("click", upvote_selector, function(event) {
+            window.console.log(event.target.id);
+            Utils.SubmitFormAjax(event, this,
+                function(result) {
+                    for (idx in result.id_selectors) {
+                        //window.console.log(idx);
+                        $(result.id_selectors[idx]).html(result.html);
+                    }
+                    
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            );
+        });
     };
 
     me.indexPosts = function() {
@@ -131,23 +149,7 @@ var ForumPage = (function() {
         });
         // Upvote posts and answers
         
-        var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
-
-        $(".course-details > .tab-content").on("click", upvote_selector, function(event) {
-            window.console.log(event.target.id);
-            Utils.SubmitFormAjax(event, this,
-                function(result) {
-                    for (idx in result.id_selectors) {
-                        //window.console.log(idx);
-                        $(result.id_selectors[idx]).html(result.html);
-                    }
-                    
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus);
-                }
-            );
-        });
+        
     };
 
     return me;
