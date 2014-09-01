@@ -14,7 +14,9 @@
     events : {{appointments|safe}}
   };
 
-  var id = {{ latest_id }};
+  id = {{ latest_id }};
+
+  courses = {{ courses_managed | safe }};
 
 </script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
@@ -30,6 +32,14 @@
 <!-- The calendar -->
 
 <div id="calendar"></div>
+
+{% comment %}
+  When the user loads this page, we have a choice of two forms that can be displayed when the user clicks on the schedule. 
+  1) User.is_student() -> render the standard form.
+  2) User.is_professor() -> render the professor's form. (Stiv)
+{% endcomment %}
+
+{% if user.is_student %}
 <div id="event_edit_container" hidden>
   <form>
     {%csrf_token%}
@@ -51,10 +61,64 @@
       </li>
 
       <li>
-        <label for="title"></label>Location: <input type="text" name="title"/>
+        <label for="title">Location:</label><input type="text" name="title"/>
       </li>
       
     </ul>
   </form>
 </div>
+{% endif %}
+
+{% if user.is_professor %}
+<div id="event_edit_container" hidden>
+  <form>
+    {%csrf_token%}
+    <ul>
+      <li>
+        Date: <span class="date_holder"></span> 
+      </li>
+        
+      <li>
+        <label for="start">Start Time:</label><select name="start"><option value="">Select Start Time</option></select>
+      </li>
+      
+      <li>
+        <label for="end">End Time:</label><select name="end"><option value="">Select End Time</option></select>
+      </li>
+      
+      <li>
+        <label for="body">Description:</label><textarea name="body"></textarea>
+      </li>
+
+      <li>
+        <label for="title">Location:</label><input type="text" name="title"/>
+      </li>
+
+      <li>
+        <label for="type">Appointment Type:</label>
+        <select name="type">
+          <option value="0">Personal Appointment </option>
+          <option value="1">Course Appointment </option>
+        </select>
+      </li>
+
+      <li>
+        {% comment %}
+          Dynamically show this is the professor chooses he/she wants to add a course appointment
+        {% endcomment %}
+        <label for="course">Course:</label><select name='course'><option value="">Select Course</option></select>
+      </li>
+
+      <li>
+        <input type="checkbox" name="copy" value="copy"> Copy the same appointment throughout the following weeks. 
+      </li>
+      
+    </ul>
+  </form>
+</div>
+
+{% endif %}
+
+
+
 {% endblock %}

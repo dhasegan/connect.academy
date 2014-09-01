@@ -1,6 +1,5 @@
 $(document).ready(function() {
   var $calendar = $('#calendar');
-
   $('#calendar').weekCalendar({
     data: eventData,
 
@@ -15,7 +14,7 @@ $(document).ready(function() {
     },
 
     eventRender: function(calEvent, $event) {
-      if (calEvent.end.getTime() < new Date().getTime()) {
+      if (calEvent.end.getTime() < new Date().getTime() || (!calEvent.modifiable)) {
         $event.css('backgroundColor', '#aaa');
         $event.find('.time').css({
           backgroundColor: '#999',
@@ -31,6 +30,11 @@ $(document).ready(function() {
       var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
       var titleField = $dialogContent.find("input[name='title']");
       var bodyField = $dialogContent.find("textarea[name='body']");
+      
+      //the following fields appear only to the professor
+      var courseField = $dialogContent.find("select[name='course']");
+      var typeField = $dialogContent.find("select[name='type']");
+      var addToOtherWeeks = $dialogContent.find("input[name='copy']");
       
       $dialogContent.dialog({
           modal: true,
@@ -51,37 +55,73 @@ $(document).ready(function() {
                 $calendar.weekCalendar("removeUnsavedEvents");
                 $calendar.weekCalendar("updateEvent", calEvent);
                 $dialogContent.dialog("close");
-                
-                $.ajax({
-                  headers: { "X-CSRFToken": getCookie("csrftoken") },
-                  type:"POST",
-                  url:"add_personal_appointment",
-                  data: {
-                    'title': titleField.val(),
-                    'body': bodyField.val(), 
-                    'start': new Date(startField.val()), 
-                    'end': new Date(endField.val()),
-                  },
-                  success: function(){
-                    //alert("Appointment added successfully");
-                    id += 1;
-
-                    eventData.events.push({
-                      'id' : calEvent.id,
+                // if the user is not a professor, or if the user is a professor and he/she wants to add a personal appointment
+                if( courseField.val() === undefined || typeField.val() === undefined || typeField.val() === "0"){
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"add_personal_appointment",
+                    data: {
                       'title': titleField.val(),
                       'body': bodyField.val(), 
                       'start': new Date(startField.val()), 
                       'end': new Date(endField.val()),
-                      'data':'personal',
-                    });
+                    },
+                    success: function(){
+                      //alert("Appointment added successfully"); -- show the success element
+                      id += 1;
 
-                    $calendar.weekCalendar("refresh");
-                  }
+                      eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': titleField.val(),
+                        'body': bodyField.val(), 
+                        'start': new Date(startField.val()), 
+                        'end': new Date(endField.val()),
+                        'type':'Personal',
+                        'modifiable' :true,
+                      });
 
-                });
-             },
+                      $calendar.weekCalendar("refresh");
+                    }
 
-             cancel : function() {
+                  });
+                }
+                else{ // the user is a professor
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"add_course_appointment",
+                    data: {
+                      'title': titleField.val(),
+                      'body': bodyField.val(), 
+                      'start': new Date(startField.val()), 
+                      'end': new Date(endField.val()),
+                      'courseName': courseField.val(),
+                      'copy': addToOtherWeeks.is(":checked"),
+                    },
+                    success: function(){
+                      //alert("Appointment added successfully");
+                      id += 1;
+
+                      eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': titleField.val(),
+                        'body': bodyField.val(), 
+                        'start': new Date(startField.val()), 
+                        'end': new Date(endField.val()),
+                        'courseName': courseField.val(),
+                        'type':'Course', 
+                        'modifiable': true,
+                      });
+
+                      $calendar.weekCalendar("refresh");
+                    }
+
+                  });
+                }
+              },
+                
+              cancel : function() {
                 $calendar.weekCalendar("removeUnsavedEvents");
                 $dialogContent.dialog("destroy");
              }
@@ -92,20 +132,25 @@ $(document).ready(function() {
       var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
       $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
       setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+      setupCourseFields(courses,calEvent,courseField);
     },
 
     eventDrop: function(calEvent, $event) {
-      displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      if (calEvent.readOnly || !calEvent.modifiable) {
+          return;
+       }
     },
 
     eventResize: function(calEvent, $event) {
-      displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      if (calEvent.readOnly || !calEvent.modifiable) {
+          return;
+       }
     },
 
     // to modify existing calEvents (or remove them)
     eventClick: function(calEvent, $event) {
       
-      if (calEvent.readOnly || calEvent.data === 'course') {
+      if (calEvent.readOnly || !calEvent.modifiable) {
           return;
        }
     
@@ -115,6 +160,8 @@ $(document).ready(function() {
        var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
        var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
        var bodyField = $dialogContent.find("textarea[name='body']").val(calEvent.body);
+
+       var courseField = $dialogContent.find("select[name='course']");
 
        $dialogContent.dialog({
           modal: true,
@@ -131,27 +178,48 @@ $(document).ready(function() {
                 calEvent.title = titleField.val();
                 calEvent.body = bodyField.val();
                 
-                
-                $.ajax({
-                  headers: { "X-CSRFToken": getCookie("csrftoken") },
-                  type:"POST",
-                  url:"edit_personal_appointment",
-                  data: {
-                    'id' : calEvent.id,
-                    'title': titleField.val(),
-                    'body': bodyField.val(), 
-                    'start': new Date(startField.val()), 
-                    'end': new Date(endField.val()),
-                  },
-                  success: function(){
-                    //alert("Successfuly edited event");
-                  }
-                });
+                if(calEvent.type === 'Course' && calEvent.modifiable){
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"edit_course_appointment",
+                    data: {
+                      'id' : calEvent.id,
+                      'title': titleField.val(),
+                      'body': bodyField.val(), 
+                      'start': new Date(startField.val()), 
+                      'end': new Date(endField.val()),
+                      'courseName' : calEvent.courseName,
+                    },
+                    success: function(){
+                      //alert("Successfuly edited event");
+                    }
+                  });
 
-                $calendar.weekCalendar("updateEvent", calEvent);
-                $calendar.weekCalendar("refresh");
-                $dialogContent.dialog("close");
-                
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                  $calendar.weekCalendar("refresh");
+                  $dialogContent.dialog("close");
+                }else if(calEvent.type === 'Personal'){
+                    $.ajax({
+                      headers: { "X-CSRFToken": getCookie("csrftoken") },
+                      type:"POST",
+                      url:"edit_personal_appointment",
+                      data: {
+                        'id' : calEvent.id,
+                        'title': titleField.val(),
+                        'body': bodyField.val(), 
+                        'start': new Date(startField.val()), 
+                        'end': new Date(endField.val()),
+                      },
+                      success: function(){
+                        //alert("Successfuly edited event");
+                      }
+                    });
+
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                  $calendar.weekCalendar("refresh");
+                  $dialogContent.dialog("close");
+                }      
 
              },
 
@@ -159,30 +227,59 @@ $(document).ready(function() {
                 
                 $calendar.weekCalendar("removeEvent", calEvent.id);
                 $dialogContent.dialog("destroy");
-                $.ajax({
-                  headers: { "X-CSRFToken": getCookie("csrftoken") },
-                  type:"POST",
-                  url:"remove_personal_appointment",
-                  data: {
-                    'id' : calEvent.id,
-                  },
-                  success: function(){
-                    //alert("Successfuly removed event");
-                    if(calEvent.id === id){
-                      id -= 1;
-                    }
-
-                    for(var i = 0 ; i < eventData.events.length; i++){
-                      var e = eventData.events[i];
-                      if(e.id === calEvent.id){
-                        eventData.events.splice(i,1);
+                
+                if(calEvent.type === 'Personal' && calEvent.modifiable){
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"remove_personal_appointment",
+                    data: {
+                      'id' : calEvent.id,
+                    },
+                    success: function(){
+                      //alert("Successfuly removed event");
+                      if(calEvent.id === id){
+                        id -= 1;
                       }
+
+                      for(var i = 0 ; i < eventData.events.length; i++){
+                        var e = eventData.events[i];
+                        if(e.id === calEvent.id){
+                          eventData.events.splice(i,1);
+                        }
+                      }
+
+                      data:eventData;
+
                     }
+                  });
+                }else if(calEvent.type === 'Course' && calEvent.modifiable){
+                  $.ajax({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") },
+                    type:"POST",
+                    url:"remove_course_appointment",
+                    data: {
+                      'id' : calEvent.id,
+                      'courseName': calEvent.courseName,
+                    },
+                    success: function(){
+                      //alert("Successfuly removed event");
+                      if(calEvent.id === id){
+                        id -= 1;
+                      }
 
-                    data:eventData;
+                      for(var i = 0 ; i < eventData.events.length; i++){
+                        var e = eventData.events[i];
+                        if(e.id === calEvent.id){
+                          eventData.events.splice(i,1);
+                        }
+                      }
 
-                  }
-                });
+                      data:eventData;
+
+                    }
+                  });
+                }
              },
              
             cancel : function() {
@@ -195,6 +292,7 @@ $(document).ready(function() {
        var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
        $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
        setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+       setupCourseFields(courses,calEvent,courseField);
     },
 
     eventMouseover: function(calEvent, $event) {
@@ -218,6 +316,7 @@ function displayMessage(message) {
 function prepareFields($dialogContent) {
   $dialogContent.find("input").val("");
   $dialogContent.find("textarea").val("");
+  $dialogContent.find("select[name='course']").innerHTML = "";
 }
 
 function getCookie(c_name){
@@ -234,6 +333,7 @@ function getCookie(c_name){
     }
     return "";
  }
+
 
 function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
   for (var i = 0; i < timeslotTimes.length; i++) {
@@ -254,6 +354,19 @@ function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, ti
   
   $endTimeOptions = $endTimeField.find("option");
   $startTimeField.trigger("change");
+}
+
+function setupCourseFields(professorCourseList, calEvent, $courseField){
+  for(var i=0 ; i < professorCourseList.length ; i++){
+    var courseName = professorCourseList[i];
+    var courseSelected = "";
+    if(calEvent.courseName === courseName){
+      courseSelected = "selected = \"selected\"";
+    }
+    $courseField.append("<option value=\"" + courseName + "\" " + courseSelected + "\">" + courseName +"</option>");
+
+  }
+  $courseField.trigger("change");
 }
 
 var $endTimeField = $("select[name='end']");
