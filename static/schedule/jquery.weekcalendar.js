@@ -73,25 +73,15 @@
         allowEventCreation: true,
         hourLine: false,
         deletable: function(calEvent, element) {
-          if(calEvent.data === 'course')
-            return false;
-          if(calEvent.data === 'personal')
-            return true;
+          return calEvent.modifiable;
         },
         draggable: function(calEvent, element) {
-          if(calEvent.data === 'course')
-            return false;
-          if(calEvent.data === 'personal')
-            return true;
+          return calEvent.modifiable;
         },
         resizable: function(calEvent, element) {
-          if(calEvent.data === 'course')
-            return false;
-          if(calEvent.data === 'personal')
-            return true;
+          return calEvent.modifiable;
         },
-        eventClick: function(calEvent, element, dayFreeBusyManager, 
-                                                      calendar, clickEvent) {
+        eventClick: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
         },
         eventRender: function(calEvent, element) {
           return element;

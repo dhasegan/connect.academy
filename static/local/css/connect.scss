@@ -97,10 +97,13 @@ $navbar-font-size:      15px;
                 }
                 
             }
-            &.active {
-                a {
-                    font-weight: bold;
+            &.active, &:hover {
+                a , a:hover {
+                    background: none;
+                    font-weight: normal;
                 }
+                border-bottom: 5px solid $connect-light-blue;
+
             }
 
         }

@@ -837,7 +837,7 @@ class Appointment(models.Model):
 class PersonalAppointment(Appointment):
     user = models.ForeignKey('jUser',related_name='appointments')
     def __unicode__(self):
-        return self.user.name
+        return str(self.user)
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
