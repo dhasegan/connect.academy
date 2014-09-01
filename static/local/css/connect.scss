@@ -98,12 +98,29 @@ $navbar-font-size:      15px;
                 
             }
             &.active, &:hover {
-                a , a:hover {
+                a, a:hover {
                     background: none;
                     font-weight: normal;
+                    color: $connect-gray;
+                    border-bottom: 5px solid $connect-light-blue;
+                    padding-bottom:10px;
                 }
-                border-bottom: 5px solid $connect-light-blue;
+                
 
+            }
+
+        }
+    }
+
+    .navbar-btn {
+        &, &.open {
+            .profile-name-dropdown {
+                background: none;
+                border: none;
+                font-size: $navbar-font-size;
+            }
+            .icon {
+                padding-top:5px;
             }
 
         }
