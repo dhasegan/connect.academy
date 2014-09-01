@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div id="submitHomework{{hw.homework.id}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+<div id="submitHomework{{hw.homework.id}}{{hw_modal_spec}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -51,4 +51,4 @@
 </div>
 
 <button class="btn {% if not hw.previous_submission %} btn-danger {% else %} btn-primary {% endif %}"
-data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}"  id='submitHomeworkButton{{hw.homework.id}}'>{% if hw.previous_submission %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</button>
+data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}{{hw_modal_spec}}"  id='submitHomeworkButton{{hw.homework.id}}{{hw_modal_spec}}'>{% if hw.previous_submission %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</button>

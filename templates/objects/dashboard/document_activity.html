@@ -17,7 +17,7 @@
 				<span class="text-muted"> {{activity.timestamp|naturaltime}} </span>
 
 				<div class="document-body">
-					<a href="{{ document.document.url }}"> {{ document.name|linebreaks }} </a>
+					<a target="_blank" href="{{ document.document.url }}"> {{ document.name|linebreaks }} </a>
 					{% if document.description %}
 						{{ document.description|linebreaks|truncatechars:"200" }}
                         {% if document.description|length > 200 %}

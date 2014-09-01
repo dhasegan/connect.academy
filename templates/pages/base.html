@@ -22,31 +22,38 @@
     
     {% endblock %}
   </head>
-  <body {% if page == "welcome" %} data-spy="scroll" data-offset="0" style="background-color: white; background-image:none;" data-target="#navbar-main" {% endif %}>
+  <body {% if page == "welcome" %} class="welcome_page_body" data-spy="scroll" data-offset="0" style="background-color: white; background-image:none;" data-target="#navbar-main" {% endif %}>
 
     {% include 'objects/navbar.html' %}
+    {% comment %}
+        WATCH OUT! VERY HACKY CODE BELOW : WELCOME PAGE DOESN't WANT a main content container
+    {% endcomment%}
+     
      {% if page != "welcome" %} 
      <div class="container" id="main_content_container"> 
      {% endif %}
 
-        {% include 'objects/notifications/alerts.html' %} 
+          {% include 'objects/notifications/alerts.html' %} 
 
-        {% if page != "welcome" %}
-        <div class="main-content"> 
-        {% endif %}
-            {% block content %}
-            {% endblock %}
-        {% if page != "welcome" %} 
-        </div> 
-        {% endif %}
-     
-      {% if page != "welcome" %}
-      </div> 
-      {% endif %}
-    {% comment %}
-      This is not letting me see some stuff at the bottom of the page. needs to be fixed. (Tomas)
-      {% include 'objects/footer.html' %}
-    {% endcomment %}
+          {% if page != "welcome" %}
+          <div class="main-content"> 
+          {% endif %}
+
+                {% block content %}
+                {% endblock %}
+
+          {% if page != "welcome" %} 
+          </div> 
+          {% endif %}
+       
+    {% if page != "welcome" %}
+    </div> 
+    {% endif %}
+
+      {% comment %}
+        END HACKY CODE
+      {% endcomment%}
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>

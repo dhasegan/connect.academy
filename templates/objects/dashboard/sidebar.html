@@ -104,7 +104,7 @@
 
             <div class="row">
                 <div class="row text-center">
-                    <span id="dashboard-scheduler-icon" class="icon icon-globe"> Connect </span>
+                    <span id="dashboard-scheduler-icon" class="icon icon-link"> Connect </span>
                 </div>
                 <br>
                 <div class="row center-block">
@@ -117,7 +117,7 @@
                                         <a href="{% url 'forum_course' post.forum.course.slug %}?post={{post.id}}"> {{ post.name|slice:":30" }} </a>
                                     </td>
                                     <td class="likes_number">
-                                        <span class="glyphicon glyphicon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}
+                                        <span class="icon icon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}
                                     </td>
                                 </tr>                     
                             {% endfor %}

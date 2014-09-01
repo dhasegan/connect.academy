@@ -11,13 +11,20 @@ $heading-font-family: 'Source Sans Pro', sans-serif;
 $h3-size: 17px ;
 $h4-size: 16px ;
 
-h3{
+body {
+    padding-top: $navbar-height + 20px; // needed because fixed navbar covers content
+    &.welcome_page_body {
+        padding-top: $navbar-height;
+    }
+}
+
+h3 {
     font-family: $heading-font-family;
     font-size: $h3-size;
 }
 
 
-h4{
+h4 {
     font-family: $heading-font-family;
     font-size: $h4-size;
 }
