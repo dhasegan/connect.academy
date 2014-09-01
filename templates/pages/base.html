@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Connect with a comunity of learners.">
     <meta name="author" content="jTeam">
+    <meta name="google-site-verification" content="WEfdTurKJN4n0vypl9Y7jlKMYMmYNVhw2F9_8PP50jc" />
 
     {% compressed_css 'bootstrap' %}
     <link href="{{ STATIC_URL }}css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
@@ -17,6 +18,7 @@
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{{STATIC_URL}}assets/css/icomoon.css">
     {% compressed_css 'connect' %}
+
 
     {% block extra_css_includes %}
     
@@ -27,11 +29,11 @@
     {% include 'objects/navbar.html' %}
     {% comment %}
         WATCH OUT! VERY HACKY CODE BELOW : WELCOME PAGE DOESN't WANT a main content container
-    {% endcomment%}
+    {% endcomment %}
      
-     {% if page != "welcome" %} 
-     <div class="container" id="main_content_container"> 
-     {% endif %}
+      {% if page != "welcome" %} 
+      <div class="container" id="main_content_container"> 
+      {% endif %}
 
           {% include 'objects/notifications/alerts.html' %} 
 
@@ -46,13 +48,13 @@
           </div> 
           {% endif %}
        
-    {% if page != "welcome" %}
-    </div> 
-    {% endif %}
+      {% if page != "welcome" %}
+        </div> 
+      {% endif %}
 
       {% comment %}
         END HACKY CODE
-      {% endcomment%}
+      {% endcomment %}
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
