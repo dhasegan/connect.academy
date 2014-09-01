@@ -1,15 +1,16 @@
 {% extends 'pages/base.html' %}
 
 {% load i18n %}
+{% load compressed %}
 
     {% block extra_css_includes %}
     <!-- Custom styles for this template -->
-    <link href="static/assets/css/website.css" rel="stylesheet">
-    <link href="static/assets/css/animate-custom.css" rel="stylesheet">
+        {% compressed_css 'welcome-page' %}
+        <link href="static/assets/css/animate-custom.css" rel="stylesheet">
 
-    
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+        
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
     {% endblock %}
 
 

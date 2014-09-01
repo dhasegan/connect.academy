@@ -287,6 +287,13 @@ PIPELINE_CSS = {
             'media': 'screen,projection',
         },
     },
+    'welcome-page': {
+        'source_filenames': ('local/css/welcome.css',),
+        'output_filename': 'local/css/welcome.min.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    }
 }
 
 PIPELINE_JS = {
