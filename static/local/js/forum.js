@@ -53,7 +53,7 @@ var ForumPage = (function() {
 
         var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
 
-        $(".course-details > .tab-content").on("click", upvote_selector, function(event) {
+        $(document).on("click", upvote_selector, function(event) {
             window.console.log(event.target.id);
             Utils.SubmitFormAjax(event, this,
                 function(result) {
