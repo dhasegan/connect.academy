@@ -294,7 +294,7 @@ a:after {
    ========================================================================== */
 
 #headerwrap {
-	background: url(../img/header_bg.jpg) no-repeat center top;
+	background: url(../../assets/img/header_bg.jpg) no-repeat center top;
 	margin-top: 0px;
 	padding-top:120px;
 	text-align:center;
@@ -445,176 +445,12 @@ a:after {
 /* Section Dividers Backgrounds */
 
 .divider1 {
-	background-image: url('../img/bg/divider1.jpg')
+	background-image: url('../../assets/img/bg/divider1.jpg')
 }
 
 .divider2 {
-	background-image: url('../img/bg/divider2.jpg')
+	background-image: url('../../assets/img/bg/divider2.jpg')
 }
-
-.divider3 {
-	background-image: url('../img/bg/divider3.jpg');
-	margin-top: 0px;
-}
-
-.divider4 {
-	background-image: url('../img/bg/divider4.jpg')
-}
-
-.divider6 {
-	background-image: url('../img/bg/divider6.jpg')
-}
-
-
-
-/* ==========================================================================
-   Services Section
-   ========================================================================== */
-
-.service-trigger {
-    display: block;
-	position: relative;
-    margin-bottom: 15px;
-    color: white;
-    font-size: 20px;
-    text-align: center;
-    height: 168px;
-    cursor: pointer;
-	padding: 90px 20px 50px 20px;
-    border: none;
-    background: #333;
-}
-
-.service-trigger:before {
-    width: 100%;
-    top: 50px;
-    color: #3498db;
-    font-size: 36px;
-    text-align: center;
-	position: absolute;
-	left: 0;
-}
-
-.service-active .service-trigger {
-    background: #222;
-}
-
-.service-active p {
-	font-family: 'Lato', sans-serif;
-	padding-top: 10px;
-}
-
-.service-content {
-    padding: 15px 20px;
-    background: #e6eaed;
-    display: block;
-    height: auto
-}
-
-.service-content p:last-child {
-    margin: 0;
-}
-
-
-/* ==========================================================================
-   Image Mask
-   ========================================================================== */
-
-.grid figure {
-	margin: 0;
-	position: relative;
-}
-
-.grid figure img {
-	width: 100%;
-	display: block;
-	position: relative;
-}
-
-.grid figcaption {
-	position: absolute;
-	top: 0;
-	left: 0;
-	padding: 20px;
-	color: #fff;
-	background: #3498db;
-}
-
-.grid figcaption h5 {
-	margin: 0;
-	padding-top: 0px;
-	padding-left: 20px;
-	padding-bottom: 5px;
-	color: #fff;
-	font-weight: 700;
-	text-align: left;
-	letter-spacing: 2px;
-	
-}
-
-.grid figcaption a {
-	text-align: left;
-	padding: 5px 10px;
-	margin-left: 20px;
-	display: inline-block;
-	background: #2f2f2f;
-	color: #fff;
-	font-size: 13px;
-}
-
-/* Caption Style */
-.mask figure {
-	overflow: hidden;
-}
-
-.mask figure img {
-	-webkit-transition: -webkit-transform 0.4s;
-	-moz-transition: -moz-transform 0.4s;
-	transition: transform 0.4s;
-}
-
-.no-touch .mask figure:hover img,
-.mask figure.cs-hover img {
-	-webkit-transform: translateY(-30px);
-	-moz-transform: translateY(-30px);
-	-ms-transform: translateY(-30px);
-	transform: translateY(-30px);
-}
-
-.mask figcaption {
-	height: 50px;
-	width: 100%;
-	top: auto;
-	bottom: 0;
-	opacity: 0;
-	-webkit-transform: translateY(100%);
-	-moz-transform: translateY(100%);
-	-ms-transform: translateY(100%);
-	transform: translateY(100%);
-	-webkit-transition: -webkit-transform 0.4s, opacity 0.1s 0.3s;
-	-moz-transition: -moz-transform 0.4s, opacity 0.1s 0.3s;
-	transition: transform 0.4s, opacity 0.1s 0.3s;
-}
-
-.no-touch .mask figure:hover figcaption,
-.mask figure.cs-hover figcaption {
-	opacity: 1;
-	-webkit-transform: translateY(0px);
-	-moz-transform: translateY(0px);
-	-ms-transform: translateY(0px);
-	transform: translateY(0px);
-	-webkit-transition: -webkit-transform 0.4s, opacity 0.1s;
-	-moz-transition: -moz-transform 0.4s, opacity 0.1s;
-	transition: transform 0.4s, opacity 0.1s;
-}
-
-.mask figcaption a {
-	position: absolute;
-	top:10px;
-	bottom: 10px;
-	right: 30px;
-}
-
 
 
 /* ==========================================================================
@@ -642,3 +478,11 @@ a:after {
 	}
 }
 
+
+/* ==========================================================================
+   ALERTS
+   ========================================================================== */
+
+.alert {
+    margin-bottom: 0px;
+}

@@ -1,15 +1,16 @@
 {% extends 'pages/base.html' %}
 
 {% load i18n %}
+{% load compressed %}
 
     {% block extra_css_includes %}
     <!-- Custom styles for this template -->
-    <link href="static/assets/css/website.css" rel="stylesheet">
-    <link href="static/assets/css/animate-custom.css" rel="stylesheet">
+        {% compressed_css 'welcome-page' %}
+        <link href="static/assets/css/animate-custom.css" rel="stylesheet">
 
-    
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+        
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
     {% endblock %}
 
 
@@ -35,14 +36,14 @@
                 <div class="col-lg-6 callout" id="education">
                     <span class="icon icon-stack"></span>
                     <h2 id="education">{% trans "Education" %}</h2>
-                    <p> {% trans "Education is the single most important thing in a persons' life. It should not be left to one or some alone." %}  </p>
+                    <p> {% trans "Education is the process by which we acquire knowledge, but it also is the process by which we become better human beings, developing a more socially conscious understanding of the world around us. It is the process by which we surpass ourselves." %}  </p>
                 </div><!-- col-lg-4 -->
                     
                 
                 <div class="col-lg-6 callout" id="community">
                     <span class="icon icon-users"></span>
                     <h2 id="community">{% trans "Community" %}</h2>
-                    <p>{% trans "Using the power of a community to drive learning. Educating those around us is a responsibility we all share." %}</p>
+                    <p>{% trans "Using the power of a community to drive learning. Educating those around us is a responsibility we all share. Education is too important to be left in the hands of one, or some only. Learning by sharing is beneficent both in a personal and social level" %}</p>
                 </div><!-- col-lg-4 --> 
             </div><!-- row -->
         </div><!-- greywrap -->
@@ -56,12 +57,11 @@
                 <hr>
                 
                 <div class="col-lg-12">
-                    <p>{% trans "We aim to bring together the power of an academic network to every day academic needs. Our mission is to create an academic network that connects scholars worldwide, while ensuring reliability of their identity and of the institution they attend. An increased number of online course platforms proves that there is an obvious need to use the power of the web for community learning. Something however, is going wrong. While this number is increasing, the effort of the average student to use these platforms, is also increasing. That is because there is no single platform that is the default choice of all professors and all students. We are many, but we are in different platforms." %} 
+                    <p>{% trans "We aim to bring together the power of an academic network to every day academic needs. Our mission is to create an academic network that connects scholars worldwide, while ensuring reliability of their identity and of the institution they attend. We are trying to advance education by extending the meaning of classrooms and lecture halls, by enabling the same interaction to take place outside of the physical environments these words used to define." %} 
                     <br>
                     <br>
-                    {% trans "These platforms, being different in scope, have failed to become part of the student's everyday academic life. These platforms are not integrated with a student's real courses and  real needs. The default learning management systems universities use link to nothing." %}
-                    
-                    {% trans "Conenct Academy solves that" %}</p>
+                    {% trans "Connect Academy brings the best of a learning management system, in an intuitive, user-friendly and efficient way adding the power of a community to drive the learning process. Our users learn by sharing and getting recognition for both." %}</p>
+
                 </div><!-- col-lg-6 -->
                 
             </div><!-- row -->
@@ -95,7 +95,7 @@
                     <a href="https://www.google.com/+arjaldoKARAJ" class="icon icon-googleplus" target="_blank"></a>
 
 
-                    <p>{% trans "I believe education is the closest we can get to providing equality. While most people seem to think smaller class sizes are a luxury only few access to, I think they are no luxury at all. Good classes are those you can fit a whole community of learners in. That is what we are doing with Connect Academy." %}</p>
+                    <p>{% trans "There is no optimal class size that is right for all classes, neither there is a right way to teach one, or learning from one. Good classes are those you can fit a whole community of learners in. That is what we are doing with Connect Academy." %}</p>
                 </div><!-- col-lg-3 -->
                 
                 <div class="col-lg-3 centered">
@@ -105,7 +105,7 @@
                     <a href="https://twitter.com/DanielHasegan" class="icon icon-twitter" target="_blank"></a>
                     <a href="https://www.linkedin.com/profile/view?id=213901690&amp;trk=spm_pic" class="icon icon-linkedin" target="_blank"></a>
                     <a href="https://github.com/dhasegan" class="icon icon-github" target="_blank"></a>
-                    <p>{% trans "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English." %}</p>
+                    <p>{% trans "New technologies have the potential to change one's life. We are trying to use this potential to ameliorate education, a defining reason for success in life, leaving more time for creativity to be stimulated and curiosity satisfied." %}</p>
                 </div><!-- col-lg-3 -->
                 
                 <div class="col-lg-3 centered">
@@ -126,7 +126,7 @@
                     <a href="http://de.linkedin.com/pub/tomas-pllaha/60/6b7/3b1" class="icon icon-linkedin" target="_blank"></a>
                     <a href="https://www.facebook.com/tomaspllaha" class="icon icon-facebook" target="_blank"></a>
                     <a href="https://github.com/tpllaha" class="icon icon-github" target="_blank"></a>
-                    <p>{% trans "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English." %}</p>
+                    <p>{% trans "More often than not one's interests go well beyond the curriculum of one's major and the recognition received for these interests is rarely acknowledged. We value good contribution, regardless of one's major, background or granted institutional reputatiton." %}</p>
                 </div><!-- col-lg-3 -->
                 
             </div><!-- row -->
@@ -138,7 +138,7 @@
             <div class="container">
                 <h1>{% trans "ACADEMIC NETWORK" %}</h1>
                 <hr>
-                <p> {% trans "Do grades say anything about how skilled a student is? If you think they do, think again. If you think they don't, think again. We at Connect Academy think that a community of learners are at least just as good at evaluating someone's skills as a professsor. Join us, learn and teach while getting recognition from an academic network of users." %}</p>
+                <p> {% trans "Do grades say anything about how skilled a student is? If you think they do, think again. If you think they don't, think again. We at Connect Academy think that a community of learners are at least just as good at evaluating someone's skills as a professor. Join us, learn and teach while getting recognition from an academic network of users." %}</p>
             </div><!-- container -->
         </section><!-- section -->
 
@@ -154,7 +154,7 @@
                     <div class="col-lg-12">
                     <h3>{% trans "Contact Information" %}</h3>
                     <p><span class="icon icon-home"></span>&nbsp Bremen, Germany<br/>
-                        <span class="icon icon-envelop"></span> <a href="#">&nbsp hello@connect.academy</a> <br/>
+                        <span class="icon icon-envelope"></span> <a href="#">&nbsp hello@connect.academy</a> <br/>
                         <span class="icon icon-twitter"></span> <a href="#"> &nbsp @connectacad </a> <br/>
                         <span class="icon icon-facebook"></span> <a href="#">&nbsp Connect Academy </a> <br/>
                     </p> 

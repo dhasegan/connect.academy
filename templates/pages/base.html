@@ -6,7 +6,7 @@
     {% block page_title %}
       <title>{% include 'objects/page_title.html' %}</title>
     {% endblock %}
-    <link rel="shortcut icon" href="{{ STATIC_URL }}/ju_favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ STATIC_URL }}/connect_favicon.png"  png="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Connect with a comunity of learners.">
     <meta name="author" content="jTeam">
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{STATIC_URL}}assets/css/icomoon.css">
     {% compressed_css 'connect' %}
 
+
     {% block extra_css_includes %}
     
     {% endblock %}
@@ -27,11 +28,11 @@
     {% include 'objects/navbar.html' %}
     {% comment %}
         WATCH OUT! VERY HACKY CODE BELOW : WELCOME PAGE DOESN't WANT a main content container
-    {% endcomment%}
+    {% endcomment %}
      
-     {% if page != "welcome" %} 
-     <div class="container" id="main_content_container"> 
-     {% endif %}
+      {% if page != "welcome" %} 
+      <div class="container" id="main_content_container"> 
+      {% endif %}
 
           {% include 'objects/notifications/alerts.html' %} 
 
@@ -46,13 +47,13 @@
           </div> 
           {% endif %}
        
-    {% if page != "welcome" %}
-    </div> 
-    {% endif %}
+      {% if page != "welcome" %}
+        </div> 
+      {% endif %}
 
       {% comment %}
         END HACKY CODE
-      {% endcomment%}
+      {% endcomment %}
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
