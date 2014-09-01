@@ -39,11 +39,13 @@ $(document).ready(function() {
       $dialogContent.dialog({
           modal: true,
           title: "New Appointment",
+          
           close: function() {
              $dialogContent.dialog("destroy");
              $dialogContent.hide();
              $('#calendar').weekCalendar("removeUnsavedEvents");
           },
+          
           buttons: {
              save : function() {
                 calEvent.id = id;
@@ -316,7 +318,7 @@ function displayMessage(message) {
 function prepareFields($dialogContent) {
   $dialogContent.find("input").val("");
   $dialogContent.find("textarea").val("");
-  $dialogContent.find("select[name='course']").innerHTML = "";
+  $dialogContent.find("select[name='course']").empty();
 }
 
 function getCookie(c_name){
@@ -363,6 +365,7 @@ function setupCourseFields(professorCourseList, calEvent, $courseField){
     if(calEvent.courseName === courseName){
       courseSelected = "selected = \"selected\"";
     }
+    $courseField.append("<option value=\"\">Select Course</option>")
     $courseField.append("<option value=\"" + courseName + "\" " + courseSelected + "\">" + courseName +"</option>");
 
   }
