@@ -24,7 +24,7 @@ def send_email_confirmation(request, user):
     }
     message = render_to_string("emails/require_confirmation.html", context)
 
-    send_mail("Connect.Academy Account Confirmation", message, "Connect.Academy <noreply@connect.academy>", [user.email], fail_silently=False)
+    send_mail("Connect.Academy Account Confirmation", message, "noreply@connect.academy", [user.email], fail_silently=False)
 
 
 class jUserBackend(object):
