@@ -20,19 +20,19 @@ msgstr ""
 
 #: academy/settings.py:45
 msgid "English"
-msgstr ""
+msgstr "Anglisht"
 
 #: academy/settings.py:46
 msgid "German"
-msgstr ""
+msgstr "Gjermanisht"
 
 #: academy/settings.py:47
 msgid "Romanian"
-msgstr ""
+msgstr "Rumanisht"
 
 #: academy/settings.py:48
 msgid "Albanian"
-msgstr ""
+msgstr "Shqip"
 
 #: templates/emails/require_confirmation.html:1
 #, python-format
@@ -57,250 +57,252 @@ msgid ""
 "Greetings\n"
 "The Connect.academy Team.\n"
 msgstr ""
+"\n"
+"Dear%(fname)s, \n \n Faleminderit për regjistrimin me Connect.Academy! Një llogari është krijuar me këtë adresë e-mail-i \n Ju lutemi konfirmoni llogarinë tuaj duke ndjekur link-un e mëposhtem:. \n \n%(confirmation_link)s \n \n \n Nëse ju nuk deshironi te regjistroheni me Connect.Academy, ju mund te zgjidhni të injoroni kete mesazh, në të cilin rast ne llogaria juaj do te fshihet në 3 ditë. Nëse ju dëshironi të fshini llogarinë tani, ju mund të ndiqni lunk-un më poshtë: \n \n%(delete_link)s \n \n \n Gjithe te mirat \n Ekipi i Connect.academy. \n"
 
 #: templates/objects/navbar.html:8
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Ndrysho navigacionin"
 
 #: templates/objects/navbar.html:23 templates/objects/page_title.html:3
 msgid "Dashboard"
-msgstr ""
+msgstr "Paneli i kontrollit"
 
 #: templates/objects/navbar.html:24 templates/objects/page_title.html:4
 msgid "Explore"
-msgstr ""
+msgstr "Eksploro"
 
 #: templates/objects/navbar.html:25
 msgid "All comments"
-msgstr ""
+msgstr "Të gjitha komentet"
 
 #: templates/objects/navbar.html:26
 msgid "Schedule"
-msgstr ""
+msgstr "Orari"
 
 #: templates/objects/navbar_login.html:15
 msgid "Username or Email"
-msgstr ""
+msgstr "Emri i përdoruesit ose e-mail-i"
 
 #: templates/objects/navbar_login.html:18
 #: templates/objects/welcome/register_form.html:45
 #: templates/pages/auth/user_account.html:18
 #: templates/pages/auth/user_account.html:65
 msgid "Password"
-msgstr ""
+msgstr "Fjalekalimi"
 
 #: templates/objects/navbar_login.html:20
 msgid "Login"
-msgstr ""
+msgstr "Hyrje"
 
 #: templates/objects/navbar_login.html:37
 msgid "My profile"
-msgstr ""
+msgstr "Profili im"
 
 #: templates/objects/navbar_login.html:38
 msgid "Manage Account"
-msgstr ""
+msgstr "Menaxhoni llogarinë"
 
 #: templates/objects/navbar_login.html:40
 msgid "Logout"
-msgstr ""
+msgstr "Dalje"
 
 #: templates/objects/page_title.html:5
 msgid "Welcome"
-msgstr ""
+msgstr "Mirëseerdhet"
 
 #: templates/objects/page_title.html:7
 #: templates/objects/course/management/panel.html:24
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 #: templates/objects/page_title.html:8
 msgid "New post"
-msgstr ""
+msgstr "Postime të reja"
 
 #: templates/objects/page_title.html:10
 msgid "Manage my account"
-msgstr ""
+msgstr "Menaxho llogarinë time"
 
 #: templates/objects/page_title.html:11
 msgid "View Schedule"
-msgstr ""
+msgstr "Shiko Kalendarin"
 
 #: templates/objects/page_title.html:12
 msgid "Edit wiki"
-msgstr ""
+msgstr "Përmirëso wiki-n"
 
 #: templates/objects/page_title.html:13
 #: templates/objects/course/course_wiki.html:10
 #: templates/objects/course/sidebar.html:29
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: templates/objects/page_title.html:14
 msgid "Admin"
-msgstr ""
+msgstr "Administrator"
 
 #: templates/objects/page_title.html:15
 msgid "Set email"
-msgstr ""
+msgstr "Vendos e-mail-in"
 
 #: templates/objects/page_title.html:16
 msgid "Error!"
-msgstr ""
+msgstr "Gabim !"
 
 #: templates/objects/page_title.html:17
 msgid "About"
-msgstr ""
+msgstr "Rreth nesh"
 
 #: templates/objects/page_title.html:18
 msgid "Disclaimer"
-msgstr ""
+msgstr "Njoftim"
 
 #: templates/objects/admin/category_forms_left.html:4
 #: templates/objects/admin/category_forms_left.html:9
 msgid "Category Name"
-msgstr ""
+msgstr "Emri i kategorisë"
 
 #: templates/objects/admin/category_forms_left.html:23
 msgid "Administrators"
-msgstr ""
+msgstr "Administratorët"
 
 #: templates/objects/admin/category_forms_left.html:32
 msgid "Course Registration"
-msgstr ""
+msgstr "Regjistrimi i kursit"
 
 #: templates/objects/admin/category_forms_left.html:33
 msgid "Status"
-msgstr ""
+msgstr "Statusi"
 
 #: templates/objects/admin/category_forms_left.html:35
 #: templates/objects/course/management/demand_homework.html:28
 msgid "Start"
-msgstr ""
+msgstr "Fillim"
 
 #: templates/objects/admin/category_forms_left.html:45
 #: templates/objects/course/management/demand_homework.html:38
 msgid "Deadline"
-msgstr ""
+msgstr "Afati"
 
 #: templates/objects/admin/category_forms_left.html:54
 #: templates/objects/course/management/demand_homework.html:47
 msgid "(times are in the local timezone)"
-msgstr ""
+msgstr "(Kohët janë në zonen kohore lokale)"
 
 #: templates/objects/admin/category_forms_left.html:67
 msgid "Delete Category"
-msgstr ""
+msgstr "Fshij Kategorine"
 
 #: templates/objects/admin/category_forms_left.html:68
 msgid "Select \"Delete all\" if you want to also delete all subcategories"
-msgstr ""
+msgstr "Zgjidh \"Fshij të gjithë \" nëse dëshironi të fshini të gjitha nën-kategoritë"
 
 #: templates/objects/admin/category_forms_left.html:74
 msgid "Delete all"
-msgstr ""
+msgstr "Fshij të gjitha"
 
 #: templates/objects/admin/category_forms_right.html:3
 msgid "Assign an administrator"
-msgstr ""
+msgstr "Cakto administratorë"
 
 #: templates/objects/admin/category_forms_right.html:9
 #: templates/objects/admin/course_forms_right.html:10
 msgid "Select a user"
-msgstr ""
+msgstr "Zgjidh një përdorues"
 
 #: templates/objects/admin/category_forms_right.html:25
 msgid "Add a sub-category"
-msgstr ""
+msgstr "Shto një nën-kategori"
 
 #: templates/objects/admin/category_forms_right.html:30
 msgid "Name"
-msgstr ""
+msgstr "Emri"
 
 #: templates/objects/admin/category_forms_right.html:33
 #: templates/objects/course/course_info.html:52
 msgid "Abbreviation"
-msgstr ""
+msgstr "Shkurtesa"
 
 #: templates/objects/admin/category_forms_right.html:45
 #: templates/objects/admin/course_forms_right.html:25
 msgid "Move to category"
-msgstr ""
+msgstr "Zhvendos në kategori "
 
 #: templates/objects/admin/category_forms_right.html:51
 #: templates/objects/admin/course_forms_right.html:33
 msgid "Select a category"
-msgstr ""
+msgstr "Zgjidhni një kategori"
 
 #: templates/objects/admin/category_forms_right.html:69
 msgid "Move course to this category"
-msgstr ""
+msgstr "Leviz kursin në këtë kategori"
 
 #: templates/objects/admin/category_forms_right.html:75
 msgid "Select a course"
-msgstr ""
+msgstr "Zgjidh një kurs"
 
 #: templates/objects/admin/course_forms_left.html:3
 #: templates/objects/admin/course_forms_left.html:8
 msgid "Course Name"
-msgstr ""
+msgstr "Emri i Kursit"
 
 #: templates/objects/admin/course_forms_left.html:20
 #: templates/objects/dashboard/student.html:19
 #: templates/objects/explore/course_block.html:35
 msgid "Professors"
-msgstr ""
+msgstr "Profesorë"
 
 #: templates/objects/admin/course_forms_right.html:3
 msgid "Assign a professor"
-msgstr ""
+msgstr "Cakto një profesor"
 
 #: templates/objects/course/additional_details.html:5
 msgid "Additional information"
-msgstr ""
+msgstr "Informacione shtesë"
 
 #: templates/objects/course/additional_details.html:14
 msgid "Grade breakdown"
-msgstr ""
+msgstr "Kompozimi i notës"
 
 #: templates/objects/course/additional_details.html:23
 msgid "Additional Information about grades"
-msgstr ""
+msgstr "Informacione shtesë për notat"
 
 #: templates/objects/course/additional_details.html:32
 msgid "Hours per week"
-msgstr ""
+msgstr "Orë në javë"
 
 #: templates/objects/course/course_forum.html:7
 msgid ""
 "There is no post yet for this course! Why don't you post the first one by "
-msgstr ""
+msgstr "Nuk ka akoma postime për këtë kurs! Pse nuk bëheni ju i pari qe postoni dicka ? "
 
 #: templates/objects/course/course_forum.html:8
 msgid "clicking here"
-msgstr ""
+msgstr "klikuar këtu"
 
 #: templates/objects/course/course_info.html:28
 #: templates/objects/course/sidebar.html:15
 #, python-format
 msgid "Professor%(professors|pluralize)s"
-msgstr ""
+msgstr "Profesor%(professors|pluralize)s"
 
 #: templates/objects/course/course_info.html:47
 msgid "Course ID"
-msgstr ""
+msgstr "ID e kursit"
 
 #: templates/objects/course/course_info.html:54
 msgid "Teaching Assistants"
-msgstr ""
+msgstr "Asistentë të Profesorit"
 
 #: templates/objects/course/course_info.html:57
 msgid "Semester"
-msgstr ""
+msgstr "Semestri"
 
 #: templates/objects/course/course_info.html:60
 msgid "Credits"
-msgstr ""
+msgstr "Kredite"
 
 #: templates/objects/course/course_info.html:69
 #: templates/objects/course/syllabus.html:10
@@ -309,29 +311,29 @@ msgstr ""
 #: templates/objects/dashboard/student.html:27
 #: templates/objects/explore/course_block.html:45
 msgid "Description"
-msgstr ""
+msgstr "Përshkrim"
 
 #: templates/objects/course/course_info.html:81
 msgid "Syllabus"
-msgstr ""
+msgstr "Manuali i Kursit"
 
 #: templates/objects/course/course_resources.html:6
 msgid "You are a lucky person! There is no homework for you..."
-msgstr ""
+msgstr "Ju jeni një njeri me fat! Nuk ka detyra shtëpie për ju ..."
 
 #: templates/objects/course/course_resources.html:10
 msgid "Assignments"
-msgstr ""
+msgstr "Detyrat"
 
 #: templates/objects/course/course_resources.html:21
 #: templates/objects/course/documents.html:5
 msgid "Documents"
-msgstr ""
+msgstr "Dokumente"
 
 #: templates/objects/course/course_wiki.html:11
 #: templates/objects/wiki/course_page_link.html:7
 msgid "This course doesn't have a wiki yet."
-msgstr ""
+msgstr "Ky kurs nuk ka një wiki ende."
 
 #: templates/objects/course/course_wiki.html:14
 #, python-format
@@ -340,7 +342,7 @@ msgid ""
 "                        Contribute by %(link_start)s creating %(link_stop)s "
 "one.\n"
 "                    "
-msgstr ""
+msgstr "\n Kontribuoni me%(link_start)s duke krijuar%(link_stop)s një. \n                    "
 
 #: templates/objects/course/course_wiki.html:19
 msgid ""
@@ -349,18 +351,18 @@ msgid ""
 "Keep this Wiki Page structured according to the course syllabus and "
 "complement the course material by adding additional relevant information in "
 "the right chapters."
-msgstr ""
+msgstr "Faqet Wiki janë të populluara nga studentët dhe ato janë të destinuara për të qënë burim informacionesh qe lidhen ngushtë me përmbajtjen e kursit duke lehtësuar procesin e te mësuarit. Mbajeni këtë Wiki të strukturuar sipas Manualit të Kursit duke shtuar informacione dhe dokumentacion plotësues sipas kapitujve përkates."
 
 #: templates/objects/course/homework_student.html:17
 #: templates/objects/course/homework_submit.html:27
 msgid "started on"
-msgstr ""
+msgstr "filloi më"
 
 #: templates/objects/course/homework_student.html:18
 #: templates/objects/course/homework_submit.html:28
 #: templates/objects/course/management/current_homework.html:14
 msgid "due"
-msgstr ""
+msgstr "Afati përfundimtar"
 
 #: templates/objects/course/homework_student.html:26
 #, python-format
@@ -369,129 +371,129 @@ msgid ""
 "                                            %(hw.stats.submitted)s out of "
 "%(hw.stats.students)s submitted </div>\n"
 "                                        "
-msgstr ""
+msgstr "\n%(hw.stats.submitted)s nga%(hw.stats.students)s dorëzuan detyrën </div> \n                                        "
 
 #: templates/objects/course/homework_student.html:31
 msgid "You already submitted this homework"
-msgstr ""
+msgstr "Ju tashmë e dorëzuat këtë detyrë shtëpie"
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Resubmit homework"
-msgstr ""
+msgstr "Dorezo detyrën përsëri."
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Submit homework"
-msgstr ""
+msgstr "Dorezo detyrën e shtëpise"
 
 #: templates/objects/course/homework_submit.html:18
 msgid "Resubmitting a homework will overwrite previous submissions."
-msgstr ""
+msgstr "Ridorëzimi i detyrave të shtëpisë do të fshijë dorëzimet e mëparshme."
 
 #: templates/objects/course/homework_submit.html:32
 msgid "Upload your homework"
-msgstr ""
+msgstr "Ngarkoni detyrat e shtëpisë"
 
 #: templates/objects/course/homework_submit.html:39
 #: templates/objects/course/registration.html:20
 msgid "No, cancel"
-msgstr ""
+msgstr "Jo, anulo"
 
 #: templates/objects/course/registration.html:9
 msgid "Are you sure you want to register for this course?"
-msgstr ""
+msgstr "A jeni i sigurt që ju dëshironi të regjistroheni për këtë kurs?"
 
 #: templates/objects/course/registration.html:34
 msgid "Register"
-msgstr ""
+msgstr "Regjistrohu"
 
 #: templates/objects/course/registration.html:36
 msgid "I am teaching this course"
-msgstr ""
+msgstr "Unë jam Profesori për këtë kurs"
 
 #: templates/objects/course/registration.html:40
 #: templates/objects/dashboard/student.html:36
 msgid "Pending Registration"
-msgstr ""
+msgstr "Në pritje të Regjistrimit"
 
 #: templates/objects/course/registration.html:45
 #: templates/objects/dashboard/student.html:34
 msgid "Registered"
-msgstr ""
+msgstr "Regjistruar"
 
 #: templates/objects/course/review.html:41
 msgid "Innapropriate?"
-msgstr ""
+msgstr "E papërshtatshme?"
 
 #: templates/objects/course/review.html:46
 msgid "Flag"
-msgstr ""
+msgstr "Sinjalizo"
 
 #: templates/objects/course/review.html:58
 msgid "This review was flagged as inaccurate or offensive. Click to reveal."
-msgstr ""
+msgstr "Ky permbajtje është sinjalizuar si e pasaktë ose fyese. Klikoni për ta shikuar."
 
 #: templates/objects/course/review.html:60
 msgid "This review was flagged as inaccurate or offensive. Log in to view it."
-msgstr ""
+msgstr "Ky vlerësim është sinjalizuar si i pasaktë ose fyes. Identifikohuni duke hyrë për ta parë."
 
 #: templates/objects/course/reviews_detail.html:6
 msgid "Submit a review"
-msgstr ""
+msgstr "Shkruani nje vlerësim"
 
 #: templates/objects/course/reviews_detail.html:9
 msgid "Rate course"
-msgstr ""
+msgstr "Vlerësoni kursin"
 
 #: templates/objects/course/reviews_detail.html:12
 msgid "Reviews"
-msgstr ""
+msgstr "Vlerësime"
 
 #: templates/objects/course/sidebar.html:27
 msgid "Activity log"
-msgstr ""
+msgstr "Log Aktiviteti"
 
 #: templates/objects/course/sidebar.html:28
 msgid "Course info"
-msgstr ""
+msgstr "Info Kursi"
 
 #: templates/objects/course/sidebar.html:30
 msgid "Connect"
-msgstr ""
+msgstr "Connect"
 
 #: templates/objects/course/sidebar.html:31
 msgid "Resources and Assignments"
-msgstr ""
+msgstr "Materiale dhe Detyrat"
 
 #: templates/objects/course/sidebar_forum.html:7
 msgid "Forum posts"
-msgstr ""
+msgstr "Postimet ne Forum"
 
 #: templates/objects/course/sidebar_wiki.html:9
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "Wiki page"
-msgstr ""
+msgstr "Faqe Wiki"
 
 #: templates/objects/course/sidebar_wiki.html:11
 #: templates/pages/wiki/view_wiki.html:13
 msgid "Edit Wiki"
-msgstr ""
+msgstr "Permirëso Wiki-n"
 
 #: templates/objects/course/sidebar_wiki.html:14
 msgid "Contributors"
-msgstr ""
+msgstr "Kontribuesit"
 
 #: templates/objects/course/submit_review.html:8
 msgid "Write a review..."
-msgstr ""
+msgstr "Shkruani një vlerësim ..."
 
 #: templates/objects/course/submit_review.html:11
 #: templates/objects/forum/new_answer.html:11
 #: templates/objects/forum/new_post.html:28
 msgid "Submit"
-msgstr ""
+msgstr "Konfirmo"
 
 #: templates/objects/course/submit_review.html:13
 #: templates/objects/forum/answer.html:11
@@ -499,218 +501,218 @@ msgstr ""
 #: templates/objects/forum/new_answer.html:15
 #: templates/objects/forum/new_post.html:22
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonim"
 
 #: templates/objects/course/management/current_homework.html:5
 #: templates/objects/course/management/panel.html:21
 msgid "Homework"
-msgstr ""
+msgstr "Detyrat e shtëpisë"
 
 #: templates/objects/course/management/demand_homework.html:7
 msgid "Homework Name"
-msgstr ""
+msgstr "Emri i detyrës së shtëpisë"
 
 #: templates/objects/course/management/demand_homework.html:8
 msgid "(Example: Homework1, Project1, ... )"
-msgstr ""
+msgstr "(Shembull: Detyra 1, Projekti 1, ...)"
 
 #: templates/objects/course/management/demand_homework.html:13
 #: templates/objects/course/management/upload_document.html:12
 msgid "Course Topic"
-msgstr ""
+msgstr "Tema e kursit"
 
 #: templates/objects/course/management/demand_homework.html:15
 msgid "Please select one"
-msgstr ""
+msgstr "Ju lutem, përzgjidhni një"
 
 #: templates/objects/course/management/demand_homework.html:23
 #: templates/objects/course/management/upload_document.html:22
 #: templates/objects/forum/new_post.html:11
 msgid "(optional)"
-msgstr ""
+msgstr "(Opsionale)"
 
 #: templates/objects/course/management/panel.html:12
 msgid "Pending Registrations"
-msgstr ""
+msgstr "Regjistrime në pritje"
 
 #: templates/objects/course/management/panel.html:15
 msgid "Registered Students"
-msgstr ""
+msgstr "Studentët e regjistruar"
 
 #: templates/objects/course/management/panel.html:18
 #: templates/objects/course/management/panel.html:63
 msgid "Upload Documents"
-msgstr ""
+msgstr "Ngarko Dokumente"
 
 #: templates/objects/course/management/panel.html:36
 msgid ""
 "You cannot approve students' registrations until you are confirmed as a "
 "professor of this course"
-msgstr ""
+msgstr "Ju nuk mund të miratoni regjistrimet e nxënësve deri sa të konfirmohet statusi juaj si një profesor i këtij kursi"
 
 #: templates/objects/course/management/panel.html:46
 msgid ""
 "You cannot see registered students until you are confirmed as a professor of "
 "this course"
-msgstr ""
+msgstr "Ju nuk mund të shihni studentët e regjistruar deri sa të konfirmohet statusi juaj si një profesor i këtij kursi"
 
 #: templates/objects/course/management/panel.html:56
 msgid "Documents Uploaded"
-msgstr ""
+msgstr "Dokumentat e ngarkuar"
 
 #: templates/objects/course/management/panel.html:72
 msgid ""
 "You cannot upload documents until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Ju nuk mund të ngarkoni dokumenta deri sa të konfirmohet statusi juaj si një profesor i këtij kursi"
 
 #: templates/objects/course/management/panel.html:97
 msgid ""
 "You cannot ask for homework until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Ju nuk mund të jepni detyra kursi, deri sa të konfirmohet statusi juaj si një profesor i këtij kursi"
 
 #: templates/objects/course/management/panel.html:108
 msgid ""
 "You cannot manage the forum until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Ju nuk mund të menaxhoni forumin deri sa të konfirmohet statusi juaj si një profesor i këtij kursi"
 
 #: templates/objects/course/management/pending_registrations.html:11
 #: templates/objects/course/management/registered_students.html:12
 msgid "Select All"
-msgstr ""
+msgstr "Zgjidh të gjithë"
 
 #: templates/objects/course/management/pending_registrations.html:31
 #: templates/objects/course/management/registered_students.html:36
 msgid "There are no pending registrations for this course."
-msgstr ""
+msgstr "Nuk ka regjistrime në pritje për këtë kurs."
 
 #: templates/objects/course/management/registered_students.html:8
 msgid "Send an e-mail to"
-msgstr ""
+msgstr "Dërgo një e-mail për të"
 
 #: templates/objects/course/management/registered_students.html:26
 msgid "Subject"
-msgstr ""
+msgstr "Titulli i Email-it"
 
 #: templates/objects/course/management/registered_students.html:27
 msgid "Email Body"
-msgstr ""
+msgstr "Trupi i Email-it"
 
 #: templates/objects/course/management/upload_document.html:7
 msgid "Document Name"
-msgstr ""
+msgstr "Emri i dokumentit"
 
 #: templates/objects/course/management/upload_document.html:14
 msgid "No specific topic"
-msgstr ""
+msgstr "Nuk ka temë të veçantë"
 
 #: templates/objects/dashboard/professor.html:10
 msgid "Pending Confirmation"
-msgstr ""
+msgstr "Në pritje Konfirmimi"
 
 #: templates/objects/dashboard/student.html:29
 #: templates/objects/explore/course_block.html:46
 msgid "(more)"
-msgstr ""
+msgstr "(Më shumë)"
 
 #: templates/objects/explore/search_sidebar.html:5
 msgid "Search by course name"
-msgstr ""
+msgstr "Kërko sipas emrit të kurseve"
 
 #: templates/objects/explore/search_sidebar.html:11
 msgid "Credits range"
-msgstr ""
+msgstr "Rangu i krediteve"
 
 #: templates/objects/explore/search_sidebar.html:25
 msgid "Ratings range"
-msgstr ""
+msgstr "Rangu i vlerësimeve"
 
 #: templates/objects/forum/answer.html:11
 #: templates/objects/forum/answers.html:14
 msgid "Posted by"
-msgstr ""
+msgstr "Postuar nga"
 
 #: templates/objects/forum/answer.html:24
 msgid "Reply"
-msgstr ""
+msgstr "Përgjigju"
 
 #: templates/objects/forum/answers.html:19
 msgid "in"
-msgstr ""
+msgstr "në"
 
 #: templates/objects/forum/answers.html:25
 msgid "Answer"
-msgstr ""
+msgstr "Përgjigje"
 
 #: templates/objects/forum/answers.html:56
 msgid "Best Answers"
-msgstr ""
+msgstr "Përgjigjet më të mira"
 
 #: templates/objects/forum/answers.html:62
 msgid "There are no answers yet."
-msgstr ""
+msgstr "Nuk ka përgjigje ende."
 
 #: templates/objects/forum/bar.html:3
 msgid "Forum page of"
-msgstr ""
+msgstr "Faqe Forumi i"
 
 #: templates/objects/forum/bar.html:7
 msgid "Filter"
-msgstr ""
+msgstr "Filtër"
 
 #: templates/objects/forum/bar.html:11 templates/objects/forum/bar.html:15
 msgid "all"
-msgstr ""
+msgstr "të gjithë"
 
 #: templates/objects/forum/bar.html:24
 msgid "New Post"
-msgstr ""
+msgstr "Postim i ri"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "Start Discussion"
-msgstr ""
+msgstr "Fillo një Diskutim"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "View Ongoing Discussion"
-msgstr ""
+msgstr "Shiko një Diskutim të vazhdueshëm"
 
 #: templates/objects/forum/discussion.html:14
 msgid "Discussion on the reply"
-msgstr ""
+msgstr "Diskutim mbi përgjigjen"
 
 #: templates/objects/forum/discussion.html:14
 msgid "back to best answers"
-msgstr ""
+msgstr "Shko përsëri në Përgjigjet me të mira"
 
 #: templates/objects/forum/forum_management.html:3
 msgid "There is a forum for this course."
-msgstr ""
+msgstr "Ka një forum për këtë kurs."
 
 #: templates/objects/forum/forum_management.html:3
 msgid "Click here"
-msgstr ""
+msgstr "Kliko këtu"
 
 #: templates/objects/forum/new_answer.html:7
 msgid "Type in your answer"
-msgstr ""
+msgstr "Shkruani përgjigjen tuaj"
 
 #: templates/objects/forum/new_post.html:7
 msgid "Post title"
-msgstr ""
+msgstr "Titulli i Postimit"
 
 #: templates/objects/forum/new_post.html:8
 msgid "Your question"
-msgstr ""
+msgstr "Pyetja juaj"
 
 #: templates/objects/forum/new_post.html:11
 msgid "Additional description"
-msgstr ""
+msgstr "Përshkrim i mëtejshëm"
 
 #: templates/objects/forum/new_post_tags.html:2
 msgid "Select an appropriate tag for your post"
-msgstr ""
+msgstr "Zgjidh një etiketë të përshtatshme për postimin tuaj"
 
 #: templates/objects/notifications/auth/course_registration_success.html:2
 #, python-format
@@ -719,6 +721,8 @@ msgid ""
 "Your registration for the course <b>%(course_name)s</b> was successful. You "
 "will be notified when the registration is approved.\n"
 msgstr ""
+"\n"
+" Kerkesa juaj për regjistrim në kursin <b>%(course_name)s </b> ishte i suksesshëm. Ju do të njoftoheni kur regjistrimi të jetë miratuar. \n"
 
 #: templates/objects/notifications/auth/email_not_activated.html:6
 #, python-format
@@ -728,6 +732,8 @@ msgid ""
 "confirmation that we have sent you. %(link_start)s Resend confirmation link "
 "%(link_stop)s\n"
 msgstr ""
+"\n"
+" Llogaria juaj nuk është aktivizuar akoma. Ju lutem kontrolloni email tuaj per të hapur konfirmimin e dërguar nga Connect Academy dhe klikoni mbi link-un. %(link_start)s Dërgo përsëri link-un për konfirmim%(link_stop)s \n"
 
 #: templates/objects/notifications/auth/email_not_set.html:5
 #, python-format
@@ -736,108 +742,110 @@ msgid ""
 "Your email is not yet set! Please set your email address by clicking "
 "%(link_start)s here %(link_stop)s .\n"
 msgstr ""
+"\n"
+" Email-i juaj nuk është vendosur akoma! Ju lutemi të vendosur adresën tuaj të e-mail-it duke klikuar%(link_start)s këtu%(link_stop)s. \n"
 
 #: templates/objects/notifications/auth/email_taken.html:2
 msgid ""
 "Sorry, a user with that <b>e-mail address</b> already exists. If you already "
 "have an account, you can log in."
-msgstr ""
+msgstr "Na vjen keq, një përdorues me këtë  <b> adresë e-mail-i </b> tashmë ekziston. Nëse ju tashmë keni një llogari, ju mund të hyni."
 
 #: templates/objects/notifications/auth/passwords_do_not_match.html:2
 msgid "Your <b>passwords</b> do not match. Please try again."
-msgstr ""
+msgstr " <b>Fjalëkalimet </b> nuk përputhen. Ju lutemi provoni përsëri."
 
 #: templates/objects/notifications/auth/university_not_found.html:2
 msgid ""
 "Sorry, we do not have a <b>university</b> with the <b>domain</b> of your "
 "<b>e-mail address</b>. Please make sure that you your <b>university e-mail "
 "address</b> correctly or come back later."
-msgstr ""
+msgstr "Na vjen keq, ne nuk kemi një <b> universitet </b> me <b> domain-in </b> i <b> e adresës tuaj të e-mail-it </b>. Ju lutem sigurohuni që ju të vendosni <b> adresën tuaj te e-mail-it nga universiteti <b /> pa gabime, ose kthehuni më vonë."
 
 #: templates/objects/notifications/auth/username_taken.html:2
 msgid ""
 "Sorry, a user with that <b> username </b> already exists. Please choose "
 "another one."
-msgstr ""
+msgstr "Na vjen keq, një përdorues me këtë <b> emër përdoruesi </b> tashmë ekziston. Ju lutem zgjidhni një tjetër."
 
 #: templates/objects/notifications/auth/wrong_username_or_password.html:2
 msgid ""
 "The username, email or password is incorrect. If you don't have an account, "
 "register below."
-msgstr ""
+msgstr "Email, emri i përdoruesit ose fjalëkalimi është i pasaktë. Nëse ju nuk keni një llogari, regjistrohu më poshtë."
 
 #: templates/objects/notifications/profile/changed_object.html:2
 #, python-format
 msgid ""
 "\n"
 "Your <b>%(changed_object)s</b> has been changed <b>successfully</b>!\n"
-msgstr ""
+msgstr "\n <b>%(changed_object)s </b> juaj ka ndryshuar <b> me sukses </b>! \n"
 
 #: templates/objects/notifications/profile/incorrect_password.html:2
 msgid ""
 "\n"
 "Your <b>password</b> is <b>incorrect</b>. Please check your password and try "
 "again.\n"
-msgstr ""
+msgstr "\n <b> Fjalëkalimi </b>juaj  është <b> i pasaktë </b>. Ju lutem kontrolloni fjalëkalimin tuaj dhe provoni përsëri. \n"
 
 #: templates/objects/notifications/profile/not_matching_passwords.html:2
 msgid ""
 "\n"
 "Your <b>passwords</b> do <b>not match</b>. Please check your passwords and "
 "try again.\n"
-msgstr ""
+msgstr "\n <b> Fjalëkalimet </b> <b> nuk përputhen </b>. Ju lutem kontrolloni fjalëkalimet tuaja dhe të provoni përsëri. \n"
 
 #: templates/objects/notifications/profile/username_exists.html:2
 msgid ""
 "\n"
 "A user with that <b> username </b> already exists. If you wish to change "
 "your username, please choose another one.\n"
-msgstr ""
+msgstr "\n Një përdorues me këtë <b> emër përdoruesi </b> tashmë ekziston. Nëse dëshironi të ndryshoni emrin tuaj të përdoruesit, ju lutem zgjidhni një tjetër. \n"
 
 #: templates/objects/notifications/wiki/wiki_created.html:2
 #, python-format
 msgid ""
 "\n"
 "Successfully created a Wiki Page for course <b>%(course_name)s</b>\n"
-msgstr ""
+msgstr "\n Ju keni krijuar me sukses një Faqe Wiki për kursin  <b>%(course_name)s </b> \n"
 
 #: templates/objects/notifications/wiki/wiki_edited.html:2
 msgid ""
 "\n"
 "<b>Saved</b>\n"
-msgstr ""
+msgstr "\n <b> Ruajtur </b> \n"
 
 #: templates/objects/welcome/register_form.html:5
 msgid "Register with <strong>Connect Academy </strong>"
-msgstr ""
+msgstr "Regjistrohu në <strong> Connect Akademia </strong>"
 
 #: templates/objects/welcome/register_form.html:15
 msgid "First Name"
-msgstr ""
+msgstr "Emri"
 
 #: templates/objects/welcome/register_form.html:20
 msgid "Last Name"
-msgstr ""
+msgstr "Mbiemri"
 
 #: templates/objects/welcome/register_form.html:28
 msgid "University Email address"
-msgstr ""
+msgstr "Email-i juaj i Universitetit"
 
 #: templates/objects/welcome/register_form.html:35
 msgid "Username"
-msgstr ""
+msgstr "Emri i përdoruesit"
 
 #: templates/objects/welcome/register_form.html:52
 msgid "Confirm Password"
-msgstr ""
+msgstr "Konfirmo Fjalëkalimin"
 
 #: templates/objects/welcome/register_form.html:62
 msgid "I am a professor"
-msgstr ""
+msgstr "Unë jam profesor"
 
 #: templates/objects/wiki/course_page_link.html:4
 msgid "Course Wiki"
-msgstr ""
+msgstr "Wiki i Kursit"
 
 #: templates/objects/wiki/course_page_link.html:10
 #, python-format
@@ -845,7 +853,7 @@ msgid ""
 "\n"
 "            Contribute by %(link_start)screating%(link_stop)s one.\n"
 "        "
-msgstr ""
+msgstr "\n Kontribuoni %(link_start)s duke krijuar %(link_stop)s një wiki. \n        "
 
 #: templates/objects/wiki/wiki_welcome.html:2
 #, python-format
@@ -856,68 +864,69 @@ msgid ""
 "information easily and facilitate your studying process. Keep this Wiki Page "
 "structured according to the course syllabus and complement the course "
 "material by adding additional relevant information in the right chapters.\n"
-msgstr ""
+msgstr "\n Kjo është një Faqe Wiki e kursit <b>%(course_name)s </b>.Faqet Wiki janë të populluara nga studentët dhe ato janë të destinuara për të qënë burim informacionesh qe lidhen ngushtë me përmbajtjen e kursit duke lehtësuar procesin e te mësuarit. Mbajeni këtë Wiki të strukturuar sipas Manualit të Kursit duke shtuar informacione dhe dokumentacion plotësues sipas kapitujve përkates. \n"
 
 #: templates/pages/error.html:7
 msgid "You have to activate your account to do that!"
-msgstr ""
+msgstr "Ju duhet të aktivizoni llogarinë tuaj për të bërë këtë!"
 
 #: templates/pages/auth/set_email.html:8
 msgid "University E-mail Address"
-msgstr ""
+msgstr "Email-i juaj i Universitetit"
 
 #: templates/pages/auth/user_account.html:10
 #: templates/pages/auth/user_account.html:22
 msgid "Change Username"
-msgstr ""
+msgstr "Ndryshimi emrin e përdoruesit"
 
 #: templates/pages/auth/user_account.html:15
 msgid "New Username"
-msgstr ""
+msgstr "Emri i ri i  përdoruesit"
 
 #: templates/pages/auth/user_account.html:30
 #: templates/pages/auth/user_account.html:44
 msgid "Change Password"
-msgstr ""
+msgstr "Ndrysho Fjalëkalimin"
 
 #: templates/pages/auth/user_account.html:35
 msgid "Old Password"
-msgstr ""
+msgstr "Fjalëkalimi i vjetër"
 
 #: templates/pages/auth/user_account.html:38
 msgid "New Password"
-msgstr ""
+msgstr "Fjalëkalimi i ri"
 
 #: templates/pages/auth/user_account.html:41
 msgid "Confirm New Password"
-msgstr ""
+msgstr "Konfirmo fjalëkalimin e ri"
 
 #: templates/pages/auth/user_account.html:54
 #: templates/pages/auth/user_account.html:68
 msgid "Change Name"
-msgstr ""
+msgstr "Ndrysho Emrin"
 
 #: templates/pages/auth/user_account.html:59
 msgid "New First Name"
-msgstr ""
+msgstr "Emri i ri"
 
 #: templates/pages/auth/user_account.html:62
 msgid "New Last Name"
-msgstr ""
+msgstr "Mbiemri i ri "
 
 #: templates/pages/forum/new_post.html:10
 msgid "Submit post on the forum of course"
-msgstr ""
+msgstr "Posto në forum e kursit"
 
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "of"
-msgstr ""
+msgstr "i"
 
 #: templates/pages/wiki/edit_wiki_page.html:15
 msgid "Save"
-msgstr ""
+msgstr "Ruaj"
 
 #: templates/pages/wiki/view_wiki.html:24
 msgid "View the list of revisions."
-msgstr ""
+msgstr "Shikoni listën e rishikimeve."
+

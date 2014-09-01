@@ -20,19 +20,19 @@ msgstr ""
 
 #: academy/settings.py:45
 msgid "English"
-msgstr ""
+msgstr "English"
 
 #: academy/settings.py:46
 msgid "German"
-msgstr ""
+msgstr "Deutsch"
 
 #: academy/settings.py:47
 msgid "Romanian"
-msgstr ""
+msgstr "Rumänisch"
 
 #: academy/settings.py:48
 msgid "Albanian"
-msgstr ""
+msgstr "Albanisch"
 
 #: templates/emails/require_confirmation.html:1
 #, python-format
@@ -56,251 +56,251 @@ msgid ""
 "\n"
 "Greetings\n"
 "The Connect.academy Team.\n"
-msgstr ""
+msgstr "\n Dear %(fname)s, \n \n Danke für die Registrierung bei Connect.Academy! Es wurde ein Konto mit dieser E-Mail-Adresse erstellt \nBitte bestätige dein Konto über den folgenden Link der unten aufgeführt ist. \n \n %(confirmation_link)s \n \n \nFalls du dich nicht bei Connect.Academy registriert hast, kannst du diese Nachricht ignorieren, in diesem Fall werden wir das Konto binnen 3 Tagen löschen. Wenn du das Konto jetzt löschen möchtest, folge dem unten aufgeführten Link: \n \n%(delete_link)s \n \n \nGruß \n Das Connect.academy-Team.\n"
 
 #: templates/objects/navbar.html:8
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Toggle Navigation"
 
 #: templates/objects/navbar.html:23 templates/objects/page_title.html:3
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: templates/objects/navbar.html:24 templates/objects/page_title.html:4
 msgid "Explore"
-msgstr ""
+msgstr "Erkunden"
 
 #: templates/objects/navbar.html:25
 msgid "All comments"
-msgstr ""
+msgstr "Alle Kommentare"
 
 #: templates/objects/navbar.html:26
 msgid "Schedule"
-msgstr ""
+msgstr "Stundenplan"
 
 #: templates/objects/navbar_login.html:15
 msgid "Username or Email"
-msgstr ""
+msgstr "Benutzername oder E-Mail"
 
 #: templates/objects/navbar_login.html:18
 #: templates/objects/welcome/register_form.html:45
 #: templates/pages/auth/user_account.html:18
 #: templates/pages/auth/user_account.html:65
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: templates/objects/navbar_login.html:20
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: templates/objects/navbar_login.html:37
 msgid "My profile"
-msgstr ""
+msgstr "Mein Profil"
 
 #: templates/objects/navbar_login.html:38
 msgid "Manage Account"
-msgstr ""
+msgstr "Konto verwalten"
 
 #: templates/objects/navbar_login.html:40
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: templates/objects/page_title.html:5
 msgid "Welcome"
-msgstr ""
+msgstr "Willkommen"
 
 #: templates/objects/page_title.html:7
 #: templates/objects/course/management/panel.html:24
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 #: templates/objects/page_title.html:8
 msgid "New post"
-msgstr ""
+msgstr "Neuer Post"
 
 #: templates/objects/page_title.html:10
 msgid "Manage my account"
-msgstr ""
+msgstr "Mein Konto verwalten"
 
 #: templates/objects/page_title.html:11
 msgid "View Schedule"
-msgstr ""
+msgstr "Studenplan ansehen"
 
 #: templates/objects/page_title.html:12
 msgid "Edit wiki"
-msgstr ""
+msgstr "Wiki bearbeiten"
 
 #: templates/objects/page_title.html:13
 #: templates/objects/course/course_wiki.html:10
 #: templates/objects/course/sidebar.html:29
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: templates/objects/page_title.html:14
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/objects/page_title.html:15
 msgid "Set email"
-msgstr ""
+msgstr "E-Mail festlegen"
 
 #: templates/objects/page_title.html:16
 msgid "Error!"
-msgstr ""
+msgstr "Fehler!"
 
 #: templates/objects/page_title.html:17
 msgid "About"
-msgstr ""
+msgstr "Info"
 
 #: templates/objects/page_title.html:18
 msgid "Disclaimer"
-msgstr ""
+msgstr "Haftungsausschluss"
 
 #: templates/objects/admin/category_forms_left.html:4
 #: templates/objects/admin/category_forms_left.html:9
 msgid "Category Name"
-msgstr ""
+msgstr "Kategoriename"
 
 #: templates/objects/admin/category_forms_left.html:23
 msgid "Administrators"
-msgstr ""
+msgstr "Administratoren"
 
 #: templates/objects/admin/category_forms_left.html:32
 msgid "Course Registration"
-msgstr ""
+msgstr "Kursanmeldung"
 
 #: templates/objects/admin/category_forms_left.html:33
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: templates/objects/admin/category_forms_left.html:35
 #: templates/objects/course/management/demand_homework.html:28
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: templates/objects/admin/category_forms_left.html:45
 #: templates/objects/course/management/demand_homework.html:38
 msgid "Deadline"
-msgstr ""
+msgstr "Frist"
 
 #: templates/objects/admin/category_forms_left.html:54
 #: templates/objects/course/management/demand_homework.html:47
 msgid "(times are in the local timezone)"
-msgstr ""
+msgstr "(Zeiten sind in der lokalen Zeitzone)"
 
 #: templates/objects/admin/category_forms_left.html:67
 msgid "Delete Category"
-msgstr ""
+msgstr "Kategorie löschen"
 
 #: templates/objects/admin/category_forms_left.html:68
 msgid "Select \"Delete all\" if you want to also delete all subcategories"
-msgstr ""
+msgstr "Wählen Sie \"löschen \", wenn Sie auch alle Unterkategorien löschen möchten"
 
 #: templates/objects/admin/category_forms_left.html:74
 msgid "Delete all"
-msgstr ""
+msgstr "Alle löschen"
 
 #: templates/objects/admin/category_forms_right.html:3
 msgid "Assign an administrator"
-msgstr ""
+msgstr "Bestimme einen Administrator"
 
 #: templates/objects/admin/category_forms_right.html:9
 #: templates/objects/admin/course_forms_right.html:10
 msgid "Select a user"
-msgstr ""
+msgstr "Wähle einen Nutzer"
 
 #: templates/objects/admin/category_forms_right.html:25
 msgid "Add a sub-category"
-msgstr ""
+msgstr "Füge eine Unterkategorie hinzu"
 
 #: templates/objects/admin/category_forms_right.html:30
 msgid "Name"
-msgstr ""
+msgstr "Name "
 
 #: templates/objects/admin/category_forms_right.html:33
 #: templates/objects/course/course_info.html:52
 msgid "Abbreviation"
-msgstr ""
+msgstr "Abkürzung"
 
 #: templates/objects/admin/category_forms_right.html:45
 #: templates/objects/admin/course_forms_right.html:25
 msgid "Move to category"
-msgstr ""
+msgstr "Zur Kategorie"
 
 #: templates/objects/admin/category_forms_right.html:51
 #: templates/objects/admin/course_forms_right.html:33
 msgid "Select a category"
-msgstr ""
+msgstr "Kategorie auswählen"
 
 #: templates/objects/admin/category_forms_right.html:69
 msgid "Move course to this category"
-msgstr ""
+msgstr "Kurs in dieser Kategorie einordnen"
 
 #: templates/objects/admin/category_forms_right.html:75
 msgid "Select a course"
-msgstr ""
+msgstr "Wähle einen Kurs"
 
 #: templates/objects/admin/course_forms_left.html:3
 #: templates/objects/admin/course_forms_left.html:8
 msgid "Course Name"
-msgstr ""
+msgstr "Kursname"
 
 #: templates/objects/admin/course_forms_left.html:20
 #: templates/objects/dashboard/student.html:19
 #: templates/objects/explore/course_block.html:35
 msgid "Professors"
-msgstr ""
+msgstr "Professoren"
 
 #: templates/objects/admin/course_forms_right.html:3
 msgid "Assign a professor"
-msgstr ""
+msgstr "Bestimme einen Professor"
 
 #: templates/objects/course/additional_details.html:5
 msgid "Additional information"
-msgstr ""
+msgstr "Zusätzliche Informationen "
 
 #: templates/objects/course/additional_details.html:14
 msgid "Grade breakdown"
-msgstr ""
+msgstr "Notenaufteilung"
 
 #: templates/objects/course/additional_details.html:23
 msgid "Additional Information about grades"
-msgstr ""
+msgstr "Weitere Informationen zu den Noten"
 
 #: templates/objects/course/additional_details.html:32
 msgid "Hours per week"
-msgstr ""
+msgstr "Stunden pro Woche"
 
 #: templates/objects/course/course_forum.html:7
 msgid ""
 "There is no post yet for this course! Why don't you post the first one by "
-msgstr ""
+msgstr "Es gibt noch keinen Beitrag für diesen Kurs! Sei die/der erste die/der diesen Kurs bewertet "
 
 #: templates/objects/course/course_forum.html:8
 msgid "clicking here"
-msgstr ""
+msgstr "Klick hier"
 
 #: templates/objects/course/course_info.html:28
 #: templates/objects/course/sidebar.html:15
 #, python-format
 msgid "Professor%(professors|pluralize)s"
-msgstr ""
+msgstr "Professor %(professors|pluralize)s"
 
 #: templates/objects/course/course_info.html:47
 msgid "Course ID"
-msgstr ""
+msgstr "Kurs-ID"
 
 #: templates/objects/course/course_info.html:54
 msgid "Teaching Assistants"
-msgstr ""
+msgstr "Lehrassistenten"
 
 #: templates/objects/course/course_info.html:57
 msgid "Semester"
-msgstr ""
+msgstr "Semester"
 
 #: templates/objects/course/course_info.html:60
 msgid "Credits"
-msgstr ""
+msgstr "Punkte"
 
 #: templates/objects/course/course_info.html:69
 #: templates/objects/course/syllabus.html:10
@@ -309,29 +309,29 @@ msgstr ""
 #: templates/objects/dashboard/student.html:27
 #: templates/objects/explore/course_block.html:45
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: templates/objects/course/course_info.html:81
 msgid "Syllabus"
-msgstr ""
+msgstr "Unterrichtsprogramm"
 
 #: templates/objects/course/course_resources.html:6
 msgid "You are a lucky person! There is no homework for you..."
-msgstr ""
+msgstr "Du Glückspilz! Es gibt keine Hausaufgaben für dich ..."
 
 #: templates/objects/course/course_resources.html:10
 msgid "Assignments"
-msgstr ""
+msgstr "Aufgaben"
 
 #: templates/objects/course/course_resources.html:21
 #: templates/objects/course/documents.html:5
 msgid "Documents"
-msgstr ""
+msgstr "Dokumente"
 
 #: templates/objects/course/course_wiki.html:11
 #: templates/objects/wiki/course_page_link.html:7
 msgid "This course doesn't have a wiki yet."
-msgstr ""
+msgstr "Für diesen Kurs gibt es noch keinen Wiki"
 
 #: templates/objects/course/course_wiki.html:14
 #, python-format
@@ -340,7 +340,7 @@ msgid ""
 "                        Contribute by %(link_start)s creating %(link_stop)s "
 "one.\n"
 "                    "
-msgstr ""
+msgstr "\n Contribute%(link_start)s Schaffung %(link_stop)s ein. \n                    "
 
 #: templates/objects/course/course_wiki.html:19
 msgid ""
@@ -349,18 +349,18 @@ msgid ""
 "Keep this Wiki Page structured according to the course syllabus and "
 "complement the course material by adding additional relevant information in "
 "the right chapters."
-msgstr ""
+msgstr "Die Wiki-Seiten werden von Studenten erarbeitet und sollen dir relevante Informationen leicht zugänglich machen und deinen Lernprozess erleichtern. Strukturiere diese Wiki-Seite nach dem Lehrplan und ergänze das Kursmaterial durch Hinzufügen von zusätzlichen relevanten Informationen in die richtigen Kapitel."
 
 #: templates/objects/course/homework_student.html:17
 #: templates/objects/course/homework_submit.html:27
 msgid "started on"
-msgstr ""
+msgstr "begann am"
 
 #: templates/objects/course/homework_student.html:18
 #: templates/objects/course/homework_submit.html:28
 #: templates/objects/course/management/current_homework.html:14
 msgid "due"
-msgstr ""
+msgstr "fällig"
 
 #: templates/objects/course/homework_student.html:26
 #, python-format
@@ -369,129 +369,129 @@ msgid ""
 "                                            %(hw.stats.submitted)s out of "
 "%(hw.stats.students)s submitted </div>\n"
 "                                        "
-msgstr ""
+msgstr "\n %(hw.stats.submitted)s von %(hw.stats.students)s </ div> \n eingereicht                                        "
 
 #: templates/objects/course/homework_student.html:31
 msgid "You already submitted this homework"
-msgstr ""
+msgstr "Diese Hausaufgaben hast du bereits eingereicht"
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Resubmit homework"
-msgstr ""
+msgstr "Hausaufgaben erneut einreichen"
 
 #: templates/objects/course/homework_submit.html:9
 #: templates/objects/course/homework_submit.html:54
 msgid "Submit homework"
-msgstr ""
+msgstr "Hausaufgaben einreichen"
 
 #: templates/objects/course/homework_submit.html:18
 msgid "Resubmitting a homework will overwrite previous submissions."
-msgstr ""
+msgstr "Erneutes Einreichen einer Hausaufgaben wird die frühere überschreiben."
 
 #: templates/objects/course/homework_submit.html:32
 msgid "Upload your homework"
-msgstr ""
+msgstr "Hausaufgaben hochladen "
 
 #: templates/objects/course/homework_submit.html:39
 #: templates/objects/course/registration.html:20
 msgid "No, cancel"
-msgstr ""
+msgstr "Nein, abbrechen"
 
 #: templates/objects/course/registration.html:9
 msgid "Are you sure you want to register for this course?"
-msgstr ""
+msgstr "Bist du sicher, dass du dich für diesen Kurs anmelden möchtest?"
 
 #: templates/objects/course/registration.html:34
 msgid "Register"
-msgstr ""
+msgstr "Registrieren"
 
 #: templates/objects/course/registration.html:36
 msgid "I am teaching this course"
-msgstr ""
+msgstr "Ich unterrichte diesen Kurs"
 
 #: templates/objects/course/registration.html:40
 #: templates/objects/dashboard/student.html:36
 msgid "Pending Registration"
-msgstr ""
+msgstr "Ausstehende Anmeldung"
 
 #: templates/objects/course/registration.html:45
 #: templates/objects/dashboard/student.html:34
 msgid "Registered"
-msgstr ""
+msgstr "Registriert"
 
 #: templates/objects/course/review.html:41
 msgid "Innapropriate?"
-msgstr ""
+msgstr "Unpassend?"
 
 #: templates/objects/course/review.html:46
 msgid "Flag"
-msgstr ""
+msgstr "Flagge"
 
 #: templates/objects/course/review.html:58
 msgid "This review was flagged as inaccurate or offensive. Click to reveal."
-msgstr ""
+msgstr "Diese Bewertung wurde als unrichtig oder Beleidigungen gekennzeichnet. Klicken zum ausklappen."
 
 #: templates/objects/course/review.html:60
 msgid "This review was flagged as inaccurate or offensive. Log in to view it."
-msgstr ""
+msgstr "Diese Bewertung wurde als unrichtig oder Beleidigungen gekennzeichnet. Einloggen, um sie anzuzeigen."
 
 #: templates/objects/course/reviews_detail.html:6
 msgid "Submit a review"
-msgstr ""
+msgstr "Schreibe einen Kommentar"
 
 #: templates/objects/course/reviews_detail.html:9
 msgid "Rate course"
-msgstr ""
+msgstr "Bewerte einen  Kurs"
 
 #: templates/objects/course/reviews_detail.html:12
 msgid "Reviews"
-msgstr ""
+msgstr "Bewertungen"
 
 #: templates/objects/course/sidebar.html:27
 msgid "Activity log"
-msgstr ""
+msgstr "Aktivitätsprotokoll"
 
 #: templates/objects/course/sidebar.html:28
 msgid "Course info"
-msgstr ""
+msgstr "Kurs Infos"
 
 #: templates/objects/course/sidebar.html:30
 msgid "Connect"
-msgstr ""
+msgstr "Connect"
 
 #: templates/objects/course/sidebar.html:31
 msgid "Resources and Assignments"
-msgstr ""
+msgstr "Ressourcen und Aufgaben"
 
 #: templates/objects/course/sidebar_forum.html:7
 msgid "Forum posts"
-msgstr ""
+msgstr "Forum-Beiträge"
 
 #: templates/objects/course/sidebar_wiki.html:9
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "Wiki page"
-msgstr ""
+msgstr "Wiki-Seite"
 
 #: templates/objects/course/sidebar_wiki.html:11
 #: templates/pages/wiki/view_wiki.html:13
 msgid "Edit Wiki"
-msgstr ""
+msgstr "Wiki bearbeiten"
 
 #: templates/objects/course/sidebar_wiki.html:14
 msgid "Contributors"
-msgstr ""
+msgstr "Mitarbeiter"
 
 #: templates/objects/course/submit_review.html:8
 msgid "Write a review..."
-msgstr ""
+msgstr "Bewertung schreiben ..."
 
 #: templates/objects/course/submit_review.html:11
 #: templates/objects/forum/new_answer.html:11
 #: templates/objects/forum/new_post.html:28
 msgid "Submit"
-msgstr ""
+msgstr "Senden"
 
 #: templates/objects/course/submit_review.html:13
 #: templates/objects/forum/answer.html:11
@@ -499,218 +499,218 @@ msgstr ""
 #: templates/objects/forum/new_answer.html:15
 #: templates/objects/forum/new_post.html:22
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonym"
 
 #: templates/objects/course/management/current_homework.html:5
 #: templates/objects/course/management/panel.html:21
 msgid "Homework"
-msgstr ""
+msgstr "Hausaufgaben"
 
 #: templates/objects/course/management/demand_homework.html:7
 msgid "Homework Name"
-msgstr ""
+msgstr "Hausaufgaben-Name"
 
 #: templates/objects/course/management/demand_homework.html:8
 msgid "(Example: Homework1, Project1, ... )"
-msgstr ""
+msgstr "(Beispiel: Homework1 Projekt1, ...)"
 
 #: templates/objects/course/management/demand_homework.html:13
 #: templates/objects/course/management/upload_document.html:12
 msgid "Course Topic"
-msgstr ""
+msgstr "Kursthema"
 
 #: templates/objects/course/management/demand_homework.html:15
 msgid "Please select one"
-msgstr ""
+msgstr "Bitte auswählen"
 
 #: templates/objects/course/management/demand_homework.html:23
 #: templates/objects/course/management/upload_document.html:22
 #: templates/objects/forum/new_post.html:11
 msgid "(optional)"
-msgstr ""
+msgstr "(optional)"
 
 #: templates/objects/course/management/panel.html:12
 msgid "Pending Registrations"
-msgstr ""
+msgstr "Ausstehend Anmeldungen"
 
 #: templates/objects/course/management/panel.html:15
 msgid "Registered Students"
-msgstr ""
+msgstr "Registrierte Studenten"
 
 #: templates/objects/course/management/panel.html:18
 #: templates/objects/course/management/panel.html:63
 msgid "Upload Documents"
-msgstr ""
+msgstr "Dokumente hochladen"
 
 #: templates/objects/course/management/panel.html:36
 msgid ""
 "You cannot approve students' registrations until you are confirmed as a "
 "professor of this course"
-msgstr ""
+msgstr "Sie können Schülerinnen und Schüler Registrierungen nicht genehmigen, solange Sie nicht als Professor des Kurses bestätigt wurden"
 
 #: templates/objects/course/management/panel.html:46
 msgid ""
 "You cannot see registered students until you are confirmed as a professor of "
 "this course"
-msgstr ""
+msgstr "Sie können registrierte Studenten nicht sehen, solange SIe nicht als Professor des Kurses bestätigt wurden"
 
 #: templates/objects/course/management/panel.html:56
 msgid "Documents Uploaded"
-msgstr ""
+msgstr "Hochgeladene Dokumente"
 
 #: templates/objects/course/management/panel.html:72
 msgid ""
 "You cannot upload documents until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Sie können keine Dokumente hochladen, solange Sie nicht als Professor des Kurses bestätigt wurden"
 
 #: templates/objects/course/management/panel.html:97
 msgid ""
 "You cannot ask for homework until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Sie können keine Hausaufgaben anfragen, solange Sie nicht als Professor dieses Kurses bestätigt wurden."
 
 #: templates/objects/course/management/panel.html:108
 msgid ""
 "You cannot manage the forum until you are confirmed as a professor of this "
 "course"
-msgstr ""
+msgstr "Sie können das Forum nicht verwalten, solange Sie nicht als Professor dieses Kurses bestätigt wurden."
 
 #: templates/objects/course/management/pending_registrations.html:11
 #: templates/objects/course/management/registered_students.html:12
 msgid "Select All"
-msgstr ""
+msgstr "Alle Auswählen"
 
 #: templates/objects/course/management/pending_registrations.html:31
 #: templates/objects/course/management/registered_students.html:36
 msgid "There are no pending registrations for this course."
-msgstr ""
+msgstr "Es gibt keine ausstehenden Anmeldungen für diesen Kurs."
 
 #: templates/objects/course/management/registered_students.html:8
 msgid "Send an e-mail to"
-msgstr ""
+msgstr "Senden Sie eine E-Mail an"
 
 #: templates/objects/course/management/registered_students.html:26
 msgid "Subject"
-msgstr ""
+msgstr "Betreff"
 
 #: templates/objects/course/management/registered_students.html:27
 msgid "Email Body"
-msgstr ""
+msgstr "E-Mail-Körper"
 
 #: templates/objects/course/management/upload_document.html:7
 msgid "Document Name"
-msgstr ""
+msgstr "Dokumentname"
 
 #: templates/objects/course/management/upload_document.html:14
 msgid "No specific topic"
-msgstr ""
+msgstr "Kein bestimmtes Thema"
 
 #: templates/objects/dashboard/professor.html:10
 msgid "Pending Confirmation"
-msgstr ""
+msgstr "Ausstehende Bestätigung"
 
 #: templates/objects/dashboard/student.html:29
 #: templates/objects/explore/course_block.html:46
 msgid "(more)"
-msgstr ""
+msgstr "(mehr)"
 
 #: templates/objects/explore/search_sidebar.html:5
 msgid "Search by course name"
-msgstr ""
+msgstr "Suche nach Kursname"
 
 #: templates/objects/explore/search_sidebar.html:11
 msgid "Credits range"
-msgstr ""
+msgstr "Punkteskala"
 
 #: templates/objects/explore/search_sidebar.html:25
 msgid "Ratings range"
-msgstr ""
+msgstr "Bewertungsskala"
 
 #: templates/objects/forum/answer.html:11
 #: templates/objects/forum/answers.html:14
 msgid "Posted by"
-msgstr ""
+msgstr "Erstellt von:"
 
 #: templates/objects/forum/answer.html:24
 msgid "Reply"
-msgstr ""
+msgstr "Antworten"
 
 #: templates/objects/forum/answers.html:19
 msgid "in"
-msgstr ""
+msgstr "In"
 
 #: templates/objects/forum/answers.html:25
 msgid "Answer"
-msgstr ""
+msgstr "Antwort"
 
 #: templates/objects/forum/answers.html:56
 msgid "Best Answers"
-msgstr ""
+msgstr "Beste Antworten"
 
 #: templates/objects/forum/answers.html:62
 msgid "There are no answers yet."
-msgstr ""
+msgstr "Es gibt noch keine Antworten."
 
 #: templates/objects/forum/bar.html:3
 msgid "Forum page of"
-msgstr ""
+msgstr "Forum der Seite"
 
 #: templates/objects/forum/bar.html:7
 msgid "Filter"
-msgstr ""
+msgstr "Filtern"
 
 #: templates/objects/forum/bar.html:11 templates/objects/forum/bar.html:15
 msgid "all"
-msgstr ""
+msgstr "Alle"
 
 #: templates/objects/forum/bar.html:24
 msgid "New Post"
-msgstr ""
+msgstr "Neuer Beitrag"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "Start Discussion"
-msgstr ""
+msgstr "Beginne eine Diskussion"
 
 #: templates/objects/forum/child_answer.html:7
 msgid "View Ongoing Discussion"
-msgstr ""
+msgstr "Laufende Diskussion betrachten"
 
 #: templates/objects/forum/discussion.html:14
 msgid "Discussion on the reply"
-msgstr ""
+msgstr "Diskussion über die Antwort"
 
 #: templates/objects/forum/discussion.html:14
 msgid "back to best answers"
-msgstr ""
+msgstr "zurück zu besten Antworten"
 
 #: templates/objects/forum/forum_management.html:3
 msgid "There is a forum for this course."
-msgstr ""
+msgstr "Es gibt ein Forum für diesen Kurs"
 
 #: templates/objects/forum/forum_management.html:3
 msgid "Click here"
-msgstr ""
+msgstr "Hier klicken"
 
 #: templates/objects/forum/new_answer.html:7
 msgid "Type in your answer"
-msgstr ""
+msgstr "Schreibe deine Antwort"
 
 #: templates/objects/forum/new_post.html:7
 msgid "Post title"
-msgstr ""
+msgstr "Beitrags-Titel"
 
 #: templates/objects/forum/new_post.html:8
 msgid "Your question"
-msgstr ""
+msgstr "Deine Frage"
 
 #: templates/objects/forum/new_post.html:11
 msgid "Additional description"
-msgstr ""
+msgstr "Zusätzliche Beschreibung"
 
 #: templates/objects/forum/new_post_tags.html:2
 msgid "Select an appropriate tag for your post"
-msgstr ""
+msgstr "Wähle eine geeignete Makierung für deinen Post"
 
 #: templates/objects/notifications/auth/course_registration_success.html:2
 #, python-format
@@ -718,7 +718,7 @@ msgid ""
 "\n"
 "Your registration for the course <b>%(course_name)s</b> was successful. You "
 "will be notified when the registration is approved.\n"
-msgstr ""
+msgstr "\n Die Anmeldung für den Kurs <b>%(course_name)s </b> war erfolgreich. Du wirst benachrichtigt, wenn  die Registrierung genehmigt wurde. \n"
 
 #: templates/objects/notifications/auth/email_not_activated.html:6
 #, python-format
@@ -727,7 +727,7 @@ msgid ""
 "Your account is not yet activated. Please check your email and open the "
 "confirmation that we have sent you. %(link_start)s Resend confirmation link "
 "%(link_stop)s\n"
-msgstr ""
+msgstr "\n Dein Konto ist noch nicht aktiviert. Bitte überprüfe deine E-Mails und öffnen die Bestätigungsmail, die wir dir zugesandt haben. %(link_start)s erneut senden Bestätigungslink %(link_stop)s\n"
 
 #: templates/objects/notifications/auth/email_not_set.html:5
 #, python-format
@@ -735,64 +735,64 @@ msgid ""
 "\n"
 "Your email is not yet set! Please set your email address by clicking "
 "%(link_start)s here %(link_stop)s .\n"
-msgstr ""
+msgstr "\n Die E-Mail ist noch nicht festgelegt! Bitte lege deine E-Mail-Adresse durch Anklicken %(link_start)s hier fest %(link_stop)s. \n"
 
 #: templates/objects/notifications/auth/email_taken.html:2
 msgid ""
 "Sorry, a user with that <b>e-mail address</b> already exists. If you already "
 "have an account, you can log in."
-msgstr ""
+msgstr "Sorry, ein Benutzer mit diesem <b> E-Mail-Adresse </b> ist bereits vorhanden. Wenn du bereits ein Konto hast, melde dich hier an."
 
 #: templates/objects/notifications/auth/passwords_do_not_match.html:2
 msgid "Your <b>passwords</b> do not match. Please try again."
-msgstr ""
+msgstr "Passwort stimmt nicht überein. Bitte versuche es erneut."
 
 #: templates/objects/notifications/auth/university_not_found.html:2
 msgid ""
 "Sorry, we do not have a <b>university</b> with the <b>domain</b> of your "
 "<b>e-mail address</b>. Please make sure that you your <b>university e-mail "
 "address</b> correctly or come back later."
-msgstr ""
+msgstr "Sorry, wir haben keine <b> Universität </b> mit der<b> Domäne </b> deiner <b> E-Mail-Adresse </b>. Bitte stelle sicher, dass deine <b> Universität E-Mail-Adresse </b> korrekt ist oder versuche es später erneut."
 
 #: templates/objects/notifications/auth/username_taken.html:2
 msgid ""
 "Sorry, a user with that <b> username </b> already exists. Please choose "
 "another one."
-msgstr ""
+msgstr "Sorry, ein Benutzer mit diesem <b> Benutzername </b> ist bereits vorhanden. Bitte wähle einen anderen."
 
 #: templates/objects/notifications/auth/wrong_username_or_password.html:2
 msgid ""
 "The username, email or password is incorrect. If you don't have an account, "
 "register below."
-msgstr ""
+msgstr "Der Benutzername, die E-Mail Adresse oder das Passwort ist nicht korrekt. Wenn du noch kein Konto hast, registriere dich unten."
 
 #: templates/objects/notifications/profile/changed_object.html:2
 #, python-format
 msgid ""
 "\n"
 "Your <b>%(changed_object)s</b> has been changed <b>successfully</b>!\n"
-msgstr ""
+msgstr "\n Die <b>%(changed_object)s </b> wurde geändert <b> erfolgreich </b>\n"
 
 #: templates/objects/notifications/profile/incorrect_password.html:2
 msgid ""
 "\n"
 "Your <b>password</b> is <b>incorrect</b>. Please check your password and try "
 "again.\n"
-msgstr ""
+msgstr "\n Die <b> Passwort </b> ist <b> falsch </b>. Bitte überprüfe dein Passwort und versuche es erneut. \n"
 
 #: templates/objects/notifications/profile/not_matching_passwords.html:2
 msgid ""
 "\n"
 "Your <b>passwords</b> do <b>not match</b>. Please check your passwords and "
 "try again.\n"
-msgstr ""
+msgstr "\n Die <b> Passwörter </b> Do <b> nicht überein </b>. Bitte überprüfe deine Passwörter und versuche es erneut.\n"
 
 #: templates/objects/notifications/profile/username_exists.html:2
 msgid ""
 "\n"
 "A user with that <b> username </b> already exists. If you wish to change "
 "your username, please choose another one.\n"
-msgstr ""
+msgstr "\n Ein Benutzer mit diesem <b> Benutzernamen </b> ist bereits vorhanden. Wenn du deinen Benutzernamen ändern möchtest, wähle bitte einen anderen. \n"
 
 #: templates/objects/notifications/wiki/wiki_created.html:2
 #, python-format
@@ -800,44 +800,46 @@ msgid ""
 "\n"
 "Successfully created a Wiki Page for course <b>%(course_name)s</b>\n"
 msgstr ""
+"\n"
+"Du hast für diesen Kurs erfolgreich eine Wiki-Seite erstellt <b>%(course_name)s</b>\n"
 
 #: templates/objects/notifications/wiki/wiki_edited.html:2
 msgid ""
 "\n"
 "<b>Saved</b>\n"
-msgstr ""
+msgstr "\n <b> Gespeicherte </b>\n"
 
 #: templates/objects/welcome/register_form.html:5
 msgid "Register with <strong>Connect Academy </strong>"
-msgstr ""
+msgstr "Registriere dich bei <strong> Connect Academy </strong>"
 
 #: templates/objects/welcome/register_form.html:15
 msgid "First Name"
-msgstr ""
+msgstr "Vorname"
 
 #: templates/objects/welcome/register_form.html:20
 msgid "Last Name"
-msgstr ""
+msgstr "Nachname"
 
 #: templates/objects/welcome/register_form.html:28
 msgid "University Email address"
-msgstr ""
+msgstr "Universität E-Mail-Adresse"
 
 #: templates/objects/welcome/register_form.html:35
 msgid "Username"
-msgstr ""
+msgstr "Benutzername"
 
 #: templates/objects/welcome/register_form.html:52
 msgid "Confirm Password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: templates/objects/welcome/register_form.html:62
 msgid "I am a professor"
-msgstr ""
+msgstr "Ich bin ein Professor"
 
 #: templates/objects/wiki/course_page_link.html:4
 msgid "Course Wiki"
-msgstr ""
+msgstr "Kurs Wiki"
 
 #: templates/objects/wiki/course_page_link.html:10
 #, python-format
@@ -845,7 +847,7 @@ msgid ""
 "\n"
 "            Contribute by %(link_start)screating%(link_stop)s one.\n"
 "        "
-msgstr ""
+msgstr "\n Contribute %(link_start)s creating %(link_stop)s ein. \n        "
 
 #: templates/objects/wiki/wiki_welcome.html:2
 #, python-format
@@ -857,67 +859,70 @@ msgid ""
 "structured according to the course syllabus and complement the course "
 "material by adding additional relevant information in the right chapters.\n"
 msgstr ""
+"\n"
+" Das ist die Wiki-Seite des Kurses  <b>%(course_name)s</b>. Die Wiki-Seiten werden von Studenten erstellt und sollen dir den Zugang zu relevanten Informationen, sowie deinen Lernprozess erleichtern. Strukturiere diesen Wiki nach Lehrplan und füge zusätzliches Kursmaterial in den richtigen Kapiteln ein.\n"
 
 #: templates/pages/error.html:7
 msgid "You have to activate your account to do that!"
-msgstr ""
+msgstr "Um das zu tun, musst du dein Konto aktivieren."
 
 #: templates/pages/auth/set_email.html:8
 msgid "University E-mail Address"
-msgstr ""
+msgstr "Universität E-Mail-Adresse"
 
 #: templates/pages/auth/user_account.html:10
 #: templates/pages/auth/user_account.html:22
 msgid "Change Username"
-msgstr ""
+msgstr "Benutzernamen ändern"
 
 #: templates/pages/auth/user_account.html:15
 msgid "New Username"
-msgstr ""
+msgstr "Neuer Benutzername"
 
 #: templates/pages/auth/user_account.html:30
 #: templates/pages/auth/user_account.html:44
 msgid "Change Password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: templates/pages/auth/user_account.html:35
 msgid "Old Password"
-msgstr ""
+msgstr "Altes Passwort"
 
 #: templates/pages/auth/user_account.html:38
 msgid "New Password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: templates/pages/auth/user_account.html:41
 msgid "Confirm New Password"
-msgstr ""
+msgstr "Neues Kennwort bestätigen"
 
 #: templates/pages/auth/user_account.html:54
 #: templates/pages/auth/user_account.html:68
 msgid "Change Name"
-msgstr ""
+msgstr "Namen ändern"
 
 #: templates/pages/auth/user_account.html:59
 msgid "New First Name"
-msgstr ""
+msgstr "Neuer Vorname"
 
 #: templates/pages/auth/user_account.html:62
 msgid "New Last Name"
-msgstr ""
+msgstr "Neuer Nachname"
 
 #: templates/pages/forum/new_post.html:10
 msgid "Submit post on the forum of course"
-msgstr ""
+msgstr "Post in dem Forum des Kurses veröffentlichen"
 
 #: templates/pages/wiki/edit_wiki_page.html:14
 #: templates/pages/wiki/view_wiki.html:11
 msgid "of"
-msgstr ""
+msgstr "von"
 
 #: templates/pages/wiki/edit_wiki_page.html:15
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: templates/pages/wiki/view_wiki.html:24
 msgid "View the list of revisions."
-msgstr ""
+msgstr "Liste der Überarbeitungen"
+
