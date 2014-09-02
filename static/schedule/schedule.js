@@ -36,6 +36,20 @@ $(document).ready(function() {
       var typeField = $dialogContent.find("select[name='type']");
       var addToOtherWeeks = $dialogContent.find("input[name='copy']");
       
+
+      var courseLabel = $dialogContent.find("#courseLabel");
+      var copyLabel = $dialogContent.find("#copyLabel");
+      
+      courseLabel.hide();
+      copyLabel.hide();
+      
+      typeField.change(function(){
+          courseLabel.toggle(400);        
+          copyLabel.toggle(400);
+      });
+
+      
+
       $dialogContent.dialog({
           modal: true,
           title: "New Appointment",
