@@ -1,6 +1,7 @@
 var ExplorePage = (function () {
     var me = {
         settings: {
+            defaultCoursesSize: 12,
             // -- Sidebar --
             // Searchbar
             searchBar: $(".course-search-bar"),
@@ -75,13 +76,23 @@ var ExplorePage = (function () {
         s.ratingsHandle1.val( s.ratingsValues[s.nrRatings - 1] );
 
         // Index courses
-        this.indexCourses();
+        this.indexCourses(s.defaultCoursesSize);
 
         // Bind actions
         this.bindUIActions();
     };
 
     me.bindUIActions = function() {
+        // Scrolling on courses
+        $(window).scroll(function() {
+            if ($(".loading-courses:visible").length > 0) {
+                if(( $(document).height() - $(window).height() ) - $(window).scrollTop() < 10 ) {
+                    cnt = $('.course-panel:visible').length;
+                    ExplorePage.indexCourses(cnt + 16);
+                }
+            }
+        });
+
         // Lazy load images
         $(s.courseImageSelector).lazyload({
             effect: "fadeIn",
@@ -91,13 +102,13 @@ var ExplorePage = (function () {
         s.searchBar.keypress(function(event) {
             // on enter
             if (event.which == 13) {
-                ExplorePage.indexCourses();
+                ExplorePage.indexCourses(s.defaultCoursesSize);
             }
         });
         s.searchBar.keyup(function() {
             // on empty
             if ($(this).val() == "") {
-                ExplorePage.indexCourses();
+                ExplorePage.indexCourses(s.defaultCoursesSize);
             }
         });
 
@@ -119,7 +130,7 @@ var ExplorePage = (function () {
     /*************************************
         Index the courses in the sequence
     **************************************/
-    me.indexCourses = function() {
+    me.indexCourses = function(size) {
         var courses = $(s.coursePanelSelector);
 
         var searchTerm = s.searchBar.val().toLowerCase();
@@ -128,58 +139,69 @@ var ExplorePage = (function () {
         var creditsCurrentValues = s.creditsSlider.slider("values");
         var ratingsCurrentValues = s.ratingsSlider.slider("values");
 
+        var showedSoFar = 0;
         courses.each( function() {
-            var show = true;
-            classesArr = this.classList;
-            if (show) {
-                $(classesArr).each( function() {
-                    if (this.indexOf('ct-') >= 0) {
-                        var category_id = this.replace("ct-", "");
-                        if (avoided_categories.indexOf(category_id) >= 0) {
+            if (showedSoFar < size) {
+                var show = true;
+                classesArr = this.classList;
+                if (show) {
+                    $(classesArr).each( function() {
+                        if (this.indexOf('ct-') >= 0) {
+                            var category_id = this.replace("ct-", "");
+                            if (avoided_categories.indexOf(category_id) >= 0) {
+                                show = false;
+                            }   
+                        }
+                    })
+                }
+                if (show) {
+                    var credits = parseFloat( $(this).find(s.courseCreditsSelector).text() );
+                    if (credits < s.creditsValues[creditsCurrentValues[0]] ||
+                        credits > s.creditsValues[creditsCurrentValues[1]]) {
                             show = false;
-                        }   
                     }
-                })
-            }
-            if (show) {
-                var credits = parseFloat( $(this).find(s.courseCreditsSelector).text() );
-                if (credits < s.creditsValues[creditsCurrentValues[0]] ||
-                    credits > s.creditsValues[creditsCurrentValues[1]]) {
+                }
+                if (show) {
+                    var rating = 0.0;
+                    var rating_item = $(this).find(s.courseRatingsSelector);
+                    if (rating_item.length > 0) {
+                        rating = parseFloat( rating_item.text() );
+                    }
+                    if ((ratingsCurrentValues[0] > 0 && rating < s.ratingsValues[ratingsCurrentValues[0]]) ||
+                        (ratingsCurrentValues[1] > 0 && rating > s.ratingsValues[ratingsCurrentValues[1]])) {
+                            show = false;
+                    }
+                    if (ratingsCurrentValues[1] == 0 && rating > 0) {
                         show = false;
+                    }
                 }
-            }
-            if (show) {
-                var rating = 0.0;
-                var rating_item = $(this).find(s.courseRatingsSelector);
-                if (rating_item.length > 0) {
-                    rating = parseFloat( rating_item.text() );
-                }
-                if ((ratingsCurrentValues[0] > 0 && rating < s.ratingsValues[ratingsCurrentValues[0]]) ||
-                    (ratingsCurrentValues[1] > 0 && rating > s.ratingsValues[ratingsCurrentValues[1]])) {
+                if (show) {
+                    course_name = $(this).find(s.courseNameSelector).find('a').text();
+                    cname = course_name.toLowerCase();
+                    if (cname.indexOf(searchTerm) == -1) {
                         show = false;
+                    }
                 }
-                if (ratingsCurrentValues[1] == 0 && rating > 0) {
-                    show = false;
-                }
-            }
-            if (show) {
-                course_name = $(this).find(s.courseNameSelector).find('a').text();
-                cname = course_name.toLowerCase();
-                if (cname.indexOf(searchTerm) == -1) {
-                    show = false;
-                }
-            }
 
-            if (show) {
-                $(this).parent().show();
+                if (show) {
+                    $(this).parent().show();
+                    showedSoFar += 1;
+                } else {
+                    $(this).parent().hide();
+                }
             } else {
+                // If there are enough hits just hide them
                 $(this).parent().hide();
             }
         });
 
-        // $("img.course-image").lazyload({
-        //     event : "click"
-        // });
+        if (showedSoFar < size) {
+            $(".no-more-courses").show();
+            $(".loading-courses").hide();
+        } else {
+            $(".loading-courses").show();
+            $(".no-more-courses").hide();
+        }
     };
 
     /*************************************
@@ -211,7 +233,7 @@ var ExplorePage = (function () {
             success: function(result) {
                 s.categoriesSearchWrapper.html(result.html);
                 $(s.categoryCheckboxSelector).change(ExplorePage.categoryCheckboxHandle);
-                ExplorePage.indexCourses();
+                ExplorePage.indexCourses(s.defaultCoursesSize);
             },
             error: function() {
             }
@@ -223,7 +245,7 @@ var ExplorePage = (function () {
         Sliders handle code!
     **************************************/
     me.sliderStop = function(event, ui) {
-        ExplorePage.indexCourses();
+        ExplorePage.indexCourses(s.defaultCoursesSize);
     };
 
     /*************************************
