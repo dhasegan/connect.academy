@@ -1,6 +1,7 @@
 *.log
 *.pot
 *.pyc
+_DS_Store
 .DS_Store
 .sass-cache
 local_settings.py
