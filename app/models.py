@@ -850,7 +850,7 @@ class PersonalAppointment(Appointment):
 
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
-    course_topic = models.ForeignKey('CourseTopic', related_name='appointments')
+    course_topic = models.ForeignKey('CourseTopic', related_name='appointments', null= True)
     def __unicode__(self):
         return self.course.name
 
