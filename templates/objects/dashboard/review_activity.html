@@ -7,7 +7,15 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                {% if comment.posted_by %} by {% with comment.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} Someone {% endif %}
+                {% if comment.posted_by %}
+                    {% if comment.posted_by.id == user_auth.id %}
+                        You
+                    {% else %}
+                        {% with comment.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} 
+                    {% endif %}
+                {% else %} 
+                    Someone 
+                {% endif %}
                 submitted a review for <a href="{% url 'course_page' activity.course.slug %}">{{ activity.course.name }}</a>
 
                 <div class="review-body">

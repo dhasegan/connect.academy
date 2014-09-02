@@ -5,8 +5,14 @@
 		<div class="panel panel-default">
 			<div class="panel-body">
 
-				{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+				{% if activity.user.id == user_auth.id %}
+					You
+				{% else %}
+					{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+				{% endif %}
+				
 				posted a homework
+
 				{% if hw.homework.course_topic %}
 					on the topic <i> "{{ hw.homework.course_topic.name }}"</i> of
 				{% else %}

@@ -16,7 +16,10 @@ import json
 @login_required
 def profile(request, username):
     # stub for profile view
-    context = {'page': 'profile'}
+    context = {
+        'page': 'profile',
+        'user_auth': request.user.juser
+    }
     context.update(csrf(request))
     user = get_object_or_404(jUser, username=username)
     
@@ -147,7 +150,11 @@ def load_profile_activities(request, username):
     
     activities = profile_activities(request,user)
 
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    html = render_to_string('objects/dashboard/activity_timeline.html',
+                            { 
+                                "activities" : activities , 
+                                "user_auth": request.user.juser
+                            })
     data = {
         'status': "OK",
         'html': html
@@ -160,7 +167,11 @@ def load_new_profile_activities(request, username):
     user = get_object_or_404(jUser, username=username)
     activities = new_profile_activities(request,user)
 
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    html = render_to_string('objects/dashboard/activity_timeline.html', 
+                            { 
+                                "activities" : activities,
+                                "user_auth": request.user.juser
+                            } )
     data = {
         'status': "OK",
         'html': html,
