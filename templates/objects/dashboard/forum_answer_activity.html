@@ -38,12 +38,12 @@
                 <div class="answer-text">
                     {{ answer.answer.text|linebreaks|truncatechars:"200" }}
                     {% if answer.answer.text|length > 200 %}
-                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ answer.answer.post.id }}">(more)</a>
+                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ answer.answer.post.id }}">{% trans "(more)" %}</a>
                     {% endif %}
                 </div>
 
                 <hr class="end-of-activity">
-                <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;answer={{ answer.answer.id }}#answer{{ answer.answer.id }}"> Reply </a>
+                <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;answer={{ answer.answer.id }}#answer{{ answer.answer.id }}"> {% trans "Reply" %} </a>
             </div>
         </div>
     </div>

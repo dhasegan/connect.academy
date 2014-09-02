@@ -15,8 +15,8 @@
                 <a href="{% url 'course_page' activity.course.slug %}?page=wiki"> revision r{{ contribution.revision.revision }} </a> 
 
                 <hr class="end-of-activity">
-                <a href="{% url 'versioning_revision_reapply' pk=contribution.revision.pk %}"> Check difference </a> &middot;
-                <a href="{% url 'course_page' activity.course.slug %}?page=wiki"> Check wiki </a> 
+                <a href="{% url 'versioning_revision_reapply' pk=contribution.revision.pk %}"> {% trans "Check difference" %} </a> &middot;
+                <a href="{% url 'course_page' activity.course.slug %}?page=wiki"> {% trans "Check wiki" %} </a> 
 
             </div>
         </div>

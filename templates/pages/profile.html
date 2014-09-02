@@ -1,5 +1,7 @@
 {% extends 'pages/base.html' %}
 
+{% load i18n %}
+
 {% block content %}
     <div class="row profile-page">
         <div class="col-md-4">
@@ -10,6 +12,12 @@
 
         <div class="col-md-8">
             {% include 'objects/dashboard/activities_container.html' %}
+
+            {% if activities|length == 0 %}
+                <div class="alert alert-warning">
+                    {% trans "There seems to be no activity here. Come back later" %}
+                </div>
+            {% endif %}
         </div>
 
     </div>

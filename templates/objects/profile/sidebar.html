@@ -2,7 +2,7 @@
 	<div class="panel-body">
 		<center>
 						
-			<img class="profile-picture" id="profile-picture" src="{% if user.profile_picture %}{{user.profile_picture.url}}{% else %}http://placehold.it/200x200{% endif %}" />
+			<img class="profile-picture" id="profile-picture" src="{% if user.profile_picture %}{{user.profile_picture.url}}{% else %}{{ STATIC_URL }}/images/default_profile.png{% endif %}" />
 			
 			{% if own_profile %}
 				{% include 'objects/profile/new_profile_picture_form.html' %}
