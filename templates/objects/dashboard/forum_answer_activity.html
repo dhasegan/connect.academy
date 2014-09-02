@@ -9,22 +9,28 @@
                 </span>
 
                 {% if not answer.answer.anonymous %}
-                    {% if answer.answer.post.posted_by.id == user.id %} 
+                    {% if answer.answer.posted_by.id == user_auth.id %} 
                         You
                     {% else %}
                         {% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
                     {% endif %}
                 {% else %}
-                    {% trans "Anonymous" %}
+                    {% trans "Someone" %}
                 {% endif %}
+
                 replied to 
-                    {% if answer.answer.post.posted_by.id == user.id %}
-                        your
-                    {% else %} 
+
+                {% if answer.answer.post.posted_by.id == user_auth.id %}
+                    your
+                {% else %} 
+                    {% if not answer.answer.post.anonymous %}
                         {% with answer.answer.post.posted_by as juser %}
                             {% include 'objects/user_link.html'%}'s
                         {% endwith %}
+                    {% else %}
+                        someone's
                     {% endif %}
+                {% endif %}
                 post (<a href="{% url 'forum_course' activity.course.slug %}?post={{ answer.answer.post.id }}"> {{ answer.answer.post.name|truncatechars:"20" }} </a>)
                 in course <a href="{% url 'course_page' activity.course.slug %}">{{ activity.course.name }}</a> 
                 <small class="text-muted"> {{ activity.timestamp|naturaltime }} </small>

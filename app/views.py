@@ -28,6 +28,7 @@ def welcome(request):
 def dashboard(request):
     context = {
         'page': 'dashboard',
+        'user_auth': request.user.juser
     }
 
     context = dict(context.items() + dashboard_context(request).items())
@@ -66,7 +67,10 @@ def error_page(request, error_type):
 def load_dashboard_activities(request):
     user = request.user.juser
     activities = dashboard_activities(request,user)
-    html = render_to_string('objects/dashboard/activity_timeline.html', { "activities" : activities} )
+    html = render_to_string('objects/dashboard/activity_timeline.html', 
+                            { "activities" : activities, 
+                               "user_auth": user
+                            })
     data = {
         'status': "OK",
         'html': html
@@ -78,7 +82,7 @@ def load_dashboard_activities(request):
 def load_new_dashboard_activities(request):
     user = request.user.juser
     activities = new_dashboard_activities(request,user)
-    context = { "activities" : activities }
+    context = { "activities" : activities, "user_auth": user }
     context.update(csrf(request))
     html = render_to_string('objects/dashboard/activity_timeline.html', context  )
     data = {

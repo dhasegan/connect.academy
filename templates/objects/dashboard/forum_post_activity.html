@@ -8,15 +8,19 @@
 
                 {% block post_details %}
                     <div class="post-details">
-                        <div class="post-header text-muted">
+                        <div class="post-header">
                             <span id="upvote_post_activity_{{ post.question.id }}" class="pull-right">
                                 {% include 'objects/forum/upvote_post.html' %}
                             </span>
 
-                            {% if not post.question.anonymous %} 
-                                {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                            {% if not post.question.anonymous %}
+                                {% if post.question.posted_by.id == user_auth.id %} 
+                                    You
+                                {% else %}
+                                    {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+                                {% endif %}
                             {% else %}
-                                {% trans "Anonymous" %}
+                                {% trans "Someone" %}
                             {% endif %}
                             posted on the forum of <a href="{% url 'course_page' activity.course.slug %}"> {{ activity.course.name }} </a>
                             <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>

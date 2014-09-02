@@ -32,6 +32,7 @@ def course_page(request, slug):
 
     context = {
         "page": "course",
+        'user_auth': request.user.juser
     }
     context.update(csrf(request))
     context = dict(context.items() + course_page_context(request, course).items())
@@ -451,7 +452,7 @@ def load_course_activities(request, slug):
     user = request.user.juser
     activities = course_activities(request,course)
     
-    context = { "activities" : activities }
+    context = { "activities" : activities, "user_auth": user }
     context.update(csrf(request))
     html = render_to_string('objects/dashboard/activity_timeline.html', context )
     data = {
@@ -466,7 +467,7 @@ def load_new_course_activities(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
     activities = new_course_activities(request,course)
-    context = { "activities" : activities }
+    context = { "activities" : activities, "user_auth": user }
     context.update(csrf(request))
 
     html = render_to_string('objects/dashboard/activity_timeline.html', context )
