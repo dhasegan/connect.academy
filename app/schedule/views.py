@@ -389,10 +389,6 @@ def resize_appointment(request):
         
     local_timezone = timezone.get_current_timezone()
 
-    print start
-    print end
-    print local_timezone
-
     if timezone.is_naive(start):
         start = timezone.make_aware(start,local_timezone)
     if timezone.is_naive(end):
