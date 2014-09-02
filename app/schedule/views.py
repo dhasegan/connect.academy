@@ -30,7 +30,6 @@ def view_schedule(request):
 
     # get the CourseAppointments of the courses the user is registered in
     
-    # need to fix this too 
     user = get_object_or_404(jUser, id=request.user.id)
 
     #needed to find out which of the forms to render.
@@ -361,4 +360,70 @@ def remove_course_appointment(request):
         raise Http404
 
     return HttpResponse("")
+
+@require_POST
+def resize_appointment(request):
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    
+    if not request.is_ajax():
+        raise Http404
+
+    id_to_edit = request.POST['id']
+    start_time = request.POST['start']
+    end_time = request.POST['end']
+    appointmentType = request.POST['type']
+    
+    start = parse(start_time)
+    end = parse(end_time)
+        
+    local_timezone = timezone.get_current_timezone()
+
+    if timezone.is_naive(start):
+        start = timezone.make_aware(start,local_timezone)
+    if timezone.is_naive(end):
+        end = timezone.make_aware(end,local_timezone)
+    
+    start_utc = timezone.localtime(start,pytz.utc)
+    end_utc = timezone.localtime(end,pytz.utc)
+
+    if appointmentType == 'Personal':
+    
+        appointment = Appointment.objects.filter(id=id_to_edit).get()
+
+        appointment.start = start_utc
+        appointment.end = end_utc
+        appointment.save()
+
+        return HttpResponse("")
+
+    # multiple courses with the same name ? 
+    if appointmentType == 'Course':
+        courseName = request.POST['courseName']
+        
+        courses = user.courses_managed.all()
+
+        course = None
+
+        for c in courses:
+            if c.name == courseName:
+                course = c
+                break
+
+        if course == None:
+            raise Http404
+
+        # the professor manages the course
+        
+        appointment = Appointment.objects.filter(id=id_to_edit).get()
+
+        appointment.start = start_utc
+        appointment.end = end_utc
+        appointment.save()
+
+        return HttpResponse("")
+
+
+    raise Http404
+
 
