@@ -1,7 +1,18 @@
 <form class="profile-picture-form" id='profile-picture-form' method="POST" action="/new_profile_picture" enctype="multipart/form-data">
 {% csrf_token %}
 	<div class="form-group">
-	     <input type="file" accept="image/*" class="profile-picture-input" name="picture" required/>
-	     <input type="submit" class="btn btn-primary profile-picture-submit" value="Change"/>
+        {% comment %}
+        <input type="file" accept="image/*" class="profile-picture-input" name="picture" required/>    
+        {% endcomment %}
+        {% with "image/*" as faccept %}
+        {% with "profile-picture-input" as fclass %}
+        {% with "True" as required %}
+        {% with "picture" as fname %}
+            {% include 'objects/file_input.html' %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+	    <input type="submit" class="btn btn-primary profile-picture-submit" value="Change"/>
 	</div>
 </form>	

@@ -46,6 +46,28 @@ h4 {
 }
 
 
+.upload-file-wrapper {
+    .upload-file-input {
+        width: 160px;
+    }
+    .upload-file {
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+    }
+    .upload-file input.file-input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+}
+
 // Navigation bar
 $campusnet-popover-info-color:      #29ABE2;
 $login-input-padding:           3px;
@@ -668,7 +690,6 @@ $profile-picture-max-height: 300px;
             }
         }
     }
-
 }
 
 // Manage account page

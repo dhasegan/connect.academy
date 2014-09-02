@@ -372,6 +372,7 @@ def remove_course_appointment(request):
 
 @require_POST
 def resize_appointment(request):
+    print request.POST
 
     user = get_object_or_404(jUser, id=request.user.id)
     
@@ -387,6 +388,10 @@ def resize_appointment(request):
     end = parse(end_time)
         
     local_timezone = timezone.get_current_timezone()
+
+    print start
+    print end
+    print local_timezone
 
     if timezone.is_naive(start):
         start = timezone.make_aware(start,local_timezone)

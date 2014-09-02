@@ -208,6 +208,7 @@ def edit_summary(request):
 def new_profile_picture(request):
     form = ProfilePictureForm(request.POST, request.FILES)
     if not form.is_valid():
+        print form
         raise Http404
 
     user = request.user.juser
