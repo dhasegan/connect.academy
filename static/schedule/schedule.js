@@ -42,7 +42,9 @@ $(document).ready(function() {
       
       courseLabel.hide();
       copyLabel.hide();
-      
+      //defaults to Personal.
+      typeField.val('0');
+
       typeField.change(function(){
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
@@ -379,13 +381,13 @@ function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, ti
 }
 
 function setupCourseFields(professorCourseList, calEvent, $courseField){
+  $courseField.append("<option value=\"\">Select Course</option>")
   for(var i=0 ; i < professorCourseList.length ; i++){
     var courseName = professorCourseList[i];
     var courseSelected = "";
     if(calEvent.courseName === courseName){
       courseSelected = "selected = \"selected\"";
     }
-    $courseField.append("<option value=\"\">Select Course</option>")
     $courseField.append("<option value=\"" + courseName + "\" " + courseSelected + "\">" + courseName +"</option>");
 
   }
