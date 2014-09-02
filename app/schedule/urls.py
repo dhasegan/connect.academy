@@ -8,4 +8,5 @@ urlpatterns = patterns('app.schedule.views',
     url(r'^add_course_appointment','add_course_appointment',name='add_course_appointment'),
     url(r'^edit_course_appointment','edit_course_appointment',name='edit_course_appointment'),
     url(r'^remove_course_appointment','remove_personal_appointment',name='remove_personal_appointment'),
+    url(r'^resize_appointment','resize_appointment',name='resize_appointment'),
 )

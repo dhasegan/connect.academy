@@ -42,7 +42,9 @@ $(document).ready(function() {
       
       courseLabel.hide();
       copyLabel.hide();
-      
+      //defaults to Personal.
+      typeField.val('0');
+
       typeField.change(function(){
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
@@ -161,12 +163,138 @@ $(document).ready(function() {
       if (calEvent.readOnly || !calEvent.modifiable) {
           return;
        }
+
+       if(calEvent.type === 'Course'){
+          $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            type:"POST",
+            url:"resize_appointment",
+            data: {
+              'id' : calEvent.id,
+              'start': calEvent.start, 
+              'end': calEvent.end,
+              'type' : calEvent.type,
+              'courseName': calEvent.courseName,
+            },
+            success: function(){
+              for(var i = 0 ; i < eventData.events.length; i++){
+                var e = eventData.events[i];
+                if(e.id === calEvent.id){
+                  eventData.events.splice(i,1);
+                }
+              }
+                eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': calEvent.title,
+                        'body': calEvent.body, 
+                        'start': calEvent.start, 
+                        'end': calEvent.end,
+                        'type':'Course',
+                        'courseName':calEvent.courseName,
+                        'modifiable' :true,
+                });
+            }
+          });
+       }else if(calEvent.type === 'Personal'){
+          $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            type:"POST",
+            url:"resize_appointment",
+            data: {
+              'id' : calEvent.id,
+              'start': calEvent.start, 
+              'end': calEvent.end,
+              'type': calEvent.type,
+            },
+            success: function(){
+              for(var i = 0 ; i < eventData.events.length; i++){
+                var e = eventData.events[i];
+                if(e.id === calEvent.id){
+                  eventData.events.splice(i,1);
+                }
+              }
+
+              eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': calEvent.title,
+                        'body': calEvent.body, 
+                        'start': calEvent.start, 
+                        'end': calEvent.end,
+                        'type':'Personal',
+                        'modifiable' :true,
+                      });
+              }
+          });
+       }
+       
     },
 
     eventResize: function(calEvent, $event) {
       if (calEvent.readOnly || !calEvent.modifiable) {
           return;
-       }
+      }
+
+      if(calEvent.type === 'Course'){
+          $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            type:"POST",
+            url:"resize_appointment",
+            data: {
+              'id' : calEvent.id,
+              'start': calEvent.start, 
+              'end': calEvent.end,
+              'type' : calEvent.type,
+              'courseName': calEvent.courseName,
+            },
+            success: function(){
+              for(var i = 0 ; i < eventData.events.length; i++){
+                var e = eventData.events[i];
+                if(e.id === calEvent.id){
+                  eventData.events.splice(i,1);
+                }
+              }
+                eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': calEvent.title,
+                        'body': calEvent.body, 
+                        'start': calEvent.start, 
+                        'end': calEvent.end,
+                        'type':'Course',
+                        'courseName':calEvent.courseName,
+                        'modifiable' :true,
+                });
+            }
+          });
+       }else if(calEvent.type === 'Personal'){
+          $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            type:"POST",
+            url:"resize_appointment",
+            data: {
+              'id' : calEvent.id,
+              'start': calEvent.start, 
+              'end': calEvent.end,
+              'type': calEvent.type,
+            },
+            success: function(){
+              for(var i = 0 ; i < eventData.events.length; i++){
+                var e = eventData.events[i];
+                if(e.id === calEvent.id){
+                  eventData.events.splice(i,1);
+                }
+              }
+                eventData.events.push({
+                        'id' : calEvent.id,
+                        'title': calEvent.title,
+                        'body': calEvent.body, 
+                        'start': calEvent.start, 
+                        'end': calEvent.end,
+                        'type':'Personal',
+                        'modifiable' :true,
+                });
+              }
+          });
+        }
     },
 
     // to modify existing calEvents (or remove them)
@@ -183,7 +311,29 @@ $(document).ready(function() {
        var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
        var bodyField = $dialogContent.find("textarea[name='body']").val(calEvent.body);
 
+       var typeField = $dialogContent.find("select[name='type']");
        var courseField = $dialogContent.find("select[name='course']");
+
+       var courseLabel = $dialogContent.find("#courseLabel");
+       var copyLabel = $dialogContent.find("#copyLabel");
+      
+      
+      
+       if(calEvent.type === 'Personal'){
+        courseLabel.hide();
+        copyLabel.hide();
+       }
+        
+       typeField.change(function(){
+           if (typeField.val() === '0'){ // personal appointment
+             courseLabel.hide(400);
+             copyLabel.hide(400);
+           }else{ // course appointment
+             courseLabel.show(400);
+             copyLabel.show(400);
+           }
+          
+       });
 
        $dialogContent.dialog({
           modal: true,
@@ -378,14 +528,15 @@ function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, ti
   $startTimeField.trigger("change");
 }
 
+
 function setupCourseFields(professorCourseList, calEvent, $courseField){
+  $courseField.append("<option value=\"\">Select Course</option>")
   for(var i=0 ; i < professorCourseList.length ; i++){
     var courseName = professorCourseList[i];
     var courseSelected = "";
     if(calEvent.courseName === courseName){
       courseSelected = "selected = \"selected\"";
     }
-    $courseField.append("<option value=\"\">Select Course</option>")
     $courseField.append("<option value=\"" + courseName + "\" " + courseSelected + "\">" + courseName +"</option>");
 
   }
