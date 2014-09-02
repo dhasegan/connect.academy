@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  {% load compressed %}
+
+  <head>
+    {% block page_title %}
+      <title>{% include 'objects/page_title.html' %}</title>
+    {% endblock %}
+    <link rel="shortcut icon" href="{{ STATIC_URL }}/connect_favicon.png"  png="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Connect with a comunity of learners.">
+    <meta name="author" content="jTeam">
+
+    {% compressed_css 'bootstrap' %}
+    <link href="{{ STATIC_URL }}css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet" >
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{STATIC_URL}}assets/css/icomoon.css">
+    {% compressed_css 'connect' %}
+
+
+    {% block extra_css_includes %}
+    
+    {% endblock %}
+  </head>
+  <body {% if page == "welcome" %} class="welcome_page_body" data-spy="scroll" data-offset="0" style="background-color: white; background-image:none;" data-target="#navbar-main" {% endif %}>
+
+    {% include 'objects/navbar.html' %} 
+    {% comment %}
+        WATCH OUT! VERY HACKY CODE BELOW : WELCOME PAGE DOESN't WANT a main content container
+    {% endcomment %}
+     
+      {% if page != "welcome" %} 
+      <div class="container" id="main_content_container"> 
+      {% endif %}
+
+          {% include 'objects/notifications/alerts.html' %} 
+
+          {% if page != "welcome" %}
+          <div class="main-content"> 
+          {% endif %}
+
+                {% block content %}
+                {% endblock %}
+
+          {% if page != "welcome" %} 
+          </div> 
+          {% endif %}
+       
+      {% if page != "welcome" %}
+        </div> 
+      {% endif %}
+
+      {% comment %}
+        END HACKY CODE
+      {% endcomment %}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <!-- For jQuery 1.9+ compatibility -->
+    <script src="{{STATIC_URL}}js/jquery-migrate-1.2.1.js"></script>
+
+  
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ STATIC_URL }}js/jquery.raty.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.lazyload.js" type="text/javascript"></script>
+    {% compressed_js 'bootstrap' %}
+    <script src="{{ STATIC_URL }}js/moment-with-langs.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Include jcourse Javascript -->
+    {% compressed_js 'connect' %}
+
+    {% if not DEBUG %}
+      <script src="{{ STATIC_URL }}js/ga.js"></script>
+    {% endif %}
+
+    {% block extra_js_includes %}
+    {% endblock %}
+  </body>
+</html>
