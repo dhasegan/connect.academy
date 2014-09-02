@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from app.models import *
 from app.profile.forms import *
 from app.profile.context_processors import *
+from app.decorators import *
 
 import json
 
@@ -182,6 +183,7 @@ def load_new_profile_activities(request, username):
     return HttpResponse(json.dumps(data))
 
 @login_required
+@require_active_user
 def edit_summary(request):
     form = EditSummaryForm(request.POST)
     if not form.is_valid():
@@ -202,6 +204,7 @@ def edit_summary(request):
     return HttpResponse(json.dumps(context))
 
 @login_required
+@require_active_user
 def new_profile_picture(request):
     form = ProfilePictureForm(request.POST, request.FILES)
     if not form.is_valid():

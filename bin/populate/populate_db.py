@@ -83,3 +83,25 @@ for courseDetails in coursesList:
     course.save()
     for dbProf in dbProfs:
         pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
+
+
+    # Populate Course Appointments
+    if "Appointments" in courseDetails:
+        for appointment in courseDetails["Appointments"]:
+            start = datetime.now()
+            end = datetime.now()
+            if "May" in appointment['start']:
+                start = datetime.strptime(appointment['start'], "%d. %b %Y %H:%M")
+                end = datetime.strptime(appointment['end'], "%d. %b %Y %H:%M")
+            else:
+                start = datetime.strptime(appointment['start'], "%d. %b. %Y %H:%M")
+                end = datetime.strptime(appointment['end'], "%d. %b. %Y %H:%M")
+
+            location = appointment["location"]
+            description = appointment["description"]
+            aware_start = timezone.make_aware(start,pytz.timezone("Europe/Berlin"))
+            aware_end = timezone.make_aware(end, pytz.timezone("Europe/Berlin"))
+            utc_start = timezone.localtime(aware_start, pytz.utc)
+            utc_end = timezone.localtime(aware_end, pytz.utc)
+            CourseAppointment.objects.create(start=utc_start, end=utc_end, location=location, 
+                                            description=description, course=course)

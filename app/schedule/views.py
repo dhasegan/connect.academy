@@ -18,7 +18,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.core.context_processors import csrf
 
 from app.models import *
-
+from app.decorators import *
 #date formatting
 date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 
@@ -128,6 +128,7 @@ def view_schedule(request):
 
 #both professors and students
 @require_POST
+@require_active_user
 def add_personal_appointment(request):
     context = {
         'page':'add_personal_appointment'
@@ -168,6 +169,7 @@ def add_personal_appointment(request):
     return HttpResponse("")
 
 @require_POST
+@require_active_user
 def edit_personal_appointment(request):
     context = {
         'page':'edit_personal_appointment'
@@ -208,6 +210,7 @@ def edit_personal_appointment(request):
 
 
 @require_POST
+@require_active_user
 def remove_personal_appointment(request):
     context = {
         'page':'remove_personal_appointment'
@@ -224,6 +227,8 @@ def remove_personal_appointment(request):
 
 #only for professors
 @require_POST
+@require_active_user
+@require_professor
 def add_course_appointment(request):
     context = {
         'page':'add_course_appointment'
@@ -299,6 +304,8 @@ def add_course_appointment(request):
 
 
 @require_POST
+@require_active_user
+@require_professor
 def edit_course_appointment(request):
     context ={
         'page':'edit_course_appointment',
@@ -341,6 +348,8 @@ def edit_course_appointment(request):
     return HttpResponse("")
 
 @require_POST
+@require_active_user
+@require_professor
 def remove_course_appointment(request):
     context = {
         'page':'remove_personal_appointment'
