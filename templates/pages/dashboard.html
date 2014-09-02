@@ -1,5 +1,7 @@
 {% extends 'pages/base.html' %}
 
+{% load i18n %}
+
 {% block content %}
 	<div class="dashboard-page">
         <div class="row">
@@ -12,6 +14,12 @@
 
             <div class="col-md-8">
                 {% include 'objects/dashboard/activity_timeline.html' %}
+
+                {% if activities|length == 0 %}
+                    <div class="alert alert-warning">
+                        {% trans "There seems to be no activity on your news feed. Register for courses to get notified about their changes" %}
+                    </div>
+                {% endif %}
             </div>
 
         </div>
