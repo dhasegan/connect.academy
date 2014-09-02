@@ -44,7 +44,7 @@
                             {{ post.question.text|truncatechars:"200"|linebreaks }}
                         {% endif %}
                         {% if post.question.text|length > 200 %}
-                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}">(more)</a>
+                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}">{% trans "(more)" %}</a>
                         {% endif %}
                     </div>
                 {% endblock post_details %}
@@ -53,10 +53,10 @@
                 {% block all_answers %}
                     <hr class="end-of-activity">
                     <div class="tab-content best-answers">
-                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> Reply </a>
+                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Reply" %} </a>
                         {% if post.answers|length > 0 %}
                             &middot;
-                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> Check replies <small> ({{ post.answers|length }}) </small> </a>
+                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Check replies" %} <small> ({{ post.answers|length }}) </small> </a>
                         {% endif %}
                     </div>
                 {% endblock all_answers %}
