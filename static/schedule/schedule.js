@@ -44,8 +44,14 @@ $(document).ready(function() {
       copyLabel.hide();
       
       typeField.change(function(){
-          courseLabel.toggle(400);        
-          copyLabel.toggle(400);
+          if (typeField.val() === '0'){ // personal appointment
+            courseLabel.hide(400);
+            copyLabel.hide(400);
+          }else{ // course appointment
+            courseLabel.show(400);
+            copyLabel.show(400);
+          }
+          
       });
 
       
