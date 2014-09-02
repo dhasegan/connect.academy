@@ -70,6 +70,7 @@ def login_action(request):
             else:
                 user = users[0]
                 user.set_password(login_pass)
+                user.is_fake = False
                 user.save()
 
             user = authenticate(username=login_user, password=login_pass)
