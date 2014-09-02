@@ -43,28 +43,27 @@
 <div id="event_edit_container" hidden>
   <form>
     {%csrf_token%}
-    <ul>
-      <li>
+    <div class="form-group">
         Date: <span class="date_holder"></span> 
-      </li>
-        
-      <li>
-        <label for="start">Start Time:</label><select name="start"><option value="">Select Start Time</option></select>
-      </li>
-      
-      <li>
-        <label for="end">End Time:</label><select name="end"><option value="">Select End Time</option></select>
-      </li>
-      
-      <li>
-        <label for="body">Description:</label><textarea name="body"></textarea>
-      </li>
+    </div>
 
-      <li>
-        <label for="title">Location:</label><input type="text" name="title"/>
-      </li>
-      
-    </ul>
+    <div class="form-group">
+        <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
+    </div>
+
+    <div class="form-group">
+        <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
+    </div>
+
+    <div class="form-group">
+        <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
+    </div>
+
+
   </form>
 </div>
 {% endif %}
@@ -73,45 +72,45 @@
 <div id="event_edit_container" hidden>
   <form>
     {%csrf_token%}
-    <ul>
-      <li>
+    <div class="form-group">
         Date: <span class="date_holder"></span> 
-      </li>
-        
-      <li>
-        <label for="start">Start Time:</label><select name="start"><option value="">Select Start Time</option></select>
-      </li>
-      
-      <li>
-        <label for="end">End Time:</label><select name="end"><option value="">Select End Time</option></select>
-      </li>
-      
-      <li>
-        <label for="body">Description:</label><textarea name="body"></textarea>
-      </li>
+    </div>
 
-      <li>
-        <label for="title">Location:</label><input type="text" name="title"/>
-      </li>
+    <div class="form-group">
+        <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
+    </div>
 
-      <li>
-        <label for="type">Appointment Type:</label>
-        <select name="type">
-          <option value="0">Personal Appointment </option>
-          <option value="1">Course Appointment </option>
-        </select>
-      </li>
+    <div class="form-group">
+        <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
+    </div>
 
-      <li>
+    <div class="form-group">
+        <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
+    </div>
+
+      <div class="form-group">
+          <label for="type">Appointment Type:</label>
+          <select class="form-control" name="type">
+            <option value="0">Personal Appointment </option>
+            <option value="1">Course Appointment </option>
+          </select>
+      </div>
+
+      <div class="form-group">
         {% comment %}
           Dynamically show this is the professor chooses he/she wants to add a course appointment
         {% endcomment %}
-        <label for="course">Course:</label><select name='course'></select>
-      </li>
+        <label for="course"> Course:</label><select class="form-control" name='course'></select>
+      </div>
 
-      <li>
-        <input type="checkbox" name="copy" value="copy"> Copy the same appointment throughout the following weeks. 
-      </li>
+      <div class="form-group">
+        <input  type="checkbox" name="copy" value="copy"/> <label for="copy"> Copy in the next weeks.  </label>
+         
+      </div>
       
     </ul>
   </form>

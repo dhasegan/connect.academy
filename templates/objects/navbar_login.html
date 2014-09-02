@@ -26,14 +26,15 @@
         {% include 'objects/language.html' %}
         <li>
             <div class="btn-group navbar-btn">
-                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle ">
+                <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle profile-name-dropdown">
+                <span class="icon icon-user"></span>
                     {% if user_auth.first_name %}
                         {{ user_auth.first_name }}
                     {% else %}
                         {{ user_auth.username }}
-                    {% endif %}
-                    <span class="caret"></span>
+                    {% endif %}   
                 </button>
+
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="{% url 'profile' user_auth.username %}">{% trans "My profile" %} </a></li>
                     <li><a href="{% url 'manage_account' %}">{% trans "Manage Account" %}</a></li>
