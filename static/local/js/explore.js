@@ -122,7 +122,7 @@ var ExplorePage = (function () {
     me.indexCourses = function() {
         var courses = $(s.coursePanelSelector);
 
-        var searchTerm = s.searchBar.val();
+        var searchTerm = s.searchBar.val().toLowerCase();
         var avoided_categories = this.getAvoidedCategoriesIds();
 
         var creditsCurrentValues = s.creditsSlider.slider("values");
@@ -164,7 +164,8 @@ var ExplorePage = (function () {
             }
             if (show) {
                 course_name = $(this).find(s.courseNameSelector).find('a').text();
-                if (course_name.indexOf(searchTerm) == -1) {
+                cname = course_name.toLowerCase();
+                if (cname.indexOf(searchTerm) == -1) {
                     show = false;
                 }
             }
