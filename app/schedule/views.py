@@ -61,13 +61,23 @@ def view_schedule(request):
     
     all_appointments = []
 
+    #get client timezone
+    local_timezone = timezone.get_current_timezone()
+
+
     # course appointments
     for cappointments in course_appointments:
         for appointment in cappointments:
             data = {}
             data['id'] = appointment.id
-            data['start'] = format_date(appointment.start.strftime(date_format))
-            data['end'] = format_date(appointment.end.strftime(date_format))
+            
+            start_local = timezone.localtime(appointment.start,local_timezone) # the time to display to the user
+            end_local = timezone.localtime(appointment.end,local_timezone)   
+
+
+            data['start'] = format_date(start_local.strftime(date_format))
+            data['end'] = format_date(end_local.strftime(date_format))
+            
             if appointment.course_topic:
             	data['title'] = appointment.course_topic.name 
             else:
@@ -88,8 +98,13 @@ def view_schedule(request):
     for appointment in personal_appointments:
         data = {}
         data['id'] = appointment.id
-        data['start'] = format_date(appointment.start.strftime(date_format))
-        data['end'] = format_date(appointment.end.strftime(date_format))
+        
+        start_local = timezone.localtime(appointment.start,local_timezone) # the time to display to the user
+        end_local = timezone.localtime(appointment.end,local_timezone)   
+
+        data['start'] = format_date(start_local.strftime(date_format))
+        data['end'] = format_date(end_local.strftime(date_format))
+        
         data['title'] = appointment.location
         data['body'] = appointment.description
         data['modifiable'] = True
@@ -136,7 +151,7 @@ def add_personal_appointment(request):
         if timezone.is_naive(end):
             end = timezone.make_aware(end,local_timezone)
 
-        start_utc = timezone.localtime(start,pytz.utc)
+        start_utc = timezone.localtime(start,pytz.utc) # utc time, to store on the server.
         end_utc = timezone.localtime(end,pytz.utc)   
 
 
@@ -267,12 +282,9 @@ def add_course_appointment(request):
     if copy_to_otherweeks == 'true' : # ugly, I know
         start_times = []
         length = end_utc - start_utc
-        for i in range(1,365):
+        for i in range(1,90):
             start_time = start_utc + timedelta(weeks=i)
-            if start_time.strftime("%A") == 'Saturday' or start_time.strftime("%A") == 'Sunday': # need to take care of holidays too
-                pass
-            else:
-                start_times.append(start_time)
+            start_times.append(start_time)
 
         for time in start_times:
             appointment = CourseAppointment(start=time,\
