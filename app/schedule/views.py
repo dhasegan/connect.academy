@@ -5,7 +5,6 @@ import pytz
 from helpers import *
 from dateutil.parser import parse
 from dateutil.tz import tzoffset
-from django.utils.timezone import utc
 
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
@@ -125,47 +124,34 @@ def view_schedule(request):
     return render(request, "pages/schedule/view_schedule.html", context)
 
 
+from app.schedule.forms import *
+from django.views.decorators.csrf import requires_csrf_token
 #both professors and students
 @require_POST
 @require_active_user
+@requires_csrf_token
 def add_personal_appointment(request):
-    context = {
-        'page':'add_personal_appointment'
-    }
-    context.update(csrf(request))
+    
+    form = CreatePersonalAppointmentForm(request.POST)
 
-    if request.is_ajax():
-        user = jUser.objects.filter(username=request.user.username).get()
-        description = request.POST['body']
-        start_time = request.POST['start']
-        end_time = request.POST['end']
-        location = request.POST['title']
-        
-        start = parse(start_time) # from dateutil.parser
-        end = parse(end_time)
-
-        local_timezone = timezone.get_current_timezone() # the current client timezone
-
-        if timezone.is_naive(start):
-            start = timezone.make_aware(start,local_timezone)
-        if timezone.is_naive(end):
-            end = timezone.make_aware(end,local_timezone)
-
-        start_utc = timezone.localtime(start,pytz.utc) # utc time, to store on the server.
-        end_utc = timezone.localtime(end,pytz.utc)   
-
-
-
-        appointment = PersonalAppointment(start=start_utc\
-                                         ,end=end_utc \
-                                         ,location=location \
-                                         ,description=description \
-                                         ,user=user)
-        appointment.save()
-    else:
+    if not form.is_valid():
+        print form.cleaned_data
+        print "-----------------"
+        print request.POST
         raise Http404
 
-    return HttpResponse("")
+    user = jUser.objects.get(username=request.user.username)
+    description = form.cleaned_data['body']
+    start = form.cleaned_data['start']
+    end = form.cleaned_data['end']
+    location = form.cleaned_data['title']
+    appointment = PersonalAppointment.objects.create(start=start\
+                                                    ,end=end \
+                                                    ,location=location \
+                                                    ,description=description \
+                                                    ,user=user)
+    return_dict = {'status':'OK'}
+    return HttpResponse(json.dumps(return_dict))
 
 @require_POST
 @require_active_user
