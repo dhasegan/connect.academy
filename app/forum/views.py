@@ -39,11 +39,33 @@ def forum_course(request, slug):
 
     return render(request, "pages/forum/page.html", context)
 
+@require_GET
+@login_required
+def forum_general(request):
+    user = get_object_or_404(jUser, id=request.user.id)
 
-@require_http_methods(["GET", "POST"])
+    context = {
+        "page": "forum_general",
+    }
+
+    forum = get_object_or_404(ForumGeneral, forum_type=FORUM_GENERAL)
+    context = dict(context.items() + forum_context(forum, user).items())
+
+    if 'filter' in request.GET and request.GET['filter']:
+        tag = request.GET['filter']
+        if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
+            context['current_filter'] = tag
+
+    if 'post' in request.GET and request.GET['post']:
+        context['current_post'] = int(request.GET['post'])
+
+    return render(request, "pages/forum/page.html", context)
+
+
+@require_GET
 @require_active_user
 @login_required
-def new_post(request, slug):
+def new_post_course(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
     context = {
@@ -56,14 +78,39 @@ def new_post(request, slug):
     context['nr_topictags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_TOPIC)
     context['nr_extratags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_EXTRA)
 
-    # Get request
-    if request.method == "GET":
-        return render(request, "pages/forum/new_post.html", context)
+    return render(request, "pages/forum/new_post.html", context)
 
-    # Post request
+
+@require_GET
+@require_active_user
+@login_required
+def new_post_general(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+    context = {
+        "page": "forum_new_post"
+    }
+    forum = get_object_or_404(ForumGeneral, forum_type=FORUM_GENERAL)
+    context['forum'] = forum
+    post_tags = forum.get_post_tags(user)
+    context['tags'] = post_tags
+    context['nr_topictags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_TOPIC)
+    context['nr_extratags'] = [tag.tag_type for tag in post_tags].count(FORUMTAG_EXTRA)
+
+    return render(request, "pages/forum/new_post.html", context)
+
+
+@require_POST
+@require_active_user
+@login_required
+def new_post(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
     form = SubmitForumPost(request.POST)
     if not form.is_valid():
         raise Http404
+
+    forum = form.cleaned_data['forum']
+    post_tags = forum.get_post_tags(user)
 
     # user permissions to post:
     if form.cleaned_data['tagsRadios'] not in [tag.name for tag in post_tags]:
@@ -79,25 +126,33 @@ def new_post(request, slug):
                      anonymous=form.cleaned_data['anonymous'], tag=form_tag)
     post.save()
 
-    get_params = "?page=connect&post=" + str(post.id)
-    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
+    if forum.forum_type == FORUM_GENERAL:
+        return redirect( reverse('forum_general') )
+    if forum.forum_type == FORUM_COURSE:
+        course = forum.forumcourse.course
+        get_params = "?page=connect&post=" + str(post.id)
+        return redirect( reverse('course_page', args=(course.slug,)) + get_params )
+
+    return redirect( reverse('home') )
 
 
 @require_POST
 @require_active_user
 @login_required
-def new_answer(request, slug):
-    course = get_object_or_404(Course, slug=slug)
+def new_answer(request):
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
-
-    context["course"] = course
-    forum = course.forum
-    answer_tags = forum.get_answer_tags(user)
 
     form = SubmitForumAnswer(request.POST)
     if not form.is_valid():
         raise Http404
+
+    forum = form.cleaned_data['forum']
+    if forum.forum_type == FORUM_COURSE:
+        course = forum.forumcourse.course
+        context["course"] = course
+
+    answer_tags = forum.get_answer_tags(user)
 
     # user permissions to post:
     tag = form.cleaned_data['post'].tag
@@ -142,8 +197,9 @@ def reply_form(request, answer_id):
         },
         'question': post,
         'forum': post.forum,
-        'course': post.forum.course
     }
+    if post.forum.forum_type == FORUM_COURSE:
+        context['course'] = post.forum.forumcourse.course
 
     response_data = {
         'html': render_to_string("objects/forum/new_answer.html", RequestContext(request, context))
@@ -178,10 +234,11 @@ def answers(request, post_id):
     user = get_object_or_404(jUser, id=request.user.id)
 
     context = {
-        'course': post.forum.course,
         'forum': post.forum,
         'post': forum_post_context(post, user)
     }
+    if post.forum.forum_type == FORUM_COURSE:
+        context['course'] = post.forum.forumcourse.course
 
     response_data = {
         'html': render_to_string("objects/forum/answers.html", RequestContext(request, context))

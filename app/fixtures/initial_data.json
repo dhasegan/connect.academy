@@ -150,5 +150,233 @@
         },
         "model": "app.forumtag",
         "pk": 6
+    },
+    {
+        "fields": {
+            "name": "noprof",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "forum_type": "1"
+        },
+        "model": "app.forum",
+        "pk": 1
+    },
+    {
+        "fields": {},
+        "model": "app.forumgeneral",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "name": "event",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "name": "reportbug",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "name": "suggestfeature",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "name": "EECS",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "name": "Life",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "name": "Logistics",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "name": "Math",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "name": "NatEnv",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "name": "Econ",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "name": "History",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "name": "Humanities",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "name": "Law",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "name": "Psych",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "name": "Social",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "name": "Stats",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "name": "USC",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "name": "FY",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "name": "Colloquia",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "name": "Humanities",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "name": "Languages",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "name": "Undergrad",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 27
+    },
+    {
+        "fields": {
+            "name": "Grad",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 28
+    },
+    {
+        "fields": {
+            "name": "Fall",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 29
+    },
+    {
+        "fields": {
+            "name": "Spring",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 30
+    },
+    {
+        "fields": {
+            "name": "SES",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 31
+    },
+    {
+        "fields": {
+            "name": "SHSS",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 32
     }
 ]

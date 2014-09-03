@@ -55,7 +55,7 @@ def course_page(request, slug):
     if 'post' in request.GET and request.GET['post']:
         post_id = int(request.GET['post'])
         posts = ForumPost.objects.filter(id=post_id)
-        if len(posts) and posts[0].forum == forum:
+        if len(posts) and posts[0].forum.id == forum.id:
             context['current_post'] = post_id
             if 'current_tab' not in context:
                 context['current_tab'] = 'connect'
@@ -63,7 +63,7 @@ def course_page(request, slug):
     if 'answer' in request.GET and request.GET['answer']:
         answer_id = int(request.GET['answer'])
         answers = ForumAnswer.objects.filter(id=answer_id)
-        if len(answers) and answers[0].post.forum == forum:
+        if len(answers) and answers[0].post.forum.id == forum.id:
             context['current_post'] = answers[0].post.id
             context['current_answer'] = answer_id
             if 'current_tab' not in context:

@@ -24,7 +24,7 @@
         </ul>
     {% endif %}
 
-    <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">
+    <a class="new-post-link" href="{{forum.get_new_post_url}}">
         <button type="button" class="btn btn-primary navbar-btn navbar-right new-post-btn">{% trans "New Post" %}</button>
     </a>
 </nav>

@@ -5,7 +5,7 @@
     <div class="tab-content answers-tabs">
         {% if not posts %}
             <div class="alert alert-success" role="alert">{% trans "There is no post yet for this course! Why don't you post the first one by " %}
-                <a class="new-post-link" href="{% url 'forum_new_post' course.slug %}">{% trans "clicking here" %}</a>?
+                <a class="new-post-link" href="{{forum.get_new_post_url}}">{% trans "clicking here" %}</a>?
             </div>
         {% endif %}
         {% for post in posts|dictsortreversed:"rating" %}

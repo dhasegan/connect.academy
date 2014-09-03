@@ -13,6 +13,9 @@ coursesList = json.load(f)
 f.close()
 #print len(coursesList)
 for courseDetails in coursesList:
+    course = jCourse.objects.filter(name=courseDetails["CourseName"])[0]
+    if course.appointments.all().count() > 0:
+        continue
     if "Appointments" in courseDetails:
         for appointment in courseDetails["Appointments"]:
             start = datetime.now()
