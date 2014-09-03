@@ -67,9 +67,10 @@ def forum_context(forum, current_user):
     allowed_tags = forum.get_view_tags(current_user)
     context_forum = {
         "forum": forum,
-        "course": forum.course,
         "user": current_user
     }
+    if forum.forum_type == FORUM_COURSE:
+        context_forum["course"] = forum.course
 
     context_forum['posts'] = []
     tags = []
@@ -115,12 +116,14 @@ def forum_discussion_post_context(post, answer1, answer2, current_user):
 
 def forum_discussion_context(forum, post, answer, current_user):
     parent_answer = answer.parent_answer
-    return {
+    context = {
         'post': forum_discussion_post_context(post, parent_answer, answer, current_user),
         'forum': forum,
-        'course': forum.course,
         'discussion_answer_id': answer.id
     }
+    if forum.forum_type == FORUM_COURSE:
+        context['course'] = forum.forumcourse.course
+    return context
 
 def forum_stats_context(forum):
     posts = ForumPost.objects.filter(forum=forum)

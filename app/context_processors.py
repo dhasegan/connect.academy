@@ -39,7 +39,7 @@ def dashboard_activities(request,user):
     #
     forum_answer_activities = list(ForumAnswerActivity.objects.filter(
         Q(forum_answer__post__in=user.posts_following.all()), ~Q(user=user)).exclude(
-            forum_answer__post__forum__course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())).reverse())
+            forum_answer__post__forum__forumcourse__course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())).reverse())
 
     activities_list = sorted(own_course_activities + forum_answer_activities,
                              key=lambda activity: activity.timestamp,

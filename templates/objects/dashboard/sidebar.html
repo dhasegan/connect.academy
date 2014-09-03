@@ -113,8 +113,12 @@
                         {% if forum_posts %}
                             {% for post in forum_posts %}     
                                 <tr>
-                                    <td class="post_name"> 
-                                        <a href="{% url 'forum_course' post.forum.course.slug %}?post={{post.id}}"> {{ post.name|slice:":30" }} </a>
+                                    <td class="post_name">
+                                        {% if post.forum.forum_type == "1" %} {% comment %} General Forum {% endcomment %}
+                                            TODO
+                                        {% elif post.forum.forum_type == "2" %} {% comment %} Course Forum {% endcomment %}
+                                            <a href="{% url 'course_page' post.forum.forumcourse.course.slug %}?page=connect&amp;post={{post.id}}"> {{ post.name|slice:":30" }} </a>
+                                        {% endif %}
                                     </td>
                                     <td class="likes_number">
                                         <span class="icon icon-thumbs-up"></span> {% if post.upvoted_by.all.count %} {{ post.upvoted_by.all.count }} {% else %} 0 {% endif %}
