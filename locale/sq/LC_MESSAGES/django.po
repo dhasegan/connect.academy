@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-01 03:27+0200\n"
+"POT-Creation-Date: 2014-09-03 01:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,19 +35,19 @@ msgid "Albanian"
 msgstr "Shqip"
 
 #: templates/emails/require_confirmation.html:3
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "Dear %(fname)s,\n"
 "\n"
-"Thank you for registering with Connect.Academy! An account has been created "
+"Thank you for registering with connect.academy! An account has been created "
 "with this e-mail address.\n"
 "Please confirm your account by following the link below:\n"
 "\n"
 "%(confirmation_link)s\n"
 "\n"
 "\n"
-"If you did not register with Connect.Academy, you can ignore this message, "
+"If you did not register with connect.academy, you can ignore this message, "
 "in which case we will delete the account in 3 days. If you wish to delete "
 "the account now, you can follow the link below:\n"
 "\n"
@@ -55,7 +55,7 @@ msgid ""
 "\n"
 "\n"
 "Greetings\n"
-"The Connect.academy Team.\n"
+"The connect.academy Team.\n"
 msgstr ""
 "\n"
 "Dear%(fname)s, \n"
@@ -77,6 +77,14 @@ msgstr ""
 " \n"
 " Gjithe te mirat \n"
 " Ekipi i Connect.academy. \n"
+
+#: templates/objects/file_input.html:5
+msgid "Choose File"
+msgstr ""
+
+#: templates/objects/file_input.html:7
+msgid "Browse"
+msgstr ""
 
 #: templates/objects/navbar.html:10
 msgid "Toggle navigation"
@@ -140,15 +148,15 @@ msgstr "Hyrje"
 msgid "Register"
 msgstr "Regjistrohu"
 
-#: templates/objects/navbar_login.html:38
+#: templates/objects/navbar_login.html:39
 msgid "My profile"
 msgstr "Profili im"
 
-#: templates/objects/navbar_login.html:39
+#: templates/objects/navbar_login.html:40
 msgid "Manage Account"
 msgstr "Menaxhoni llogarinë"
 
-#: templates/objects/navbar_login.html:41
+#: templates/objects/navbar_login.html:42
 msgid "Logout"
 msgstr "Dalje"
 
@@ -308,7 +316,8 @@ msgid "Grade breakdown"
 msgstr "Kompozimi i notës"
 
 #: templates/objects/course/additional_details.html:23
-msgid "Additional Information about grades"
+#, fuzzy
+msgid "Additional information about grades"
 msgstr "Informacione shtesë për notat"
 
 #: templates/objects/course/additional_details.html:32
@@ -407,7 +416,7 @@ msgstr "Info Kursi"
 
 #: templates/objects/course/course_teacher_dashboard.html:118
 #, fuzzy
-msgid "You are not yet approved as a teacher for this course!"
+msgid "You are not approved yet as a teacher for this course!"
 msgstr "A jeni i sigurt që ju dëshironi të regjistroheni për këtë kurs?"
 
 #: templates/objects/course/course_wiki.html:11
@@ -470,12 +479,12 @@ msgid "due"
 msgstr "Afati përfundimtar"
 
 #: templates/objects/course/homework_submit.html:9
-#: templates/objects/course/homework_submit.html:54
+#: templates/objects/course/homework_submit.html:59
 msgid "Resubmit homework"
 msgstr "Dorezo detyrën përsëri."
 
 #: templates/objects/course/homework_submit.html:9
-#: templates/objects/course/homework_submit.html:54
+#: templates/objects/course/homework_submit.html:59
 msgid "Submit homework"
 msgstr "Dorezo detyrën e shtëpise"
 
@@ -487,7 +496,7 @@ msgstr "Ridorëzimi i detyrave të shtëpisë do të fshijë dorëzimet e mëpar
 msgid "Upload your homework"
 msgstr "Ngarkoni detyrat e shtëpisë"
 
-#: templates/objects/course/homework_submit.html:39
+#: templates/objects/course/homework_submit.html:44
 #: templates/objects/course/registration.html:20
 msgid "No, cancel"
 msgstr "Jo, anulo"
@@ -533,6 +542,7 @@ msgid "Submit a review"
 msgstr "Shkruani nje vlerësim"
 
 #: templates/objects/course/reviews_detail.html:8
+#: templates/objects/dashboard/review_activity.html:27
 msgid "Rate course"
 msgstr "Vlerësoni kursin"
 
@@ -546,8 +556,8 @@ msgid "Activity log"
 msgstr "Log Aktiviteti"
 
 #: templates/objects/course/sidebar.html:31
-#: templates/objects/manage/sidebar.html:10
-msgid "Course info"
+#, fuzzy
+msgid "Course Info"
 msgstr "Info Kursi"
 
 #: templates/objects/course/sidebar.html:33
@@ -623,8 +633,6 @@ msgid "Submit"
 msgstr "Konfirmo"
 
 #: templates/objects/course/submit_review.html:14
-#: templates/objects/dashboard/forum_answer_activity.html:18
-#: templates/objects/dashboard/forum_post_activity.html:19
 #: templates/objects/forum/answer.html:11
 #: templates/objects/forum/answers.html:17
 #: templates/objects/forum/new_answer.html:15
@@ -686,14 +694,62 @@ msgstr "Nuk ka regjistrime në pritje për këtë kurs."
 msgid "Document Name"
 msgstr "Emri i dokumentit"
 
+#: templates/objects/dashboard/document_activity.html:28
+#: templates/objects/dashboard/forum_answer_activity.html:41
+#: templates/objects/dashboard/forum_post_activity.html:47
+#: templates/objects/explore/course_block.html:46
+msgid "(more)"
+msgstr "(Më shumë)"
+
+#: templates/objects/dashboard/document_activity.html:34
+msgid "Check all resources"
+msgstr ""
+
+#: templates/objects/dashboard/forum_answer_activity.html:18
 #: templates/objects/dashboard/forum_post_activity.html:23
+msgid "Someone"
+msgstr ""
+
+#: templates/objects/dashboard/forum_answer_activity.html:46
+#: templates/objects/dashboard/forum_post_activity.html:56
+#: templates/objects/forum/answer.html:24
+msgid "Reply"
+msgstr "Përgjigju"
+
+#: templates/objects/dashboard/forum_post_activity.html:27
 #: templates/objects/forum/answers.html:19
 msgid "in"
 msgstr "në"
 
-#: templates/objects/explore/course_block.html:46
-msgid "(more)"
-msgstr "(Më shumë)"
+#: templates/objects/dashboard/forum_post_activity.html:59
+msgid "Check replies"
+msgstr ""
+
+#: templates/objects/dashboard/homework_activity.html:35
+#, fuzzy
+msgid "Check all homework"
+msgstr "Dorezo detyrën e shtëpise"
+
+#: templates/objects/dashboard/review_activity.html:26
+#, fuzzy
+msgid "Submit review"
+msgstr "Shkruani nje vlerësim"
+
+#: templates/objects/dashboard/review_activity.html:28
+msgid "Check all reviews"
+msgstr ""
+
+#: templates/objects/dashboard/wiki_activity.html:18
+msgid "Check difference"
+msgstr ""
+
+#: templates/objects/dashboard/wiki_activity.html:19
+msgid "Check wiki"
+msgstr ""
+
+#: templates/objects/explore/no_more_courses.html:4
+msgid "There are no more courses with those requirements."
+msgstr ""
 
 #: templates/objects/explore/search_sidebar.html:5
 msgid "Search by course name"
@@ -711,10 +767,6 @@ msgstr "Rangu i vlerësimeve"
 #: templates/objects/forum/answers.html:14
 msgid "Posted by"
 msgstr "Postuar nga"
-
-#: templates/objects/forum/answer.html:24
-msgid "Reply"
-msgstr "Përgjigju"
 
 #: templates/objects/forum/answers.html:25
 msgid "Answer"
@@ -885,6 +937,10 @@ msgstr ""
 msgid "Tags representing parts of the syllabus"
 msgstr ""
 
+#: templates/objects/manage/sidebar.html:10
+msgid "Course info"
+msgstr "Info Kursi"
+
 #: templates/objects/notifications/auth/CN_connected_but_no_email.html:2
 msgid ""
 "You successfully connected to Campus Net, but we do not have your email "
@@ -903,11 +959,11 @@ msgstr ""
 "suksesshëm. Ju do të njoftoheni kur regjistrimi të jetë miratuar. \n"
 
 #: templates/objects/notifications/auth/email_not_activated.html:6
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
 "Your account is not yet activated. Please check your email and open the "
-"confirmation that we have sent you. %(link_start)s Resend confirmation link "
+"confirmation link we have sent you. %(link_start)s Resend confirmation link "
 "%(link_stop)s\n"
 msgstr ""
 "\n"
@@ -939,10 +995,11 @@ msgid "Your <b>passwords</b> do not match. Please try again."
 msgstr " <b>Fjalëkalimet </b> nuk përputhen. Ju lutemi provoni përsëri."
 
 #: templates/objects/notifications/auth/university_not_found.html:2
+#, fuzzy
 msgid ""
 "Sorry, we do not have a <b>university</b> with the <b>domain</b> of your "
-"<b>e-mail address</b>. Please make sure that you your <b>university e-mail "
-"address</b> correctly or come back later."
+"<b>e-mail address</b>. Please make sure that your <b>university e-mail "
+"address</b> is written correctly or come back later."
 msgstr ""
 "Na vjen keq, ne nuk kemi një <b> universitet </b> me <b> domain-in </b> i "
 "<b> e adresës tuaj të e-mail-it </b>. Ju lutem sigurohuni që ju të vendosni "
@@ -1086,66 +1143,72 @@ msgstr ""
 "Kursit duke shtuar informacione dhe dokumentacion plotësues sipas kapitujve "
 "përkates. \n"
 
+#: templates/pages/dashboard.html:20
+msgid ""
+"There seems to be no activity on your news feed. Register for courses to get "
+"notified about their changes"
+msgstr ""
+
 #: templates/pages/error.html:7
 msgid "You have to activate your account to do that!"
 msgstr "Ju duhet të aktivizoni llogarinë tuaj për të bërë këtë!"
+
+#: templates/pages/profile.html:18
+msgid "There seems to be no activity here. Come back later"
+msgstr ""
 
 #: templates/pages/set_timezone.html:8
 msgid "Time zone"
 msgstr ""
 
-#: templates/pages/welcome_page.html:29
+#: templates/pages/welcome_page.html:30
 msgid "Join a community of learners"
 msgstr ""
 
-#: templates/pages/welcome_page.html:38
+#: templates/pages/welcome_page.html:39
 msgid "Education"
 msgstr ""
 
-#: templates/pages/welcome_page.html:39
+#: templates/pages/welcome_page.html:40
 msgid ""
-"Education is the single most important thing in a persons' life. It should "
-"not be left to one or some alone."
-msgstr ""
-
-#: templates/pages/welcome_page.html:45
-msgid "Community"
+"Education is the process by which we acquire knowledge, but it also is the "
+"process by which we become better human beings, developing a more socially "
+"conscious understanding of the world around us. It is the process by which "
+"we surpass ourselves."
 msgstr ""
 
 #: templates/pages/welcome_page.html:46
-msgid ""
-"Using the power of a community to drive learning. Educating those around us "
-"is a responsibility we all share."
+msgid "Community"
 msgstr ""
 
-#: templates/pages/welcome_page.html:56
+#: templates/pages/welcome_page.html:47
+msgid ""
+"Using the power of a community to drive learning. Educating those around us "
+"is a responsibility we all share. Education is too important to be left in "
+"the hands of one, or some only. Learning by sharing is beneficent both in a "
+"personal and social level"
+msgstr ""
+
+#: templates/pages/welcome_page.html:57
 msgid "A FEW WORDS ABOUT CONNECT ACADEMY"
 msgstr ""
 
-#: templates/pages/welcome_page.html:60
+#: templates/pages/welcome_page.html:61
 msgid ""
 "We aim to bring together the power of an academic network to every day "
 "academic needs. Our mission is to create an academic network that connects "
 "scholars worldwide, while ensuring reliability of their identity and of the "
-"institution they attend. An increased number of online course platforms "
-"proves that there is an obvious need to use the power of the web for "
-"community learning. Something however, is going wrong. While this number is "
-"increasing, the effort of the average student to use these platforms, is "
-"also increasing. That is because there is no single platform that is the "
-"default choice of all professors and all students. We are many, but we are "
-"in different platforms."
+"institution they attend. We are trying to advance education by extending the "
+"meaning of classrooms and lecture halls, by enabling the same interaction to "
+"take place outside of the physical environments these words used to define."
 msgstr ""
 
-#: templates/pages/welcome_page.html:63
+#: templates/pages/welcome_page.html:64
 msgid ""
-"These platforms, being different in scope, have failed to become part of the "
-"student's everyday academic life. These platforms are not integrated with a "
-"student's real courses and  real needs. The default learning management "
-"systems universities use link to nothing."
-msgstr ""
-
-#: templates/pages/welcome_page.html:65
-msgid "Conenct Academy solves that"
+"Connect Academy brings the best of a learning management system, in an "
+"intuitive, user-friendly and efficient way adding the power of a community "
+"to drive the learning process. Our users learn by sharing and getting "
+"recognition for both."
 msgstr ""
 
 #: templates/pages/welcome_page.html:75
@@ -1169,59 +1232,73 @@ msgstr ""
 
 #: templates/pages/welcome_page.html:99
 msgid ""
-"I believe education is the closest we can get to providing equality. While "
-"most people seem to think smaller class sizes are a luxury only few access "
-"to, I think they are no luxury at all. Good classes are those you can fit a "
-"whole community of learners in. That is what we are doing with Connect "
-"Academy."
+"There is no optimal class size that is right for all classes, neither there "
+"is a right way to teach one, or learning from one. Good classes are those "
+"you can fit a whole community of learners in. That is what we are doing with "
+"Connect Academy."
 msgstr ""
 
-#: templates/pages/welcome_page.html:109 templates/pages/welcome_page.html:129
+#: templates/pages/welcome_page.html:109
 msgid ""
-"It is a long established fact that a reader will be distracted by the "
-"readable content of a page when looking at its layout. The point of using "
-"Lorem Ipsum is that it has a more-or-less normal distribution of letters, as "
-"opposed to using 'Content here, content here', making it look like readable "
-"English."
+"New technologies have the potential to change one's life. We are trying to "
+"use this potential to ameliorate education, a defining reason for success in "
+"life, leaving more time for creativity to be stimulated and curiosity "
+"satisfied."
 msgstr ""
 
-#: templates/pages/welcome_page.html:139
+#: templates/pages/welcome_page.html:119
+msgid ""
+"A good education is a powerful investment for one's future. What we strive "
+"to achieve with Connect Academy is a platform that enables its community to "
+"share, discuss, improve and contribute on academic material and more, "
+"<i>easily</i> and <i>effortlessly</i>."
+msgstr ""
+
+#: templates/pages/welcome_page.html:130
+msgid ""
+"More often than not one's interests go well beyond the curriculum of one's "
+"major and the recognition received for these interests is rarely "
+"acknowledged. We value good contribution, regardless of one's major, "
+"background or granted institutional reputatiton."
+msgstr ""
+
+#: templates/pages/welcome_page.html:140
 msgid "ACADEMIC NETWORK"
 msgstr ""
 
-#: templates/pages/welcome_page.html:141
+#: templates/pages/welcome_page.html:142
 msgid ""
 "Do grades say anything about how skilled a student is? If you think they do, "
 "think again. If you think they don't, think again. We at Connect Academy "
 "think that a community of learners are at least just as good at evaluating "
-"someone's skills as a professsor. Join us, learn and teach while getting "
+"someone's skills as a professor. Join us, learn and teach while getting "
 "recognition from an academic network of users."
 msgstr ""
 
-#: templates/pages/welcome_page.html:149
+#: templates/pages/welcome_page.html:150
 msgid "THANKS FOR POPPING BY"
 msgstr ""
 
-#: templates/pages/welcome_page.html:155
+#: templates/pages/welcome_page.html:156
 #, fuzzy
 msgid "Contact Information"
 msgstr "Informacione shtesë"
 
-#: templates/pages/welcome_page.html:164
+#: templates/pages/welcome_page.html:165
 msgid "Support Us"
 msgstr ""
 
-#: templates/pages/welcome_page.html:165
+#: templates/pages/welcome_page.html:166
 msgid ""
 "Changing education is not a simple task and one cannot do it alone and "
 "neither can 4 of us. We would appreciate any help we can get."
 msgstr ""
 
-#: templates/pages/welcome_page.html:172
+#: templates/pages/welcome_page.html:173
 msgid "Newsletter"
 msgstr ""
 
-#: templates/pages/welcome_page.html:173
+#: templates/pages/welcome_page.html:174
 msgid ""
 "If you would like to hear more often from us, being for the development of a "
 "new feature or about expanding our team, subscribe to our newsletter and be "
@@ -1230,13 +1307,18 @@ msgid ""
 "necessary."
 msgstr ""
 
-#: templates/pages/welcome_page.html:190
+#: templates/pages/welcome_page.html:191
 msgid "Sign in"
 msgstr ""
 
-#: templates/pages/auth/set_email.html:8
+#: templates/pages/auth/set_email.html:16
 msgid "University E-mail Address"
 msgstr "Email-i juaj i Universitetit"
+
+#: templates/pages/auth/set_email.html:18
+#, fuzzy
+msgid "Send Confirmation E-mail"
+msgstr "Në pritje Konfirmimi"
 
 #: templates/pages/auth/user_account.html:21
 #, fuzzy
@@ -1365,9 +1447,6 @@ msgstr "Shikoni listën e rishikimeve."
 #~ msgstr ""
 #~ "Ju nuk mund të menaxhoni forumin deri sa të konfirmohet statusi juaj si "
 #~ "një profesor i këtij kursi"
-
-#~ msgid "Pending Confirmation"
-#~ msgstr "Në pritje Konfirmimi"
 
 #~ msgid "There is a forum for this course."
 #~ msgstr "Ka një forum për këtë kurs."
