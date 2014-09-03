@@ -7,7 +7,11 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <p class="h4">
-                {% trans "Submit post on the forum of course" %} <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
+                {% if forum.forum_type == "1" %} {% comment %} General Forum {% endcomment %}
+                    {% trans "Submit post on the general forum" %}
+                {% elif forum.forum_type == "2" %} {% comment %} Course Forum {% endcomment %}
+                    {% trans "Submit post on the forum of course" %} <a class="navbar-brand-course" href="{% url 'course_page' course.slug %}">{{ course.name }}</a>
+                {% endif %}
             </p>
         </div>
 

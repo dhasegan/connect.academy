@@ -1,6 +1,6 @@
 {% extends 'pages/base.html' %}
 {% load humanize %}
-
+{% load i18n %}
 
 {% block content %}
 
@@ -11,26 +11,37 @@
 
 
     <div id="event_edit_container" hidden>
-      <form>
+      <form method="post" id="appointmentForm">
         {%csrf_token%}
         <div class="form-group">
             Date: <span class="date_holder"></span> 
         </div>
 
         <div class="form-group">
-            <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
+          <label>{% trans 'Start' %}</label>
+            <div class='input-group date' id='start_dp' data-date-format="DD/MM/YYYY HH:mm">
+              <input type='text' class="form-control" name="start" id="start" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" id="start_button"></span>
+              </span>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
+          <label>{% trans 'End' %}</label>
+            <div class='input-group date' id='end_dp' data-date-format="DD/MM/YYYY HH:mm">
+              <input type='text' class="form-control" name="end" id="end"/>
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" id="end_button"></span>
+              </span>
+            </div>
+        </div>
+
+        <input name="timezone" type="hidden"/>
+        <div class="form-group">
+            <label for="body">Description:</label><textarea class="form-control to-reset" name="body"></textarea>
         </div>
 
         <div class="form-group">
-            <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
+            <label for="title">Location:</label><input class="form-control to-reset" type="text" name="title"/>
         </div>
 
         {% if user.is_professor %}
@@ -52,7 +63,7 @@
 
 
           <div class="form-group" id="copyLabel">
-            <input  type="checkbox" name="copy" value="copy"/> <b> Copy in the next <input class="tiny-text-input" name="num_weeks" type="text" /> weeks.  </b>   
+            <input  type="checkbox" name="copy" value="copy"/> <b> Copy in the next <input class="tiny-text-input to-reset" name="num_weeks" type="text" /> weeks.  </b>   
           </div>
 
       {% endif %}
@@ -65,6 +76,7 @@
 
 {% block extra_js_includes %}
 <script type="text/javascript" src="{{ STATIC_URL }}schedule/libs/date.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/jquery.weekcalendar.js'></script>
 
 <script type='text/javascript'>
@@ -80,6 +92,25 @@
 
   courses = {{ courses_managed | safe }};
 
+  $("#appointmentForm").ready(function(){
+
+      $("#start_dp").datetimepicker({
+        pick12HourFormat : false,
+      });
+
+      $("#end_dp").datetimepicker({
+        pick12HourFormat : false,
+      });
+
+      $("#start_button, #start").click(function(){
+        $("#start_dp").data("DateTimePicker").show();
+      });
+
+      $("#end_button, #end").click(function(){
+        $("#end_dp").data("DateTimePicker").show();
+      });
+
+  });
 </script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
 {% endblock %}

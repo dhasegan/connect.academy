@@ -270,7 +270,7 @@ class Course(models.Model):
             appendix += 1
         self.slug = slug
         super(Course, self).save(*args, **kwargs)
-        Forum.objects.get_or_create(course=self)
+        ForumCourse.objects.get_or_create(course=self)
 
     def __unicode__(self):
         return str(self.name)
@@ -301,7 +301,7 @@ class CourseTopic(models.Model):
         if not len(tags):
             tag_name = ForumTag.create_tag_name(self.name)
             ForumTopicTag.objects.create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
-                forum=Forum.objects.get(pk=self.course.id), topic=self)
+                forum=ForumCourse.objects.get(course=self.course), topic=self)
         else:
             tag = tags[0]
             tag.name = ForumTag.create_tag_name(self.name)
@@ -620,8 +620,81 @@ class CourseHomeworkSubmission(models.Model):
 ############################ Forums, Wikis ################################
 ###########################################################################
 
+FORUM_GENERAL = "1"
+FORUM_COURSE = "2"
+FORUM_TYPES = (
+    (FORUM_GENERAL, 'General Forum'),
+    (FORUM_COURSE, 'Course Forum'),
+)
+
 class Forum(models.Model):
-    course = models.OneToOneField('Course', primary_key=True)
+    forum_type = models.CharField(max_length=1, choices=FORUM_TYPES, default=FORUM_COURSE)
+
+    def get_tags(self):
+        if self.forum_type == FORUM_GENERAL:
+            return self.forumgeneral.get_tags()
+        elif self.forum_type == FORUM_COURSE:
+            return self.forumcourse.get_tags()
+        return None
+
+    def get_tags_names(self):
+        if self.forum_type == FORUM_GENERAL:
+            return self.forumgeneral.get_tags_names()
+        elif self.forum_type == FORUM_COURSE:
+            return self.forumcourse.get_tags_names()
+        return None
+
+    def get_view_tags(self, user):
+        if self.forum_type == FORUM_GENERAL:
+            return self.forumgeneral.get_view_tags(user)
+        elif self.forum_type == FORUM_COURSE:
+            return self.forumcourse.get_view_tags(user)
+        return None
+
+    def get_post_tags(self, user):
+        if self.forum_type == FORUM_GENERAL:
+            return self.forumgeneral.get_post_tags(user)
+        elif self.forum_type == FORUM_COURSE:
+            return self.forumcourse.get_post_tags(user)
+        return None
+
+    def get_answer_tags(self, user):
+        if self.forum_type == FORUM_GENERAL:
+            return self.forumgeneral.get_answer_tags(user)
+        elif self.forum_type == FORUM_COURSE:
+            return self.forumcourse.get_answer_tags(user)
+        return None
+
+    def get_new_post_url(self):
+        if self.forum_type == FORUM_GENERAL:
+            return reverse('forum_new_post_general')
+        elif self.forum_type == FORUM_COURSE:
+            return reverse('forum_new_post_course', args=[self.forumcourse.course.slug])
+        return ""
+
+    def __unicode__(self):
+        return "Forum"
+
+
+class ForumGeneral(Forum):
+    def get_tags(self):
+        general_tags = list(ForumTag.objects.filter(tag_type=FORUMTAG_GENERAL))
+        return general_tags
+
+    def get_tags_names(self):
+        return [tag.name for tag in self.get_tags()]
+
+    def get_view_tags(self, user):
+        return self.get_tags()
+
+    def get_post_tags(self, user):
+        return self.get_tags()
+
+    def get_answer_tags(self, user):
+        return self.get_tags()
+
+class ForumCourse(Forum):
+    course = models.OneToOneField('Course', related_name="forum")
 
     def get_tags(self):
         primary_tags = list(ForumTag.objects.filter(tag_type=FORUMTAG_PRIMARY))
@@ -638,7 +711,7 @@ class Forum(models.Model):
 
         view_tags = []
         for tag in tags:
-            if tag.can_view(self.course, user):
+            if tag.can_view(user, self.course):
                 view_tags.append(tag)
         return view_tags
 
@@ -647,7 +720,7 @@ class Forum(models.Model):
 
         post_tags = []
         for tag in tags:
-            if tag.can_post(self.course, user):
+            if tag.can_post(user, self.course):
                 post_tags.append(tag)
         return post_tags
 
@@ -656,7 +729,7 @@ class Forum(models.Model):
 
         answer_tags = []
         for tag in tags:
-            if tag.can_answer(self.course, user):
+            if tag.can_answer(user, self.course):
                 answer_tags.append(tag)
         return answer_tags
 
@@ -667,19 +740,24 @@ class Forum(models.Model):
 FORUMTAG_PRIMARY = "1"
 FORUMTAG_TOPIC = "2"
 FORUMTAG_EXTRA = "3"
+FORUMTAG_GENERAL = "5"
 FORUMTAG_TYPES = (
     (FORUMTAG_PRIMARY, 'Primary Tag'),
     (FORUMTAG_TOPIC, 'Topic Tag'),
     (FORUMTAG_EXTRA, 'Extra Tag'),
+    (FORUMTAG_GENERAL, 'General Tag')
 )
 
+# General Forum tags
+ForumGeneralTags = ['event', 'reportbug', 'suggestfeature', 'EECS', 'Life', 'Logistics', 'Math', 'NatEnv', 'Econ', 'History', 'Humanities', 'Law', 'Psych', 'Social', 'Stats', 'USC', 'FY', "Colloquia", "Humanities", "Languages", "Undergrad", "Grad", "Fall", "Spring", "SES", "SHSS"]
+# Course Forum tags
 PublicForumTags = ['general']
-StudentViewTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof']
-StudentPostTags = ['general', 'askprof', 'meta', 'offtopic', 'noprof']
-StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof']
-ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
-ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
-ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
+StudentViewTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof'] # + topic and extra tags
+StudentPostTags = ['general', 'askprof', 'meta', 'offtopic', 'noprof'] # + topic and extra tags
+StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof'] # + topic and extra tags
+ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic'] # + topic and extra tags
+ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic'] # + topic and extra tags
+ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic'] # + topic and extra tags
 AdminViewTags = ['general', 'announcement', 'meta']
 AdminPostTags = ['general', 'announcement', 'meta']
 AdminAnswerTags = ['general', 'announcement', 'meta']
@@ -689,40 +767,55 @@ class ForumTag(models.Model):
     name = models.CharField(max_length=20)
     tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
 
-    def can_view(self, course, user):
+    def can_view(self, user, course=None):
+        if self.tag_type == FORUMTAG_TOPIC or self.tag_type == FORUMTAG_EXTRA:
+            return user.is_student_of(course) or user.is_professor_of(course)
+        if self.tag_type == FORUMTAG_GENERAL:
+            return self.name in ForumGeneralTags
+
         if self.name in PublicForumTags:
             return True
 
         if user.is_student_of(course):
-            return (self.name in StudentViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in StudentViewTags)
         elif user.is_professor_of(course):
-            return (self.name in ProfessorViewTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in ProfessorViewTags)
         elif user.is_admin_of(course):
-            return (self.name in AdminViewTags) if self.tag_type == FORUMTAG_PRIMARY else False
+            return (self.name in AdminViewTags)
         return False
 
-    def can_post(self, course, user):
+    def can_post(self, user, course=None):
+        if self.tag_type == FORUMTAG_TOPIC or self.tag_type == FORUMTAG_EXTRA:
+            return user.is_student_of(course) or user.is_professor_of(course)
+        if self.tag_type == FORUMTAG_GENERAL:
+            return self.name in ForumGeneralTags
+
         if self.name in PublicForumTags:
             return True
 
         if user.is_student_of(course):
-            return (self.name in StudentPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in StudentPostTags)
         elif user.is_professor_of(course):
-            return (self.name in ProfessorPostTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in ProfessorPostTags)
         elif user.is_admin_of(course):
-            return (self.name in AdminPostTags) if self.tag_type == FORUMTAG_PRIMARY else False
+            return (self.name in AdminPostTags)
         return False
 
-    def can_answer(self, course, user):
+    def can_answer(self, user, course=None):
+        if self.tag_type == FORUMTAG_TOPIC or self.tag_type == FORUMTAG_EXTRA:
+            return user.is_student_of(course) or user.is_professor_of(course)
+        if self.tag_type == FORUMTAG_GENERAL:
+            return self.name in ForumGeneralTags
+
         if self.name in PublicForumTags:
             return True
 
         if user.is_student_of(course):
-            return (self.name in StudentAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in StudentAnswerTags)
         elif user.is_professor_of(course):
-            return (self.name in ProfessorAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else True
+            return (self.name in ProfessorAnswerTags)
         elif user.is_admin_of(course):
-            return (self.name in AdminAnswerTags) if self.tag_type == FORUMTAG_PRIMARY else False
+            return (self.name in AdminAnswerTags)
         return False
 
     @staticmethod
@@ -775,7 +868,8 @@ class ForumPost(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
-        ForumPostActivity.objects.create(user=self.posted_by, course=self.forum.course, forum_post=self)
+        if self.forum.forum_type == FORUM_COURSE:
+            ForumPostActivity.objects.create(user=self.posted_by, course=self.forum.forumcourse.course, forum_post=self)
         self.followed_by.add(self.posted_by)
 
 class ForumAnswer(models.Model):
@@ -798,8 +892,9 @@ class ForumAnswer(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumAnswer, self).save(*args, **kwargs)
-        ForumAnswerActivity.objects.create(user=self.posted_by, course=self.post.forum.course, 
-                                            forum_answer=self)
+        if self.post.forum.forum_type == FORUM_COURSE:
+            ForumAnswerActivity.objects.create(user=self.posted_by, course=self.post.forum.forumcourse.course, 
+                                                forum_answer=self)
         self.post.followed_by.add(self.posted_by)
         
 
@@ -889,13 +984,13 @@ class CourseActivity(models.Model):
 
         if activity_type == "ForumPostActivity":
             tag = self.forumpostactivity.forum_post.tag
-            if tag.can_view(self.course,user):
+            if tag.can_view(user, self.course):
                 return True
             else:
                 return False
         elif activity_type == "ForumAnswerActivity":
             tag = self.forumansweractivity.forum_answer.post.tag
-            if tag.can_view(self.course,user):
+            if tag.can_view(user, self.course):
                 return True
             else:
                 return False
