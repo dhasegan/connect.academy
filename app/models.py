@@ -883,21 +883,28 @@ class CourseActivity(models.Model):
 
     def can_view(self,user):
         activity_type = self.get_subclass_type()
-        if activity_type != "ForumPostActivity" and activity_type != "ForumAnswerActivity":
-            return True
-        elif activity_type == "ForumPostActivity":
+
+        if activity_type == "ForumPostActivity":
             tag = self.forumpostactivity.forum_post.tag
             if tag.can_view(self.course,user):
                 return True
             else:
                 return False
-        else:
-            # activity_type == ForumAnswerActivity
+        elif activity_type == "ForumAnswerActivity":
             tag = self.forumansweractivity.forum_answer.post.tag
             if tag.can_view(self.course,user):
                 return True
             else:
                 return False
+        elif activity_type == "HomeworkActivity":
+            if self.homeworkactivity.homework.course.students.filter(id=user.id).exists() \
+            or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists():
+                return True
+            else:
+                return False
+        else:
+            return True
+
 
     def __unicode__(self):
         return self.get_subclass_type() + " Object"

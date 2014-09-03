@@ -73,9 +73,9 @@ def dashboard_context(request):
 
     today =  datetime.combine(date.today(), datetime.min.time())
     tomorrow = today + timedelta(days=1)
-    schedule_items = list(CourseAppointment.objects.filter(course__students=user,
-                            start__gte=pytz.utc.localize( today ),
-                            start__lte=pytz.utc.localize( tomorrow ))) +\
+    schedule_items = list(CourseAppointment.objects.filter( Q(Q(course__students=user) | Q(course__professors=user)),
+                            Q(start__gte=pytz.utc.localize( today )),
+                            Q(start__lte=pytz.utc.localize( tomorrow )))) +\
                         list(PersonalAppointment.objects.filter(user=user,
                             start__gte=pytz.utc.localize( today ),
                             start__lte=pytz.utc.localize( tomorrow )))
