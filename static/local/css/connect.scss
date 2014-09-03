@@ -671,22 +671,44 @@ $tables-margin-left:            20px;
 
 // Profile page
 
-$profile-picture-width:    200px;
-$profile-picture-max-height: 300px;
+$profile-picture-max-width: 300px;
+$profile-picture-height: 200px;
 
 .profile-page {
     .summary-textarea {
         width:100%;
     }
-    .profile-picture {
-        width: $profile-picture-width;
-        max-height: 300px;
+
+    .cover-picture{
+        z-index: 1;
+        width:100%;
+        border:solid 1px $connect-dark-blue;
+        position: relative;
     }
+
+    .profile-picture {
+        position:absolute;
+        max-width: $profile-picture-max-width;
+        height: 200px;
+        border:solid 3px white;
+        z-index: 2;
+        left:0;
+        right:0;
+        top:100px;
+        margin-left:auto;
+        margin-right:auto;
+        }
+
+    .profile-details{
+        position: relative;
+        top:100px;
+    }
+
     .profile-picture-input {
-        width: $profile-picture-width;
+        width: 150px;
     }
     .profile-picture-submit {
-        width: $profile-picture-width;
+        width: 250px;
     }
     #summary-container {
         #edit-summary-form {

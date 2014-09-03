@@ -1,18 +1,26 @@
 <div class="panel panel-default sidebar">
-	<div class="panel-body">
+
+	<!-- Custom Cover Picture -->
+		<img class="cover-picture sidebar" src="{{ STATIC_URL }}/images/cover.jpg"/>
+	
+	<!-- Profile Picture -->
 		<center>
-						
-			<img class="profile-picture" id="profile-picture" src="{% if user.profile_picture %}{{user.profile_picture.url}}{% else %}{{ STATIC_URL }}/images/default_profile.png{% endif %}" />
-			
+			<img class="profile-picture" id="profile-picture" src="{% if user.profile_picture %}{{user.profile_picture.url}}{% else %}{{ STATIC_URL }}/images/default_profile.png{% endif %}"/>
+		</center>
+
+	<!-- Profile Details (full name and email) -->
+		<div class="panel-body profile-details sidebar panel-default" >
+		<center>	
 			{% if own_profile %}
 				{% include 'objects/profile/new_profile_picture_form.html' %}
 			{% endif %}
+
 			<h4>{{user.first_name}} {{user.last_name}}</h4>
 
     	    {{user.university.name}}<br />
     	    <span class="icon icon-envelope"> </span> <a href="mailto:{{user.email}}">{{user.email}}</a> <br />
 		</center>
-	</div>
+		</div>
 </div>
 
 {% if user.summary or own_profile %}
