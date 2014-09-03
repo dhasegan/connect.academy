@@ -115,6 +115,8 @@ class StudentCourseRegistration(models.Model):
     def __unicode__(self):
         return str(self.student)
 
+
+
 class ProfessorCourseRegistration(models.Model):
     professor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
@@ -122,6 +124,7 @@ class ProfessorCourseRegistration(models.Model):
 
     def __unicode__(self):
         return str(self.professor)
+
 
 
 

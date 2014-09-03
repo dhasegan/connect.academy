@@ -239,7 +239,7 @@ def submit_homework_request(request, slug):
     user = get_object_or_404(jUser, id=request.user.id)
 
     form = SubmitHomeworkRequestForm(request.POST)
-
+    print request.POST
     if not form.is_valid():
         raise Http404
 
