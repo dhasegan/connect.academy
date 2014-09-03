@@ -14,7 +14,8 @@ var ConnectGlobal = (function() {
             campusnetPopover: $("#campusnet-popover"),
             localeLinks: $('.locale-change-link'),
             activities: $('.recent_activities'),
-            helpsigns: $('.help-sign')
+            helpsigns: $('.help-sign'),
+            fileUploads: $('.file-input')
         },
         global_variables: {
             activities_pagenum: 1 // max page number of already loaded activities
@@ -79,6 +80,12 @@ var ConnectGlobal = (function() {
         // Email confirmation link
         s.emailConfirmationLinks.click( function() {
             $.get($(this).attr("src"));
+        });
+
+        // General File uploads
+        $(s.fileUploads).change(function () {
+            var file_path = this.value.replace("C:\\fakepath\\", "");
+            $(this).parents('.upload-file-wrapper').find('.upload-file-input').val(file_path);
         });
 
         // Tooltip for CampusNet

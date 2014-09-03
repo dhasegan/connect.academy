@@ -30,7 +30,12 @@
 
                     <div class="form-group">
                         <label>{% trans "Upload your homework" %}:</label>
-                        <input type="file" name="document" required />
+
+                        {% with "True" as required %}
+                        {% with "document" as fname %}
+                            {% include 'objects/file_input.html' %}
+                        {% endwith %}
+                        {% endwith %}
                     </div>
 
                 </div>

@@ -373,6 +373,7 @@ def remove_course_appointment(request):
 @require_POST
 @require_active_user
 def resize_appointment(request):
+    print request.POST
 
     user = get_object_or_404(jUser, id=request.user.id)
     
