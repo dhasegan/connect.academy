@@ -63,7 +63,7 @@ def login_action(request):
                     img_temp.write(urllib2.urlopen(photo_url).read())
                     img_temp.flush()
 
-                     user.profile_picture.save(photo_name, File(img_temp), save=False)
+                    user.profile_picture.save(photo_name, File(img_temp), save=False)
                 user.save()
                 send_email_confirmation(request, user)
                 new_user = True
