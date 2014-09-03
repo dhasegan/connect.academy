@@ -237,9 +237,6 @@ def add_course_appointment(request):
     
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not user.is_professor() or not request.is_ajax():
-        raise Http404
-
     course_name = request.POST['courseName']
 
     # there might be courses with the same name in the db, however, we want the course with that name and also managed by THIS professor
@@ -357,16 +354,14 @@ def remove_course_appointment(request):
 
     user = get_object_or_404(jUser, id=request.user.id)
     
-    if request.is_ajax() and user.is_professor():
-        id_to_delete = request.POST['id']
-        course = get_object_or_404(Course,name=request.POST['courseName'])
-        
-        if not user.is_professor_of(course):
-            raise Http404
-
-        Appointment.objects.filter(id=id_to_delete).delete()
-    else:
+    id_to_delete = request.POST['id']
+    course = get_object_or_404(Course,name=request.POST['courseName'])
+    
+    if not user.is_professor_of(course):
         raise Http404
+
+    Appointment.objects.filter(id=id_to_delete).delete()
+
 
     return HttpResponse("")
 

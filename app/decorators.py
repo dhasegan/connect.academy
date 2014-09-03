@@ -5,21 +5,21 @@ from app.models import *
 
 def require_student(view):
 	def decorated(request, *args, **kwargs):
-		if request.user is None or request.user.user_type != USER_TYPE_ADMIN:
+		if request.user is None or request.user.juser.user_type != USER_TYPE_ADMIN:
 			raise Http404
 		return view(request, *args, **kwargs)
 	return decorated
 
 def require_professor(view):
 	def decorated(request, *args, **kwargs):
-		if request.user is None or request.user.user_type != USER_TYPE_PROFESSOR:
+		if request.user is None or request.user.juser.user_type != USER_TYPE_PROFESSOR:
 			raise Http404
 		return view(request, *args, **kwargs)	
 	return decorated
 
 def require_admin(view):	
 	def decorated(request, *args, **kwargs):
-		if request.user is None or request.user.user_type != USER_TYPE_ADMIN:
+		if request.user is None or request.user.juser.user_type != USER_TYPE_ADMIN:
 			raise Http404
 		return view(request,*args, **kwargs)
 	return decorated
@@ -46,7 +46,7 @@ def require_active_user(view):
 def require_user_type(type_list):
 	def check_type(view):
 		def decorated(request, *args, **kwargs):
-			user = request.user
+			user = request.user.juser
 			if user is None or not user.user_type in type_list:
 				raise Http404
 			return view(request, *args, **kwargs)
