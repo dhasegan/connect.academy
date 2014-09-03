@@ -14,5 +14,9 @@
         <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Only professors and TAs can view posts with this tag" %}'></span>
     {% elif tag.name == "meta" %}
         <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Discussions about the administration of the course" %}'></span>
+    {% elif tag.name == "offtopic" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Off-topic discussions" %}'></span>
+    {% elif tag.name == "noprof" %}
+        <span class="glyphicon glyphicon-question-sign help-sign" data-toggle="tooltip" data-placement="top" title='{% trans "Discussions that only the students can see" %}'></span>
     {% endif %}
 </div>

@@ -1,4 +1,5 @@
 {% load i18n %}
+
 <form role="form" class="forumnewpost-form" method="post" action="{% url 'forum_new_post' course.slug %}">
     {% csrf_token %}
     <div class="row">
