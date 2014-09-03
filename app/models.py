@@ -671,9 +671,9 @@ FORUMTAG_TYPES = (
 )
 
 PublicForumTags = ['general']
-StudentViewTags = ['general', 'announcement', 'meta', 'offtopic']
-StudentPostTags = ['general', 'askprof', 'meta', 'offtopic']
-StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic']
+StudentViewTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof']
+StudentPostTags = ['general', 'askprof', 'meta', 'offtopic', 'noprof']
+StudentAnswerTags = ['general', 'announcement', 'meta', 'offtopic', 'noprof']
 ProfessorViewTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorPostTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']
 ProfessorAnswerTags = ['general', 'announcement', 'askprof', 'meta', 'offtopic']

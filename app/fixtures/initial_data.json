@@ -142,5 +142,13 @@
         },
         "model": "app.forumtag",
         "pk": 5
+    },
+    {
+        "fields": {
+            "name": "noprof",
+            "tag_type": "1"
+        },
+        "model": "app.forumtag",
+        "pk": 6
     }
 ]
