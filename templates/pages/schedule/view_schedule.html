@@ -5,8 +5,9 @@
 {% block content %}
 
 
-<!-- The calendar -->
-<div id="calendar"></div>
+<div class="schedule-page">
+    <!-- The calendar -->
+    <div id="calendar"></div>
 
 
     <div id="event_edit_container" hidden>
@@ -51,13 +52,13 @@
 
 
           <div class="form-group" id="copyLabel">
-            <input  type="checkbox" name="copy" value="copy"/> <label for="copy"> Copy in the next <input class="form-control tiny-text-input" name="num_weeks"/> weeks.  </label>   
+            <input  type="checkbox" name="copy" value="copy"/> <b> Copy in the next <input class="tiny-text-input" name="num_weeks" type="text" /> weeks.  </b>   
           </div>
 
       {% endif %}
       </form>
     </div>
-
+</div>
 
 {% endblock %}
 

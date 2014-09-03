@@ -29,6 +29,12 @@ h4 {
     font-size: $h4-size;
 }
 
+input {
+    .tiny-text-input {
+        width: 30px;
+    }
+}
+
 .panel-default {
     .panel-heading {
         background-color: $connect-gray;
@@ -710,3 +716,4 @@ $profile-picture-max-height: 300px;
         }
     }
 }
+
