@@ -2,7 +2,7 @@
 
 <fieldset class="form-inline">
     <div class="form-group upload-file-wrapper">
-        <input class="form-control upload-file-input" placeholder="{% trans "Choose File" %}" disabled="disabled" />
+        <input class="form-control upload-file-input" placeholder="{% trans "no file chosen" %}" disabled="disabled" />
         <div class="btn btn-primary upload-file">
             <span>{% trans "Browse" %}</span>
             <input type="file" accept="{% if faccept %}{{ faccept }}{% endif %}" class="file-input {% if fclass %}{{fclass}}{% endif %}" name="{{ fname }}" {% if frequired %}required{% endif %} />

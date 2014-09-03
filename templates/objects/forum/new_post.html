@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<form role="form" class="forumnewpost-form" method="post" action="{% url 'forum_new_post' course.slug %}">
+<form role="form" class="forumnewpost-form" method="post" action="{% url 'forum_new_post' %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-6">
@@ -17,7 +17,12 @@
             {% endif %}
         </div>
         <div class="col-md-6">
-            {% include 'objects/forum/new_post_tags.html' %}
+
+            {% if forum.forum_type == "1" %} {% comment %} General Forum {% endcomment %}
+                {% include 'objects/forum/new_post_tags_general.html' %}
+            {% elif forum.forum_type == "2" %} {% comment %} Course Forum {% endcomment %}
+                {% include 'objects/forum/new_post_tags_course.html' %}
+            {% endif %}
             
             <hr>
             

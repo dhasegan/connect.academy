@@ -1,0 +1,23 @@
+{% load i18n %}
+{% trans "Select an appropriate tag for your post" %}:
+
+<div class="new-post-tags">
+    <strong>{% trans "General tags" %}</strong>:
+    <div class="row">
+        <div class="col-md-6">
+            {% for tag in tags %}
+                {% if forloop.counter <= 13 %}
+                    {% include "objects/forum/new_post_tag_radio.html" %}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-md-6">
+            {% for tag in tags %}
+                {% if forloop.revcounter <= 13 %}
+                    {% include "objects/forum/new_post_tag_radio.html" %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
