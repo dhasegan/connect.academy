@@ -54,16 +54,16 @@ def login_action(request):
                 user.is_active = True
                 if 'description' in user_details:
                     user.summary = user_details['description']
-                # if 'photourl' in user_details:
-                #     photo_url = user_details['photourl']
-                #     photo_ext = urlparse(photo_url).path.split('/')[-1].split('.')[-1]
-                #     photo_name = login_user + "." + photo_ext
+                if 'photourl' in user_details:
+                    photo_url = user_details['photourl']
+                    photo_ext = urlparse(photo_url).path.split('/')[-1].split('.')[-1]
+                    photo_name = login_user + "." + photo_ext
 
-                #     img_temp = NamedTemporaryFile(delete=True)
-                #     img_temp.write(urllib2.urlopen(photo_url).read())
-                #     img_temp.flush()
+                    img_temp = NamedTemporaryFile(delete=True)
+                    img_temp.write(urllib2.urlopen(photo_url).read())
+                    img_temp.flush()
 
-                #      user.profile_picture.save(photo_name, File(img_temp), save=False)
+                     user.profile_picture.save(photo_name, File(img_temp), save=False)
                 user.save()
                 send_email_confirmation(request, user)
                 new_user = True
