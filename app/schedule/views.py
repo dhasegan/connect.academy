@@ -303,8 +303,8 @@ def add_course_appointment(request):
 
 
 @require_POST
-@require_active_user
 @require_professor
+@require_active_user
 def edit_course_appointment(request):
     context ={
         'page':'edit_course_appointment',
@@ -371,6 +371,7 @@ def remove_course_appointment(request):
     return HttpResponse("")
 
 @require_POST
+@require_active_user
 def resize_appointment(request):
 
     user = get_object_or_404(jUser, id=request.user.id)

@@ -1,6 +1,67 @@
 {% extends 'pages/base.html' %}
 {% load humanize %}
 
+
+{% block content %}
+
+
+<!-- The calendar -->
+<div id="calendar"></div>
+
+
+    <div id="event_edit_container" hidden>
+      <form>
+        {%csrf_token%}
+        <div class="form-group">
+            Date: <span class="date_holder"></span> 
+        </div>
+
+        <div class="form-group">
+            <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
+        </div>
+
+        <div class="form-group">
+            <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
+        </div>
+
+        <div class="form-group">
+            <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
+        </div>
+
+        {% if user.is_professor %}
+
+          <div class="form-group">
+              <label for="type">Appointment Type:</label>
+              <select class="form-control" name="type">
+                <option value="0">Personal Appointment </option>
+                <option value="1">Course Appointment </option>
+              </select>
+          </div>
+
+          <div class="form-group" id="courseLabel">
+            {% comment %}
+              Dynamically show this is the professor chooses he/she wants to add a course appointment
+            {% endcomment %}
+            <label for="course"> Course:</label><select class="form-control" name='course'></select>
+          </div>
+
+
+          <div class="form-group" id="copyLabel">
+            <input  type="checkbox" name="copy" value="copy"/> <label for="copy"> Copy in the next <input class="form-control tiny-text-input" name="num_weeks"/> weeks.  </label>   
+          </div>
+
+      {% endif %}
+      </form>
+    </div>
+
+
+{% endblock %}
+
+
 {% block extra_js_includes %}
 <script type="text/javascript" src="{{ STATIC_URL }}schedule/libs/date.js"></script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/jquery.weekcalendar.js'></script>
@@ -23,101 +84,12 @@
 {% endblock %}
 
 
-{% block content %}
+{% block extra_css_includes %}
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+
 <link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
 <link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/jquery.weekcalendar.css' /> 
 <link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}schedule/skins/gcalendar.css' /> 
-
-<!-- The calendar -->
-
-<div id="calendar"></div>
-
-{% comment %}
-  When the user loads this page, we have a choice of two forms that can be displayed when the user clicks on the schedule. 
-  1) User.is_student() -> render the standard form.
-  2) User.is_professor() -> render the professor's form. (Stiv)
-{% endcomment %}
-
-{% if user.is_student %}
-<div id="event_edit_container" hidden>
-  <form>
-    {%csrf_token%}
-    <div class="form-group">
-        Date: <span class="date_holder"></span> 
-    </div>
-
-    <div class="form-group">
-        <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
-    </div>
-
-    <div class="form-group">
-        <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
-    </div>
-
-    <div class="form-group">
-        <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
-    </div>
-
-
-  </form>
-</div>
-{% endif %}
-
-{% if user.is_professor %}
-<div id="event_edit_container" hidden>
-  <form>
-    {%csrf_token%}
-    <div class="form-group">
-        Date: <span class="date_holder"></span> 
-    </div>
-
-    <div class="form-group">
-        <label for="start">Start Time:</label><select class="form-control" name="start"><option value="">Select Start Time</option></select>
-    </div>
-
-    <div class="form-group">
-        <label for="end">End Time:</label><select class="form-control" name="end"><option value="">Select End Time</option></select>
-    </div>
-
-    <div class="form-group">
-        <label for="body">Description:</label><textarea class="form-control" name="body"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="title">Location:</label><input class="form-control" type="text" name="title"/>
-    </div>
-
-      <div class="form-group">
-          <label for="type">Appointment Type:</label>
-          <select class="form-control" name="type">
-            <option value="0">Personal Appointment </option>
-            <option value="1">Course Appointment </option>
-          </select>
-      </div>
-
-      <div class="form-group" id="courseLabel">
-        {% comment %}
-          Dynamically show this is the professor chooses he/she wants to add a course appointment
-        {% endcomment %}
-        <label for="course"> Course:</label><select class="form-control" name='course'></select>
-      </div>
-
-      <div class="form-group" id="copyLabel">
-        <input  type="checkbox" name="copy" value="copy"/> <label for="copy"> Copy in the next weeks.  </label>
-         
-      </div>
-      
-    </ul>
-  </form>
-</div>
-
-{% endif %}
-
-
 
 {% endblock %}
