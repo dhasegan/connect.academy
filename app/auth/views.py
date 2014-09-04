@@ -204,9 +204,10 @@ def signup_action(request):
         user.is_fake = False
         user.save()
     else:
-        user = jUser.objects.create_user(username=user.username, user_type=user_type, password=password, email=email, university=university,
-                                     first_name=fname, last_name=lname, is_active = False)
-    
+        user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
+                                     first_name=fname, last_name=lname)
+        
+        user.is_active = False
         user.save()
     # Authenticate user
     print 
