@@ -25,7 +25,7 @@ from app.auth.specific_login import get_university
 @require_POST
 def login_action(request):
     context = {}
-
+    context.update(csrf(request))
     form = LoginForm(request.POST)
     if not form.is_valid():
         raise Http404
