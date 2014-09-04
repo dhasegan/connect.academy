@@ -10,10 +10,7 @@
 
 	<!-- Profile Details (full name and email) -->
 		<div class="panel-body profile-details sidebar panel-default" >
-		<center>	
-			{% if own_profile %}
-				{% include 'objects/profile/new_profile_picture_form.html' %}
-			{% endif %}
+		<center>
 
 			<h4>{{user.first_name}} {{user.last_name}}</h4>
 
