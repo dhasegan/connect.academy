@@ -525,7 +525,7 @@
     "aschlueter": {
         "account": "aschlueter",
         "eid": "20945",
-        "email": "a.schlueter@jacobs-university.de (server-side forwarding is set)",
+        "email": "a.schlueter@jacobs-university.de",
         "fname": "Achim",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~aschlueter",
         "lname": "Schl\u00fcter",
@@ -807,7 +807,7 @@
     "bprem": {
         "account": "bprem",
         "eid": "38805",
-        "email": "b.prem@jacobs-university.de (server-side forwarding is set)",
+        "email": "b.prem@jacobs-university.de",
         "fname": "Berenike",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~bprem",
         "lname": "Prem",
@@ -1551,7 +1551,7 @@
     "fhu": {
         "account": "fhu",
         "eid": "972",
-        "email": "f.hu@jacobs-university.de (server-side forwarding is set)",
+        "email": "f.hu@jacobs-university.de",
         "fname": "Fangning",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~fhu",
         "lname": "Hu",
@@ -3837,7 +3837,7 @@
     "otrache": {
         "account": "otrache",
         "eid": "28987",
-        "email": "o.trache@jacobs-university.de (server-side forwarding is set)",
+        "email": "o.trache@jacobs-university.de",
         "fname": "Oph\u00e9lie",
         "homepage": "https://teamwork.jacobs-university.de:8443/confluence/display/~otrache",
         "lname": "Trach\u00e9",
