@@ -263,7 +263,7 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         original_slug = slugify(self.name)
-        appendix = Course.objects.filter(slug = slug).exclude(id=self.id).count()
+        appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
         if appendix:
             self.slug = original_slug + "-" + str(appendix)
         super(Course, self).save(*args, **kwargs)
