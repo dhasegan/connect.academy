@@ -66,7 +66,8 @@ def course_timeline_context(courses, user):
         course_path = None
         while category.parent is not None:
             categories.append(category)
-            course_path = "%s > %s" % (category.name, course_path) if course_path else category.name
+            display_category = category.name if not category.abbreviation else category.abbreviation
+            course_path = "%s > %s" % (display_category, course_path) if course_path else display_category
             category = category.parent
         categories = categories[::-1]  # reversed
 
