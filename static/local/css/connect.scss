@@ -699,6 +699,9 @@ $profile-picture-height: 200px;
         margin-right:auto;
         }
 
+    .profile-bio {
+        min-height: 400px;
+    }
     .profile-details{
         position: relative;
         top:100px;
