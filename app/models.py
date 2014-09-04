@@ -262,6 +262,7 @@ class Course(models.Model):
         return course_path
 
     def save(self, *args, **kwargs):
+        original_slug = slugify(self.name)
         appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
         if not appendix:
             self.slug = original_slug
