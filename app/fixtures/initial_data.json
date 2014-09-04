@@ -378,5 +378,13 @@
         },
         "model": "app.forumtag",
         "pk": 32
+    },
+    {
+        "fields": {
+            "name": "anything",
+            "tag_type": "5"
+        },
+        "model": "app.forumtag",
+        "pk": 33
     }
 ]

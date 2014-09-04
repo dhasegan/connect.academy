@@ -5,9 +5,6 @@ var ProfilePage = (function() {
             editSummaryButtonSelector: "#edit-summary-button",
             summaryContainerSelector: "#summary-container",
             summaryContentSelector: "#summary-content",
-
-            profilePictureFormSelector: "#profile-picture-form",
-            profilePictureSelector: "#profile-picture"
         }
     }, s;
 
@@ -21,29 +18,6 @@ var ProfilePage = (function() {
 
         this.bindEditSummaryFormAction();
         this.bindEditSummaryButtonAction();
-        $(s.profilePictureFormSelector).submit(function(event){ 
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "/new_profile_picture",
-                data: new FormData( this ),
-                processData: false,
-                contentType: false,
-                success:  function(data) {
-                    json_data = $.parseJSON(data);
-                    if (json_data.status == "OK") {
-                        url = json_data.image_url + "?timestamp=" + new Date().getTime();
-                        $(s.profilePictureSelector)
-                        .fadeOut(400, function() {
-                            $(s.profilePictureSelector).attr('src',url);
-                        })
-                        .fadeIn(400);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                }
-            });
-        }) 
     };
 
     me.bindEditSummaryFormAction = function() {
