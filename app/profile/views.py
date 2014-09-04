@@ -1,10 +1,11 @@
 from django.core.context_processors import csrf
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
 from django.template.loader import render_to_string 
+from django.core.urlresolvers import reverse
  
 from app.models import *
 from app.profile.forms import *
@@ -208,16 +209,10 @@ def edit_summary(request):
 def new_profile_picture(request):
     form = ProfilePictureForm(request.POST, request.FILES)
     if not form.is_valid():
-        print form
         raise Http404
 
     user = request.user.juser
     user.profile_picture = form.cleaned_data['picture']
     user.save()
 
-    data = {
-        'status': "OK",
-        'image_url': user.profile_picture.url
-    }
-
-    return HttpResponse(json.dumps(data))
+    return redirect( reverse("profile", args=(user.username, )) )
