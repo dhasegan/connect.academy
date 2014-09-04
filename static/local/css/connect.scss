@@ -482,10 +482,13 @@ $register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
 }
 
 .welcome-page-navbar {
-        margin-bottom:0px;
-        font-family: $navbar-clickable-links;
-        font-size: $navbar-font-size;
-    }
+    margin-bottom:0px;
+    font-family: $navbar-clickable-links;
+    font-size: $navbar-font-size;
+}
+.blacktie-link {
+    color: #999;
+}
 
 $tag-color: $connect-gray;
 $tag-hover-color: $connect-light-blue;
