@@ -1035,3 +1035,11 @@ class ReviewActivity(CourseActivity):
 # When a user makes a wiki change
 class WikiActivity(CourseActivity):
     contribution = models.ForeignKey('WikiContributions')
+
+
+
+## SUBSCRIBERS ###
+
+class Subscriber(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)

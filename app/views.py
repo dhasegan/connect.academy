@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 
 from app.models import *
 from app.context_processors import *
-
+from app.forms import *
 
 def welcome(request):
     if request.user and request.user.is_authenticated():
@@ -100,3 +100,25 @@ def set_timezone(request):
         return redirect('/')
     else:
         return render(request, 'pages/set_timezone.html', {'timezones': pytz.common_timezones})
+
+@require_POST
+def add_subscriber(request):
+    context = {
+        'page': 'welcome',
+    }
+    context.update(csrf(request))
+
+    form = NewSubscriberForm(request.POST)
+    if not form.is_valid():
+        context['error'] = "Failed to process request."
+        return render(request, "pages/welcome_page.html", context)
+
+
+    name = form.cleaned_data['name']
+    email = form.cleaned_data['email']
+
+    Subscriber.objects.create(name=name, email=email)
+
+    context['success'] = "Thank you for your interest :)"
+
+    return render(request, "pages/welcome_page.html", context)

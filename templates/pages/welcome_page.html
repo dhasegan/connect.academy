@@ -172,22 +172,23 @@
                     <h3>{% trans "Newsletter" %}</h3>
                     <p> {% trans "If you would like to hear more often from us, being for the development of a new feature or about expanding our team, subscribe to our newsletter and be updated with the latest information regarding Connect Academy. Our policy is against bothering people, hence our newsletters will only be as frequent as necessary." %}</p>
                     <p>
-                        <form class="form-horizontal" role="form">
+                       <form class="form-horizontal" method="POST" action="{% url 'add_subscriber' %}" role="form">
+                            {% csrf_token %}
                           <div class="form-group">
                             <label for="inputEmail1" class="col-lg-4 control-label"></label>
                             <div class="col-lg-10">
-                              <input type="email" class="form-control" id="inputEmail1" placeholder="Email">
+                              <input type="email" class="form-control" name="email" id="inputEmail1" placeholder="Email" required>
                             </div>
                           </div>
                           <div class="form-group">
                             <label for="text1" class="col-lg-4 control-label"></label>
                             <div class="col-lg-10">
-                              <input type="text" class="form-control" id="text1" placeholder="Your Name">
+                              <input type="text" class="form-control" id="text1" name="name" placeholder="Your Name" required>
                             </div>
                           </div>
                           <div class="form-group">
                             <div class="col-lg-10">
-                              <button type="submit" class="btn btn-success">{% trans "Sign in" %}</button>
+                              <button type="submit" class="btn btn-success">Sign in</button>
                             </div>
                           </div>
                        </form><!-- form -->
@@ -195,7 +196,7 @@
                 </div><!-- col -->
                 
             </div><!-- row -->
-        
+            
         </div><!-- container -->
     <br>
     <br>
