@@ -110,15 +110,7 @@ def add_subscriber(request):
 
     form = NewSubscriberForm(request.POST)
     if not form.is_valid():
-        
         context['error'] = "Failed to process request:"
-        for error in form.non_field_errors():
-            context['error'] += " " + str(error) + ", "
-        for error in form.email.field_errors():
-            context['error'] += " " + str(error) + ", "
-        for error in form.name.field_errors():
-            context['error'] += " " + str(error) + ", "
-
         return render(request, "pages/welcome_page.html", context)
 
 

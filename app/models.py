@@ -262,13 +262,11 @@ class Course(models.Model):
         return course_path
 
     def save(self, *args, **kwargs):
-        original_slug = slugify(self.name)
-        slug = original_slug
-        appendix = 1
-        while Course.objects.filter(slug = slug).count() > 0:
-            slug = original_slug + "-" + str(appendix)
-            appendix += 1
-        self.slug = slug
+        appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
+        if not appendix:
+            self.slug = original_slug
+        else:
+            self.slug = original_slug + "-" + str(appendix)
         super(Course, self).save(*args, **kwargs)
         ForumCourse.objects.get_or_create(course=self)
 
