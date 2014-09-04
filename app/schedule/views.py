@@ -18,6 +18,10 @@ from django.core.context_processors import csrf
 
 from app.models import *
 from app.decorators import *
+from app.schedule.forms import *
+from django.views.decorators.csrf import requires_csrf_token
+
+
 #date formatting
 date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 
@@ -112,32 +116,17 @@ def view_schedule(request):
 
     context['appointments'] = json.dumps(all_appointments)
 
-    #need the largest id in the Appointment table.
-    latest_id = 0
-    try:
-        latest_id = Appointment.objects.latest('id').id
-    except Exception:
-        pass
-
-    context['latest_id'] = latest_id
-
     return render(request, "pages/schedule/view_schedule.html", context)
 
-
-from app.schedule.forms import *
-from django.views.decorators.csrf import requires_csrf_token
 #both professors and students
 @require_POST
 @require_active_user
 @requires_csrf_token
 def add_personal_appointment(request):
     
-    form = CreatePersonalAppointmentForm(request.POST)
+    form = PersonalAppointmentForm(request.POST)
 
     if not form.is_valid():
-        print form.cleaned_data
-        print "-----------------"
-        print request.POST
         raise Http404
 
     user = jUser.objects.get(username=request.user.username)
@@ -150,57 +139,41 @@ def add_personal_appointment(request):
                                                     ,location=location \
                                                     ,description=description \
                                                     ,user=user)
-    return_dict = {'status':'OK'}
+    return_dict = {'status':'OK','eventId':appointment.id}
     return HttpResponse(json.dumps(return_dict))
 
 @require_POST
 @require_active_user
+@requires_csrf_token
 def edit_personal_appointment(request):
-    context = {
-        'page':'edit_personal_appointment'
-    }
-    context.update(csrf(request))
-    
-    if request.is_ajax():
-        id_to_edit = request.POST['id']
-        new_description = request.POST['body']
-        new_location = request.POST['title']
-        new_start_time = request.POST['start']
-        new_end_time = request.POST['end']
 
-        start = parse(new_start_time)
-        end = parse(new_end_time)
-        
-        local_timezone = timezone.get_current_timezone()
+    form = PersonalAppointmentForm(request.POST)
 
-        if timezone.is_naive(start):
-            start = timezone.make_aware(start,local_timezone)
-        if timezone.is_naive(end):
-            end = timezone.make_aware(end,local_timezone)
-
-        start_utc = timezone.localtime(start,pytz.utc)
-        end_utc = timezone.localtime(end,pytz.utc)
-
-        appointment = Appointment.objects.filter(id=id_to_edit).get()
-        
-        appointment.description = new_description
-        appointment.location = new_location
-        appointment.start = start_utc
-        appointment.end = end_utc
-        appointment.save()
-    else:
+    if not form.is_valid():
         raise Http404
 
-    return HttpResponse("")
+    id_to_edit = form.cleaned_data['eventId']
+    new_description = form.cleaned_data['body']
+    new_location = form.cleaned_data['title']
+    new_start_time = form.cleaned_data['start']
+    new_end_time = form.cleaned_data['end']
+
+    appointment = Appointment.objects.filter(id=id_to_edit).get()
+    
+    appointment.description = new_description
+    appointment.location = new_location
+    appointment.start = new_start_time
+    appointment.end = new_end_time
+    appointment.save()
+
+    return_dict = { 'status':'OK' }
+    return HttpResponse(json.dumps(return_dict))
 
 
 @require_POST
 @require_active_user
+@requires_csrf_token
 def remove_personal_appointment(request):
-    context = {
-        'page':'remove_personal_appointment'
-    }
-    context.update(csrf(request))
 
     if request.is_ajax():
         id_to_delete = request.POST['id']
@@ -208,135 +181,102 @@ def remove_personal_appointment(request):
     else:
         raise Http404
 
-    return HttpResponse("")
+    return_dict = { 'status':'OK'}    
+    return HttpResponse(json.dumps(return_dict))
 
 #only for professors
 @require_POST
 @require_active_user
 @require_professor
+@requires_csrf_token
 def add_course_appointment(request):
-    context = {
-        'page':'add_course_appointment'
-    }
-    
-    context.update(csrf(request))
     
     user = get_object_or_404(jUser, id=request.user.id)
+    
+    form = CourseAppointmentForm(request.POST)
 
-    course_name = request.POST['courseName']
+    if not form.is_valid():
+        raise Http404
+
 
     # there might be courses with the same name in the db, however, we want the course with that name and also managed by THIS professor
     courses_managed = user.courses_managed.all()
-    course_to_add_appointment = None
-    for course in courses_managed:
-        if course_name == course.name:
-            course_to_add_appointment = course
-            break
-
-    #We have the course
-
-    description = request.POST['body']
-    start_time = request.POST['start']
-    end_time = request.POST['end']
-    location = request.POST['title']
-    copy_to_otherweeks = request.POST['copy']
-
-    start = parse(start_time) # from dateutil.parser
-    end = parse(end_time)
-
-    local_timezone = timezone.get_current_timezone() # the current client timezone
-
-    if timezone.is_naive(start):
-        start = timezone.make_aware(start,local_timezone)
-    if timezone.is_naive(end):
-        end = timezone.make_aware(end,local_timezone)
-
-    start_utc = timezone.localtime(start,pytz.utc)
-    end_utc = timezone.localtime(end,pytz.utc)   
-
-    appointment = CourseAppointment(start=start_utc,\
-                                    end=end_utc,\
-                                    location=location,\
-                                    course = course_to_add_appointment,\
-                                    description = description,\
-                                    course_topic= None) # None for now.
-
-    appointment.save()
-
     
-    # This needs to be done using some module/package that handles holidays and whatnot.
-    # The way it is now is very slow, mainly because of the 364 times the database is accessed
+    course = form.cleaned_data['course']
+
+    if not course in courses_managed:
+        raise Http404
+
+
+    description = form.cleaned_data['body']
+    start_time = form.cleaned_data['start']
+    end_time = form.cleaned_data['end']
+    location = form.cleaned_data['title']
+    copy_to_otherweeks = form.cleaned_data['copy']
+    weeks = form.cleaned_data['num_weeks']
+    course_to_add_appointment = form.cleaned_data['course']
+
+    appointment = CourseAppointment.objects.create(start=start_time,\
+                                                    end=end_time,\
+                                                    location=location,\
+                                                    course = course_to_add_appointment,\
+                                                    description = description,\
+                                                    course_topic= None) # None for now.
+
     if copy_to_otherweeks == 'true' : # ugly, I know
         start_times = []
         length = end_utc - start_utc
-        for i in range(1,90):
+        for i in range(1,int(weeks)):
             start_time = start_utc + timedelta(weeks=i)
             start_times.append(start_time)
 
         for time in start_times:
-            appointment = CourseAppointment(start=time,\
-                                    end= time+length,\
-                                    location=location,\
-                                    course = course_to_add_appointment,\
-                                    description = description,\
-                                    course_topic= None) # None for now.
-            appointment.save()
-            
-    return HttpResponse("")    
+            appointment = CourseAppointment.objects.create(start=time,\
+                                                            end= time+length,\
+                                                            location=location,\
+                                                            course = course_to_add_appointment,\
+                                                            description = description,\
+                                                            course_topic= None) # None for now.
+    
+    return_dict = { 'status':'OK'}    
+    return HttpResponse(json.dumps(return_dict))    
 
 
 @require_POST
 @require_professor
 @require_active_user
+@requires_csrf_token
 def edit_course_appointment(request):
-    context ={
-        'page':'edit_course_appointment',
-    }
 
-    context.update(csrf(request))
+    form = CourseAppointmentForm(request.POST)
 
     user = get_object_or_404(jUser, id=request.user.id)
-    course = get_object_or_404(Course,name=request.POST['courseName'])
-    if not user.is_professor_of(course) or not request.is_ajax():
+    
+    if not form.is_valid():
         raise Http404
 
-    id_to_edit = request.POST['id']
-    new_description = request.POST['body']
-    new_location = request.POST['title']
-    new_start_time = request.POST['start']
-    new_end_time = request.POST['end']
-
-    start = parse(new_start_time)
-    end = parse(new_end_time)
-        
-    local_timezone = timezone.get_current_timezone()
-
-    if timezone.is_naive(start):
-        start = timezone.make_aware(start,local_timezone)
-    if timezone.is_naive(end):
-        end = timezone.make_aware(end,local_timezone)
     
-    start_utc = timezone.localtime(start,pytz.utc)
-    end_utc = timezone.localtime(end,pytz.utc)
+    id_to_edit = form.cleaned_data['eventId']
+    new_description = form.cleaned_data['body']
+    new_location = form.cleaned_data['title']
+    new_start_time = form.cleaned_data['start']
+    new_end_time = form.cleaned_data['end']
 
     appointment = Appointment.objects.filter(id=id_to_edit).get()
         
     appointment.description = new_description
     appointment.location = new_location
-    appointment.start = start_utc
-    appointment.end = end_utc
+    appointment.start = new_start_time
+    appointment.end = new_end_time
     appointment.save()
-    
-    return HttpResponse("")
+    return_dict = { 'status':'OK'}    
+    return HttpResponse(json.dumps(return_dict))
 
 @require_POST
 @require_active_user
 @require_professor
+@requires_csrf_token
 def remove_course_appointment(request):
-    context = {
-        'page':'remove_personal_appointment'
-    }
-    context.update(csrf(request))
 
     user = get_object_or_404(jUser, id=request.user.id)
     
@@ -348,73 +288,62 @@ def remove_course_appointment(request):
 
     Appointment.objects.filter(id=id_to_delete).delete()
 
-
-    return HttpResponse("")
+    return_dict = {'status':'OK'}    
+    return HttpResponse(json.dumps(return_dict))
 
 @require_POST
 @require_active_user
+@requires_csrf_token
 def resize_appointment(request):
+   
     print request.POST
 
     user = get_object_or_404(jUser, id=request.user.id)
-    
-    if not request.is_ajax():
-        raise Http404
-
-    id_to_edit = request.POST['id']
-    start_time = request.POST['start']
-    end_time = request.POST['end']
     appointmentType = request.POST['type']
-    
-    start = parse(start_time)
-    end = parse(end_time)
-        
-    local_timezone = timezone.get_current_timezone()
 
-    if timezone.is_naive(start):
-        start = timezone.make_aware(start,local_timezone)
-    if timezone.is_naive(end):
-        end = timezone.make_aware(end,local_timezone)
-    
-    start_utc = timezone.localtime(start,pytz.utc)
-    end_utc = timezone.localtime(end,pytz.utc)
+    if appointmentType == "0": #personal
+        form = PersonalAppointmentForm(request.POST)
 
-    if appointmentType == 'Personal':
-    
-        appointment = Appointment.objects.filter(id=id_to_edit).get()
-
-        appointment.start = start_utc
-        appointment.end = end_utc
-        appointment.save()
-
-        return HttpResponse("")
-
-    # multiple courses with the same name ? 
-    if appointmentType == 'Course':
-        courseName = request.POST['courseName']
-        
-        courses = user.courses_managed.all()
-
-        course = None
-
-        for c in courses:
-            if c.name == courseName:
-                course = c
-                break
-
-        if course == None:
+        if not form.is_valid():
             raise Http404
 
-        # the professor manages the course
+        id_to_edit = form.cleaned_data['eventId']
+        start_time = form.cleaned_data['start']
+        end_time = form.cleaned_data['end']
         
         appointment = Appointment.objects.filter(id=id_to_edit).get()
 
-        appointment.start = start_utc
-        appointment.end = end_utc
+        appointment.start = start_time
+        appointment.end = end_time
         appointment.save()
 
-        return HttpResponse("")
+        return_dict = {"status":"OK"}
 
+        return HttpResponse(json.dumps(return_dict))
+    
+    if appointmentType == "1": #course
+        
+        form = CourseAppointmentForm(request.POST)
+        
+        if not form.is_valid():
+            raise Http404
+        
+        if not user.is_professor_of(form.cleaned_data['course']):
+            raise Http404
+
+        id_to_edit = form.cleaned_data['eventId']
+        start_time = form.cleaned_data['start']
+        end_time = form.cleaned_data['end']
+    
+        appointment = Appointment.objects.filter(id=id_to_edit).get()
+
+        appointment.start = start_time
+        appointment.end = end_time
+        appointment.save()
+
+        return_dict = {"status":"OK"}
+
+        return HttpResponse(json.dumps(return_dict))
 
     raise Http404
 

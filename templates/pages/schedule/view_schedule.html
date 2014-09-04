@@ -35,7 +35,9 @@
             </div>
         </div>
 
-        <input name="timezone" type="hidden"/>
+        <input name="timezone_minutes" type="hidden"/>
+        <input name="eventId" type="hidden"/>
+        
         <div class="form-group">
             <label for="body">Description:</label><textarea class="form-control to-reset" name="body"></textarea>
         </div>
@@ -58,9 +60,8 @@
             {% comment %}
               Dynamically show this is the professor chooses he/she wants to add a course appointment
             {% endcomment %}
-            <label for="course"> Course:</label><select class="form-control" name='course'></select>
+            <label for="course_name"> Course:</label><select class="form-control" name='course_name'></select>
           </div>
-
 
           <div class="form-group" id="copyLabel">
             <input  type="checkbox" name="copy" value="copy"/> <b> Copy in the next <input class="tiny-text-input to-reset" name="num_weeks" type="text" /> weeks.  </b>   
@@ -88,8 +89,6 @@
     events : {{appointments|safe}}
   };
 
-  id = {{ latest_id }};
-
   courses = {{ courses_managed | safe }};
 
   $("#appointmentForm").ready(function(){
@@ -109,6 +108,10 @@
       $("#end_button, #end").click(function(){
         $("#end_dp").data("DateTimePicker").show();
       });
+
+      var tz = $(this).find('input[name="timezone_minutes"]');
+      tz.val( moment().zone() );
+  
 
   });
 </script>
