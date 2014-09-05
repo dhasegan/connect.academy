@@ -432,6 +432,22 @@ class Populator:
         Populator.populate_appointments()
         print "ok"
 
+    # Populate the database with small sizes having the Courses from db
+    @staticmethod
+    def populate_small_with_db():
+        populator = Populator()
+        populator.populate_database(nr_students=200, nr_reviews=30, nr_ratings=100)
+
+        print "populate_registrations... "
+        populator.populate_registrations()
+        print "ok"
+
+        populator.populate_database(nr_forum_posts=50, nr_forum_answers=300)
+
+        print "populate_forum_upvotes... "
+        populator.populate_forum_upvotes()
+        print "ok"
+
 
     @staticmethod
     def populate_xsmall():
