@@ -72,3 +72,4 @@ for courseDetails in coursesList:
     course.save()
     for dbProf in dbProfs:
         pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
+
