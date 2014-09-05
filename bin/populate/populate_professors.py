@@ -26,7 +26,6 @@ for username, details in professors.iteritems():
     email = "professor" + str(index) + "@jacobs-university.de"
     user = jUser.objects.create(username=uname, first_name="Prof.", last_name="P" + str(index),
         password="1234", user_type=USER_TYPE_PROFESSOR, university=univ, is_confirmed=True, email=email)
-    
     user.save()
     uname_to_prof["professor" + str(index)] = details
 

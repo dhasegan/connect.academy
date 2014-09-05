@@ -9,7 +9,7 @@ class Populator:
     """ Class to populate the test database """
 
     def __init__(self):
-        word_file = "/usr/share/dict/words"
+        word_file = "bin/words"
         self.words = open(word_file).read().splitlines()
 
     def random_word(self):
