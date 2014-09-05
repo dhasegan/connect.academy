@@ -6,12 +6,15 @@ import json
 f = open('bin/combiner/courseDetails')
 coursesList = json.load(f)
 
+professors = json.load( open('bin/professors/uname_to_prof.json') )
+
 f.close()
 
 univ = University.objects.filter(name__contains="Jacobs")[0]
 category = univ.get_university_category()
+print len(coursesList)
 for courseDetails in coursesList:
-    #print courseDetails['CourseName']
+    # print courseDetails['CourseName']
     if len(Course.objects.filter(name=courseDetails['CourseName'])) > 0:
         continue
     # Setup instructors
@@ -20,25 +23,11 @@ for courseDetails in coursesList:
         instructors = courseDetails['Instructors'].split("; ")
         for instructor in instructors:
             last_name = instructor.split(' ')[-1]
-            profs = jUser.objects.filter(last_name__contains=last_name)
-            if len(profs) == 1:
-                dbProfs.append(profs[0])
-            elif len(profs) > 1:
-                tents = []
-                for p in profs:
-                    ok = False
-                    first_names = p.first_name.split(" ")
-                    for fn in first_names:
-                        if fn in instructor:
-                            ok = True
-                    if ok:
-                        tents.append(p)
-                if len(tents) == 0 or len(tents) > 1:
-                    print "Couldnt find professor for course " + courseDetails['CourseName']
-                else:
-                    dbProfs.append(tents[0])
-            else:
-                print "Couldnt find professor for course " + courseDetails['CourseName']
+            for uname,details in professors.iteritems():
+                if last_name in details['lname']:
+                    # print uname
+                    prof = jUser.objects.get(username=uname)
+                    dbProfs.append(prof)
     # Get Course type
     # ctype = False
     # for CTYPE in COURSE_TYPES:
@@ -83,23 +72,3 @@ for courseDetails in coursesList:
     course.save()
     for dbProf in dbProfs:
         pcr = ProfessorCourseRegistration.objects.create(professor=dbProf, course=course, is_approved=True)
-    # Populate Course Appointments
-    if "Appointments" in courseDetails:
-        for appointment in courseDetails["Appointments"]:
-            start = datetime.now()
-            end = datetime.now()
-            if "May" in appointment['start']:
-                start = datetime.strptime(appointment['start'], "%d. %b %Y %H:%M")
-                end = datetime.strptime(appointment['end'], "%d. %b %Y %H:%M")
-            else:
-                start = datetime.strptime(appointment['start'], "%d. %b. %Y %H:%M")
-                end = datetime.strptime(appointment['end'], "%d. %b. %Y %H:%M")
-
-            location = appointment["location"]
-            description = appointment["description"]
-            aware_start = timezone.make_aware(start,pytz.timezone("Europe/Berlin"))
-            aware_end = timezone.make_aware(end, pytz.timezone("Europe/Berlin"))
-            utc_start = timezone.localtime(aware_start, pytz.utc)
-            utc_end = timezone.localtime(aware_end, pytz.utc)
-            CourseAppointment.objects.create(start=utc_start, end=utc_end, location=location, 
-                                            description=description, course=course)
