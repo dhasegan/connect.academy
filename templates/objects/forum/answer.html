@@ -19,13 +19,28 @@
             {{ answer.answer.text|linebreaks }}
         </div>
         <div class="answer-footer">
+
             {% block reply_form %}
-                <small class="text-muted">
+                <small class="text-muted h6">
                     <a class="getreplyform-link" href="{% url 'forum_reply_form' answer.answer.id %}"> {% trans "Reply" %} </a>
-                </small>
+                </small> {% if not answer.downvoted %} &middot; {% endif %}
                 <div class="reply-form">
                 </div>
             {% endblock reply_form %}
+
+            {% if not answer.downvoted %}
+                <span class="answer-flag">
+                    <span class="flag-content h6">
+                        <form class="flag-answer-form form-inline" role="form" action="{% url 'downvote_answer' %}" method="post">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="answer_id" value="{{ answer.answer.id }}">
+                            <a type="submit" class="flag-btn flag-answer-link" href="#">{% trans "Flag" %} <span class="glyphicon glyphicon-flag"></span> </a>
+                        </form>
+                    </span>
+                </span>
+            {% endif %}
+
         </div>
 
         <div class="answer-children">

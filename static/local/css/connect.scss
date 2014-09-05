@@ -441,13 +441,21 @@ $course-img-max-size:           150px;
                 .flag-review-form {
                     display: inline;
                 }
-                .flag-btn {
-                    &:hover,
-                    &:focus {
-                        .glyphicon-flag {
-                            color: $brand-danger;
-                        }
-                    }
+            }
+        }
+    }
+}
+
+// Review, post and answer flag
+.review-flag,
+.post-flag,
+.answer-flag {
+    .flag-content {
+        .flag-btn {
+            &:hover,
+            &:focus {
+                .glyphicon-flag {
+                    color: $brand-danger;
                 }
             }
         }
@@ -549,11 +557,19 @@ $dropdown-menu-bg-color: $connect-dark-blue;
     }
 
     .answers-tabs {
-        .post-name {
-            margin-top: 8px;
-        }
-        .upvote-post-form {
-            display: inline;
+        .post-details {
+            .post-name {
+                margin-top: 8px;
+            }
+            .upvote-post-form {
+                display: inline;
+            }
+            .flag-post-form {
+                display: inline;
+            }
+            hr {
+                margin-top: 4px;
+            }
         }
 
         .answer-box {
@@ -571,6 +587,9 @@ $dropdown-menu-bg-color: $connect-dark-blue;
             }
             .answer-box-contents {
                 padding: 4px 8px;
+            }
+            .flag-answer-form {
+                display: inline;
             }
 
             .child-answers {

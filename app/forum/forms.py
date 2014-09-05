@@ -79,11 +79,11 @@ class SubmitForumAnswer(forms.Form):
 
         return cleaned_data
 
-class UpvotePost(forms.Form):
+class VotePostForm(forms.Form):
     post_id = forms.CharField()
 
     def clean(self):
-        cleaned_data = super(UpvotePost, self).clean()
+        cleaned_data = super(VotePostForm, self).clean()
 
         posts = ForumPost.objects.filter(id=cleaned_data.get("post_id"))
         if len(posts) != 1:
@@ -93,11 +93,11 @@ class UpvotePost(forms.Form):
         return cleaned_data
 
 
-class UpvoteAnswer(forms.Form):
+class VoteAnswerForm(forms.Form):
     answer_id = forms.CharField()
 
     def clean(self):
-        cleaned_data = super(UpvoteAnswer, self).clean()
+        cleaned_data = super(VoteAnswerForm, self).clean()
 
         answers = ForumAnswer.objects.filter(id=cleaned_data.get("answer_id"))
         if len(answers) != 1:

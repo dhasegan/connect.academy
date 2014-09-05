@@ -10,6 +10,8 @@ var ForumPage = (function() {
             posts: $('.forum-post'),
 
             // Answers tabs
+            flagPostLinkSelector: '.flag-post-link',
+            flagAnswerLinkSelector: '.flag-answer-link',
             postAnswerFormSelector: '.forumpostnewanswer-form',
             postAnswerButtonSelector: '.newanswer-btn',
             getReplyLinkSelector: '.getreplyform-link',
@@ -146,6 +148,29 @@ var ForumPage = (function() {
                     ForumPage.onRefreshAnswerTab($forum_answers);
                 }
             })
+        });
+        // Flag posts and answers
+        SubtreeDOM.find(s.flagPostLinkSelector).click( function(event) {
+            $(this).toggleClass('hidden');
+            var form = $(this).parents('form')[0];
+            Utils.SubmitFormAjax(event, form,
+                function(result) {
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus)
+                }
+            );
+        });
+        SubtreeDOM.find(s.flagAnswerLinkSelector).click( function(event) {
+            $(this).toggleClass('hidden');
+            var form = $(this).parents('form')[0];
+            Utils.SubmitFormAjax(event, form,
+                function(result) {
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus)
+                }
+            );
         });
         // Upvote posts and answers
         

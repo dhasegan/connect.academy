@@ -21,7 +21,8 @@ def forum_vote_context(obj, current_user):
 def forum_child_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': []
+        'child_answers': [],
+        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
     }
     count = 2
     child_answer = answer
@@ -40,7 +41,8 @@ def forum_child_answer_context(post, answer, current_user):
 def forum_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': []
+        'child_answers': [],
+        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
     }
     child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
     for child in child_answers:
@@ -58,6 +60,7 @@ def forum_post_context(post, current_user):
     context = {
         'question': post,
         'answers': answers_context,
+        'downvoted': post.downvoted_by.filter(id=current_user.id).count() > 0
     }
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context
@@ -88,7 +91,8 @@ def forum_context(forum, current_user):
 def forum_discussion_answer_context(answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': []
+        'child_answers': [],
+        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
     }
 
     context = dict(context.items() + forum_vote_context(answer, current_user).items())
