@@ -20,13 +20,13 @@ PROJECT_ROOT = path.abspath(path.join(SETTINGS_ROOT, '..'))
 
 DATABASES = {
     'default': {
-        'ENGINE': environ.get('ACADEMY_DATABASE_BACKEND', 'django.db.backends.sqlite3'),
-        'NAME': environ.get('ACADEMY_DATABASE_NAME', SETTINGS_ROOT + 'db/database.db'),
-        'USER': environ.get('ACADEMY_DATABASE_USER', ''),
-        'PASSWORD': environ.get('ACADEMY_DATABASE_PASSWORD', ''),
-        'HOST': environ.get('ACADEMY_DATABASE_HOST', ''),
-        'PORT': environ.get('ACADEMY_DATABASE_PORT', ''),
-        'TEST_NAME': environ.get('ACADEMY_DATABASE_TEST_NAME', SETTINGS_ROOT + 'db/test_database.db'),
+        'ENGINE': environ.get('DEMO_DATABASE_BACKEND', 'django.db.backends.sqlite3'),
+        'NAME': environ.get('DEMO_DATABASE_NAME', SETTINGS_ROOT + 'db/database.db'),
+        'USER': environ.get('DEMO_DATABASE_USER', ''),
+        'PASSWORD': environ.get('DEMO_DATABASE_PASSWORD', ''),
+        'HOST': environ.get('DEMO_DATABASE_HOST', ''),
+        'PORT': environ.get('DEMO_DATABASE_PORT', ''),
+        'TEST_NAME': environ.get('DEMO_DATABASE_TEST_NAME', SETTINGS_ROOT + 'db/test_database.db'),
     }
 }
 
