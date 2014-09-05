@@ -58,7 +58,7 @@ class SignupForm(forms.Form):
         if errors:
             raise forms.ValidationError(errors)
 
-        if jUser.objects.get(email = email, is_fake = True):
+        if jUser.objects.filter(email = email, is_fake = True).count() > 0:
             cleaned_data['has_fake_account'] = True
         else:
             cleaned_data['has_fake_account'] = False

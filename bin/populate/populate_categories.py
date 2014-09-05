@@ -12,7 +12,7 @@ try:
     category = univ.get_university_category()
 except:
     connect_cat = Category.objects.create(parent=None, level = 0, name="Connect.Academy", abbreviation="connect")
-    category = Category.objects.create(parent=connect_cat, level=1, name="Jacobs University Bremen", abbreviation="jacobs")
+    category = Category.objects.create(parent=connect_cat, level=1, name="Jacobs University Bremen", abbreviation="Jacobs")
 
 
 abbreviations = {

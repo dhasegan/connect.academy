@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="panel panel-default sidebar profile-bio">
 
 	<!-- Custom Cover Picture -->
@@ -28,6 +30,20 @@
 			{% elif own_profile %}
 				{% include 'objects/profile/edit_summary.html' %}
 			{% endif %}
+		</div>
+	</div>
+{% endif %}
+
+{% if courses_managed %}
+	<div class="panel panel-default sidebar">
+		<div class="panel-body courses-managed">
+			<h3>{% trans "Courses Managed" %}</h3>
+			<hr>
+			{% for course in courses_managed %}
+				<div class="course-managed">
+					<a href="{% url 'course_page' course.slug %}"> {{ course.name }} </a>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 {% endif %}

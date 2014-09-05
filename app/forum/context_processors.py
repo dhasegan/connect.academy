@@ -15,6 +15,14 @@ def forum_vote_context(obj, current_user):
     context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
     context['rating'] = forum_post_rating(nr_upvotes, time_diff.total_seconds())
 
+    all_downvotes = obj.downvoted_by.all()
+    nr_downvotes = all_downvotes.count()
+    context['downvoted'] = all_downvotes.filter(id=current_user.id).count() > 0
+    if nr_downvotes >= 3:
+        context['dont_show'] = True
+    if nr_downvotes >= 7:
+        context['dont_show_at_all'] = True
+
     return context
 
 
@@ -57,7 +65,7 @@ def forum_post_context(post, current_user):
         answers_context.append(forum_answer_context(post, answer, current_user))
     context = {
         'question': post,
-        'answers': answers_context,
+        'answers': answers_context
     }
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context

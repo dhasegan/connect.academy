@@ -14,6 +14,8 @@ urlpatterns = patterns('app.forum.views',
 
     url(r'^upvote/post$', 'upvote_post', name="upvote_post"),
     url(r'^upvote/answer$', 'upvote_answer', name="upvote_answer"),
+    url(r'^downvote/post$', 'downvote_post', name="downvote_post"),
+    url(r'^downvote/answer$', 'downvote_answer', name="downvote_answer"),
 
     url(r'^add_extratag$', 'add_extratag', name="add_extratag"),
 )

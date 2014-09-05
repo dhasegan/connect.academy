@@ -252,7 +252,7 @@ def answers(request, post_id):
 def upvote_post(request):
     user = get_object_or_404(jUser, id=request.user.id)
 
-    form = UpvotePost(request.POST)
+    form = VotePostForm(request.POST)
     if not form.is_valid():
         raise Http404
 
@@ -284,7 +284,7 @@ def upvote_post(request):
 def upvote_answer(request):
     user = get_object_or_404(jUser, id=request.user.id)
 
-    form = UpvoteAnswer(request.POST)
+    form = VoteAnswerForm(request.POST)
     if not form.is_valid():
         raise Http404
 
@@ -305,6 +305,48 @@ def upvote_answer(request):
     response_data = {
         'html': render_to_string('objects/forum/upvote_answer.html', RequestContext(request, context)),
         'id_selectors': ['#upvote_answer_' + str(answer.id), '#upvote_answer_activity_' + str(answer.id)]
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+@require_POST
+@require_active_user
+@login_required
+def downvote_post(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = VotePostForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    post = form.cleaned_data['post']
+    voted = len(post.downvoted_by.filter(id=user.id)) > 0
+    if not voted:
+        post.downvoted_by.add(user)
+
+    response_data = {
+        'status': 'OK'
+    }
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+@require_POST
+@require_active_user
+@login_required
+def downvote_answer(request):
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    form = VoteAnswerForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    answer = form.cleaned_data['answer']
+    voted = len(answer.downvoted_by.filter(id=user.id)) > 0
+    if not voted:
+        answer.downvoted_by.add(user)
+
+    response_data = {
+        'status': 'OK'
     }
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 

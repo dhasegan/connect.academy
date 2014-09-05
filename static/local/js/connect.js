@@ -2,8 +2,6 @@ jQuery( document ).ready(function( $ ) {
 
     ConnectGlobal.init();
 
-
-
 });
 
 var ConnectGlobal = (function() {
@@ -33,6 +31,7 @@ var ConnectGlobal = (function() {
             else if ($('.forum-page').length > 0) { ForumPage.init(); } 
             else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
             else if ($('.dashboard-page').length > 0) { ForumPage.init(); CoursePage.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
+            else if ($('.comments-page').length > 0) { CoursePage.init(); }
     };
 
     me.loadNewActivities = function() {

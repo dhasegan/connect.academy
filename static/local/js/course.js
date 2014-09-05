@@ -33,6 +33,7 @@ var CoursePage = (function() {
             // Flag review
             reviewFlagSelector: '.review-flag',
             flagButtonSelector: '.flag-btn',
+            displayFlaggedReviewSelector: '.display-flagged-review',
 
             // Teacher management
             confirmRegistrationForm: $(".confirm_registration"),
@@ -128,6 +129,7 @@ var CoursePage = (function() {
         $(s.reviewFormSelector).submit(this.reviewFormSubmit);
         $(s.upvoteReviewFormSelector).submit(this.upvoteReviewFormSubmit);
         $(s.flagReviewFormSelector).submit(this.flagReviewFormSubmit);
+        $(s.displayFlaggedReviewSelector).click(this.displayFlaggedReviewClick);
 
         s.confirmRegistrationForm.submit(this.confirmRegistrationFormSubmit);
         s.sendEmailForm.submit(this.sendEmailFormSubmit);
@@ -196,6 +198,12 @@ var CoursePage = (function() {
             }, function(jqXHR, textStatus, errorThrown) {
             }
         );
+    };
+
+    me.displayFlaggedReviewClick = function(event) {
+        event.preventDefault();
+        $(this).toggleClass('hidden');
+        $(this).parents(s.reviewBlockSelector).find('.review').toggleClass('hidden');
     };
 
     me.extraTagFormSubmit = function(event) {

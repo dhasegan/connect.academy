@@ -9,7 +9,7 @@ class Populator:
     """ Class to populate the test database """
 
     def __init__(self):
-        word_file = "/usr/share/dict/words"
+        word_file = "bin/words"
         self.words = open(word_file).read().splitlines()
 
     def random_word(self):
@@ -195,7 +195,7 @@ class Populator:
             university = course.university
             students = list(jUser.objects.filter(user_type=USER_TYPE_STUDENT, university=university))
             nr_students = len(students)
-            nr_registered = int(1.0 * nr_students * random.randint(20,60) / 100.0)
+            nr_registered = int(1.0 * nr_students * random.randint(5,20) / 100.0)
             random.shuffle(students)
             for i in range(nr_registered):
                 is_approved = random.random() > 0.1
@@ -258,8 +258,12 @@ class Populator:
 
 
     def populate_forum_post(self, forum):
-        course = forum.course
-        students = course.students.all()
+        students = jUser.objects.all()
+        if forum.forum_type == FORUM_COURSE:
+            course = forum.forumcourse.course
+            students = course.students.all()
+            if not students:
+                return ;
         posted_by = random.choice(students)
         name = self.random_word() + " " + self.random_word()
         text = ""
@@ -280,8 +284,12 @@ class Populator:
 
     def populate_forum_answer(self, forum_post):
         forum = forum_post.forum
-        course = forum.course
-        students = course.students.all()
+        students = jUser.objects.all()
+        if forum.forum_type == FORUM_COURSE:
+            course = forum.forumcourse.course
+            students = course.students.all()
+            if not students:
+                return ;
         posted_by = random.choice(students)
         text = ""
         for i in range(random.randint(10,50)):
@@ -320,8 +328,12 @@ class Populator:
     def populate_forum_upvotes(self):
         forums = Forum.objects.all()
         for forum in forums:
-            course = forum.course
-            students = list(course.students.all())
+            students = list(jUser.objects.all())
+            if forum.forum_type == FORUM_COURSE:
+                course = forum.forumcourse.course
+                students = list(course.students.all())
+                if not students:
+                    return ;
             posts = forum.forumpost_set.all()
             for post in posts:
                 self.populate_forum_upvotes_object(post, students)

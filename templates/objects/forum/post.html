@@ -1,0 +1,90 @@
+{% load humanize %}
+{% load i18n %}
+
+<div class="post-details">
+    {% comment %}
+        >>> Post meta data <<<
+    {% endcomment %}
+    <div class="post-header text-muted">
+        <span id="upvote_post_{{ post.question.id }}">
+            {% include 'objects/forum/upvote_post.html' %}
+        </span>
+        {% trans "Posted by" %}
+        {% if not post.question.anonymous and not post.dont_show %}
+            {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+        {% else %}
+            {% trans "Anonymous" %}
+        {% endif %}
+        {% trans "in" %}
+        {% with post.question.tag as tag %}
+            {% include "objects/tag_link.html" %}.
+        {% endwith %}
+        {{ post.question.datetime|naturaltime }}
+        
+        {% block answer_question_button %}
+            <div class="answer-btn pull-right">
+                <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
+                    <button type="submit" class="btn-xs btn-primary">{% trans "Answer" %}</button>
+                </a>
+            </div>
+        {% endblock answer_question_button %}
+    </div>
+
+    {% comment %}
+        >>> Post body <<<
+    {% endcomment %}
+    {% if not post.dont_show_at_all %}
+        <div class="post-text {% if post.dont_show %} hidden {% endif %}">
+            <h3 class="post-name">
+                {{ post.question.name }}
+            </h3>
+            {% if post.question.text %}
+                {{ post.question.text|linebreaks }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% comment %}
+        >>> Prevent bad content <<<
+    {% endcomment %}
+    {% if post.dont_show and not post.dont_show_at_all %}
+        <a class="display-flagged-post text-danger" href="#">
+            {% trans "This post was flagged as inaccurate or offensive. Click to reveal." %}
+        </a>
+    {% endif %}
+    {% if post.dont_show_at_all %}
+        <span class="text-danger">
+            {% trans "This post was deleted because it contains inaccurate or offensive material." %}
+        </span>
+    {% endif %}
+
+
+    {% comment %}
+        >>> Post footer <<<
+    {% endcomment %}
+    <div class="post-footer">
+        {% block answer_question_link %}
+            <span class="answer-btn h6">
+                <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">{% trans "Answer" %}</a>
+            </span> 
+            {% if not post.downvoted %} &middot; {% endif %}
+        {% endblock answer_question_link %}
+
+        {% block post_flag %}
+            {% if not post.downvoted %}
+                <span class="post-flag">
+                    <span class="flag-content h6">
+                        <form class="flag-post-form form-inline" role="form" action="{% url 'downvote_post' %}" method="post">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="post_id" value="{{ post.question.id }}">
+                            <a type="submit" class="flag-btn flag-post-link" href="#">{% trans "Flag" %} <span class="glyphicon glyphicon-flag"></span> </a>
+                        </form>
+                    </span>
+                </span>
+            {% endif %}
+        {% endblock post_flag %}
+    </div>
+
+    <hr>
+</div>

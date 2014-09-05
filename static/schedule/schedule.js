@@ -1,25 +1,4 @@
 $(document).ready(function() {
-  
-  $(".appointment-start-datetime").datetimepicker({
-      minDate: moment(),
-      pick12HourFormat: false
-  });
-
-  $(".appointment-end-datetime").datetimepicker({
-      minDate: moment(),
-      pick12HourFormat: false
-  });
-
-  $(".appointment-datetime-input").click(function() {
-      var $parent = $(this.parentNode);
-      var $button = $parent.find(".appointment-datetime-button");
-      $button.parent().data("DateTimePicker").show();
-  });
-
-  $("#appointmentForm").ready(function() {
-      var tz = $(this).find('input[name="timezone"]');
-      tz.val( moment().zone() );
-  });
 
   // some global variables, that are used in every event* . 
 
@@ -110,7 +89,6 @@ $(document).ready(function() {
                       
                       data = $.parseJSON(data);
                       if(data.status === 'OK'){
-
                         for(var i=0;i<data.appointments.length;i++){
                           appointment = data.appointments[i];
                           alert(appointment);
@@ -118,7 +96,9 @@ $(document).ready(function() {
                         }
                         
                         data: eventData;
-                      
+
+                        // Refresh the page (quick hack until the event disappear bug is fixed)
+                        location.reload();
                       }
                     }
 

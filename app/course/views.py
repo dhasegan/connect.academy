@@ -239,7 +239,7 @@ def submit_homework_request(request, slug):
     user = get_object_or_404(jUser, id=request.user.id)
 
     form = SubmitHomeworkRequestForm(request.POST)
-
+    print request.POST
     if not form.is_valid():
         raise Http404
 
@@ -285,10 +285,8 @@ def vote_review(request, slug):
         else:
             review.upvoted_by.remove(user)
     if form.cleaned_data['vote_type'] == "downvote":
-        if not review.upvoted_by.filter(username=user.username).count():
+        if not review.downvoted_by.filter(username=user.username).count():
             review.downvoted_by.add(user)
-        else:
-            raise Http404
 
     context = {
         'course': review.course,

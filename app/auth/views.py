@@ -25,7 +25,7 @@ from app.auth.specific_login import get_university
 @require_POST
 def login_action(request):
     context = {}
-
+    context.update(csrf(request))
     form = LoginForm(request.POST)
     if not form.is_valid():
         raise Http404
@@ -164,9 +164,7 @@ def delete_user(request, username, confirmation):
 
 @require_POST
 def signup_action(request):
-    context = context = {
-        "page": "signup_action",
-    }
+    context = {}
     context.update(csrf(request))
 
     form = SignupForm(request.POST)
@@ -204,9 +202,16 @@ def signup_action(request):
         user.is_fake = False
         user.save()
     else:
-        user = jUser.objects.create_user(username=user.username, user_type=user_type, password=password, email=email, university=university,
-                                     first_name=fname, last_name=lname, is_active = False)
-    
+        # No user with the same email exists (no fake account)
+        same_username_count = jUser.objects.filter(username=username).count()
+        if same_username_count > 0:
+            context['page'] = 'welcome'
+            context['error'] = "A user with that username already exists. Please choose another one."
+            return render(request, "pages/welcome_page.html", context)
+        user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
+                                     first_name=fname, last_name=lname)
+        
+        user.is_active = False
         user.save()
     # Authenticate user
     print 

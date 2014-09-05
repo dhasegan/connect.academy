@@ -1,7 +1,7 @@
 import json
 
 from django.core.context_processors import csrf
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 
 from app.models import *
 from app.context_processors import *
-
+from app.forms import *
 
 def welcome(request):
     if request.user and request.user.is_authenticated():
@@ -45,7 +45,13 @@ def all_comments(request):
     context = {
         'page': 'all_comments',
     }
-    context['comments'] = Review.objects.all()
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    reviews_context = []
+    reviews = Review.objects.all()
+    for review in reviews:
+        reviews_context.append( review_context(review, user) )
+    context['comments'] = reviews_context
 
     return render(request, 'pages/comments.html', context)
 
@@ -100,3 +106,25 @@ def set_timezone(request):
         return redirect('/')
     else:
         return render(request, 'pages/set_timezone.html', {'timezones': pytz.common_timezones})
+
+@require_POST
+def add_subscriber(request):
+    context = {
+        'page': 'welcome',
+    }
+    context.update(csrf(request))
+
+    form = NewSubscriberForm(request.POST)
+    if not form.is_valid():
+        context['error'] = "Failed to process request:"
+        return render(request, "pages/welcome_page.html", context)
+
+
+    name = form.cleaned_data['name']
+    email = form.cleaned_data['email']
+
+    Subscriber.objects.create(name=name, email=email)
+
+    context['success'] = "Thank you for your interest :)"
+
+    return render(request, "pages/welcome_page.html", context)

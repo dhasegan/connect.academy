@@ -16,6 +16,15 @@
     },
     {
         "fields": {
+            "name": "jacobs-alumni.de",
+            "university": 1,
+            "domain_type": 2
+        },
+        "model": "app.domain",
+        "pk": 2
+    },
+    {
+        "fields": {
             "date_joined": "2014-07-26T13:51:36.312Z",
             "email": "danielhasegan@gmail.com",
             "first_name": "Daniel",
@@ -92,7 +101,7 @@
     },
     {
         "fields": {
-            "abbreviation": "jacobs",
+            "abbreviation": "Jacobs",
             "admins": [],
             "level": 1,
             "name": "Jacobs University Bremen",

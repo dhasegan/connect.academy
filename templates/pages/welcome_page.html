@@ -102,8 +102,8 @@
                     <img class="img img-circle" src="static/assets/img/team/daniel.jpg" height="120px" width="120px" alt="">
                     <br>
                     <h4><b>daniel HASEGAN</b></h4>
-                    <a href="https://twitter.com/DanielHasegan" class="icon icon-twitter" target="_blank"></a>
                     <a href="https://www.linkedin.com/profile/view?id=213901690&amp;trk=spm_pic" class="icon icon-linkedin" target="_blank"></a>
+                    <a href="https://twitter.com/DanielHasegan" class="icon icon-twitter" target="_blank"></a>
                     <a href="https://github.com/dhasegan" class="icon icon-github" target="_blank"></a>
                     <p>{% trans "New technologies have the potential to change one's life. We are trying to use this potential to ameliorate education, a defining reason for success in life, leaving more time for creativity to be stimulated and curiosity satisfied." %}</p>
                 </div><!-- col-lg-3 -->
@@ -153,10 +153,10 @@
                 <div class="col-lg-4">
                     <div class="col-lg-12">
                     <h3>{% trans "Contact Information" %}</h3>
-                    <p><span class="icon icon-home"></span>&nbsp Bremen, Germany<br/>
-                        <span class="icon icon-envelope"></span> <a href="#">&nbsp hello@connect.academy</a> <br/>
-                        <span class="icon icon-twitter"></span> <a href="#"> &nbsp @connectacad </a> <br/>
-                        <span class="icon icon-facebook"></span> <a href="#">&nbsp Connect Academy </a> <br/>
+                    <p><span class="icon icon-home"></span>&nbsp; Bremen, Germany<br/>
+                        <span class="icon icon-envelope"></span> <a href="mailto:hello@connect.academy">&nbsp; hello@connect.academy</a> <br/>
+                        <span class="icon icon-twitter"></span> <a href="https://twitter.com/connectacad"> &nbsp; @connectacad </a> <br/>
+                        <span class="icon icon-facebook"></span> <a href="https://www.facebook.com/academyconnect">&nbsp; Connect Academy </a> <br/>
                     </p> 
                     </div>
 
@@ -172,22 +172,23 @@
                     <h3>{% trans "Newsletter" %}</h3>
                     <p> {% trans "If you would like to hear more often from us, being for the development of a new feature or about expanding our team, subscribe to our newsletter and be updated with the latest information regarding Connect Academy. Our policy is against bothering people, hence our newsletters will only be as frequent as necessary." %}</p>
                     <p>
-                        <form class="form-horizontal" role="form">
+                       <form class="form-horizontal" method="POST" action="{% url 'add_subscriber' %}" role="form">
+                            {% csrf_token %}
                           <div class="form-group">
                             <label for="inputEmail1" class="col-lg-4 control-label"></label>
                             <div class="col-lg-10">
-                              <input type="email" class="form-control" id="inputEmail1" placeholder="Email">
+                              <input type="email" class="form-control" name="email" id="inputEmail1" placeholder="Email" required>
                             </div>
                           </div>
                           <div class="form-group">
                             <label for="text1" class="col-lg-4 control-label"></label>
                             <div class="col-lg-10">
-                              <input type="text" class="form-control" id="text1" placeholder="Your Name">
+                              <input type="text" class="form-control" id="text1" name="name" placeholder="Your Name" required>
                             </div>
                           </div>
                           <div class="form-group">
                             <div class="col-lg-10">
-                              <button type="submit" class="btn btn-success">{% trans "Sign in" %}</button>
+                              <button type="submit" class="btn btn-success">Sign in</button>
                             </div>
                           </div>
                        </form><!-- form -->
@@ -195,13 +196,16 @@
                 </div><!-- col -->
                 
             </div><!-- row -->
-        
+            
         </div><!-- container -->
     <br>
     <br>
         <div id="footerwrap">
             <div class="container">
-                    &copy Connect Academy 2014
+                    &copy; Connect Academy 2014
+                    <div class="pull-right text-muted">
+                        website design: <a class="blacktie-link" href="http://blacktie.co"> blacktie.co </a>
+                    </div>
             </div>
         </div>
     <!-- Bootstrap core JavaScript

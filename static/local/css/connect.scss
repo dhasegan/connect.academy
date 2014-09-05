@@ -424,11 +424,10 @@ $course-img-max-size:           150px;
 }
 
 // Review display
-
-
 // Activity and info pages
 .course-info .info-body .reviews-display,
-.activity-timeline .review-activity {
+.activity-timeline .review-activity,
+.comments-page {
     .review-block {
         .review {
             .review-text {
@@ -442,13 +441,21 @@ $course-img-max-size:           150px;
                 .flag-review-form {
                     display: inline;
                 }
-                .flag-btn {
-                    &:hover,
-                    &:focus {
-                        .glyphicon-flag {
-                            color: $brand-danger;
-                        }
-                    }
+            }
+        }
+    }
+}
+
+// Review, post and answer flag
+.review-flag,
+.post-flag,
+.answer-flag {
+    .flag-content {
+        .flag-btn {
+            &:hover,
+            &:focus {
+                .glyphicon-flag {
+                    color: $brand-danger;
                 }
             }
         }
@@ -482,10 +489,13 @@ $register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
 }
 
 .welcome-page-navbar {
-        margin-bottom:0px;
-        font-family: $navbar-clickable-links;
-        font-size: $navbar-font-size;
-    }
+    margin-bottom:0px;
+    font-family: $navbar-clickable-links;
+    font-size: $navbar-font-size;
+}
+.blacktie-link {
+    color: #999;
+}
 
 $tag-color: $connect-gray;
 $tag-hover-color: $connect-light-blue;
@@ -547,18 +557,26 @@ $dropdown-menu-bg-color: $connect-dark-blue;
     }
 
     .answers-tabs {
-        .post-name {
-            margin-top: 8px;
-        }
-        .upvote-post-form {
-            display: inline;
+        .post-details {
+            .post-name {
+                margin-top: 8px;
+            }
+            .upvote-post-form {
+                display: inline;
+            }
+            .flag-post-form {
+                display: inline;
+            }
+            hr {
+                margin-top: 4px;
+            }
         }
 
         .answer-box {
             margin: 8px 4px;
             background-color: $gray-lighter;
             &.focus-answer { 
-                background-color: lighten($connect-light-blue, 40%);
+                background-color: lighten($connect-light-blue, 30%);
             }
 
             .answer-header .upvote-answer-form {
@@ -570,12 +588,15 @@ $dropdown-menu-bg-color: $connect-dark-blue;
             .answer-box-contents {
                 padding: 4px 8px;
             }
+            .flag-answer-form {
+                display: inline;
+            }
 
             .child-answers {
                 .answer-box {
                     background-color: white;
                     &.focus-answer { 
-                        background-color: lighten($connect-light-blue, 40%);
+                        background-color: lighten($connect-light-blue, 30%);
                     }
                 }
             }
@@ -697,7 +718,7 @@ $profile-picture-height: 200px;
         top:100px;
         margin-left:auto;
         margin-right:auto;
-        }
+    }
 
     .profile-bio {
         min-height: 400px;
@@ -724,8 +745,9 @@ $profile-picture-height: 200px;
 }
 
 // Manage account page
-.manage-account-page {
-    h4 {
+.manage-account-page,
+.profile-page .courses-managed {
+    h3 {
         margin-top: 2px;
         margin-bottom: 6px;
     }

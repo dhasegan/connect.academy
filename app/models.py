@@ -78,6 +78,7 @@ class jUser(User):
 
     def is_admin(self):
         return self.user_type == USER_TYPE_ADMIN
+
     def is_alumnus(self):
         return self.user_type == USER_TYPE_ALUMNUS
 
@@ -115,6 +116,8 @@ class StudentCourseRegistration(models.Model):
     def __unicode__(self):
         return str(self.student)
 
+
+
 class ProfessorCourseRegistration(models.Model):
     professor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
@@ -122,6 +125,7 @@ class ProfessorCourseRegistration(models.Model):
 
     def __unicode__(self):
         return str(self.professor)
+
 
 
 
@@ -260,12 +264,11 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         original_slug = slugify(self.name)
-        slug = original_slug
-        appendix = 1
-        while Course.objects.filter(slug = slug).count() > 0:
-            slug = original_slug + "-" + str(appendix)
-            appendix += 1
-        self.slug = slug
+        appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
+        if not appendix:
+            self.slug = original_slug
+        else:
+            self.slug = original_slug + "-" + str(appendix)
         super(Course, self).save(*args, **kwargs)
         ForumCourse.objects.get_or_create(course=self)
 
@@ -295,15 +298,16 @@ class CourseTopic(models.Model):
 
     def save(self, *args, **kwargs):
         tags = ForumTopicTag.objects.filter(topic=self)
+        super(CourseTopic, self).save(*args, **kwargs)
         if not len(tags):
             tag_name = ForumTag.create_tag_name(self.name)
+            forum = ForumCourse.objects.get(course=self.course).forum_ptr
             ForumTopicTag.objects.create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
-                forum=ForumCourse.objects.get(course=self.course), topic=self)
+                forum=forum, topic=self)
         else:
             tag = tags[0]
             tag.name = ForumTag.create_tag_name(self.name)
             tag.save()
-        super(CourseTopic, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return str(self.name)
@@ -1032,3 +1036,11 @@ class ReviewActivity(CourseActivity):
 # When a user makes a wiki change
 class WikiActivity(CourseActivity):
     contribution = models.ForeignKey('WikiContributions')
+
+
+
+## SUBSCRIBERS ###
+
+class Subscriber(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
