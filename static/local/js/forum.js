@@ -10,6 +10,10 @@ var ForumPage = (function() {
             posts: $('.forum-post'),
 
             // Answers tabs
+            flagPostLinkSelector: '.flag-post-link',
+            flagAnswerLinkSelector: '.flag-answer-link',
+            displayFlaggedPostSelector: '.display-flagged-post',
+            displayFlaggedAnswerSelector: '.display-flagged-answer',
             postAnswerFormSelector: '.forumpostnewanswer-form',
             postAnswerButtonSelector: '.newanswer-btn',
             getReplyLinkSelector: '.getreplyform-link',
@@ -146,6 +150,40 @@ var ForumPage = (function() {
                     ForumPage.onRefreshAnswerTab($forum_answers);
                 }
             })
+        });
+        // Flag posts and answers
+        SubtreeDOM.find(s.flagPostLinkSelector).click( function(event) {
+            $(this).toggleClass('hidden');
+            var form = $(this).parents('form')[0];
+            Utils.SubmitFormAjax(event, form,
+                function(result) {
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus)
+                }
+            );
+        });
+        SubtreeDOM.find(s.flagAnswerLinkSelector).click( function(event) {
+            $(this).toggleClass('hidden');
+            var form = $(this).parents('form')[0];
+            Utils.SubmitFormAjax(event, form,
+                function(result) {
+                }, 
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus)
+                }
+            );
+        });
+        // Display blocked content
+        SubtreeDOM.find(s.displayFlaggedPostSelector).click( function(event) {
+            event.preventDefault();
+            $(this).toggleClass('hidden');
+            $(this).parents('.post-details').find('.post-text').toggleClass('hidden');
+        });
+        SubtreeDOM.find(s.displayFlaggedAnswerSelector).click( function(event) {
+            event.preventDefault();
+            $(this).toggleClass('hidden');
+            $($(this).parent()).find('.answer-body').toggleClass('hidden');
         });
         // Upvote posts and answers
         

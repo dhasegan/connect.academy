@@ -5,7 +5,7 @@
 {% block reply_form %}
     <small class="text-muted">
         <a class="discussion-link" href="{% url 'forum_discussion' answer.answer.id %}"> {% if not answer.children > 2 %} {% trans "Start Discussion" %} {% else %} {% trans "View Ongoing Discussion" %} ({{ answer.children }}) {% endif %} </a>
-    </small>
+    </small> {% if not answer.downvoted %} &middot; {% endif %}
 {% endblock reply_form %}
 
 {% block child_answers %}
