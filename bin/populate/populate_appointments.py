@@ -13,7 +13,7 @@ coursesList = json.load(f)
 f.close()
 #print len(coursesList)
 for courseDetails in coursesList:
-    course = jCourse.objects.filter(name=courseDetails["CourseName"])[0]
+    course = Course.objects.filter(name=courseDetails["CourseName"])[0]
     if course.appointments.all().count() > 0:
         continue
     if "Appointments" in courseDetails:
@@ -36,3 +36,4 @@ for courseDetails in coursesList:
             course = Course.objects.get(name=courseDetails["CourseName"])
             CourseAppointment.objects.create(start=utc_start, end=utc_end, location=location, 
                                             description=description, course=course) 
+
