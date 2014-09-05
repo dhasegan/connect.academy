@@ -10,6 +10,8 @@ class AppointmentForm(forms.Form):
 	end = forms.DateTimeField(input_formats = settings.VALID_TIME_INPUTS)
 	timezone_minutes = forms.IntegerField()
 	eventId = forms.IntegerField(required=False)
+	copy = forms.CharField(required=False)
+	num_weeks = forms.CharField(required=False)
 
 	def clean(self):
 		super(AppointmentForm,self).clean()
@@ -32,6 +34,11 @@ class AppointmentForm(forms.Form):
 		self.cleaned_data['start'] = start_utc
 		self.cleaned_data['end'] = end_utc
 
+		if self.cleaned_data['copy'] == '1':
+			self.cleaned_data['copy'] = True
+		else:
+			self.cleaned_data['copy'] = False
+
 		return self.cleaned_data
 
 
@@ -39,12 +46,10 @@ class PersonalAppointmentForm(AppointmentForm):
 	pass
 	
 class CourseAppointmentForm(AppointmentForm):
-	course_name = forms.CharField()
-	copy = forms.NullBooleanField()
-	num_weeks = forms.CharField(required=False)
+	course_id = forms.CharField()
 
 	def clean(self):
 		super(CourseAppointmentForm,self).clean()
-		course = Course.objects.get(name=self.cleaned_data['course_name'])
+		course = Course.objects.get(id=self.cleaned_data['course_id'])
 		self.cleaned_data['course'] = course
 		return self.cleaned_data
