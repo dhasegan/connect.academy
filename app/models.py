@@ -78,6 +78,7 @@ class jUser(User):
 
     def is_admin(self):
         return self.user_type == USER_TYPE_ADMIN
+
     def is_alumnus(self):
         return self.user_type == USER_TYPE_ALUMNUS
 

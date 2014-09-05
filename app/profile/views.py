@@ -17,15 +17,18 @@ import json
 @require_GET
 @login_required
 def profile(request, username):
-    # stub for profile view
-    context = {
-        'page': 'profile',
-        'user_auth': request.user.juser
-    }
-    context.update(csrf(request))
     user = get_object_or_404(jUser, username=username)
     
+    context = {
+        'page': 'profile',
+        'user_auth': user
+    }
+    context.update(csrf(request))
+    
     context['user'] = user
+    if user.is_professor():
+        registrations = ProfessorCourseRegistration.objects.filter(professor=user, is_approved=True)
+        context['courses_managed'] = [reg.course for reg in registrations]
     context['own_profile'] = request.user.id == user.id
     context['activities'] = profile_activities(request,user)
 

@@ -745,8 +745,9 @@ $profile-picture-height: 200px;
 }
 
 // Manage account page
-.manage-account-page {
-    h4 {
+.manage-account-page,
+.profile-page .courses-managed {
+    h3 {
         margin-top: 2px;
         margin-bottom: 6px;
     }
