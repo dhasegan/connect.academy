@@ -12,6 +12,8 @@ var ForumPage = (function() {
             // Answers tabs
             flagPostLinkSelector: '.flag-post-link',
             flagAnswerLinkSelector: '.flag-answer-link',
+            displayFlaggedPostSelector: '.display-flagged-post',
+            displayFlaggedAnswerSelector: '.display-flagged-answer',
             postAnswerFormSelector: '.forumpostnewanswer-form',
             postAnswerButtonSelector: '.newanswer-btn',
             getReplyLinkSelector: '.getreplyform-link',
@@ -171,6 +173,17 @@ var ForumPage = (function() {
                     console.log(textStatus)
                 }
             );
+        });
+        // Display blocked content
+        SubtreeDOM.find(s.displayFlaggedPostSelector).click( function(event) {
+            event.preventDefault();
+            $(this).toggleClass('hidden');
+            $(this).parents('.post-details').find('.post-text').toggleClass('hidden');
+        });
+        SubtreeDOM.find(s.displayFlaggedAnswerSelector).click( function(event) {
+            event.preventDefault();
+            $(this).toggleClass('hidden');
+            $($(this).parent()).find('.answer-body').toggleClass('hidden');
         });
         // Upvote posts and answers
         

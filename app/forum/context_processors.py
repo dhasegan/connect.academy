@@ -15,14 +15,21 @@ def forum_vote_context(obj, current_user):
     context['voted'] = len(all_upvotes.filter(id=current_user.id)) > 0
     context['rating'] = forum_post_rating(nr_upvotes, time_diff.total_seconds())
 
+    all_downvotes = obj.downvoted_by.all()
+    nr_downvotes = all_downvotes.count()
+    context['downvoted'] = all_downvotes.filter(id=current_user.id).count() > 0
+    if nr_downvotes >= 3:
+        context['dont_show'] = True
+    if nr_downvotes >= 7:
+        context['dont_show_at_all'] = True
+
     return context
 
 
 def forum_child_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': [],
-        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
+        'child_answers': []
     }
     count = 2
     child_answer = answer
@@ -41,8 +48,7 @@ def forum_child_answer_context(post, answer, current_user):
 def forum_answer_context(post, answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': [],
-        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
+        'child_answers': []
     }
     child_answers = ForumAnswer.objects.filter(post=post, parent_answer=answer)
     for child in child_answers:
@@ -59,8 +65,7 @@ def forum_post_context(post, current_user):
         answers_context.append(forum_answer_context(post, answer, current_user))
     context = {
         'question': post,
-        'answers': answers_context,
-        'downvoted': post.downvoted_by.filter(id=current_user.id).count() > 0
+        'answers': answers_context
     }
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context
@@ -91,8 +96,7 @@ def forum_context(forum, current_user):
 def forum_discussion_answer_context(answer, current_user):
     context = {
         'answer': answer,
-        'child_answers': [],
-        'downvoted': answer.downvoted_by.filter(id=current_user.id).count() > 0
+        'child_answers': []
     }
 
     context = dict(context.items() + forum_vote_context(answer, current_user).items())

@@ -2,12 +2,16 @@
 {% load i18n %}
 
 <div class="post-details">
+    {% comment %}
+        >>> Post meta data <<<
+    {% endcomment %}
     <div class="post-header text-muted">
         <span id="upvote_post_{{ post.question.id }}">
             {% include 'objects/forum/upvote_post.html' %}
         </span>
         {% trans "Posted by" %}
-        {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+        {% if not post.question.anonymous and not post.dont_show %}
+            {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
         {% else %}
             {% trans "Anonymous" %}
         {% endif %}
@@ -26,16 +30,38 @@
         {% endblock answer_question_button %}
     </div>
 
-    <h3 class="post-name">
-        {{ post.question.name }}
-    </h3>
+    {% comment %}
+        >>> Post body <<<
+    {% endcomment %}
+    {% if not post.dont_show_at_all %}
+        <div class="post-text {% if post.dont_show %} hidden {% endif %}">
+            <h3 class="post-name">
+                {{ post.question.name }}
+            </h3>
+            {% if post.question.text %}
+                {{ post.question.text|linebreaks }}
+            {% endif %}
+        </div>
+    {% endif %}
 
-    <div class="post-text">
-        {% if post.question.text %}
-            {{ post.question.text|linebreaks }}
-        {% endif %}
-    </div>
+    {% comment %}
+        >>> Prevent bad content <<<
+    {% endcomment %}
+    {% if post.dont_show and not post.dont_show_at_all %}
+        <a class="display-flagged-post text-danger" href="#">
+            {% trans "This post was flagged as inaccurate or offensive. Click to reveal." %}
+        </a>
+    {% endif %}
+    {% if post.dont_show_at_all %}
+        <span class="text-danger">
+            {% trans "This post was deleted because it contains inaccurate or offensive material." %}
+        </span>
+    {% endif %}
 
+
+    {% comment %}
+        >>> Post footer <<<
+    {% endcomment %}
     <div class="post-footer">
         {% block answer_question_link %}
             <span class="answer-btn h6">

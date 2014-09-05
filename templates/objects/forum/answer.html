@@ -3,21 +3,52 @@
 
 <div class="answer-box {% if current_answer == answer.answer.id %}focus-answer{% endif %}" id="answer{{answer.answer.id}}">
     <div class="answer-box-contents">
-        <div class="answer-header">
+        {% comment %}
+            >>> Answer meta data <<<
+        {% endcomment %}
+        <div class="answer-header ">
             <small class="text-muted">
                 <span id="upvote_answer_{{ answer.answer.id }}">
                     {% include 'objects/forum/upvote_answer.html' %}
                 </span>
-                {% trans "Posted by" %} {% if not answer.answer.anonymous %} {% with answer.answer.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %} {% else %} {% trans "Anonymous" %} {% endif %}.
+                {% trans "Posted by" %}
+                {% if not answer.answer.anonymous and not answer.dont_show %}
+                    {% with answer.answer.posted_by as juser %}
+                        {% include 'objects/user_link.html' %}
+                    {% endwith %}
+                {% else %}
+                    {% trans "Anonymous" %}
+                {% endif %}.
                 {{ answer.answer.datetime|naturaltime }}
             </small>
-            <span class="text-muted pull-right">
-                
+        </div>
+
+        {% comment %}
+            >>> Answer body <<<
+        {% endcomment %}
+        {% if not answer.dont_show_at_all %}
+            <div class="answer-body {% if answer.dont_show %}hidden{% endif %}">
+                {{ answer.answer.text|linebreaks }}
+            </div>
+        {% endif %}
+
+        {% comment %}
+            >>> Prevent bad content <<<
+        {% endcomment %}
+        {% if answer.dont_show and not answer.dont_show_at_all %}
+            <a class="display-flagged-answer text-danger" href="#">
+                {% trans "This answer was flagged as inaccurate or offensive. Click to reveal." %}
+            </a>
+        {% endif %}
+        {% if answer.dont_show_at_all %}
+            <span class="text-danger">
+                {% trans "This answer was deleted because it contains inaccurate or offensive material." %}
             </span>
-        </div>
-        <div class="answer-body">
-            {{ answer.answer.text|linebreaks }}
-        </div>
+        {% endif %}
+
+        {% comment %}
+            >>> Answer footer <<<
+        {% endcomment %}
         <div class="answer-footer">
 
             {% block reply_form %}
