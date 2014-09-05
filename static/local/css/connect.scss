@@ -576,7 +576,7 @@ $dropdown-menu-bg-color: $connect-dark-blue;
             margin: 8px 4px;
             background-color: $gray-lighter;
             &.focus-answer { 
-                background-color: lighten($connect-light-blue, 40%);
+                background-color: lighten($connect-light-blue, 30%);
             }
 
             .answer-header .upvote-answer-form {
@@ -596,7 +596,7 @@ $dropdown-menu-bg-color: $connect-dark-blue;
                 .answer-box {
                     background-color: white;
                     &.focus-answer { 
-                        background-color: lighten($connect-light-blue, 40%);
+                        background-color: lighten($connect-light-blue, 30%);
                     }
                 }
             }
