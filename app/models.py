@@ -297,15 +297,16 @@ class CourseTopic(models.Model):
 
     def save(self, *args, **kwargs):
         tags = ForumTopicTag.objects.filter(topic=self)
+        super(CourseTopic, self).save(*args, **kwargs)
         if not len(tags):
             tag_name = ForumTag.create_tag_name(self.name)
+            forum = ForumCourse.objects.get(course=self.course).forum_ptr
             ForumTopicTag.objects.create(name=tag_name, tag_type=FORUMTAG_TOPIC, \
-                forum=ForumCourse.objects.get(course=self.course), topic=self)
+                forum=forum, topic=self)
         else:
             tag = tags[0]
             tag.name = ForumTag.create_tag_name(self.name)
             tag.save()
-        super(CourseTopic, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return str(self.name)
