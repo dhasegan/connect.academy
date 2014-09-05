@@ -195,7 +195,7 @@ class Populator:
             university = course.university
             students = list(jUser.objects.filter(user_type=USER_TYPE_STUDENT, university=university))
             nr_students = len(students)
-            nr_registered = int(1.0 * nr_students * random.randint(20,60) / 100.0)
+            nr_registered = int(1.0 * nr_students * random.randint(5,20) / 100.0)
             random.shuffle(students)
             for i in range(nr_registered):
                 is_approved = random.random() > 0.1
