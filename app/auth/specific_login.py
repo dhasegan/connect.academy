@@ -1,6 +1,3 @@
-import sys
-import os
-
 import requests
 
 _UNIVERSITY_LOGINS = [

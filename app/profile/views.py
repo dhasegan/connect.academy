@@ -87,18 +87,17 @@ def username_change_action(request):
     context = {
         'page': 'manage_account'
     }
+    user = get_object_or_404(jUser, id=request.user.id)
 
     form = ChangeUsernameForm(request.POST)
-
     if not form.is_valid():
         raise Http404
 
     new_username = form.cleaned_data['new_username']
     password = form.cleaned_data['password']
 
-    user = authenticate(username=request.user.username, password=password)
-
-    if not user:
+    auth_user = authenticate(username=user.username, password=password)
+    if not auth_user:
         context['error'] = render_to_string('objects/notifications/profile/incorrect_password.html', {})
         return render(request, "pages/auth/user_account.html", context)
 
@@ -106,11 +105,11 @@ def username_change_action(request):
     if jUser.objects.filter(username=new_username).count() > 0:
         context['error'] = render_to_string('objects/notifications/profile/username_exists.html', {})
         return render(request, "pages/auth/user_account.html", context)
+
     user.username = new_username
     user.save()
 
     context['success'] = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "username"})
-
     return render(request, "pages/auth/user_account.html", context)
 
 
