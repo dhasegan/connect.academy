@@ -25,6 +25,5 @@ Welcome aboard! You about to begin a journey that will revolutionize education f
   It will also load the initial fixture
 
 - Run `./manage.py runserver`
-- Login with username 'jack' and password 'theotherside'
 
 That's it. Now, buckle up! Ocean winds are cruel and most men don't survive.
