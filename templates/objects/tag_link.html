@@ -1,3 +1,17 @@
-<a 
-    href="{% if 'forum' in tag %}{% url 'course_page' tag.forum.course.slug  %}{% elif course %}{% url 'course_page' course.slug %}{% elif forum %}{% url 'course_page' forum.course.slug %}{% endif %}?page=connect&amp;filter={{ tag.name }}"
-> #{{ tag.name }} </a>
+<a href="{% spaceless %}
+{% if 'forum' in tag %}
+    {% if 'forumcourse' in tag.forum %}
+        {% url 'course_page' tag.forum.forumcourse.course.slug  %}?page=connect&amp;filter={{ tag.name }}
+    {% else %}
+        {% url 'forum_general' %}?filter={{ tag.name }}
+    {% endif %}
+{% elif course %}
+    {% url 'course_page' course.slug %}?page=connect&amp;filter={{ tag.name }}
+{% elif forum %}
+    {% if 'forumcourse' in forum %}
+        {% url 'course_page' forum.course.slug %}?page=connect&amp;filter={{ tag.name }}
+    {% else %}
+        {% url 'forum_general' %}?filter={{ tag.name }}
+    {% endif %}
+{% endif %}
+{% endspaceless %}"> #{{ tag.name }} </a>

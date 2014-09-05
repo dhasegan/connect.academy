@@ -11,7 +11,10 @@
         {% else %}
             {% trans "Anonymous" %}
         {% endif %}
-        {% trans "in" %} #{{ post.question.tag.name }}.
+        {% trans "in" %}
+        {% with post.question.tag as tag %}
+            {% include "objects/tag_link.html" %}.
+        {% endwith %}
         {{ post.question.datetime|naturaltime }}
         
         {% block answer_question_button %}
