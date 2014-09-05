@@ -1,0 +1,61 @@
+{% load humanize %}
+{% load i18n %}
+
+<div class="post-details">
+    <div class="post-header text-muted">
+        <span id="upvote_post_{{ post.question.id }}">
+            {% include 'objects/forum/upvote_post.html' %}
+        </span>
+        {% trans "Posted by" %}
+        {% if not post.question.anonymous %} {% with post.question.posted_by as juser %} {% include 'objects/user_link.html' %} {% endwith %}
+        {% else %}
+            {% trans "Anonymous" %}
+        {% endif %}
+        {% trans "in" %} #{{ post.question.tag.name }}.
+        {{ post.question.datetime|naturaltime }}
+        
+        {% block answer_question_button %}
+            <div class="answer-btn pull-right">
+                <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
+                    <button type="submit" class="btn-xs btn-primary">{% trans "Answer" %}</button>
+                </a>
+            </div>
+        {% endblock answer_question_button %}
+    </div>
+
+    <h3 class="post-name">
+        {{ post.question.name }}
+    </h3>
+
+    <div class="post-text">
+        {% if post.question.text %}
+            {{ post.question.text|linebreaks }}
+        {% endif %}
+    </div>
+
+    <div class="post-footer">
+        {% block answer_question_link %}
+            <span class="answer-btn h6">
+                <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">{% trans "Answer" %}</a>
+            </span> 
+            {% if not post.downvoted %} &middot; {% endif %}
+        {% endblock answer_question_link %}
+
+        {% block post_flag %}
+            {% if not post.downvoted %}
+                <span class="post-flag">
+                    <span class="flag-content h6">
+                        <form class="flag-post-form form-inline" role="form" action="{% url 'downvote_post' %}" method="post">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="post_id" value="{{ post.question.id }}">
+                            <a type="submit" class="flag-btn flag-post-link" href="#">{% trans "Flag" %} <span class="glyphicon glyphicon-flag"></span> </a>
+                        </form>
+                    </span>
+                </span>
+            {% endif %}
+        {% endblock post_flag %}
+    </div>
+
+    <hr>
+</div>
