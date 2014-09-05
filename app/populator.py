@@ -258,8 +258,10 @@ class Populator:
 
 
     def populate_forum_post(self, forum):
-        course = forum.course
-        students = course.students.all()
+        students = jUser.objects.all()
+        if forum.forum_type == FORUM_COURSE:
+            course = forum.course
+            students = course.students.all()
         posted_by = random.choice(students)
         name = self.random_word() + " " + self.random_word()
         text = ""
@@ -280,8 +282,10 @@ class Populator:
 
     def populate_forum_answer(self, forum_post):
         forum = forum_post.forum
-        course = forum.course
-        students = course.students.all()
+        students = jUser.objects.all()
+        if forum.forum_type == FORUM_COURSE:
+            course = forum.course
+            students = course.students.all()
         posted_by = random.choice(students)
         text = ""
         for i in range(random.randint(10,50)):
@@ -320,8 +324,10 @@ class Populator:
     def populate_forum_upvotes(self):
         forums = Forum.objects.all()
         for forum in forums:
-            course = forum.course
-            students = list(course.students.all())
+            students = jUser.objects.all()
+            if forum.forum_type == FORUM_COURSE:
+                course = forum.course
+                students = list(course.students.all())
             posts = forum.forumpost_set.all()
             for post in posts:
                 self.populate_forum_upvotes_object(post, students)
