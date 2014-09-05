@@ -201,6 +201,7 @@ var CoursePage = (function() {
     };
 
     me.displayFlaggedClick = function(event) {
+        event.preventDefault();
         $(this).toggleClass('hidden');
         $(this).parents(s.reviewBlockSelector).find('.review').toggleClass('hidden');
     };
