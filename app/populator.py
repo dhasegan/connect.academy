@@ -328,7 +328,7 @@ class Populator:
     def populate_forum_upvotes(self):
         forums = Forum.objects.all()
         for forum in forums:
-            students = jUser.objects.all()
+            students = list(jUser.objects.all())
             if forum.forum_type == FORUM_COURSE:
                 course = forum.forumcourse.course
                 students = list(course.students.all())
