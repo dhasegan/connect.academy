@@ -71,7 +71,7 @@ def review_context(comment, current_user=None):
     nr_downvotes = downvotes.count()
     context_comment['upvotes'] = nr_upvotes
     context_comment['downvotes'] = nr_downvotes
-    if nr_downvotes > 3:
+    if nr_downvotes >= 3:
         context_comment['dont_show'] = True
 
     if upvotes.filter(id=current_user.id).count() > 0:

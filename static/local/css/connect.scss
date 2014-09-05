@@ -424,11 +424,10 @@ $course-img-max-size:           150px;
 }
 
 // Review display
-
-
 // Activity and info pages
 .course-info .info-body .reviews-display,
-.activity-timeline .review-activity {
+.activity-timeline .review-activity,
+.comments-page {
     .review-block {
         .review {
             .review-text {

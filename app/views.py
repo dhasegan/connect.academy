@@ -1,7 +1,7 @@
 import json
 
 from django.core.context_processors import csrf
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -45,7 +45,13 @@ def all_comments(request):
     context = {
         'page': 'all_comments',
     }
-    context['comments'] = Review.objects.all()
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    reviews_context = []
+    reviews = Review.objects.all()
+    for review in reviews:
+        reviews_context.append( review_context(review, user) )
+    context['comments'] = reviews_context
 
     return render(request, 'pages/comments.html', context)
 

@@ -2,7 +2,7 @@
 {% load i18n %}
 
 <div class="review-block">
-    {% if user_auth or not comment.dont_show %}
+    {% if not comment.dont_show %}
         <div class="review">
             {% comment %}
                 Review header
@@ -32,7 +32,7 @@
             {% comment %}
                 Comment Rating system
             {% endcomment %}
-            {% if user_auth and not comment.downvoted %}
+            {% if not comment.downvoted %}
                 <div class="review-flag">
                     <div class="flag-content text-muted">
                         <small> {% trans "Innapropriate?" %}
@@ -47,15 +47,9 @@
                 </div>
             {% endif %}
         </div>
-    {% endif %}
-
-    {% if comment.dont_show %}
+    {% else %}
         <a class="comment-flag" href="#">
-            {% if user_auth %}
-                {% trans "This review was flagged as inaccurate or offensive. Click to reveal." %}
-            {% else %}
-                {% trans "This review was flagged as inaccurate or offensive. Log in to view it." %}
-            {% endif %}
+            {% trans "This review was flagged as inaccurate or offensive. Click to reveal." %}
         </a>
     {% endif %}
 </div>
