@@ -5,14 +5,15 @@ from app.context_processors import activity_context, paginated
 from app.models import *
 
 def profile_activities(request, user):
-    activities_list = list(CourseActivity.objects.filter(user=user).reverse())
+    activities_list = Activity.objects.filter(user=user).reverse()
     activities_list = [x for x in activities_list if 
-                                (not hasattr(x, "forumpostactivity") 
-                                 or not x.forumpostactivity.forum_post.anonymous)
-                            and (not hasattr(x, "forumansweractivity")
-                                or not x.forumansweractivity.forum_answer.anonymous)
-                            and (not hasattr(x, "reviewactivity")
-                                or not x.reviewactivity.review.anonymous)]
+                                (not x.get_type() == "ForumPostActivity" 
+                                 or not x.generalactivity.forumpostactivity.forum_post.anonymous)
+                            and (not x.get_type() == "ForumAnswerActivity"
+                                or not x.generalactivity.forumansweractivity.forum_answer.anonymous)
+                            and (not x.get_type() == "ReviewActivity"
+                                or not x.courseactivity.reviewactivity.review.anonymous)]
+
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
                              key=lambda a: a['activity'].timestamp,
@@ -28,11 +29,11 @@ def new_profile_activities(request,user):
     activities_list = list(CourseActivity.objects.filter(user=user, id__gt=last_id).reverse())
     activities_list = [x for x in activities_list if 
                                 (not hasattr(x,"forumpostactivity") 
-                                 or not x.forumpostactivity.forum_post.anonymous)
+                                 or not x.generalactivity.forumpostactivity.forum_post.anonymous)
                             and (not hasattr(x,"forumansweractivity")
-                                or not x.forumansweractivity.forum_answer.anonymous)
+                                or not x.generalactivity.forumansweractivity.forum_answer.anonymous)
                             and (not hasattr(x, "reviewactivity")
-                                or not x.reviewactivity.review.anonymous)]
+                                or not x.courseactivity.reviewactivity.review.anonymous)]
     
     activities_list = [a for a in activities_list if a.can_view(user)]
 
