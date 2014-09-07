@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load connect_extras %}
 
 <div id="submitHomework{{hw.homework.id}}{{hw_modal_spec}}" class="modal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -6,16 +7,16 @@
 
             <div class="modal-header">
                 <a class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
-                <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>{% if hw.previous_submission %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</b></h3>
+                <h3 class="modal-title" id="registrationModalLabel{{jcourse.id}}"><b>{% if hw.submitted %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</b></h3>
             </div>
 
             <form class="form" action='/course/{{course.slug}}/submit_homework' method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="modal-body">
-                    {% if hw.previous_submission %}
+                    {% if hw.submitted %}
                         <div class="text-muted">
-                            {% trans "Resubmitting a homework will overwrite previous submissions." %}
+                            {% trans "Resubmitting a homework file will overwrite previous submissions." %}
                         </div>
                     {% endif %}
 
@@ -31,11 +32,38 @@
                     <div class="form-group">
                         <label>{% trans "Upload your homework" %}:</label>
 
-                        {% with "True" as required %}
-                        {% with "document" as fname %}
-                            {% include 'objects/file_input.html' %}
-                        {% endwith %}
-                        {% endwith %}
+                        {% if hw.homework.number_files == 1 %}
+                            {% with "True" as required %}
+                            {% with "document1" as fname %}
+                                {% include 'objects/file_input.html' %}
+                            {% endwith %}
+                            {% endwith %}
+                            {% for prev in hw.previous_submissions %}
+                                {% if prev.file_number|str == "1" %}
+                                    <small class="text-success"> {% trans "You already submitted" %}
+                                        <a target="_blank" href="{{ prev.document.url }}">{% trans "this document" %}</a>
+                                    </small>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <ol>
+                            {% for index in hw.homework.number_files|get_range %}
+                                {% with istr=forloop.counter|str  %}
+                                    {% with fname="document"|add:istr %}
+                                        <li> {% include 'objects/file_input.html' %}
+                                        {% for prev in hw.previous_submissions %}
+                                            {% if prev.file_number|str == istr %}
+                                                <small class="text-success"> {% trans "You already submitted" %}
+                                                    <a target="_blank" href="{{ prev.document.url }}">{% trans "this document" %}</a>
+                                                </small>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </li>
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                            </ol>
+                        {% endif %}
                     </div>
 
                 </div>
@@ -55,5 +83,5 @@
     </div>
 </div>
 
-<button class="btn {% if not hw.previous_submission %} btn-danger {% else %} btn-primary {% endif %}"
-data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}{{hw_modal_spec}}"  id='submitHomeworkButton{{hw.homework.id}}{{hw_modal_spec}}'>{% if hw.previous_submission %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</button>
+<button class="btn {% if not hw.submitted %} btn-danger {% else %} btn-primary {% endif %}"
+data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}{{hw_modal_spec}}"  id='submitHomeworkButton{{hw.homework.id}}{{hw_modal_spec}}'>{% if hw.submitted %}{% trans "Resubmit homework" %}{% else %}{% trans "Submit homework" %}{% endif %}</button>

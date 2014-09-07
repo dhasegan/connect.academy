@@ -15,7 +15,7 @@
                         {% if hw.can_submit %}
                             <div class='pull-right btn-small'>
                              
-                                <button class="btn {% if not hw.previous_submission %} btn-danger {% else %} btn-primary {% endif %}" data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}"  id='submitHWButton{{hw.homework.id}}'>{% if hw.previous_submission %}Resubmit{% else %}Submit{% endif %} Homework</button>
+                                <button class="btn {% if not hw.submitted %} btn-danger {% else %} btn-primary {% endif %}" data-toggle="modal" data-target="#submitHomework{{hw.homework.id}}"  id='submitHWButton{{hw.homework.id}}'>{% if hw.submitted %}Resubmit{% else %}Submit{% endif %} Homework</button>
                             
                             </div>
                         {% endif %}

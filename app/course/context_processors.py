@@ -91,6 +91,15 @@ def course_reviews_context(course, current_user=None):
         context.append(review_context(review, current_user))
     return context
 
+def course_homework_count_submitted(course, homework_request):
+    students = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
+    submissions = CourseHomeworkSubmission.objects.filter(homework_request=homework_request)
+    cnt_submitted = 0
+    for st in students:
+        files_submitted = submissions.filter(submitter=st.student)
+        if files_submitted.count() == homework_request.number_files:
+            cnt_submitted += 1
+    return cnt_submitted
 
 def course_homework_context(course, current_user):
     current_time = pytz.utc.localize(datetime.now())
@@ -105,18 +114,18 @@ def course_homework_context(course, current_user):
         is_student = current_user.is_student_of(course)
         can_submit_homework = is_student and is_allowed and within_deadline
         
-        homework_submission = None
-        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
-        if homework_submissions:
-            homework_submission = homework_submissions[0]
+        homework_submissions = []
+        if current_user.is_student():
+            homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
 
-        homework_submitted = hw.coursehomeworksubmission_set.all().count()
+        homework_submitted = course_homework_count_submitted(course, hw)
 
         context.append({
             "homework": hw,
             "can_submit": can_submit_homework,
             "is_allowed": is_allowed,
-            "previous_submission": homework_submission,
+            "previous_submissions": homework_submissions,
+            "submitted": len(homework_submissions) == hw.number_files,
             "stats": {
                 "submitted": homework_submitted,
                 "students": nr_students

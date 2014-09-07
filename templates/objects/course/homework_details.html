@@ -3,8 +3,12 @@
 
 <div class="homework-content">
     <div class="h4 text-primary"> 
-    	{% if hw.previous_submission %}
-    		<a target="_blank" href="{{hw.previous_submission.document.url}}">{{ hw.homework.name }}</a> 
+    	{% if hw.previous_submissions %}
+        {% comment %}
+        TODO!!!
+            <a target="_blank" href="{{hw.previous_submission.document.url}}">{{ hw.homework.name }}</a> 
+            
+        {% endcomment %}
     	{% else %}
     		{{ hw.homework.name }}
     	{% endif %}

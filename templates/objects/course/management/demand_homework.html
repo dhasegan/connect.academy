@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load connect_extras %}
 
 <form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post">
     {% csrf_token %}
@@ -24,6 +25,15 @@
     <div class="form-group">
         <label for="homeworkDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
         <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" maxlength="1000" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="nr_files{{course.id}}">{% trans "Files requested" %}</label>
+        <select class="form-control" name="nr_files" id="nr_files{{course.id}}">
+            {% for i in 10|get_range %}
+                <option value="{{ forloop.counter }}"> {{ forloop.counter }} </option>
+            {% endfor %} 
+        </select>
     </div>
 
     <div class="form-group">

@@ -6,7 +6,7 @@
     </div>
 
     <div class="col-md-5">
-        {% if hw.previous_submission or hw.can_submit %}
+        {% if hw.submitted or hw.can_submit %}
             <div class="hw-submit">
                 <div class="hw-stats">
                     <div class="text-muted"> 
@@ -18,7 +18,7 @@
                     </div>
 
                 </div>
-                {% if hw.previous_submission %}
+                {% if hw.submitted %}
                     <small class="text-success">{% trans "You already submitted this homework" %}</small>
                 {% endif %}
                 {% if hw.can_submit %}

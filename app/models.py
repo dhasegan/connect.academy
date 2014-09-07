@@ -9,7 +9,10 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
 from django.core.urlresolvers import reverse
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django import forms
+
+from app.helpers import get_slug_for
 
 
 ###########################################################################
@@ -270,12 +273,7 @@ class Course(models.Model):
         return course_path
 
     def save(self, *args, **kwargs):
-        original_slug = slugify(self.name)
-        appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
-        if not appendix:
-            self.slug = original_slug
-        else:
-            self.slug = original_slug + "-" + str(appendix)
+        self.slug = get_slug_for(Course, self.pk, self.name)
         super(Course, self).save(*args, **kwargs)
         ForumCourse.objects.get_or_create(course=self)
 
@@ -586,13 +584,24 @@ class CourseDocument(models.Model):
         super(CourseDocument, self).save(*args, **kwargs)
         DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
 
+HOMEWORK_MIN_FILES = 1
+HOMEWORK_MAX_FILES = 10
+
 class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
-    deadline = models.ForeignKey('Deadline')
-    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
     course = models.ForeignKey('Course')
+    deadline = models.ForeignKey('Deadline')
     submitter = models.ForeignKey('jUser')
+    course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
+    number_files = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
+                                                              MaxValueValidator(HOMEWORK_MAX_FILES)])
+    slug = models.SlugField(max_length=200)
+
+    def save(self, *args, **kwargs):
+        self.slug = get_slug_for(CourseHomeworkRequest, self.pk, self.name)
+        super(CourseHomeworkRequest, self).save(*args, **kwargs)
+        HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
 
     def delete(self, *args, **kwargs):
         deadline = self.deadline
@@ -602,10 +611,6 @@ class CourseHomeworkRequest(models.Model):
     def __unicode__(self):
         return str(self.name)
 
-    def save(self, *args, **kwargs):
-        super(CourseHomeworkRequest, self).save(*args, **kwargs)
-        HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
-
 class CourseHomeworkSubmission(models.Model):
     homework_request = models.ForeignKey('CourseHomeworkRequest')
     document = models.FileField(upload_to='course/homework/')
@@ -614,11 +619,13 @@ class CourseHomeworkSubmission(models.Model):
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField()
     name = models.CharField(max_length=200)
+    file_number = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
+                                                             MaxValueValidator(HOMEWORK_MAX_FILES)])
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.submit_time = timezone.now()
-        self.name = slugify(self.submitter.first_name + "-" + self.submitter.last_name + "-" + self.homework_request.name)
+        self.name = slugify(self.submitter.first_name + "_" + self.submitter.last_name + " " + self.homework_request.name + " (" + str(self.file_number) + ")")
         super(CourseHomeworkSubmission, self).save(*args, **kwargs)
 
     def __unicode__(self):

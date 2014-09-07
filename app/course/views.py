@@ -218,14 +218,17 @@ def submit_homework(request, slug):
 
     homework_request = form.cleaned_data['homework_request']
 
-    previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request)
-    for prev_hw in previous_homework:
-        prev_hw.delete()
-
-    docfile = form.cleaned_data['document']
-    course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
-                                               submitter=user, homework_request=homework_request)
-    course_homework.save()
+    for idx in range(HOMEWORK_MIN_FILES, homework_request.number_files + 1):
+        docfile = form.cleaned_data.get('document' + str(idx))
+        if docfile:
+            # Delete previous
+            previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request, file_number=idx)
+            for prev_hw in previous_homework:
+                prev_hw.delete()
+            # Create new
+            course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
+                                                       submitter=user, homework_request=homework_request, file_number=idx)
+            course_homework.save()
 
     return redirect(form.cleaned_data['url'])
 
@@ -258,7 +261,8 @@ def submit_homework_request(request, slug):
     deadline.save()
     homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
                                              course=form.cleaned_data['course'], submitter=user, 
-                                             deadline=deadline, course_topic=form.cleaned_data["topic"])
+                                             deadline=deadline, course_topic=form.cleaned_data["topic"],
+                                             number_files=form.cleaned_data['nr_files'])
     homework_request.save()
 
     return redirect(form.cleaned_data['url'])
