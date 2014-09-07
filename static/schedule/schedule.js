@@ -88,7 +88,6 @@ $(document).ready(function() {
                       if(data.status === 'OK'){
                         for(var i=0;i<data.appointments.length;i++){
                           appointment = data.appointments[i];
-                          alert(appointment);
                           eventData.events.push(appointment);
                         }
                         
@@ -105,6 +104,9 @@ $(document).ready(function() {
                     url:"add_course_appointment",
                     data: form.serialize(),
                     success: function(data){
+                      
+                      data = $.parseJSON(data);
+                      
                       if(data.status === 'OK'){
                         for(var i=0;i<data.appointments.length;i++){
                           appointment = data.appointments[i];

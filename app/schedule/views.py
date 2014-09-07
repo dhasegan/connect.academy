@@ -293,10 +293,10 @@ def add_course_appointment(request):
 
     if copy_to_otherweeks:
         start_times = []
-        length = end_utc - start_utc
+        length = end_time - start_time
         for i in range(1,int(weeks)):
-            start_time = start_utc + timedelta(weeks=i)
-            start_times.append(start_time)
+            start_time_weeks = start_time + timedelta(weeks=i)
+            start_times.append(start_time_weeks)
 
         for time in start_times:
             appointment = CourseAppointment.objects.create(start=time,\
