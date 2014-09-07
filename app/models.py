@@ -103,6 +103,13 @@ class jUser(User):
                 return True
         return False
 
+    def is_following(self,post):
+        forum_type = post.forum.forum_type
+        if forum_type == FORUM_COURSE:
+            course = post.forum.forumcourse.course
+            return self.is_student_of(course) or self.is_professor_of(course) or self.posts_following.filter(id=post.id).exists()
+        else:
+            return self.posts_following.filter(id=post.id).exists()
 
     def __unicode__(self):
         return str(self.username)
@@ -869,8 +876,14 @@ class ForumPost(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
-        ForumPostActivity.objects.create(user=self.posted_by, forum_post=self)
-        self.followed_by.add(self.posted_by)
+        if self.forum.forum_type == FORUM_GENERAL:
+            self.followed_by.add(self.posted_by)
+        elif self.forum.forum_type == FORUM_COURSE:
+            course = self.forum.forumcourse.course
+            user = self.posted_by
+            if not (user.is_professor_of(course) or user.is_student_of(course)):
+                self.followed_by.add(user)
+
 
 class ForumAnswer(models.Model):
     post = models.ForeignKey('ForumPost')
@@ -893,7 +906,6 @@ class ForumAnswer(models.Model):
             self.datetime = timezone.now()
         super(ForumAnswer, self).save(*args, **kwargs)
         ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
-        self.post.followed_by.add(self.posted_by)
         
 
 class WikiContributions(models.Model):

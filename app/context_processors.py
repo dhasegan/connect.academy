@@ -45,7 +45,6 @@ def dashboard_activities(request,user):
                                   )
                                 |
                                 Q (
-                                    forum_post__forum__forum_type=FORUM_GENERAL,
                                     forum_post__followed_by = user
                                 ), ~Q(user=user))).reverse())
 
@@ -61,7 +60,6 @@ def dashboard_activities(request,user):
                                   )
                                 |
                                 Q (
-                                    forum_answer__post__forum__forum_type = FORUM_GENERAL,
                                     forum_answer__post__followed_by = user
                                 ), ~Q(user=user))).reverse())
 
@@ -93,9 +91,8 @@ def new_dashboard_activities(request,user):
                                   )
                                 |
                                 Q (
-                                    forum_post__forum__forum_type=FORUM_GENERAL,
                                     forum_post__followed_by= user
-                                )), Q(id__gt=last_id)).reverse()
+                                )),~Q(user=user), Q(id__gt=last_id)).reverse()
 
     #activities_list += [ a for a in all_post_activities if user.is_student_of(a.get_course()) \
     #                                    or user.is_professor_of(a.get_course) \
@@ -109,9 +106,8 @@ def new_dashboard_activities(request,user):
                                   )
                                 |
                                 Q (
-                                    forum_answer__post__forum__forum_type=FORUM_GENERAL,
                                     forum_answer__post__followed_by = user
-                                )), Q(id__gt=last_id)).reverse()
+                                )),~Q(user=user), Q(id__gt=last_id)).reverse()
 
     activities_list = sorted(own_course_activities +  forum_post_activities + forum_answer_activities, 
                 key = lambda activity: activity.timestamp, 

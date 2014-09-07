@@ -22,18 +22,20 @@
                             {% else %}
                                 {% trans "Someone" %}
                             {% endif %}
-                            posted on the forum of 
+                            {% trans "posted in" %}
                             {% if activity.get_instance.forum_post.forum.forumcourse %}
-                                <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}"> {{ activity.get_instance.forum_post.forum.forumcourse.course.name }} </a>
+                                 the forum of  <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}"> {{ activity.get_instance.forum_post.forum.forumcourse.course.name }} </a>
                             {% else %}
-                                <a href="{% url 'forum_general' %}?post={{post.question.id}}"> connect.academy </a>
+                                <a href="{% url 'forum_general' %}?post={{post.question.id}}"> Connect </a>
                             {% endif %}
                             <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>
-                            {% trans "in" %} 
+                            {% trans "under" %} 
                             {% with post.question.tag as tag %}
-                                {% with activity.get_instance.forum_post.forum.forumcourse.course as course %}
+                              
+                                {% with activity.get_instance.forum_post.forum as forum %}
                                     {% include "objects/tag_link.html" %}
                                 {% endwith %}
+
                             {% endwith %}
                             
                             

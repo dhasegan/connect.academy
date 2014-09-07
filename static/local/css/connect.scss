@@ -450,6 +450,7 @@ $course-img-max-size:           150px;
 .review-flag,
 .post-flag,
 .answer-flag {
+    display: inline;
     .flag-content {
         .flag-btn {
             &:hover,
@@ -461,6 +462,7 @@ $course-img-max-size:           150px;
         }
     }
 }
+
 
 // Welcome page
 $register-panel-padding-top:        75px;
@@ -631,6 +633,10 @@ $dropdown-menu-bg-color: $connect-dark-blue;
     ol > li {
         margin-top: 4px;
     }
+}
+
+.post-follow-btn {
+    margin-right:5px;
 }
 
 // Dashboard page

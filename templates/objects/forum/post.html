@@ -21,6 +21,8 @@
         {% endwith %}
         {{ post.question.datetime|naturaltime }}
         
+        
+
         {% block answer_question_button %}
             <div class="answer-btn pull-right">
                 <a data-toggle="collapse" data-parent="#answers{{post.question.id}}" href="#answerquestion{{post.question.id}}">
@@ -28,6 +30,13 @@
                 </a>
             </div>
         {% endblock answer_question_button %}
+
+        <div class="post-follow-container pull-right ">
+            {% with post.question as question %}
+                {% include 'objects/forum/follow_unfollow_post.html' %}
+            {% endwith %}
+        </div>
+
     </div>
 
     {% comment %}
@@ -78,7 +87,7 @@
                             {% csrf_token %}
 
                             <input type="hidden" name="post_id" value="{{ post.question.id }}">
-                            <a type="submit" class="flag-btn flag-post-link" href="#">{% trans "Flag" %} <span class="glyphicon glyphicon-flag"></span> </a>
+                            <a type="submit" class="flag-btn flag-post-link" href="#">{% trans "Flag as inappropriate" %} <span class="glyphicon glyphicon-flag"></span> </a>
                         </form>
                     </span>
                 </span>

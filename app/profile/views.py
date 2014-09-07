@@ -21,7 +21,7 @@ def profile(request, username):
     
     context = {
         'page': 'profile',
-        'user_auth': user
+        'user_auth': request.user.juser
     }
     context.update(csrf(request))
     
