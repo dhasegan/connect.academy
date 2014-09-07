@@ -73,9 +73,6 @@ $(document).ready(function() {
           buttons: {
              save : function() {
                 
-                var startField = dialogContent.find("#start");
-                var endField = dialogContent.find("#end");
-
                 $calendar.weekCalendar("removeUnsavedEvents");
                 dialogContent.dialog("close");
                 // if the user is not a professor, or if the user is a professor and he/she wants to add a personal appointment
@@ -96,8 +93,6 @@ $(document).ready(function() {
                         }
                         
                         data: eventData;
-
-                        // Refresh the page (quick hack until the event disappear bug is fixed)
                         location.reload();
                       }
                     }
@@ -111,21 +106,13 @@ $(document).ready(function() {
                     data: form.serialize(),
                     success: function(data){
                       if(data.status === 'OK'){
-                        eventData.events.push({
-                          'id' : data.eventId,
-                          'title': titleField.val(),
-                          'body': bodyField.val(), 
-                          'start': new Date(startField.val()), 
-                          'end': new Date(endField.val()),
-                          'courseName': courseField.val(),
-                          'type':'Course', 
-                          'modifiable': true,
-                        });
-
+                        for(var i=0;i<data.appointments.length;i++){
+                          appointment = data.appointments[i];
+                          eventData.events.push(appointment);
+                        }
+                    
                         data: eventData;
-
-
-
+                        location.reload();
                       }
                     }
 
@@ -144,7 +131,6 @@ $(document).ready(function() {
       var endField = dialogContent.find("select[name='end']").val(calEvent.end);
       dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
       setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
-      //setupCourseFields(courses,calEvent,courseField);
       dialogContent.find("select[name='type']").attr('disabled', false);
       dialogContent.find("select[name='course_id']").attr('disabled', false);
     },
@@ -313,12 +299,17 @@ $(document).ready(function() {
        }
 
        
+       copyLabel.hide();
+
        dialogContent.find("input[name='eventId']").val(calEvent.id);
        
        setupCourseFields(calEvent);
       
        if(calEvent.type === 'Personal'){
         courseLabel.hide();
+       }
+       else{
+        courseLabel.show();
        }
         
        dialogContent.dialog({
@@ -341,8 +332,17 @@ $(document).ready(function() {
                     url:"edit_course_appointment",
                     data: form.serialize(),
                     success: function(data){
-                      //alert("Successfuly edited event");
-                      $calendar.weekCalendar("updateEvent", calEvent);
+                      
+                      data = $.parseJSON(data);
+                      if(data.status === 'OK'){
+                        for(var i=0;i<data.appointments.length;i++){
+                          var appointment = data.appointments[i];
+                          eventData.events.push(appointment);
+                        }
+                        
+                        data: eventData;
+                        location.reload();
+                      }
                       $calendar.weekCalendar("refresh");
                       dialogContent.dialog("close");
                     }
@@ -353,9 +353,18 @@ $(document).ready(function() {
                       url:"edit_personal_appointment",
                       data: form.serialize(),
                       success: function(data){
-                        //alert("Successfuly edited event");
+
+                        data = $.parseJSON(data);
+                        
+                        if(data.status === "OK"){
+                          for(var i=0; i<data.appointments.length;i++){
+                            var appointment = data.appointments[i];
+                            eventData.events.push(appointment)
+                          }
+                        }
                         $calendar.weekCalendar("updateEvent", calEvent);
                         $calendar.weekCalendar("refresh");
+                        location.reload();
                       }
                     });
 
