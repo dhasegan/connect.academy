@@ -103,6 +103,13 @@ class jUser(User):
                 return True
         return False
 
+    def is_following(self,post):
+        forum_type = post.forum.forum_type
+        if forum_type == FORUM_COURSE:
+            course = post.forum.forumcourse.course
+            return self.is_student_of(course) or self.is_professor_of(course) or self.posts_following.filter(id=post.id).exists()
+        else:
+            return self.posts_following.filter(id=post.id).exists()
 
     def __unicode__(self):
         return str(self.username)
@@ -869,9 +876,14 @@ class ForumPost(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
-        if self.forum.forum_type == FORUM_COURSE:
-            ForumPostActivity.objects.create(user=self.posted_by, course=self.forum.forumcourse.course, forum_post=self)
-        self.followed_by.add(self.posted_by)
+        if self.forum.forum_type == FORUM_GENERAL:
+            self.followed_by.add(self.posted_by)
+        elif self.forum.forum_type == FORUM_COURSE:
+            course = self.forum.forumcourse.course
+            user = self.posted_by
+            if not (user.is_professor_of(course) or user.is_student_of(course)):
+                self.followed_by.add(user)
+
 
 class ForumAnswer(models.Model):
     post = models.ForeignKey('ForumPost')
@@ -893,10 +905,7 @@ class ForumAnswer(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumAnswer, self).save(*args, **kwargs)
-        if self.post.forum.forum_type == FORUM_COURSE:
-            ForumAnswerActivity.objects.create(user=self.posted_by, course=self.post.forum.forumcourse.course, 
-                                                forum_answer=self)
-        self.post.followed_by.add(self.posted_by)
+        ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
         
 
 class WikiContributions(models.Model):
@@ -958,43 +967,59 @@ class CourseAppointment(Appointment):
 ############################### NewsFeed ##################################
 ###########################################################################
 
-# Base class for all activities
-class CourseActivity(models.Model):
+class Activity(models.Model):
     timestamp = models.DateTimeField()
-    course = models.ForeignKey('Course', related_name="activities")
     user = models.ForeignKey('jUser') # The user who performed the action
 
-    def get_subclass_type(self):
-        if hasattr(self,'forumpostactivity'):
-            return "ForumPostActivity"
-        elif hasattr(self, 'forumansweractivity'):
-            return "ForumAnswerActivity"
-        elif hasattr(self, 'homeworkactivity'):
-            return "HomeworkActivity"
-        elif hasattr(self, 'documentactivity'):
-            return "DocumentActivity"
-        elif hasattr(self, 'reviewactivity'):
-            return "ReviewActivity"
-        elif hasattr(self, 'wikiactivity'):
-            return "WikiActivity"
-        else:
-            return "CourseActivity"
+    def get_type(self):
+        if hasattr(self, 'generalactivity'):
+            if hasattr(self.generalactivity, 'forumpostactivity'):
+                return "ForumPostActivity"
+            elif hasattr(self.generalactivity, 'forumansweractivity'):
+                return "ForumAnswerActivity"
+            else:
+                return "GeneralActivity"
+        elif hasattr(self,'courseactivity'):
+            if hasattr(self.courseactivity, 'homeworkactivity'):
+                return "HomeworkActivity"
+            if hasattr(self.courseactivity, 'documentactivity'):
+                return "DocumentActivity"
+            if hasattr(self.courseactivity, 'reviewactivity'):
+                return "ReviewActivity"
+            if hasattr(self.courseactivity, 'wikiactivity'):
+                return "WikiActivity"
+            else:
+                return "CourseActivity"
+
+    def get_instance(self):
+        if hasattr(self, 'generalactivity'):
+            if hasattr(self.generalactivity, 'forumpostactivity'):
+                return self.generalactivity.forumpostactivity
+            elif hasattr(self.generalactivity, 'forumansweractivity'):
+                return self.generalactivity.forumansweractivity
+            else:
+                return self.generalactivity
+        elif hasattr(self,'courseactivity'):
+            if hasattr(self.courseactivity, 'homeworkactivity'):
+                return self.courseactivity.homeworkactivity
+            if hasattr(self.courseactivity, 'documentactivity'):
+                return self.courseactivity.documentactivity
+            if hasattr(self.courseactivity, 'reviewactivity'):
+                return self.courseactivity.reviewactivity
+            if hasattr(self.courseactivity, 'wikiactivity'):
+                return self.courseactivity.wikiactivity
+            else:
+                return self.courseactivity
 
     def can_view(self,user):
-        activity_type = self.get_subclass_type()
-
+        activity_type = self.get_type()
+        instance = self.get_instance()
         if activity_type == "ForumPostActivity":
-            tag = self.forumpostactivity.forum_post.tag
-            if tag.can_view(user, self.course):
-                return True
-            else:
-                return False
+            tag = instance.forum_post.tag
+            return tag.can_view(user, instance.get_course())
         elif activity_type == "ForumAnswerActivity":
-            tag = self.forumansweractivity.forum_answer.post.tag
-            if tag.can_view(user, self.course):
-                return True
-            else:
-                return False
+            tag = instance.forum_answer.post.tag
+            return tag.can_view(user, instance.get_course())
         elif activity_type == "HomeworkActivity":
             if self.homeworkactivity.homework.course.students.filter(id=user.id).exists() \
             or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists():
@@ -1004,22 +1029,57 @@ class CourseActivity(models.Model):
         else:
             return True
 
-
-    def __unicode__(self):
-        return self.get_subclass_type() + " Object"
-
     def save(self, *args, **kwargs):
         if not self.id:
-            self.timestamp = timezone.now()
-        super(CourseActivity, self).save(*args, **kwargs)
+            activity_type = self.get_type()
+            instance = self.get_instance()
+            if activity_type == "ReviewActivity":
+                self.timestamp = instance.review.datetime
+            elif activity_type == "ForumPostActivity":
+                self.timestamp = instance.forum_post.datetime
+            elif activity_type == "ForumAnswerActivity":
+                self.timestamp = instance.forum_answer.datetime
+            elif activity_type == "DocumentActivity":
+                self.timestamp = instance.document.submit_type
+            else:
+                self.timestamp = timezone.now()
+        super(Activity, self).save(*args, **kwargs)
+
+
+class GeneralActivity(Activity):
+    pass
+
+# Base class for all activities
+class CourseActivity(Activity):
+    course = models.ForeignKey('Course', related_name="activities")
+
+
+    def __unicode__(self):
+        return self.get_type() + " Object"
+
+    
 
 # When a user creates a new post
-class ForumPostActivity(CourseActivity):
+class ForumPostActivity(GeneralActivity):
     forum_post = models.ForeignKey('ForumPost')
 
+    def get_course(self):
+        forum = self.forum_post.forum
+        if forum.forum_type == FORUM_COURSE:
+            return forum.forumcourse.course
+        else:
+            return None
+
 # When a user answers to a post you are following
-class ForumAnswerActivity(CourseActivity):
+class ForumAnswerActivity(GeneralActivity):
     forum_answer = models.ForeignKey('ForumAnswer')
+
+    def get_course(self):
+        forum = self.forum_answer.post.forum
+        if forum.forum_type == FORUM_COURSE:
+            return forum.forumcourse.course
+        else:
+            return None
 
 # When a user (prof/TA) posts a new homework
 class HomeworkActivity(CourseActivity):

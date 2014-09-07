@@ -1,0 +1,19 @@
+{% comment %}
+This template expexts 
+{
+	'post': {
+		'is_following': (is the user following this post?),
+		'own_course': (is the user registered for this course?)
+	}
+	'question': <ForumPost object>
+}
+{% endcomment %}
+{% if not post.own_course %}
+<div class='post-follow-btn'>
+    <form class='post-follow-form' action='{% if post.is_following %}{% url "unfollow_post" %}{% else %}{% url 'follow_post' %}{% endif %}' method='POST'>
+    	{% csrf_token %}
+        <input type='hidden' name='post_id' value='{{question.id}}'/>
+        <button type='submit' class='btn-xs {% if post.is_following %} btn-danger {% else %} btn-success {% endif %}'>{% if post.is_following %} Unfollow {% else %} Follow {% endif %} </button>
+    </form>
+</div>
+{% endif %}

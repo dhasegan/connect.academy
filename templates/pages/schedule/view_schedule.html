@@ -14,7 +14,7 @@
       <form method="post" id="appointmentForm">
         {%csrf_token%}
         <div class="form-group">
-            Date: <span class="date_holder"></span> 
+            <b>Date:</b><span class="date_holder"></span> 
         </div>
 
         <div class="form-group">
@@ -37,7 +37,7 @@
 
         <input name="timezone_minutes" type="hidden"/>
         <input name="eventId" type="hidden"/>
-        
+
         <div class="form-group">
             <label for="body">Description:</label><textarea class="form-control to-reset" name="body"></textarea>
         </div>
@@ -60,14 +60,24 @@
             {% comment %}
               Dynamically show this is the professor chooses he/she wants to add a course appointment
             {% endcomment %}
-            <label for="course_name"> Course:</label><select class="form-control" name='course_name'></select>
-          </div>
+            <label for="course_id"> Course:</label>
+            <select class="form-control" name='course_id'>
+                  <option value="">{% trans 'Select Course' %} </option>
+                
+                {% for course in courses%}
+                  <option value="{{course.id}}"> {{course.name}} </option>
+                {% endfor %}
 
-          <div class="form-group" id="copyLabel">
-            <input  type="checkbox" name="copy" value="copy"/> <b> Copy in the next <input class="tiny-text-input to-reset" name="num_weeks" type="text" /> weeks.  </b>   
+            </select>
           </div>
 
       {% endif %}
+
+      <div class="form-group" id="copyLabel">
+            <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input to-reset" name="num_weeks" type="text" /> weeks.  </b>   
+      </div>
+          
+
       </form>
     </div>
 </div>
@@ -88,8 +98,6 @@
   eventData = {
     events : {{appointments|safe}}
   };
-
-  courses = {{ courses_managed | safe }};
 
   $("#appointmentForm").ready(function(){
 

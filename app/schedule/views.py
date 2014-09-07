@@ -42,10 +42,8 @@ def view_schedule(request):
     courses_managed_list = []
     if user.is_professor():
         courses_managed = user.courses_managed.all()
-        for course in courses_managed:
-            courses_managed_list.append(str(course.name))
-    
-    context['courses_managed'] = courses_managed_list
+
+    context['courses'] = courses_managed
 
     
     courses_enrolled = user.courses_enrolled.all()
@@ -101,7 +99,7 @@ def view_schedule(request):
         data = {}
         data['id'] = appointment.id
         
-        start_local = timezone.localtime(appointment.start,local_timezone) # the time to display to the user
+        start_local = timezone.localtime(appointment.start,local_timezone) 
         end_local = timezone.localtime(appointment.end,local_timezone)   
 
         data['start'] = format_date(start_local.strftime(date_format))
@@ -139,7 +137,59 @@ def add_personal_appointment(request):
                                                     ,location=location \
                                                     ,description=description \
                                                     ,user=user)
-    return_dict = {'status':'OK','eventId':appointment.id}
+
+    # Send the newly created appointment back to the client.
+    appointmentsJSON = []
+    local_timezone = timezone.get_current_timezone()
+
+    start_local = timezone.localtime(start,local_timezone)
+    end_local = timezone.localtime(end,local_timezone)
+    data = {}
+    data['id'] = appointment.id
+    data['start'] = format_date(start_local.strftime(date_format))
+    data['end'] = format_date(end_local.strftime(date_format))
+    data['title'] = location
+    data['body'] = description
+    data['modifiable'] = True
+    data['type'] = 'Personal'
+    
+    appointmentsJSON.append(json.dumps(data))
+
+    copy_to_otherweeks = form.cleaned_data['copy']
+    weeks = form.cleaned_data['num_weeks']
+    
+    if copy_to_otherweeks:
+        start_times = []
+        length = end - start
+        for i in range(1,int(weeks)):
+            start_time = start + timedelta(weeks=i)
+            start_times.append(start_time)
+
+        for time in start_times:
+            data = {}
+
+            start_local = timezone.localtime(time,local_timezone)
+            end_local = timezone.localtime(time+length,local_timezone)   
+            
+            data['start'] = format_date(start_local.strftime(date_format))
+            data['end'] = format_date(end_local.strftime(date_format))
+
+            data['title'] = location
+            data['body'] = description
+            data['modifiable'] = True
+            data['type'] = 'Personal'
+            
+            appointment = PersonalAppointment.objects.create(start=time,\
+                                                            end= time+length,\
+                                                            location=location,\
+                                                            description = description,\
+                                                            user=user)
+            data['id'] = appointment.id
+            
+            appointmentsJSON.append(json.dumps(data))
+
+    return_dict = {'status':'OK','appointments':appointmentsJSON}
+
     return HttpResponse(json.dumps(return_dict))
 
 @require_POST
@@ -166,6 +216,7 @@ def edit_personal_appointment(request):
     appointment.end = new_end_time
     appointment.save()
 
+    # return the newly created appointments back to the user
     return_dict = { 'status':'OK' }
     return HttpResponse(json.dumps(return_dict))
 
@@ -181,8 +232,9 @@ def remove_personal_appointment(request):
     else:
         raise Http404
 
-    return_dict = { 'status':'OK'}    
+    return_dict = {'status':'OK'}    
     return HttpResponse(json.dumps(return_dict))
+
 
 #only for professors
 @require_POST
@@ -190,7 +242,6 @@ def remove_personal_appointment(request):
 @require_professor
 @requires_csrf_token
 def add_course_appointment(request):
-    
     user = get_object_or_404(jUser, id=request.user.id)
     
     form = CourseAppointmentForm(request.POST)
@@ -223,12 +274,29 @@ def add_course_appointment(request):
                                                     description = description,\
                                                     course_topic= None) # None for now.
 
-    if copy_to_otherweeks == 'true' : # ugly, I know
+    appointmentsJSON = []
+    local_timezone = timezone.get_current_timezone()
+
+    start_local = timezone.localtime(start_time,local_timezone)
+    end_local = timezone.localtime(end_time,local_timezone)
+    data = {}
+    data['id'] = appointment.id
+    data['start'] = format_date(start_local.strftime(date_format))
+    data['end'] = format_date(end_local.strftime(date_format))
+    data['title'] = location
+    data['body'] = description
+    data['modifiable'] = True
+    data['type'] = 'Course'
+    data['courseName'] = appointment.course.name
+    
+    appointmentsJSON.append(json.dumps(data))
+
+    if copy_to_otherweeks:
         start_times = []
-        length = end_utc - start_utc
+        length = end_time - start_time
         for i in range(1,int(weeks)):
-            start_time = start_utc + timedelta(weeks=i)
-            start_times.append(start_time)
+            start_time_weeks = start_time + timedelta(weeks=i)
+            start_times.append(start_time_weeks)
 
         for time in start_times:
             appointment = CourseAppointment.objects.create(start=time,\
@@ -237,8 +305,25 @@ def add_course_appointment(request):
                                                             course = course_to_add_appointment,\
                                                             description = description,\
                                                             course_topic= None) # None for now.
-    
-    return_dict = { 'status':'OK'}    
+            
+            data = {}
+            data['id'] = appointment.id
+
+            start_local = timezone.localtime(time,local_timezone)
+            end_local = timezone.localtime(time+length,local_timezone)   
+            
+            data['start'] = format_date(start_local.strftime(date_format))
+            data['end'] = format_date(end_local.strftime(date_format))
+
+            data['title'] = location
+            data['body'] = description
+            data['modifiable'] = True
+            data['type'] = 'Course'
+            data['courseName'] = appointment.course.name
+            
+            appointmentsJSON.append(json.dumps(data))
+
+    return_dict = {'status':'OK', 'appointments':appointmentsJSON }    
     return HttpResponse(json.dumps(return_dict))    
 
 
@@ -262,14 +347,32 @@ def edit_course_appointment(request):
     new_start_time = form.cleaned_data['start']
     new_end_time = form.cleaned_data['end']
 
-    appointment = Appointment.objects.filter(id=id_to_edit).get()
+    appointment = CourseAppointment.objects.filter(id=id_to_edit).get()
         
     appointment.description = new_description
     appointment.location = new_location
     appointment.start = new_start_time
     appointment.end = new_end_time
     appointment.save()
-    return_dict = { 'status':'OK'}    
+
+    appointmentsJSON = []
+    local_timezone = timezone.get_current_timezone()
+
+    start_local = timezone.localtime(new_start_time,local_timezone)
+    end_local = timezone.localtime(new_end_time,local_timezone)
+    data = {}
+    data['id'] = appointment.id
+    data['start'] = format_date(start_local.strftime(date_format))
+    data['end'] = format_date(end_local.strftime(date_format))
+    data['title'] = appointment.location
+    data['body'] = appointment.description
+    data['modifiable'] = True
+    data['type'] = 'Course'
+    data['courseName'] = appointment.course.name
+    
+    appointmentsJSON.append(json.dumps(data))
+
+    return_dict = {'status':'OK','appointments':appointmentsJSON}    
     return HttpResponse(json.dumps(return_dict))
 
 @require_POST
@@ -296,8 +399,6 @@ def remove_course_appointment(request):
 @requires_csrf_token
 def resize_appointment(request):
    
-    print request.POST
-
     user = get_object_or_404(jUser, id=request.user.id)
     appointmentType = request.POST['type']
 

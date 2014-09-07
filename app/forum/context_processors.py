@@ -65,8 +65,13 @@ def forum_post_context(post, current_user):
         answers_context.append(forum_answer_context(post, answer, current_user))
     context = {
         'question': post,
-        'answers': answers_context
+        'answers': answers_context,
+        'is_following': current_user.is_following(post)
     }
+    if post.forum.forum_type == FORUM_COURSE:
+        course = post.forum.forumcourse.course
+        if course:
+            context['own_course'] = current_user.is_student_of(course) or current_user.is_professor_of(course)
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context
 
