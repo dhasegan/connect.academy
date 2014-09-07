@@ -1,6 +1,7 @@
 import json
 import urllib2
 from urlparse import urlparse
+import re # REGEX
 
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -284,6 +285,7 @@ def check_username(request):
 #   "Username is required" if the username is empty
 #   "Username exists" if a user with that username exists
 #   "OK" if the username is available
+    username_regex = re.compile("^[A-Za-z0-9\._-]{3,25}$")
     username = request.GET["username"]
     if username == "":
         return_dict = {
@@ -291,7 +293,17 @@ def check_username(request):
             "message": "Username is required"
         }
         return HttpResponse(json.dumps(return_dict))
-    if jUser.objects.filter(username=username, is_fake = False).count() > 0:
+    elif not username_regex.match(username):
+        return_dict = {
+            "status": "Error",
+            "message": "Username can only contain alphanumeric characters, underscores, hyphens or dots."
+        }
+        if len(username) < 3:
+            return_dict['message'] = "Username cannot have less than 3 characters."
+        elif len(username) > 25:
+            return_dict['message'] = "Username cannot have more thatn 25 characters."
+        return HttpResponse(json.dumps(return_dict))
+    elif jUser.objects.filter(username=username, is_fake = False).count() > 0:
         return_dict = {
             "status": "Error",
             "message": "Username exists"
@@ -314,6 +326,7 @@ def validate_registration(request):
 #   "OK" if they are both valid.
     username = request.GET['username']
     email = request.GET['email']
+    username_regex = re.compile("^[A-Za-z0-9\._-]{3,25}$")
 
     try:
         _, domain = email.split('@')
@@ -328,6 +341,12 @@ def validate_registration(request):
         return_dict = {
             "status": "Error",
             "message": "E-mail address exists"
+        }
+        return HttpResponse(json.dumps(return_dict))
+    elif not username_regex.match(username):
+        return_dict = {
+            "status": "Error",
+            "message": "Username not valid."
         }
         return HttpResponse(json.dumps(return_dict))
     elif jUser.objects.filter(username=username, is_fake = False).count() > 0:
