@@ -5,7 +5,7 @@ from app.context_processors import activity_context, paginated
 from app.models import *
 
 def profile_activities(request, user):
-    activities_list = Activity.objects.filter(user=user).reverse()
+    activities_list = Activity.objects.filter(user=user).order_by('timestamp').reverse()
     activities_list = [x for x in activities_list if 
                                 (not x.get_type() == "ForumPostActivity" 
                                  or not x.generalactivity.forumpostactivity.forum_post.anonymous)
