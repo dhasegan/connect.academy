@@ -562,8 +562,8 @@ class Review(models.Model):
             self.datetime = timezone.now()
             just_created = True
         super(Review, self).save(*args, **kwargs)
-        #if just_created:
-        ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
+        if just_created:
+            ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
 
     def __unicode__(self):
         return str(self.review)
@@ -875,8 +875,9 @@ class ForumPost(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.datetime = timezone.now()
+            ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
         super(ForumPost, self).save(*args, **kwargs)
-        ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
+        
         if self.forum.forum_type == FORUM_GENERAL:
             self.followed_by.add(self.posted_by)
         elif self.forum.forum_type == FORUM_COURSE:
@@ -905,8 +906,8 @@ class ForumAnswer(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.datetime = timezone.now()
+            ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
         super(ForumAnswer, self).save(*args, **kwargs)
-        ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
         
 
 class WikiContributions(models.Model):
