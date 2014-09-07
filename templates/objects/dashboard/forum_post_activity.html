@@ -51,7 +51,11 @@
                             {{ post.question.text|truncatechars:"200"|linebreaks }}
                         {% endif %}
                         {% if post.question.text|length > 200 %}
-                            <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}">{% trans "(more)" %}</a>
+                            {% if activity.get_instance.forum_post.forum.forumcourse %}
+                                <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% blocktrans %} "(more)" {% endblocktrans %}  </a>
+                            {% else %}
+                                <a href="{% url 'forum_general' %}?post={{ post.question.id }}">{% blocktrans %} (more) {% endblocktrans %}</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% endblock post_details %}
@@ -61,9 +65,9 @@
                     <hr class="end-of-activity">
                     <div class="tab-content best-answers">
                     {% if activity.get_instance.forum_post.forumcourse %}
-                        <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Reply" %} </a>
+                        <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% blocktrans %} Reply {% endblocktrans %} </a>
                     {% else %}
-                        <a href="{% url 'forum_general' %}?post={{ post.question.id }}"> {% trans "Reply" %} </a>
+                        <a href="{% url 'forum_general' %}?post={{ post.question.id }}"> {% blocktrans %} Reply {% endblocktrans %} </a>
                     {% endif %}
                         {% if post.answers|length > 0 %}
                             &middot;

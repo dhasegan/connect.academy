@@ -876,6 +876,7 @@ class ForumPost(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
+        ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
         if self.forum.forum_type == FORUM_GENERAL:
             self.followed_by.add(self.posted_by)
         elif self.forum.forum_type == FORUM_COURSE:
@@ -1085,7 +1086,7 @@ class ForumAnswerActivity(GeneralActivity):
 class HomeworkActivity(CourseActivity):
     homework = models.ForeignKey('CourseHomeworkRequest')
 
-# When a user uploads a new document
+# When a user uploads a new document11
 class DocumentActivity(CourseActivity): 
     document = models.ForeignKey('CourseDocument')
 
