@@ -562,8 +562,8 @@ class Review(models.Model):
             self.datetime = timezone.now()
             just_created = True
         super(Review, self).save(*args, **kwargs)
-        if just_created:
-            ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
+        #if just_created:
+        ReviewActivity.objects.create(user=self.posted_by, course=self.course, review=self)
 
     def __unicode__(self):
         return str(self.review)
