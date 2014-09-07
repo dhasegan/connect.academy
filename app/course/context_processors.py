@@ -234,7 +234,16 @@ def course_page_context(request, course):
 def course_activities(request, course):
     user = request.user.juser
 
+    # Course activities 
     activities_list = list(CourseActivity.objects.filter(course=course).reverse())
+
+    # Forum post activities
+    activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
+                                                            forum_post__forum__forumcourse__course=course ))
+
+    activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
+                                                            forum_answer__post__forum__forumcourse__course=course ))
+
     activities_list = [a for a in activities_list if a.can_view(user)]
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
@@ -249,8 +258,18 @@ def new_course_activities(request,course):
     user = request.user.juser
     last_id = long(request.GET.get('last_id'))
     
-    activities_list = list(CourseActivity.objects.filter(course=course, id__gt=last_id).reverse())
+    # Course activities 
+    activities_list = list(CourseActivity.objects.filter(course=course,  id__gt=last_id).reverse())
+
+    # Forum post activities
+    activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
+                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ))
+
+    activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
+                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id))
+
     activities_list = [a for a in activities_list if a.can_view(user)]
+
     
     activities_context = [activity_context(activity,user) for activity in activities_list]
     activities_context = sorted(activities_context,
@@ -263,20 +282,24 @@ def new_course_activities(request,course):
 
 def activity_context(activity, current_user):
     activity_context = {
-        "type": activity.get_subclass_type(),
+        "type": activity.get_type(),
         "activity": activity,
     }
-    if hasattr(activity,"forumpostactivity"):
-        activity_context["post"] = forum_post_context(activity.forumpostactivity.forum_post, current_user)
-    elif hasattr(activity, "forumansweractivity"):
-        answer = activity.forumansweractivity.forum_answer
+    activity_type = activity_context["type"]
+    activity_instance = activity.get_instance() # the most derived type
+
+
+    if activity_type  == "ForumPostActivity":
+        activity_context["post"] = forum_post_context(activity_instance.forum_post, current_user)
+    elif activity_type == "ForumAnswerActivity":
+        answer = activity_instance.forum_answer
         activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
-    elif hasattr(activity, "homeworkactivity"):
-        nr_students = StudentCourseRegistration.objects.filter(course=activity.course, 
+    elif activity_type == "HomeworkActivity":
+        nr_students = StudentCourseRegistration.objects.filter(course=activity_instance.course, 
                                                                 is_approved=True).count()
-        current_time = pytz.utc.localize(datetime.now())
-        hw = activity.homeworkactivity.homework
-        course = activity.course
+        current_time = timezone.now()
+        hw = activity_instance.homework
+        course = activity.courseactivity.course
         within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
         is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
         is_student = current_user.is_student_of(course)
@@ -299,10 +322,10 @@ def activity_context(activity, current_user):
                 "students": nr_students
             }
         }
-    elif hasattr(activity, "reviewactivity"):
-        activity_context["review"] = review_context(activity.reviewactivity.review, current_user)
-    elif hasattr(activity, "wikiactivity"):
-        activity_context['contribution'] = activity.wikiactivity.contribution
+    elif activity_type == "ReviewActivity":
+        activity_context["review"] = review_context(activity_instance.review, current_user)
+    elif activity_type == "WikiActivity":
+        activity_context['contribution'] = activity_instance.contribution
     return activity_context
     
 def paginated(request, objects_list, per_page):

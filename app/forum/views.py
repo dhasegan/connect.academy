@@ -368,3 +368,80 @@ def add_extratag(request):
     tag.save()
 
     return HttpResponse()
+
+@require_POST
+@require_active_user
+@login_required
+def follow_post(request):
+    context = {}
+
+    context.update(csrf(request))
+    form = FollowPostForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    post = form.cleaned_data['post']
+    user = request.user.juser
+    course = None
+    if 'course' in form.cleaned_data:
+        course = form.cleaned_data['course']
+
+    user.posts_following.add(post)
+
+    own_course = False
+    if course:
+        own_course = user.courses_enrolled.filter(id=course.id).exists() or user.courses_managed.filter(id=course.id).exists()
+
+    data = {
+        'post': {
+            'is_following': True, 
+            'own_course': own_course
+        },
+        'question': post
+    }
+    data.update(csrf(request))
+
+    return_dict = {
+        'status': "OK",
+        'html': render_to_string('objects/forum/follow_unfollow_post.html', data)
+    }
+
+    return HttpResponse(json.dumps(return_dict), content_type="application/json")
+
+@require_POST
+@require_active_user
+@login_required
+def unfollow_post(request):
+    context = {}
+    context.update(csrf(request))
+    form = UnfollowPostForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    post = form.cleaned_data['post']
+    user = request.user.juser
+    course = None
+    if 'course' in form.cleaned_data:
+        course = form.cleaned_data['course']
+
+    user.posts_following.remove(post)
+
+    own_course = False
+    if course:
+        own_course = user.courses_enrolled.filter(id=course.id).exists() or user.courses_managed.filter(id=course.id).exists()
+
+    data = {
+        'post': {
+            'is_following': False, 
+            'own_course': own_course
+        },
+        'question': post
+    }
+    data.update(csrf(request))
+
+    return_dict = {
+        'status': "OK",
+        'html': render_to_string('objects/forum/follow_unfollow_post.html', data)
+    }
+
+    return HttpResponse(json.dumps(return_dict),content_type="application/json")

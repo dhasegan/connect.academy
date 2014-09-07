@@ -1,4 +1,5 @@
 from django import forms
+from django.core.context_processors import csrf
 from app.models import *
 
 
@@ -126,3 +127,37 @@ class AddExtraTag(forms.Form):
             if not ch.isalnum():
                 raise forms.ValidationError("Only alphanumeric characters are allowed for the tag name!")
         return tag_name
+
+
+class FollowPostForm(forms.Form):
+    post_id = forms.IntegerField()
+
+    def clean(self):
+        cleaned_data = super(FollowPostForm, self).clean()
+
+        posts = ForumPost.objects.filter(id=cleaned_data.get('post_id')).all()
+        if len(posts) == 1:
+            post = posts[0]
+            cleaned_data['post'] = post
+            if post.forum.forum_type == FORUM_COURSE:
+                course = post.forum.forumcourse.course
+                cleaned_data['course'] = course
+
+        return cleaned_data
+
+
+class UnfollowPostForm(forms.Form):
+    post_id = forms.IntegerField()
+
+    def clean(self):
+        cleaned_data = super(UnfollowPostForm, self).clean()
+
+        posts = ForumPost.objects.filter(id=cleaned_data.get('post_id')).all()
+        if len(posts) == 1:
+            post = posts[0]
+            cleaned_data['post'] = post
+            if post.forum.forum_type == FORUM_COURSE:
+                course = post.forum.forumcourse.course
+                cleaned_data['course'] = course
+
+        return cleaned_data

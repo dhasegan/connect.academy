@@ -22,13 +22,20 @@
                             {% else %}
                                 {% trans "Someone" %}
                             {% endif %}
-                            posted on the forum of <a href="{% url 'course_page' activity.course.slug %}"> {{ activity.course.name }} </a>
+                            {% trans "posted in" %}
+                            {% if activity.get_instance.forum_post.forum.forumcourse %}
+                                 the forum of  <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}"> {{ activity.get_instance.forum_post.forum.forumcourse.course.name }} </a>
+                            {% else %}
+                                <a href="{% url 'forum_general' %}?post={{post.question.id}}"> Connect </a>
+                            {% endif %}
                             <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>
-                            {% trans "in" %} 
+                            {% trans "under" %} 
                             {% with post.question.tag as tag %}
-                                {% with activity.course as course %}
+                              
+                                {% with activity.get_instance.forum_post.forum as forum %}
                                     {% include "objects/tag_link.html" %}
                                 {% endwith %}
+
                             {% endwith %}
                             
                             
@@ -44,7 +51,7 @@
                             {{ post.question.text|truncatechars:"200"|linebreaks }}
                         {% endif %}
                         {% if post.question.text|length > 200 %}
-                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}">{% trans "(more)" %}</a>
+                            <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}">{% trans "(more)" %}</a>
                         {% endif %}
                     </div>
                 {% endblock post_details %}
@@ -53,10 +60,18 @@
                 {% block all_answers %}
                     <hr class="end-of-activity">
                     <div class="tab-content best-answers">
-                        <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Reply" %} </a>
+                    {% if activity.get_instance.forum_post.forumcourse %}
+                        <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Reply" %} </a>
+                    {% else %}
+                        <a href="{% url 'forum_general' %}?post={{ post.question.id }}"> {% trans "Reply" %} </a>
+                    {% endif %}
                         {% if post.answers|length > 0 %}
                             &middot;
-                            <a href="{% url 'course_page' activity.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Check replies" %} <small> ({{ post.answers|length }}) </small> </a>
+                            {% if activity.get_instance.forum_post.forumcourse %}
+                                <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% trans "Check replies" %} <small> ({{ post.answers|length }}) </small> </a>
+                            {% else %}
+                                <a href="{% url 'forum_general' %}?post={{ post.question.id }}"> {% trans "Check replies" %} <small> ({{ post.answers|length }}) </small> </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% endblock all_answers %}
