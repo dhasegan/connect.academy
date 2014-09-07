@@ -876,6 +876,7 @@ class ForumPost(models.Model):
         if not self.id:
             self.datetime = timezone.now()
         super(ForumPost, self).save(*args, **kwargs)
+        ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
         if self.forum.forum_type == FORUM_GENERAL:
             self.followed_by.add(self.posted_by)
         elif self.forum.forum_type == FORUM_COURSE:
