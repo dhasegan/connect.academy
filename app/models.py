@@ -596,16 +596,14 @@ class CourseHomeworkRequest(models.Model):
     course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
     number_files = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
                                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
-    slug = models.SlugField(max_length=200)
 
     def save(self, *args, **kwargs):
-        self.slug = get_slug_for(CourseHomeworkRequest, self.pk, self.name)
         super(CourseHomeworkRequest, self).save(*args, **kwargs)
         HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
 
     def delete(self, *args, **kwargs):
         deadline = self.deadline
-        super(CourseHomeworkRequest, self).save(*args, **kwargs)
+        super(CourseHomeworkRequest, self).delete(*args, **kwargs)
         deadline.delete()
 
     def __unicode__(self):
@@ -628,8 +626,28 @@ class CourseHomeworkSubmission(models.Model):
         self.name = slugify(self.submitter.first_name + "_" + self.submitter.last_name + " " + self.homework_request.name + " (" + str(self.file_number) + ")")
         super(CourseHomeworkSubmission, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        grade = None
+        if hasattr(self, 'grade'):
+            grade = self.grade
+        super(CourseHomeworkSubmission, self).delete(*args, **kwargs)
+        if grade:
+            grade.delete()
+
     def __unicode__(self):
         return str(self.name)
+
+class CourseHomeworkGrade(models.Model):
+    submitter = models.ForeignKey('jUser')
+    submission = models.OneToOneField('CourseHomeworkSubmission', related_name='grade')
+    is_published = models.BooleanField(default=False)
+    grade = models.FloatField(default=0.0, validators=[MinValueValidator(0.0),
+                                                       MaxValueValidator(100.0)])
+
+    def __unicode__(self):
+        return str(self.grade)
+
+
 
 ###########################################################################
 ############################ Forums, Wikis ################################

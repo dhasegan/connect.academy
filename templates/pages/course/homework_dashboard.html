@@ -1,0 +1,24 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+    <div class="row homework-dashboard-page">
+        <div class="col-md-4">
+            <div class="homework-sidebar">
+                {% include 'objects/course/homework/sidebar.html' %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="homework-details">
+                <div class="tab-content">
+                    {% for hw in homework_requests %}
+                        <div class="panel panel-default tab-pane fade {% if forloop.first %}in active {% endif %}" id="homework_req{{ hw.homework.id }}">
+                            <div class="panel-body">
+                                {% include "objects/course/homework/grader.html" %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

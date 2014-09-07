@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="panel panel-default sidebar">
+    <div class="panel-body">
+        <div class="sidebar-header">
+            <h3> {% trans "Homework Dashboard for course" %} <div> <a href="{% url 'course_page' course.slug %}">{{ course.name }}</a> </div> </h3>
+        </div>
+        <hr>
+        <br>
+        <br>
+        <div class="sidebar-tabs">
+            <nav class="nav-sidebar">
+                <ul class="nav tabs">
+                    {% for hw in homework_requests %}
+                        <li class="{% if forloop.first %}active{% endif %}">
+                            <a href="#homework_req{{hw.homework.id}}" role="tab" data-toggle="tab">{{ hw.homework.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

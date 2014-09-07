@@ -267,6 +267,24 @@ def submit_homework_request(request, slug):
 
     return redirect(form.cleaned_data['url'])
 
+@require_GET
+@require_active_user
+@login_required
+def homework_dashboard(request, slug):
+    context = {
+        'page': 'homework_dashboard'
+    }
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    if not user.is_professor_of(course):
+        raise Http404
+
+    context = dict(context.items() + homework_dashboard_context(request, course, user).items())
+    context['course'] = course
+
+    return render(request, 'pages/course/homework_dashboard.html', context)
+
 
 @require_POST
 @require_active_user

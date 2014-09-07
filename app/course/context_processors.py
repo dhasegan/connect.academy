@@ -130,11 +130,37 @@ def homework_context(hw, current_user):
     }
 
 def course_homework_context(course, current_user):
-
     context = []
     all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
         context.append(homework_context(hw, current_user))
+    return context
+
+def homework_dashboard_context(request, course, current_user):
+    context = {}
+    homework_requests = CourseHomeworkRequest.objects.filter(course=course)
+    students = sorted(list(course.students.all()), key=lambda st:st.username)
+    context['homework_requests'] = []
+
+    for hw in homework_requests:
+        all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
+        submissions_context = []
+        for st in students:
+            submissions = all_submissions.filter(submitter=st)
+            submissions = sorted(submissions, key=lambda s:s.file_number)
+            submissions_context.append({
+                'student': st,
+                'submissions': submissions,
+                'file_numbers': [str(s.file_number) for s in submissions]
+            })
+
+        context['homework_requests'].append({
+            'homework': hw,
+            'all_submissions': submissions_context
+        })
+
+
+
     return context
 
 def course_syllabus_context(course, current_user):

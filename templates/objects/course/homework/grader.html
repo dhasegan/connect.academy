@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load connect_extras %}
+
+<h3>{{ hw.homework.name }}</h3>
+<hr>
+
+{% include "objects/course/homework_details.html" %}
+
+<hr>
+
+<table class="table table-bordered">
+  <tr>
+    <th> {% trans "Student" %} </th>
+    <th> {% trans "Homework" %} </th>
+    <th> {% trans "Grade" %} </th>
+  </tr>
+  {% for sub in hw.all_submissions %}
+    {% for nr in hw.homework.number_files|get_range %}
+        <tr>
+            {% if forloop.first %}
+                <td rowspan="{{ hw.homework.number_files }}" vallign="middle"> {% with juser=sub.student %} {% include "objects/user_link.html" %} {% endwith %} </td>
+            {% else %}
+            {% endif %}
+            {% with istr=forloop.counter|str  %}
+                {% if istr in sub.file_numbers %}
+                    {% for s in sub.submissions %}
+                        {% if s.file_number|str == istr %}
+                            <td> <a href="{{ s.document.url }}"> {{ s.name }} </a> </td>
+                            <td> Grade </td>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <td> </td>
+                    <td> Grade </td>
+                {% endif %}
+            {% endwith %}
+        </tr>
+    {% endfor %}
+  {% endfor %}
+</table>
