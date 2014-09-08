@@ -62,6 +62,8 @@ $(document).ready(function() {
           
       });
 
+
+
       dialogContent.dialog({
           modal: true,
           title: "New Appointment",
@@ -472,6 +474,16 @@ function displayMessage(message) {
 function prepareFields(dialogContent,calEvent) {
   dialogContent.find(".to-reset").val("");
 
+  $("select[name='course_id'] option").each(function(){
+    if(calEvent.type === 'Personal')
+      return;
+
+    if("Select Course" === $(this).text().trim()){
+      $(this).attr('selected', true);  
+    }
+  });
+  
+  courseField.trigger("change");
   $("#start_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.start)));
   $("#end_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.end)));
 
