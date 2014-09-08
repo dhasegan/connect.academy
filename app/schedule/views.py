@@ -400,7 +400,7 @@ def remove_course_appointment(request):
 def resize_appointment(request):
    
     user = get_object_or_404(jUser, id=request.user.id)
-    print request.POST
+
     appointmentType = request.POST['type']
 
     if appointmentType == "0": #personal
