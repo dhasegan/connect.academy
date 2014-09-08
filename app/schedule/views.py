@@ -161,7 +161,7 @@ def add_personal_appointment(request):
     if copy_to_otherweeks:
         start_times = []
         length = end - start
-        for i in range(1,int(weeks)):
+        for i in range(1,int(weeks)+1):
             start_time = start + timedelta(weeks=i)
             start_times.append(start_time)
 
@@ -216,8 +216,26 @@ def edit_personal_appointment(request):
     appointment.end = new_end_time
     appointment.save()
 
+
+    appointmentsJSON = []
+    local_timezone = timezone.get_current_timezone()
+
+    start_local = timezone.localtime(new_start_time,local_timezone)
+    end_local = timezone.localtime(new_end_time,local_timezone)
+    data = {}
+    data['id'] = appointment.id
+    data['start'] = format_date(start_local.strftime(date_format))
+    data['end'] = format_date(end_local.strftime(date_format))
+    data['title'] = new_location
+    data['body'] = new_description
+    data['modifiable'] = True
+    data['type'] = 'Personal'
+    
+    appointmentsJSON.append(json.dumps(data))
+
+
     # return the newly created appointments back to the user
-    return_dict = { 'status':'OK' }
+    return_dict = {'status':'OK','appointments':appointmentsJSON}
     return HttpResponse(json.dumps(return_dict))
 
 
@@ -294,7 +312,7 @@ def add_course_appointment(request):
     if copy_to_otherweeks:
         start_times = []
         length = end_time - start_time
-        for i in range(1,int(weeks)):
+        for i in range(1,int(weeks)+1):
             start_time_weeks = start_time + timedelta(weeks=i)
             start_times.append(start_time_weeks)
 
