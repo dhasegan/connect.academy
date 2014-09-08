@@ -873,11 +873,13 @@ class ForumPost(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        just_created = False
         if not self.id:
             self.datetime = timezone.now()
-            ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
+            just_created = True
         super(ForumPost, self).save(*args, **kwargs)
-        
+        if just_created:
+            ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
         if self.forum.forum_type == FORUM_GENERAL:
             self.followed_by.add(self.posted_by)
         elif self.forum.forum_type == FORUM_COURSE:
@@ -904,10 +906,13 @@ class ForumAnswer(models.Model):
         return self.text
 
     def save(self, *args, **kwargs):
+        just_created = False
         if not self.id:
             self.datetime = timezone.now()
-            ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
+            just_created = True
         super(ForumAnswer, self).save(*args, **kwargs)
+        if just_created:
+            ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
         
 
 class WikiContributions(models.Model):
@@ -1042,7 +1047,7 @@ class Activity(models.Model):
             elif activity_type == "ForumAnswerActivity":
                 self.timestamp = instance.forum_answer.datetime
             elif activity_type == "DocumentActivity":
-                self.timestamp = instance.document.submit_type
+                self.timestamp = instance.document.submit_time
             else:
                 self.timestamp = timezone.now()
         super(Activity, self).save(*args, **kwargs)
