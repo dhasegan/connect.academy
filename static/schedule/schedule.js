@@ -51,6 +51,8 @@ $(document).ready(function() {
       //defaults to Personal.
       typeField.val('0');
 
+      copyLabel.show();
+
       typeField.change(function(){
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
