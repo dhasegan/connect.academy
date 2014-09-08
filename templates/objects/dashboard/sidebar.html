@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load i18n %}
+{% load connect_extras %}
 <div class="panel panel-default sidebar">
     <div class="panel-body">
         <div>
@@ -21,7 +22,7 @@
                                 {% for item in schedule_items %}
                                     <tr> 
                                         <td class="time-col text-muted">
-                                            {{ item.start|naturaltime }}
+                                            {{ item.start|short_time}}
                                             
                                         </td>
                                         <td class="description-col">

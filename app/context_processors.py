@@ -66,8 +66,8 @@ def dashboard_activities(request,user):
     activities_list = sorted(own_course_activities + forum_post_activities + forum_answer_activities,
                              key=lambda activity: activity.timestamp, 
                              reverse=True)
-
     activities_list = [a for a in activities_list if a.can_view(user)]
+    
 
     activities_context = [activity_context(activity,user) for activity in activities_list]
   
@@ -112,8 +112,8 @@ def new_dashboard_activities(request,user):
     activities_list = sorted(own_course_activities +  forum_post_activities + forum_answer_activities, 
                 key = lambda activity: activity.timestamp, 
                 reverse=True)
-
     activities_list = [a for a in activities_list if a.can_view(user)]
+    
 
     activities_context = [activity_context(activity,user) for activity in activities_list]
 
@@ -149,7 +149,7 @@ def dashboard_context(request):
                             start__gte=pytz.utc.localize( today ),
                             start__lte=pytz.utc.localize( tomorrow )))
 
-    context['schedule_items'] = schedule_items
+    context['schedule_items'] = sorted(schedule_items, key= lambda a: a.start) 
 
     for reg in context['courses']:
         if reg['is_approved']:

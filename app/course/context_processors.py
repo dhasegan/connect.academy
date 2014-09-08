@@ -245,10 +245,9 @@ def course_activities(request, course):
                                                             forum_answer__post__forum__forumcourse__course=course ))
 
     activities_list = [a for a in activities_list if a.can_view(user)]
+    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
+    
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                             key=lambda a: a['activity'].timestamp,
-                             reverse=True)
     return paginated(request,activities_context, 20)
 
 
@@ -269,13 +268,9 @@ def new_course_activities(request,course):
                                                             forum_answer__post__forum__forumcourse__course=course, id__gt=last_id))
 
     activities_list = [a for a in activities_list if a.can_view(user)]
-
+    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
     
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                         key=lambda a: a['activity'].timestamp,
-                         reverse=True)
-
 
     return activities_context 
 
