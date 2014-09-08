@@ -29,9 +29,12 @@ h4 {
     font-size: $h4-size;
 }
 
-input {
-    .tiny-text-input {
-        width: 30px;
+div#copyLabel {
+    input {
+        &.tiny-text-input {
+            width: 50px;
+            display: inline;
+        }
     }
 }
 

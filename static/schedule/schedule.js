@@ -326,6 +326,7 @@ $(document).ready(function() {
           },
           buttons: {
             save : function() {
+                
                 //reenable the 'select' to serialize the form, otherwise a KeyError is raised.
                 //it is set to true again after the ajax request is sent
                 dialogContent.find("select[name='course_id']").attr('disabled', false);
@@ -344,36 +345,44 @@ $(document).ready(function() {
                           eventData.events.push(appointment);
                         }
                         
-                        data: eventData;
-                        location.reload();
+                        //data: eventData;
+                        //location.reload();
                       }
                       $calendar.weekCalendar("refresh");
                       dialogContent.dialog("close");
                     }
                   });
-                }else if(calEvent.type === 'Personal'){
+
+                } else if(calEvent.type === 'Personal'){
                     $.ajax({
                       type:form.attr("method"),
                       url:"edit_personal_appointment",
                       data: form.serialize(),
                       success: function(data){
-
                         data = $.parseJSON(data);
-                        
+                        console.log(data.status);
                         if(data.status === "OK"){
-                          for(var i=0; i<data.appointments.length;i++){
+
+                          for(var i=0; i< data.appointments.length;i++){
                             var appointment = data.appointments[i];
-                            eventData.events.push(appointment)
+                            for(var j = 0 ; j < eventData.events.length; j++){
+                                var e = eventData.events[j];
+                                if(e.id == appointment.id){
+                                    eventData.events[j] = appointment ;
+                                    $calendar.weekCalendar("updateEvent", eventData.events[j]);
+                                }
+                            }
                           }
+
+                          $calendar.weekCalendar("refresh");
                         }
-                        $calendar.weekCalendar("updateEvent", calEvent);
-                        $calendar.weekCalendar("refresh");
-                        location.reload();
+                        
+                        //location.reload();
                       }
                     });
 
-                  $calendar.weekCalendar("updateEvent", calEvent);
-                  $calendar.weekCalendar("refresh");
+                  //$calendar.weekCalendar("updateEvent", calEvent);
+                  //$calendar.weekCalendar("refresh");
                   dialogContent.dialog("close");
                 }  
 
@@ -403,7 +412,7 @@ $(document).ready(function() {
                         }
                       }
 
-                      data:eventData;
+                      //data:eventData;
 
                     }
                   });

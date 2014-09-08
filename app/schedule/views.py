@@ -235,7 +235,7 @@ def edit_personal_appointment(request):
 
 
     # return the newly created appointments back to the user
-    return_dict = {'status':'OK','appointments':json.dumps(appointmentsJSON)}
+    return_dict = {'status':'OK','appointments':appointmentsJSON}
     return HttpResponse(json.dumps(return_dict))
 
 
