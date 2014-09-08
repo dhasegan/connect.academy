@@ -231,11 +231,11 @@ def edit_personal_appointment(request):
     data['modifiable'] = True
     data['type'] = 'Personal'
     
-    appointmentsJSON.append(json.dumps(data))
+    appointmentsJSON.append(data)
 
 
     # return the newly created appointments back to the user
-    return_dict = {'status':'OK','appointments':appointmentsJSON}
+    return_dict = {'status':'OK','appointments':json.dumps(appointmentsJSON)}
     return HttpResponse(json.dumps(return_dict))
 
 
