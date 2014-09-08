@@ -85,17 +85,15 @@ $(document).ready(function() {
                     data: form.serialize(),
                     
                     success: function(data){                    
-                      
                       data = $.parseJSON(data);
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          appointment = data.appointments[i];
+                        for(var i=0; i< data.appointments.length;i++){
+                          var appointment = data.appointments[i];
                           eventData.events.push(appointment);
+                          $calendar.weekCalendar("updateEvent", appointment);
                         }
-                        
-                        data: eventData;
-                        location.reload();
                       }
+                      $calendar.weekCalendar("refresh");
                     }
 
                   });
@@ -110,14 +108,15 @@ $(document).ready(function() {
                       data = $.parseJSON(data);
                       
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          appointment = data.appointments[i];
+                        for(var i=0; i< data.appointments.length;i++){
+                          var appointment = data.appointments[i];
                           eventData.events.push(appointment);
+                          $calendar.weekCalendar("updateEvent", appointment);
                         }
-                    
-                        data: eventData;
-                        location.reload();
+                        
+                        $calendar.weekCalendar("refresh");
                       }
+                    
                     }
 
                   });
@@ -340,14 +339,21 @@ $(document).ready(function() {
                       
                       data = $.parseJSON(data);
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          var appointment = data.appointments[i];
-                          eventData.events.push(appointment);
-                        }
+                        for(var i=0; i< data.appointments.length;i++){
+                            var appointment = data.appointments[i];
+                            for(var j = 0 ; j < eventData.events.length; j++){
+                                var e = eventData.events[j];
+                                if(e.id == appointment.id){
+                                    eventData.events[j] = appointment ;
+                                    $calendar.weekCalendar("updateEvent", eventData.events[j]);
+                                }
+                            }
+                          }
+
+                          $calendar.weekCalendar("refresh");
                         
-                        //data: eventData;
-                        //location.reload();
                       }
+
                       $calendar.weekCalendar("refresh");
                       dialogContent.dialog("close");
                     }
@@ -360,7 +366,6 @@ $(document).ready(function() {
                       data: form.serialize(),
                       success: function(data){
                         data = $.parseJSON(data);
-                        console.log(data.status);
                         if(data.status === "OK"){
 
                           for(var i=0; i< data.appointments.length;i++){
@@ -377,12 +382,9 @@ $(document).ready(function() {
                           $calendar.weekCalendar("refresh");
                         }
                         
-                        //location.reload();
                       }
                     });
 
-                  //$calendar.weekCalendar("updateEvent", calEvent);
-                  //$calendar.weekCalendar("refresh");
                   dialogContent.dialog("close");
                 }  
 
@@ -411,9 +413,6 @@ $(document).ready(function() {
                           eventData.events.splice(i,1);
                         }
                       }
-
-                      //data:eventData;
-
                     }
                   });
                 }else if(calEvent.type === 'Course' && calEvent.modifiable){
@@ -426,16 +425,12 @@ $(document).ready(function() {
                       'courseName': calEvent.courseName,
                     },
                     success: function(){
-                      //alert("Successfuly removed event");
                       for(var i = 0 ; i < eventData.events.length; i++){
                         var e = eventData.events[i];
                         if(e.id === calEvent.id){
                           eventData.events.splice(i,1);
                         }
                       }
-
-                      data:eventData;
-
                     }
                   });
                 }
