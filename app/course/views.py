@@ -180,6 +180,7 @@ def submit_document(request, slug):
     context = {}
 
     user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
 
     form = SubmitDocumentForm(request.POST, request.FILES)
 
