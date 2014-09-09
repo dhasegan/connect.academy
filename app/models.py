@@ -582,10 +582,13 @@ class CourseDocument(models.Model):
         return str(self.name)
 
     def save(self, *args, **kwargs):
+        just_created = False
         if not self.id:
             self.submit_time = timezone.now()
+            just_created = True
         super(CourseDocument, self).save(*args, **kwargs)
-        DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
+        if just_created:
+            DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
 
 HOMEWORK_MIN_FILES = 1
 HOMEWORK_MAX_FILES = 10
@@ -603,8 +606,16 @@ class CourseHomeworkRequest(models.Model):
     document = models.ForeignKey('CourseDocument', related_name='homework_requests', null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        
+        just_created = False
+        if not self.id:
+            print "Just Created"
+            just_created = True
+        else:
+            print "not just created"
         super(CourseHomeworkRequest, self).save(*args, **kwargs)
-        HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
+        if just_created:
+            HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
 
     def delete(self, *args, **kwargs):
         deadline = self.deadline
