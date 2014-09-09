@@ -258,7 +258,7 @@ def course_page_context(request, course):
     # Course forum link
     context['forum'] = course.forum
 
-    context['can_edit_wiki'] = current_user.is_student_of(course) or current_user.is_professor_of(course)
+    context['can_edit_wiki'] = course.can_edit_wiki(current_user)
     if hasattr(course, 'wiki'):
         context['wiki'] = course.wiki
         wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")

@@ -37,11 +37,13 @@ def edit_wiki_page(request, slug):
     course = Course.objects.get(slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not user.is_student_of(course) and not user.is_professor_of(course):
+    if not course.can_edit_wiki(user):
         raise Http404
+
 
     if hasattr(course, 'wiki'):
         wiki = course.wiki
+        
         context['course'] = course
         context['content'] = wiki.content
 
@@ -78,9 +80,7 @@ def save_wiki_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    # Only users from that university are allowed to edit
-    # wiki pages
-    if user.university != course.university or not user.is_active:
+    if not course.can_edit_wiki(user):
         raise Http404
 
     form = WikiPageForm(request.POST)
@@ -134,7 +134,7 @@ def view_wiki_page(request, slug):
 
     wiki = course.wiki
     context['wiki'] = wiki
-    context['can_edit_wiki'] = wiki.can_edit(user)
+    context['can_edit_wiki'] = course.can_edit_wiki(user)
     context['course'] = course
 
     wiki_type_id = ContentType.objects.get(app_label="app", model="wikipage").id

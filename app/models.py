@@ -272,6 +272,9 @@ class Course(models.Model):
             category = category.parent
         return course_path
 
+    def can_edit_wiki(self, user):
+        return user.university.id == self.university.id
+
     def save(self, *args, **kwargs):
         self.slug = get_slug_for(Course, self.pk, self.name)
         super(Course, self).save(*args, **kwargs)
@@ -971,8 +974,6 @@ class WikiPage(models.Model):
     def get_absolute_url(self):
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
 
-    def can_edit(self, user):
-        return user.is_student_of(self.course) or user.is_professor_of(self.course)
 
 
 versioning.register(
