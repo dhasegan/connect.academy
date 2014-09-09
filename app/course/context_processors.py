@@ -140,6 +140,7 @@ def homework_dashboard_context(request, course, current_user):
     context = {}
     homework_requests = CourseHomeworkRequest.objects.filter(course=course)
     students = sorted(list(course.students.all()), key=lambda st:st.username)
+    current_time = pytz.utc.localize(datetime.now())
     context['homework_requests'] = []
 
     for hw in homework_requests:
@@ -154,9 +155,12 @@ def homework_dashboard_context(request, course, current_user):
                 'file_numbers': [str(s.file_number) for s in submissions]
             })
 
+        percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
         context['homework_requests'].append({
             'homework': hw,
-            'all_submissions': submissions_context
+            'all_submissions': submissions_context,
+            'percentage_completed': percentage_completed,
+            'ended': hw.deadline.end < current_time
         })
 
 

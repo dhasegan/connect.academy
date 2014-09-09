@@ -242,7 +242,6 @@ def submit_homework_request(request, slug):
     user = get_object_or_404(jUser, id=request.user.id)
 
     form = SubmitHomeworkRequestForm(request.POST)
-    print request.POST
     if not form.is_valid():
         raise Http404
 
@@ -266,6 +265,82 @@ def submit_homework_request(request, slug):
     homework_request.save()
 
     return redirect(form.cleaned_data['url'])
+
+
+@require_POST
+@require_active_user
+@login_required
+def submit_homework_grades(request, slug):
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = SubmitHomeworkGradesForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    hw = form.cleaned_data['homework_request']
+    if hw.course != course:
+        raise Http404
+
+    students = course.students.all()
+    if form.cleaned_data.get('save'):
+        for st in students:
+            for idx in range(1, hw.number_files + 1):
+                field_name = st.username + "-" + str(idx)
+                grade = form.cleaned_data.get(field_name)
+                if grade:
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if not hw_grades:
+                        grade = CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
+                                                                   submitter=user, is_published=False, grade=grade)
+                        subms = CourseHomeworkSubmission.objects.filter(submitter=st, file_number=idx, homework_request=hw)
+                        if subms:
+                            grade.submission = subms[0]
+                            grade.save()
+                    else:
+                        hw_grade = hw_grades[0]
+                        hw_grade.grade = grade
+                        hw_grade.submitter = user
+                        hw_grade.save()
+                else:
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if hw_grades:
+                        hw_grades[0].delete()
+
+
+    if form.cleaned_data.get('publish'):
+        # Check if everyone has a grade
+        can_publish = True
+        for st in students:
+            for idx in range(1, hw.number_files + 1):
+                subms = CourseHomeworkSubmission.objects.filter(submitter=st, file_number=idx, homework_request=hw)
+                if subms and not hasattr(subms[0], 'grade'):
+                    can_publish = False
+                    break
+            if not can_publish:
+                break
+        if can_publish:
+            # Publish the results
+            for st in students:
+                for idx in range(1, hw.number_files + 1):
+                    field_name = st.username + "-" + str(idx)
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if hw_grades:
+                        hw_grades[0].is_published = True
+                        hw_grades[0].save()
+                    else:
+                        CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
+                                                        submitter=user, is_published=True, grade=0.0)
+            hw.is_published = True
+            hw.save()
+        else:
+            raise Http404
+
+
+    return redirect( reverse('homework_dashboard', args=(course.slug, )) )
 
 @require_GET
 @require_active_user

@@ -1,0 +1,6 @@
+{% load i18n %}
+
+<div class="grader-options pull-right">
+    <input type="submit" class="btn btn-success save-btn" value='{% trans "Save" %}'>
+    <button class="btn btn-danger save-publish-btn" data-toggle="modal" data-target="#publishHw{{ hw.homework.id }}">{% trans "Save and Publish" %}</button>
+</div>

@@ -10,7 +10,7 @@
         <div class="col-md-8">
             <div class="homework-details">
                 <div class="tab-content">
-                    {% for hw in homework_requests %}
+                    {% for hw in homework_requests|dictsort:'homework.deadline.end' %}
                         <div class="panel panel-default tab-pane fade {% if forloop.first %}in active {% endif %}" id="homework_req{{ hw.homework.id }}">
                             <div class="panel-body">
                                 {% include "objects/course/homework/grader.html" %}

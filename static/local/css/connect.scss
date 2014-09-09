@@ -466,6 +466,20 @@ $course-img-max-size:           150px;
     }
 }
 
+// Homework dashboard page
+.homework-dashboard-page {
+    .grades-table {
+        .hw-submitter {
+            vertical-align: middle;
+        }
+        .grade-input {
+            max-width: 70px;
+        }
+    }
+    .grader-options {
+        margin-bottom: 20px;
+    }
+}
 
 // Welcome page
 $register-panel-padding-top:        75px;

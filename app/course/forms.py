@@ -167,6 +167,39 @@ class SubmitHomeworkRequestForm(forms.Form):
             tz = 0
         return tz
 
+class SubmitHomeworkGradesForm(forms.Form):
+    hw_req_id = forms.IntegerField()
+    save = forms.BooleanField(required=False)
+    publish = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        hw_req_id = args[0].get('hw_req_id')
+        super(SubmitHomeworkGradesForm, self).__init__(*args, **kwargs)
+        if not hw_req_id:
+            return 
+        reqs = CourseHomeworkRequest.objects.filter(id=hw_req_id)
+        if not reqs:
+            return
+        hw = reqs[0]
+        students = hw.course.students.all()
+        for st in students:
+            for i in range(1,hw.number_files+1):
+                field_name = st.username + "-" + str(i)
+                self.fields[field_name] = forms.FloatField(required=False, \
+                                        validators=[MinValueValidator(0.0), \
+                                                    MaxValueValidator(100.0)])
+
+    def clean(self):
+        cleaned_data = super(SubmitHomeworkGradesForm, self).clean()
+
+        homework_requests = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("hw_req_id"))
+        if len(homework_requests) != 1:
+            raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
+        hw_req = homework_requests[0]
+        cleaned_data['homework_request'] = hw_req
+
+        return cleaned_data
+
 class VoteReviewForm(forms.Form):
     review_id = forms.CharField()
     vote_type = forms.CharField()

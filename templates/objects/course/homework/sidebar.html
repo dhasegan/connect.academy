@@ -11,7 +11,7 @@
         <div class="sidebar-tabs">
             <nav class="nav-sidebar">
                 <ul class="nav tabs">
-                    {% for hw in homework_requests %}
+                    {% for hw in homework_requests|dictsort:'homework.deadline.end' %}
                         <li class="{% if forloop.first %}active{% endif %}">
                             <a href="#homework_req{{hw.homework.id}}" role="tab" data-toggle="tab">{{ hw.homework.name }}</a>
                         </li>

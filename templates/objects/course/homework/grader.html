@@ -1,40 +1,58 @@
 {% load i18n %}
 {% load connect_extras %}
-
-<h3>{{ hw.homework.name }}</h3>
-<hr>
+{% load humanize %}
 
 {% include "objects/course/homework_details.html" %}
 
 <hr>
 
-<table class="table table-bordered">
-  <tr>
-    <th> {% trans "Student" %} </th>
-    <th> {% trans "Homework" %} </th>
-    <th> {% trans "Grade" %} </th>
-  </tr>
-  {% for sub in hw.all_submissions %}
-    {% for nr in hw.homework.number_files|get_range %}
-        <tr>
-            {% if forloop.first %}
-                <td rowspan="{{ hw.homework.number_files }}" vallign="middle"> {% with juser=sub.student %} {% include "objects/user_link.html" %} {% endwith %} </td>
-            {% else %}
-            {% endif %}
-            {% with istr=forloop.counter|str  %}
-                {% if istr in sub.file_numbers %}
-                    {% for s in sub.submissions %}
-                        {% if s.file_number|str == istr %}
-                            <td> <a href="{{ s.document.url }}"> {{ s.name }} </a> </td>
-                            <td> Grade </td>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <td> </td>
-                    <td> Grade </td>
-                {% endif %}
-            {% endwith %}
-        </tr>
-    {% endfor %}
-  {% endfor %}
-</table>
+{% if not hw.ended %}
+    <h5>
+        {% blocktrans %}
+            You can view the homework submissions only after the deadline ends
+        {% endblocktrans %}
+    </h5>
+{% endif %}
+
+<div>
+    <strong> {% trans "Percentage of homework submitted" %}: </strong>
+</div>
+<div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="{{hw.percentage_completed}}" aria-valuemin="0" aria-valuemax="100" style="width: {{hw.percentage_completed}}%;">
+        {{ hw.percentage_completed|floatformat:"1" }}%
+    </div>
+</div>
+
+<hr>
+
+<form role="form" class="grader-form" method="post" action="{% url 'submit_homework_grades' course.slug %}" id="graderform{{hw.homework.id}}">
+
+    {% comment %}
+        Hidden inputs
+    {% endcomment %}
+    {% csrf_token %}
+    <input type="hidden" name="hw_req_id" value="{{ hw.homework.id }}">
+    <input type="hidden" name="save" value="True">
+    <input type="hidden" name="publish" value="">
+
+    {% comment %}
+        Hw Dashboard actions
+    {% endcomment %}
+    {% include 'objects/course/homework/grader_table_actions.html' %}
+
+    {% comment %}
+        Table with all students
+    {% endcomment %}
+    {% include 'objects/course/homework/grader_table.html' %}
+
+    {% comment %}
+        Hw Dashboard actions again
+    {% endcomment %}
+    {% include 'objects/course/homework/grader_table_actions.html' %}
+
+    {% comment %}
+        Modal for publish info
+    {% endcomment %}
+    {% include "objects/course/homework/grader_table_actions_modal.html" %}
+
+</form>

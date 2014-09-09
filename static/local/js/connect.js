@@ -25,13 +25,14 @@ var ConnectGlobal = (function() {
         globals = this.global_variables;
         this.bindUIActions();
 
-            if ($('.explore-page').length > 0) { ExplorePage.init(); }
-            else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
-            else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); CoursePage.init(); } // ForumPage needed to upvote forum posts
-            else if ($('.forum-page').length > 0) { ForumPage.init(); } 
-            else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
-            else if ($('.dashboard-page').length > 0) { ForumPage.init(); CoursePage.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
-            else if ($('.comments-page').length > 0) { CoursePage.init(); }
+        if ($('.explore-page').length > 0) { ExplorePage.init(); }
+        else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); }
+        else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); CoursePage.init(); } // ForumPage needed to upvote forum posts
+        else if ($('.forum-page').length > 0) { ForumPage.init(); } 
+        else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
+        else if ($('.dashboard-page').length > 0) { ForumPage.init(); CoursePage.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
+        else if ($('.comments-page').length > 0) { CoursePage.init(); }
+        else if ($('.homework-dashboard-page').length > 0) { HomeworkDashboard.init(); }
     };
 
     me.loadNewActivities = function() {

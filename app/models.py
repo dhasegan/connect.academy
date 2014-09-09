@@ -596,6 +596,7 @@ class CourseHomeworkRequest(models.Model):
     course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
     number_files = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
                                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
+    is_published = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         super(CourseHomeworkRequest, self).save(*args, **kwargs)
@@ -638,11 +639,17 @@ class CourseHomeworkSubmission(models.Model):
         return str(self.name)
 
 class CourseHomeworkGrade(models.Model):
-    submitter = models.ForeignKey('jUser')
-    submission = models.OneToOneField('CourseHomeworkSubmission', related_name='grade')
+    submitter = models.ForeignKey('jUser', related_name='homework_graded')
+    student = models.ForeignKey('jUser', related_name='grades')
+    homework_request = models.ForeignKey('CourseHomeworkRequest')
+    file_number = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
+                                                             MaxValueValidator(HOMEWORK_MAX_FILES)])
+
     is_published = models.BooleanField(default=False)
     grade = models.FloatField(default=0.0, validators=[MinValueValidator(0.0),
                                                        MaxValueValidator(100.0)])
+
+    submission = models.OneToOneField('CourseHomeworkSubmission', related_name='grade', null=True, blank=True)
 
     def __unicode__(self):
         return str(self.grade)
