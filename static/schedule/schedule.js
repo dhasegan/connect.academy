@@ -41,6 +41,14 @@ $(document).ready(function() {
           backgroundColor: '#999',
           border:'1px solid #888'
         });
+      }else{
+        if(calEvent.type === "Personal"){
+          $event.css('backgroundColor', '#009933');
+          $event.find('.time').css({
+            backgroundColor: '#999',
+            border:'1px solid #888'
+          });
+        }
       }
     },
     
