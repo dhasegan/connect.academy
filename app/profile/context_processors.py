@@ -13,11 +13,8 @@ def profile_activities(request, user):
                                 or not x.generalactivity.forumansweractivity.forum_answer.anonymous)
                             and (not x.get_type() == "ReviewActivity"
                                 or not x.courseactivity.reviewactivity.review.anonymous)]
-
+    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                             key=lambda a: a['activity'].timestamp,
-                             reverse=True) 
     return paginated(request,activities_context,20)
 
 
@@ -36,11 +33,7 @@ def new_profile_activities(request,user):
                                 or not x.courseactivity.reviewactivity.review.anonymous)]
     
     activities_list = [a for a in activities_list if a.can_view(user)]
-
+    activities_list = sorted(activities_list, key=lambda a: a.timestamp, reverse=True)
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                         key=lambda a: a['activity'].timestamp,
-                         reverse=True)
-
 
     return activities_context 

@@ -8,3 +8,7 @@ register = template.Library()
 def safewrap(value, arg):
     return value.format( arg )
 safewrap.is_safe=True
+
+@register.filter(expects_localtime=True)
+def short_time(value):
+    return value.strftime("%H:%M")
