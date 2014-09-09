@@ -138,6 +138,7 @@ class SubmitHomeworkRequestForm(forms.Form):
     timezone = forms.IntegerField()
     nr_files = forms.IntegerField(validators=[MinValueValidator(HOMEWORK_MIN_FILES),
                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
+    document = forms.FileField(required=False)
     
     course_id = forms.CharField()
     url = forms.CharField()

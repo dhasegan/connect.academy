@@ -597,6 +597,7 @@ class CourseHomeworkRequest(models.Model):
     number_files = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
                                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
     is_published = models.BooleanField(default=False)
+    document = models.ForeignKey('CourseDocument', related_name='homework_requests', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super(CourseHomeworkRequest, self).save(*args, **kwargs)

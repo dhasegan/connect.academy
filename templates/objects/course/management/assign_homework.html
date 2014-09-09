@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load connect_extras %}
 
-<form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post">
+<form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="form-group">
@@ -25,6 +25,13 @@
     <div class="form-group">
         <label for="homeworkDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
         <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" maxlength="1000" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>{% trans "Upload homework document" %} {% trans "(optional)" %}:</label>
+        {% with "document" as fname %}
+            {% include 'objects/file_input.html' %}
+        {% endwith %}
     </div>
 
     <div class="form-group">

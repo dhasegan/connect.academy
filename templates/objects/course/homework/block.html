@@ -2,7 +2,7 @@
 {% load humanize %}
 <div class="row">
     <div class="col-md-7">
-        {% include 'objects/course/homework_details.html' %}
+        {% include 'objects/course/homework/details.html' %}
     </div>
 
     <div class="col-md-5">
@@ -22,7 +22,7 @@
                     <small class="text-success">{% trans "You already submitted this homework" %}</small>
                 {% endif %}
                 {% if hw.can_submit %}
-                    {% include "objects/course/homework_submit.html" %}
+                    {% include "objects/course/homework/submit.html" %}
                 {% endif %}
             </div> 
         {% endif %}

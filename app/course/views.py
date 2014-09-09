@@ -186,7 +186,7 @@ def submit_document(request, slug):
     if not form.is_valid():
         raise Http404
 
-    if not user in form.cleaned_data['course'].professors.all():
+    if not user.is_professor_of(course):
         raise Http404
 
     docfile = form.cleaned_data['document']
@@ -241,7 +241,7 @@ def submit_homework_request(request, slug):
 
     user = get_object_or_404(jUser, id=request.user.id)
 
-    form = SubmitHomeworkRequestForm(request.POST)
+    form = SubmitHomeworkRequestForm(request.POST, request.FILES)
     if not form.is_valid():
         raise Http404
 
@@ -262,6 +262,18 @@ def submit_homework_request(request, slug):
                                              course=form.cleaned_data['course'], submitter=user, 
                                              deadline=deadline, course_topic=form.cleaned_data["topic"],
                                              number_files=form.cleaned_data['nr_files'])
+
+    docfile = form.cleaned_data['document']
+    print request.POST
+    print form
+    print docfile
+    if docfile:
+        print "uploading docfile"
+        course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
+                                     description=form.cleaned_data['description'], course=form.cleaned_data['course'], 
+                                     submitter=user, course_topic=form.cleaned_data["topic"])
+        course_document.save()
+        homework_request.document = course_document
     homework_request.save()
 
     return redirect(form.cleaned_data['url'])
