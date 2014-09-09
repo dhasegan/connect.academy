@@ -1,0 +1,102 @@
+{% load i18n %}
+{% load connect_extras %}
+{% load humanize %}
+
+<div class="homework-header" id="hw_header_{{ hw.homework.id }}">
+    {% if not hw.homework.is_published %}
+        <div class="btn-wrapper collapse fade active in edit-hw edit-hw-{{hw.homework.id}}">
+            <button class="btn btn-success pull-right" data-toggle="collapse" data-parent="#hw_header_{{ hw.homework.id }}" href=".edit-hw-{{hw.homework.id}}">Edit</button>
+        </div>
+    {% endif %}
+
+    <div class="collapse fade active in edit-hw edit-hw-{{hw.homework.id}}">
+        {% include "objects/course/homework/details.html" %}
+    </div>
+
+    {% if not hw.homework.is_published %}
+        <div class="collapse fade edit-hw edit-hw-{{hw.homework.id}}">
+            <div class="row">
+                <div class="col-md-8">
+                    {% with hw.homework as homework %}
+                        {% include "objects/course/management/assign_homework.html" %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if hw.homework.document %}
+        <div class="row">
+            <div class="col-md-8">
+                <hr>
+                {% with document=hw.homework.document  %}
+                    {% include "objects/course/document.html" %}
+                {% endwith %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<hr>
+
+<div>
+    <strong> {% trans "Percentage of homework submitted" %}: </strong>
+</div>
+<div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="{{hw.percentage_completed}}" aria-valuemin="0" aria-valuemax="100" style="width: {{hw.percentage_completed}}%;">
+        {{ hw.percentage_completed|floatformat:"1" }}%
+    </div>
+</div>
+
+<hr>
+
+{% if not hw.homework.is_published %}
+    <form role="form" class="grader-form" method="post" action="{% url 'submit_homework_grades' course.slug %}" id="graderform{{hw.homework.id}}">
+
+        {% comment %}
+            Hidden inputs
+        {% endcomment %}
+        {% csrf_token %}
+        <input type="hidden" name="hw_req_id" value="{{ hw.homework.id }}">
+        <input type="hidden" name="save" value="True">
+        <input type="hidden" name="publish" value="">
+
+
+        {% comment %}
+            Message for non ended
+        {% endcomment %}
+        {% if not hw.ended %}
+            <h4> {% trans "You can view the homework submissions only after the deadline ends" %} </h4>
+        {% endif %}
+
+        {% comment %}
+            Hw Dashboard actions
+        {% endcomment %}
+        {% if hw.ended %}
+            {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% endif %}
+
+        {% comment %}
+            Table with all students
+        {% endcomment %}
+        {% include 'objects/course/homework/grader_table.html' %}
+
+        {% comment %}
+            Hw Dashboard actions again
+        {% endcomment %}
+        {% if hw.ended %}
+            {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% endif %}
+
+        {% comment %}
+            Modal for publish info
+        {% endcomment %}
+        {% if hw.ended %}
+            {% include "objects/course/homework/grader_table_actions_modal.html" %}
+        {% endif %}
+
+    </form>
+{% else %}
+    <h4> {% trans "The results are published to the students" %} </h4>
+    {% include 'objects/course/homework/grader_table.html' %}
+{% endif %}

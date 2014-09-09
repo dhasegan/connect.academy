@@ -89,11 +89,42 @@ class SubmitDocumentForm(forms.Form):
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
         return content
 
-class SubmitHomeworkForm(forms.Form):
+class ResubmitDocumentForm(forms.Form):
     document = forms.FileField()
+    doc_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(ResubmitDocumentForm, self).clean()
+
+        docs = CourseDocument.objects.filter(id=cleaned_data.get("doc_id"))
+        if len(docs) != 1:
+            raise forms.ValidationError("Not a valid number of documents with this doc_id!")
+        cleaned_data['doc_obj'] = docs[0]
+
+        return cleaned_data
+
+    def clean_document(self):
+        content = self.cleaned_data['document']
+        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        return content
+
+
+class SubmitHomeworkForm(forms.Form):
     course_id = forms.CharField()
     homework_request_id = forms.CharField()
     url = forms.CharField()
+    document1 = forms.FileField(required=False)
+    document2 = forms.FileField(required=False)
+    document3 = forms.FileField(required=False)
+    document4 = forms.FileField(required=False)
+    document5 = forms.FileField(required=False)
+    document6 = forms.FileField(required=False)
+    document7 = forms.FileField(required=False)
+    document8 = forms.FileField(required=False)
+    document9 = forms.FileField(required=False)
+    document10 = forms.FileField(required=False)
 
     def clean(self):
         cleaned_data = super(SubmitHomeworkForm, self).clean()
@@ -106,19 +137,19 @@ class SubmitHomeworkForm(forms.Form):
         homework_requests = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("homework_request_id"))
         if len(homework_requests) != 1:
             raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
-        cleaned_data['homework_request'] = homework_requests[0]
+        hw_req = homework_requests[0]
+        cleaned_data['homework_request'] = hw_req
+
+        for idx in range(HOMEWORK_MIN_FILES, hw_req.number_files + 1):
+            content = cleaned_data.get('document' + str(idx))
+            if content and content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+                raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                    % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
 
         if not homework_requests[0].course == courses[0]:
             raise forms.ValidationError("Integration error!")
 
         return cleaned_data
-
-    def clean_document(self):
-        content = self.cleaned_data['document']
-        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
-            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
-                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
-        return content
 
 class SubmitHomeworkRequestForm(forms.Form):
     name = forms.CharField(max_length=200)
@@ -127,9 +158,11 @@ class SubmitHomeworkRequestForm(forms.Form):
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     timezone = forms.IntegerField()
+    nr_files = forms.IntegerField(validators=[MinValueValidator(HOMEWORK_MIN_FILES),
+                                              MaxValueValidator(HOMEWORK_MAX_FILES)])
+    document = forms.FileField(required=False)
     
     course_id = forms.CharField()
-    url = forms.CharField()
 
     def clean(self):
         cleaned_data = super(SubmitHomeworkRequestForm, self).clean()
@@ -155,6 +188,82 @@ class SubmitHomeworkRequestForm(forms.Form):
         if tz == None or tz == "":
             tz = 0
         return tz
+
+class EditHomeworkRequestForm(forms.Form):
+    name = forms.CharField(max_length=200)
+    description = forms.CharField(max_length=1000, required=False)
+    topic_id = forms.CharField(required=False)
+    start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    timezone = forms.IntegerField()
+    course_id = forms.CharField()
+    hw_req_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(EditHomeworkRequestForm, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        hw_reqs = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("hw_req_id"))
+        if len(hw_reqs) != 1:
+            raise forms.ValidationError("Not a valid number of homework requests with this hw_req_id!")
+        cleaned_data['homework_request'] = hw_reqs[0]
+
+        if cleaned_data['homework_request'].course != cleaned_data['course']:
+            raise forms.ValidationError("The course you are submitting does have this homework")
+
+        if cleaned_data['topic_id']:
+            topics = CourseTopic.objects.filter(id=cleaned_data['topic_id'], course=cleaned_data["course"])
+            if topics: 
+                cleaned_data["topic"] = topics[0]
+            else:
+                raise forms.ValidationError("The selected topic does not belong to this course")
+        else:
+            cleaned_data["topic"] = None
+        
+        return cleaned_data
+
+    def clean_timezone(self):
+        tz = self.cleaned_data['timezone']
+        if tz == None or tz == "":
+            tz = 0
+        return tz
+
+class SubmitHomeworkGradesForm(forms.Form):
+    hw_req_id = forms.IntegerField()
+    save = forms.BooleanField(required=False)
+    publish = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        hw_req_id = args[0].get('hw_req_id')
+        super(SubmitHomeworkGradesForm, self).__init__(*args, **kwargs)
+        if not hw_req_id:
+            return 
+        reqs = CourseHomeworkRequest.objects.filter(id=hw_req_id)
+        if not reqs:
+            return
+        hw = reqs[0]
+        students = hw.course.students.all()
+        for st in students:
+            for i in range(1,hw.number_files+1):
+                field_name = st.username + "-" + str(i)
+                self.fields[field_name] = forms.FloatField(required=False, \
+                                        validators=[MinValueValidator(0.0), \
+                                                    MaxValueValidator(100.0)])
+
+    def clean(self):
+        cleaned_data = super(SubmitHomeworkGradesForm, self).clean()
+
+        homework_requests = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("hw_req_id"))
+        if len(homework_requests) != 1:
+            raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
+        hw_req = homework_requests[0]
+        cleaned_data['homework_request'] = hw_req
+
+        return cleaned_data
 
 class VoteReviewForm(forms.Form):
     review_id = forms.CharField()

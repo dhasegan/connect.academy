@@ -1,0 +1,38 @@
+
+{% load humanize %}
+{% load i18n %}
+
+{% if teacher.is_teacher %}
+    <div class="pull-right collapse reupload-doc-{{document.id}} fade active in">
+        <a class="icon icon-cog" data-toggle="collapse" href=".reupload-doc-{{document.id}}"></a>
+    </div>
+{% endif %}
+
+
+<div class="doc-details">
+    <div class="doc-header">
+        <h4><a href="{{ document.document.url }}"> {{ document.name }} </a> </h4>
+        <div> {% trans "submitted by" %} {% with juser=document.submitter %}{% include "objects/user_link.html" %}{% endwith %} {{ document.submit_time|naturaltime }} </div>
+    </div>
+    {% if document.description %}
+        <strong>{% trans "Description" %}:</strong> 
+        <div class="doc-description"> {{ document.description }} </div>
+    {% endif %}
+</div>
+
+{% if teacher.is_teacher %}
+    <div class="reupload-doc-{{document.id}} collapse fade reupload-doc-form">
+        <form class="form" action="{% url 'resubmit_document' course.slug %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% with "True" as frequired %}
+            {% with "document" as fname %}
+                {% include 'objects/file_input.html' %}
+            {% endwith %}
+            {% endwith %}
+            <input type="hidden" name="doc_id" value="{{ document.id }}">
+            <div class="text-muted">(this action will replace the current file)</div>
+            <input class="btn btn-danger" type="submit" value="Upload" />
+        </form>
+    </div>
+{% endif %}

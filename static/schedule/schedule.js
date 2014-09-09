@@ -41,6 +41,14 @@ $(document).ready(function() {
           backgroundColor: '#999',
           border:'1px solid #888'
         });
+      }else{
+        if(calEvent.type === "Personal"){
+          $event.css('backgroundColor', '#009933');
+          $event.find('.time').css({
+            backgroundColor: '#999',
+            border:'1px solid #888'
+          });
+        }
       }
     },
     
@@ -51,6 +59,8 @@ $(document).ready(function() {
       //defaults to Personal.
       typeField.val('0');
 
+      copyLabel.show();
+
       typeField.change(function(){
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
@@ -59,6 +69,8 @@ $(document).ready(function() {
           }
           
       });
+
+
 
       dialogContent.dialog({
           modal: true,
@@ -83,17 +95,15 @@ $(document).ready(function() {
                     data: form.serialize(),
                     
                     success: function(data){                    
-                      
                       data = $.parseJSON(data);
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          appointment = data.appointments[i];
+                        for(var i=0; i< data.appointments.length;i++){
+                          var appointment = data.appointments[i];
                           eventData.events.push(appointment);
+                          $calendar.weekCalendar("updateEvent", appointment);
                         }
-                        
-                        data: eventData;
-                        location.reload();
                       }
+                      $calendar.weekCalendar("refresh");
                     }
 
                   });
@@ -108,14 +118,15 @@ $(document).ready(function() {
                       data = $.parseJSON(data);
                       
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          appointment = data.appointments[i];
+                        for(var i=0; i< data.appointments.length;i++){
+                          var appointment = data.appointments[i];
                           eventData.events.push(appointment);
+                          $calendar.weekCalendar("updateEvent", appointment);
                         }
-                    
-                        data: eventData;
-                        location.reload();
+                        
+                        $calendar.weekCalendar("refresh");
                       }
+                    
                     }
 
                   });
@@ -324,6 +335,7 @@ $(document).ready(function() {
           },
           buttons: {
             save : function() {
+                
                 //reenable the 'select' to serialize the form, otherwise a KeyError is raised.
                 //it is set to true again after the ajax request is sent
                 dialogContent.find("select[name='course_id']").attr('disabled', false);
@@ -337,41 +349,52 @@ $(document).ready(function() {
                       
                       data = $.parseJSON(data);
                       if(data.status === 'OK'){
-                        for(var i=0;i<data.appointments.length;i++){
-                          var appointment = data.appointments[i];
-                          eventData.events.push(appointment);
-                        }
+                        for(var i=0; i< data.appointments.length;i++){
+                            var appointment = data.appointments[i];
+                            for(var j = 0 ; j < eventData.events.length; j++){
+                                var e = eventData.events[j];
+                                if(e.id == appointment.id){
+                                    eventData.events[j] = appointment ;
+                                    $calendar.weekCalendar("updateEvent", eventData.events[j]);
+                                }
+                            }
+                          }
+
+                          $calendar.weekCalendar("refresh");
                         
-                        data: eventData;
-                        location.reload();
                       }
+
                       $calendar.weekCalendar("refresh");
                       dialogContent.dialog("close");
                     }
                   });
-                }else if(calEvent.type === 'Personal'){
+
+                } else if(calEvent.type === 'Personal'){
                     $.ajax({
                       type:form.attr("method"),
                       url:"edit_personal_appointment",
                       data: form.serialize(),
                       success: function(data){
-
                         data = $.parseJSON(data);
-                        
                         if(data.status === "OK"){
-                          for(var i=0; i<data.appointments.length;i++){
+
+                          for(var i=0; i< data.appointments.length;i++){
                             var appointment = data.appointments[i];
-                            eventData.events.push(appointment)
+                            for(var j = 0 ; j < eventData.events.length; j++){
+                                var e = eventData.events[j];
+                                if(e.id == appointment.id){
+                                    eventData.events[j] = appointment ;
+                                    $calendar.weekCalendar("updateEvent", eventData.events[j]);
+                                }
+                            }
                           }
+
+                          $calendar.weekCalendar("refresh");
                         }
-                        $calendar.weekCalendar("updateEvent", calEvent);
-                        $calendar.weekCalendar("refresh");
-                        location.reload();
+                        
                       }
                     });
 
-                  $calendar.weekCalendar("updateEvent", calEvent);
-                  $calendar.weekCalendar("refresh");
                   dialogContent.dialog("close");
                 }  
 
@@ -400,9 +423,6 @@ $(document).ready(function() {
                           eventData.events.splice(i,1);
                         }
                       }
-
-                      data:eventData;
-
                     }
                   });
                 }else if(calEvent.type === 'Course' && calEvent.modifiable){
@@ -415,16 +435,12 @@ $(document).ready(function() {
                       'courseName': calEvent.courseName,
                     },
                     success: function(){
-                      //alert("Successfuly removed event");
                       for(var i = 0 ; i < eventData.events.length; i++){
                         var e = eventData.events[i];
                         if(e.id === calEvent.id){
                           eventData.events.splice(i,1);
                         }
                       }
-
-                      data:eventData;
-
                     }
                   });
                 }
@@ -466,6 +482,16 @@ function displayMessage(message) {
 function prepareFields(dialogContent,calEvent) {
   dialogContent.find(".to-reset").val("");
 
+  $("select[name='course_id'] option").each(function(){
+    if(calEvent.type === 'Personal')
+      return;
+
+    if("Select Course" === $(this).text().trim()){
+      $(this).attr('selected', true);  
+    }
+  });
+  
+  courseField.trigger("change");
   $("#start_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.start)));
   $("#end_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.end)));
 

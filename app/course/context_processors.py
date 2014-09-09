@@ -91,37 +91,92 @@ def course_reviews_context(course, current_user=None):
         context.append(review_context(review, current_user))
     return context
 
+def course_homework_count_submitted(course, homework_request):
+    students = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
+    submissions = CourseHomeworkSubmission.objects.filter(homework_request=homework_request)
+    cnt_submitted = 0
+    for st in students:
+        files_submitted = submissions.filter(submitter=st.student)
+        if files_submitted.count() == homework_request.number_files:
+            cnt_submitted += 1
+    return cnt_submitted
 
-def course_homework_context(course, current_user):
+def homework_context(hw, current_user):
+    course = hw.course
     current_time = pytz.utc.localize(datetime.now())
-
     nr_students = StudentCourseRegistration.objects.filter(course=course, is_approved=True).count()
 
+    within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
+    is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
+    is_student = current_user.is_student_of(course)
+    can_submit_homework = is_student and is_allowed and within_deadline
+    
+    homework_submissions = []
+    if current_user.is_student():
+        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
+
+    homework_submitted = course_homework_count_submitted(course, hw)
+
+    context = {
+        "homework": hw,
+        "can_submit": can_submit_homework,
+        "is_allowed": is_allowed,
+        "previous_submissions": homework_submissions,
+        "submitted": len(homework_submissions) == hw.number_files,
+        "stats": {
+            "submitted": homework_submitted,
+            "students": nr_students
+        }
+    }
+    if current_user.is_professor_of(course):
+        context['active_hw'] = within_deadline
+        context['coming_hw'] = hw.deadline.start > current_time
+        context['past_hw'] = hw.deadline.end <= current_time
+
+    return context
+
+def course_homework_context(course, current_user):
     context = []
     all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
-        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
-        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
-        is_student = current_user.is_student_of(course)
-        can_submit_homework = is_student and is_allowed and within_deadline
-        
-        homework_submission = None
-        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
-        if homework_submissions:
-            homework_submission = homework_submissions[0]
+        context.append(homework_context(hw, current_user))
+    return context
 
-        homework_submitted = hw.coursehomeworksubmission_set.all().count()
+def homework_dashboard_context(request, course, current_user):
+    context = {}
+    homework_requests = CourseHomeworkRequest.objects.filter(course=course)
+    students = sorted(list(course.students.all()), key=lambda st:st.username)
+    current_time = pytz.utc.localize(datetime.now())
+    context['homework_requests'] = []
 
-        context.append({
-            "homework": hw,
-            "can_submit": can_submit_homework,
-            "is_allowed": is_allowed,
-            "previous_submission": homework_submission,
-            "stats": {
-                "submitted": homework_submitted,
-                "students": nr_students
-            }
+    for hw in homework_requests:
+        all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
+        submissions_context = []
+        for st in students:
+            submissions = all_submissions.filter(submitter=st)
+            submissions = sorted(submissions, key=lambda s:s.file_number)
+            submissions_context.append({
+                'student': st,
+                'submissions': submissions,
+                'file_numbers': [str(s.file_number) for s in submissions]
+            })
+
+        percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
+        context['homework_requests'].append({
+            'homework': hw,
+            'all_submissions': submissions_context,
+            'percentage_completed': percentage_completed,
+            'ended': hw.deadline.end < current_time
         })
+
+    # Course syllabus for topic editing
+    context['syllabus'] = course_syllabus_context(course,current_user)
+
+    # Is teacher
+    context['teacher'] = {
+        'is_teacher': True
+    }
+
     return context
 
 def course_syllabus_context(course, current_user):
@@ -211,7 +266,7 @@ def course_page_context(request, course):
     # Course forum link
     context['forum'] = course.forum
 
-    context['can_edit_wiki'] = current_user.is_student_of(course) or current_user.is_professor_of(course)
+    context['can_edit_wiki'] = course.can_edit_wiki(current_user)
     if hasattr(course, 'wiki'):
         context['wiki'] = course.wiki
         wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
@@ -225,6 +280,10 @@ def course_page_context(request, course):
     if current_user.is_student_of(course) or current_user.is_professor_of(course):
         context['all_homework'] = course_homework_context(course, current_user)
         context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
+        if current_user.is_professor_of(course):
+            context['homework_has_active'] = [hw['active_hw'] for hw in context['all_homework']].count(True) > 0
+            context['homework_has_coming'] = [hw['coming_hw'] for hw in context['all_homework']].count(True) > 0
+            context['homework_has_past'] = [hw['past_hw'] for hw in context['all_homework']].count(True) > 0
 
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 
@@ -245,10 +304,9 @@ def course_activities(request, course):
                                                             forum_answer__post__forum__forumcourse__course=course ))
 
     activities_list = [a for a in activities_list if a.can_view(user)]
+    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
+    
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                             key=lambda a: a['activity'].timestamp,
-                             reverse=True)
     return paginated(request,activities_context, 20)
 
 
@@ -269,13 +327,9 @@ def new_course_activities(request,course):
                                                             forum_answer__post__forum__forumcourse__course=course, id__gt=last_id))
 
     activities_list = [a for a in activities_list if a.can_view(user)]
-
+    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
     
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    activities_context = sorted(activities_context,
-                         key=lambda a: a['activity'].timestamp,
-                         reverse=True)
-
 
     return activities_context 
 
@@ -295,33 +349,7 @@ def activity_context(activity, current_user):
         answer = activity_instance.forum_answer
         activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
     elif activity_type == "HomeworkActivity":
-        nr_students = StudentCourseRegistration.objects.filter(course=activity_instance.course, 
-                                                                is_approved=True).count()
-        current_time = timezone.now()
-        hw = activity_instance.homework
-        course = activity.courseactivity.course
-        within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
-        is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
-        is_student = current_user.is_student_of(course)
-        can_submit_homework = is_student and is_allowed and within_deadline
-        
-        homework_submission = None
-        homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
-        if homework_submissions:
-            homework_submission = homework_submissions[0]
-
-        homework_submitted = hw.coursehomeworksubmission_set.all().count()
-
-        activity_context["homework"] = {
-            "homework": hw,
-            "can_submit": can_submit_homework,
-            "is_allowed": is_allowed,
-            "previous_submission": homework_submission,
-            "stats": {
-                "submitted": homework_submitted,
-                "students": nr_students
-            }
-        }
+        activity_context['homework'] = homework_context(activity.homeworkactivity.homework, current_user)
     elif activity_type == "ReviewActivity":
         activity_context["review"] = review_context(activity_instance.review, current_user)
     elif activity_type == "WikiActivity":

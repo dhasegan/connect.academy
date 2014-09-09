@@ -60,26 +60,23 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <h3> {% trans "Current homework" %} </h3>
+                                <h3> {% trans "Homework" %} </h3>
                             </div>
 
                             <div class="col-md-6">
-                                <h3> {% trans "Request homework" %} </h3>
+                                <h3> {% trans "Assign homework" %} </h3>
                             </div>
                         </div>
                         <hr class="top-line">
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% for hw in all_homework %}
-                                    {% include 'objects/course/homework_details.html' %}
-                                    <hr>
-                                {% endfor %}
+                                {% include "objects/course/homework/teacher_info.html" %}
                             </div>
 
                             <div class="col-md-6">
                                 {% with course.topics as topics %}
-                                    {% include 'objects/course/management/demand_homework.html' %}
+                                    {% include 'objects/course/management/assign_homework.html' %}
                                 {% endwith %}
                             </div>
                         </div>

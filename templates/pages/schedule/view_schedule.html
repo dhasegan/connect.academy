@@ -48,7 +48,7 @@
 
         {% if user.is_professor %}
 
-          <div class="form-group">
+          <div class="form-group" >
               <label for="type">Appointment Type:</label>
               <select class="form-control" name="type">
                 <option value="0">Personal Appointment </option>
@@ -71,10 +71,15 @@
             </select>
           </div>
 
+        {% else %}
+
+        <input name="type" value="0" type="hidden" />
+
+
       {% endif %}
 
       <div class="form-group" id="copyLabel">
-            <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input to-reset" name="num_weeks" type="text" /> weeks.  </b>   
+            <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input form-control to-reset" name="num_weeks" type="text" /> weeks.  </b>   
       </div>
           
 

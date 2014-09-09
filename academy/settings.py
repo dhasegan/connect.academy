@@ -315,6 +315,7 @@ PIPELINE_JS = {
             'local/js/explore.js',
             'local/js/welcome.js',
             'local/js/profile.js',
+            'local/js/homework_dashboard.js',
             'local/js/connect.js',
         ),
         'output_filename': 'js/connect.min.js',

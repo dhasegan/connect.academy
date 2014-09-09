@@ -9,10 +9,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
 from django.core.urlresolvers import reverse
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django import forms
-
-from app.helpers import get_slug_for
 
 
 ###########################################################################
@@ -272,11 +269,13 @@ class Course(models.Model):
             category = category.parent
         return course_path
 
-    def can_edit_wiki(self, user):
-        return user.university.id == self.university.id
-
     def save(self, *args, **kwargs):
-        self.slug = get_slug_for(Course, self.pk, self.name)
+        original_slug = slugify(self.name)
+        appendix = Course.objects.filter(slug__startswith=original_slug).exclude(id=self.id).count()
+        if not appendix:
+            self.slug = original_slug
+        else:
+            self.slug = original_slug + "-" + str(appendix)
         super(Course, self).save(*args, **kwargs)
         ForumCourse.objects.get_or_create(course=self)
 
@@ -582,48 +581,30 @@ class CourseDocument(models.Model):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        just_created = False
         if not self.id:
             self.submit_time = timezone.now()
-            just_created = True
         super(CourseDocument, self).save(*args, **kwargs)
-        if just_created:
-            DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
-
-HOMEWORK_MIN_FILES = 1
-HOMEWORK_MAX_FILES = 10
+        DocumentActivity.objects.create(user=self.submitter, course=self.course, document=self)
 
 class CourseHomeworkRequest(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
-    course = models.ForeignKey('Course')
     deadline = models.ForeignKey('Deadline')
-    submitter = models.ForeignKey('jUser')
     course_topic = models.ForeignKey('CourseTopic', related_name="homework_requests", null=True, blank=True)
-    number_files = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
-                                                              MaxValueValidator(HOMEWORK_MAX_FILES)])
-    is_published = models.BooleanField(default=False)
-    document = models.ForeignKey('CourseDocument', related_name='homework_requests', null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        
-        just_created = False
-        if not self.id:
-            print "Just Created"
-            just_created = True
-        else:
-            print "not just created"
-        super(CourseHomeworkRequest, self).save(*args, **kwargs)
-        if just_created:
-            HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
+    course = models.ForeignKey('Course')
+    submitter = models.ForeignKey('jUser')
 
     def delete(self, *args, **kwargs):
         deadline = self.deadline
-        super(CourseHomeworkRequest, self).delete(*args, **kwargs)
+        super(CourseHomeworkRequest, self).save(*args, **kwargs)
         deadline.delete()
 
     def __unicode__(self):
         return str(self.name)
+
+    def save(self, *args, **kwargs):
+        super(CourseHomeworkRequest, self).save(*args, **kwargs)
+        HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
 
 class CourseHomeworkSubmission(models.Model):
     homework_request = models.ForeignKey('CourseHomeworkRequest')
@@ -633,43 +614,15 @@ class CourseHomeworkSubmission(models.Model):
     submitter = models.ForeignKey('jUser')
     submit_time = models.DateTimeField()
     name = models.CharField(max_length=200)
-    file_number = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
-                                                             MaxValueValidator(HOMEWORK_MAX_FILES)])
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.submit_time = timezone.now()
-        self.name = slugify(self.submitter.first_name + "_" + self.submitter.last_name + " " + self.homework_request.name + " (" + str(self.file_number) + ")")
+        self.name = slugify(self.submitter.first_name + "-" + self.submitter.last_name + "-" + self.homework_request.name)
         super(CourseHomeworkSubmission, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        grade = None
-        if hasattr(self, 'grade'):
-            grade = self.grade
-        super(CourseHomeworkSubmission, self).delete(*args, **kwargs)
-        if grade:
-            grade.delete()
 
     def __unicode__(self):
         return str(self.name)
-
-class CourseHomeworkGrade(models.Model):
-    submitter = models.ForeignKey('jUser', related_name='homework_graded')
-    student = models.ForeignKey('jUser', related_name='grades')
-    homework_request = models.ForeignKey('CourseHomeworkRequest')
-    file_number = models.IntegerField(default=1, validators=[MinValueValidator(HOMEWORK_MIN_FILES),
-                                                             MaxValueValidator(HOMEWORK_MAX_FILES)])
-
-    is_published = models.BooleanField(default=False)
-    grade = models.FloatField(default=0.0, validators=[MinValueValidator(0.0),
-                                                       MaxValueValidator(100.0)])
-
-    submission = models.OneToOneField('CourseHomeworkSubmission', related_name='grade', null=True, blank=True)
-
-    def __unicode__(self):
-        return str(self.grade)
-
-
 
 ###########################################################################
 ############################ Forums, Wikis ################################
@@ -920,13 +873,9 @@ class ForumPost(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        just_created = False
         if not self.id:
             self.datetime = timezone.now()
-            just_created = True
         super(ForumPost, self).save(*args, **kwargs)
-        if just_created:
-            ForumPostActivity.objects.create(user=self.posted_by, forum_post = self)
         if self.forum.forum_type == FORUM_GENERAL:
             self.followed_by.add(self.posted_by)
         elif self.forum.forum_type == FORUM_COURSE:
@@ -953,13 +902,10 @@ class ForumAnswer(models.Model):
         return self.text
 
     def save(self, *args, **kwargs):
-        just_created = False
         if not self.id:
             self.datetime = timezone.now()
-            just_created = True
         super(ForumAnswer, self).save(*args, **kwargs)
-        if just_created:
-            ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
+        ForumAnswerActivity.objects.create(user=self.posted_by, forum_answer=self)
         
 
 class WikiContributions(models.Model):
@@ -985,6 +931,8 @@ class WikiPage(models.Model):
     def get_absolute_url(self):
         return reverse('app.wiki.views.view_wiki_page', args=[self.course.slug])
 
+    def can_edit(self, user):
+        return user.is_student_of(self.course) or user.is_professor_of(self.course)
 
 
 versioning.register(
@@ -1092,7 +1040,7 @@ class Activity(models.Model):
             elif activity_type == "ForumAnswerActivity":
                 self.timestamp = instance.forum_answer.datetime
             elif activity_type == "DocumentActivity":
-                self.timestamp = instance.document.submit_time
+                self.timestamp = instance.document.submit_type
             else:
                 self.timestamp = timezone.now()
         super(Activity, self).save(*args, **kwargs)

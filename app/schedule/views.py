@@ -153,7 +153,7 @@ def add_personal_appointment(request):
     data['modifiable'] = True
     data['type'] = 'Personal'
     
-    appointmentsJSON.append(json.dumps(data))
+    appointmentsJSON.append(data)
 
     copy_to_otherweeks = form.cleaned_data['copy']
     weeks = form.cleaned_data['num_weeks']
@@ -161,7 +161,7 @@ def add_personal_appointment(request):
     if copy_to_otherweeks:
         start_times = []
         length = end - start
-        for i in range(1,int(weeks)):
+        for i in range(1,int(weeks)+1):
             start_time = start + timedelta(weeks=i)
             start_times.append(start_time)
 
@@ -186,7 +186,7 @@ def add_personal_appointment(request):
                                                             user=user)
             data['id'] = appointment.id
             
-            appointmentsJSON.append(json.dumps(data))
+            appointmentsJSON.append(data)
 
     return_dict = {'status':'OK','appointments':appointmentsJSON}
 
@@ -216,8 +216,26 @@ def edit_personal_appointment(request):
     appointment.end = new_end_time
     appointment.save()
 
+
+    appointmentsJSON = []
+    local_timezone = timezone.get_current_timezone()
+
+    start_local = timezone.localtime(new_start_time,local_timezone)
+    end_local = timezone.localtime(new_end_time,local_timezone)
+    data = {}
+    data['id'] = appointment.id
+    data['start'] = format_date(start_local.strftime(date_format))
+    data['end'] = format_date(end_local.strftime(date_format))
+    data['title'] = new_location
+    data['body'] = new_description
+    data['modifiable'] = True
+    data['type'] = 'Personal'
+    
+    appointmentsJSON.append(data)
+
+
     # return the newly created appointments back to the user
-    return_dict = { 'status':'OK' }
+    return_dict = {'status':'OK','appointments':appointmentsJSON}
     return HttpResponse(json.dumps(return_dict))
 
 
@@ -289,12 +307,12 @@ def add_course_appointment(request):
     data['type'] = 'Course'
     data['courseName'] = appointment.course.name
     
-    appointmentsJSON.append(json.dumps(data))
+    appointmentsJSON.append(data)
 
     if copy_to_otherweeks:
         start_times = []
         length = end_time - start_time
-        for i in range(1,int(weeks)):
+        for i in range(1,int(weeks)+1):
             start_time_weeks = start_time + timedelta(weeks=i)
             start_times.append(start_time_weeks)
 
@@ -321,7 +339,7 @@ def add_course_appointment(request):
             data['type'] = 'Course'
             data['courseName'] = appointment.course.name
             
-            appointmentsJSON.append(json.dumps(data))
+            appointmentsJSON.append(data)
 
     return_dict = {'status':'OK', 'appointments':appointmentsJSON }    
     return HttpResponse(json.dumps(return_dict))    
@@ -370,7 +388,7 @@ def edit_course_appointment(request):
     data['type'] = 'Course'
     data['courseName'] = appointment.course.name
     
-    appointmentsJSON.append(json.dumps(data))
+    appointmentsJSON.append(data)
 
     return_dict = {'status':'OK','appointments':appointmentsJSON}    
     return HttpResponse(json.dumps(return_dict))
@@ -400,6 +418,7 @@ def remove_course_appointment(request):
 def resize_appointment(request):
    
     user = get_object_or_404(jUser, id=request.user.id)
+
     appointmentType = request.POST['type']
 
     if appointmentType == "0": #personal
@@ -422,7 +441,7 @@ def resize_appointment(request):
 
         return HttpResponse(json.dumps(return_dict))
     
-    if appointmentType == "1": #course
+    elif appointmentType == "1": #course
         
         form = CourseAppointmentForm(request.POST)
         

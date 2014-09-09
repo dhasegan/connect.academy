@@ -2,12 +2,8 @@
 {% load i18n %}
 
 <div class="homework-content">
-    <div class="h4 text-primary"> 
-    	{% if hw.previous_submission %}
-    		<a target="_blank" href="{{hw.previous_submission.document.url}}">{{ hw.homework.name }}</a> 
-    	{% else %}
-    		{{ hw.homework.name }}
-    	{% endif %}
+    <div class="h4"> 
+    	{{ hw.homework.name }} {% if hw.homework.document %}(<a href="{{ hw.homework.document.document.url }}">document</a>){% endif %}
     </div>
     {% if hw.homework.description %}
         <p> {{ hw.homework.description }} </p>

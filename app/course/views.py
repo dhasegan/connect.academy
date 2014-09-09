@@ -180,13 +180,14 @@ def submit_document(request, slug):
     context = {}
 
     user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
 
     form = SubmitDocumentForm(request.POST, request.FILES)
 
     if not form.is_valid():
         raise Http404
 
-    if not user in form.cleaned_data['course'].professors.all():
+    if not user.is_professor_of(course):
         raise Http404
 
     docfile = form.cleaned_data['document']
@@ -195,7 +196,32 @@ def submit_document(request, slug):
                                      submitter=user, course_topic=form.cleaned_data["topic"])
     course_document.save()
 
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def resubmit_document(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+
+    form = ResubmitDocumentForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    docfile = form.cleaned_data['document']
+    document = form.cleaned_data['doc_obj']
+    document.document = docfile
+    document.save()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
 
 
 @require_POST
@@ -218,16 +244,19 @@ def submit_homework(request, slug):
 
     homework_request = form.cleaned_data['homework_request']
 
-    previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request)
-    for prev_hw in previous_homework:
-        prev_hw.delete()
+    for idx in range(HOMEWORK_MIN_FILES, homework_request.number_files + 1):
+        docfile = form.cleaned_data.get('document' + str(idx))
+        if docfile:
+            # Delete previous
+            previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request, file_number=idx)
+            for prev_hw in previous_homework:
+                prev_hw.delete()
+            # Create new
+            course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
+                                                       submitter=user, homework_request=homework_request, file_number=idx)
+            course_homework.save()
 
-    docfile = form.cleaned_data['document']
-    course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
-                                               submitter=user, homework_request=homework_request)
-    course_homework.save()
-
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
 
 
 @require_POST
@@ -237,13 +266,16 @@ def submit_homework_request(request, slug):
     context = {}
 
     user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
 
-    form = SubmitHomeworkRequestForm(request.POST)
-    print request.POST
+    form = SubmitHomeworkRequestForm(request.POST, request.FILES)
     if not form.is_valid():
         raise Http404
 
-    if not user in form.cleaned_data['course'].professors.all():
+    if not course == form.cleaned_data['course']:
+        raise Http404
+
+    if not user.is_professor_of(course):
         raise Http404
 
     local_timezone = timezone.get_current_timezone()
@@ -258,10 +290,160 @@ def submit_homework_request(request, slug):
     deadline.save()
     homework_request = CourseHomeworkRequest(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
                                              course=form.cleaned_data['course'], submitter=user, 
-                                             deadline=deadline, course_topic=form.cleaned_data["topic"])
+                                             deadline=deadline, course_topic=form.cleaned_data["topic"],
+                                             number_files=form.cleaned_data['nr_files'])
+
+    docfile = form.cleaned_data['document']
+    if docfile:
+        course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
+                                     description=form.cleaned_data['description'], course=form.cleaned_data['course'], 
+                                     submitter=user, course_topic=form.cleaned_data["topic"])
+        course_document.save()
+        homework_request.document = course_document
     homework_request.save()
 
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def edit_homework_request(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+
+    form = EditHomeworkRequestForm(request.POST, request.FILES)
+    if not form.is_valid():
+        raise Http404
+
+    if not course == form.cleaned_data['course']:
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    local_timezone = timezone.get_current_timezone()
+    if timezone.is_naive(form.cleaned_data['start']):
+        form.cleaned_data['start'] = timezone.make_aware(form.cleaned_data['start'], local_timezone)
+    if timezone.is_naive(form.cleaned_data['deadline']):
+        form.cleaned_data['deadline'] = timezone.make_aware(form.cleaned_data['deadline'], local_timezone) 
+    start_time = timezone.localtime(form.cleaned_data['start'], pytz.utc)
+    end_time = timezone.localtime(form.cleaned_data['deadline'], pytz.utc)
+
+    homework_request = form.cleaned_data['homework_request']
+    deadline = homework_request.deadline
+    deadline.start = start_time
+    deadline.end = end_time
+    deadline.save()
+
+    homework_request.name=form.cleaned_data['name']
+    homework_request.description=form.cleaned_data['description']
+    homework_request.course_topic=form.cleaned_data["topic"]
+    homework_request.save()
+
+    get_params = "?homework=" + str(homework_request.id)
+    return redirect( reverse('homework_dashboard', args=(course.slug, )) + get_params )
+
+
+@require_POST
+@require_active_user
+@login_required
+def submit_homework_grades(request, slug):
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = SubmitHomeworkGradesForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    hw = form.cleaned_data['homework_request']
+    if hw.course != course:
+        raise Http404
+
+    students = course.students.all()
+    if form.cleaned_data.get('save'):
+        for st in students:
+            for idx in range(1, hw.number_files + 1):
+                field_name = st.username + "-" + str(idx)
+                grade = form.cleaned_data.get(field_name)
+                if grade:
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if not hw_grades:
+                        grade = CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
+                                                                   submitter=user, is_published=False, grade=grade)
+                        subms = CourseHomeworkSubmission.objects.filter(submitter=st, file_number=idx, homework_request=hw)
+                        if subms:
+                            grade.submission = subms[0]
+                            grade.save()
+                    else:
+                        hw_grade = hw_grades[0]
+                        hw_grade.grade = grade
+                        hw_grade.submitter = user
+                        hw_grade.save()
+                else:
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if hw_grades:
+                        hw_grades[0].delete()
+
+
+    if form.cleaned_data.get('publish'):
+        # Check if everyone has a grade
+        can_publish = True
+        for st in students:
+            for idx in range(1, hw.number_files + 1):
+                subms = CourseHomeworkSubmission.objects.filter(submitter=st, file_number=idx, homework_request=hw)
+                if subms and not hasattr(subms[0], 'grade'):
+                    can_publish = False
+                    break
+            if not can_publish:
+                break
+        if can_publish:
+            # Publish the results
+            for st in students:
+                for idx in range(1, hw.number_files + 1):
+                    field_name = st.username + "-" + str(idx)
+                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
+                    if hw_grades:
+                        hw_grades[0].is_published = True
+                        hw_grades[0].save()
+                    else:
+                        CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
+                                                        submitter=user, is_published=True, grade=0.0)
+            hw.is_published = True
+            hw.save()
+        else:
+            raise Http404
+
+
+    return redirect( reverse('homework_dashboard', args=(course.slug, )) )
+
+@require_GET
+@require_active_user
+@login_required
+def homework_dashboard(request, slug):
+    context = {
+        'page': 'homework_dashboard'
+    }
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    if not user.is_professor_of(course):
+        raise Http404
+
+    context = dict(context.items() + homework_dashboard_context(request, course, user).items())
+    context['course'] = course
+
+    if 'homework' in request.GET and request.GET['homework']:
+        for hw in context['homework_requests']:
+            if str(hw['homework'].id) == request.GET['homework']:
+                context['current_homework'] = int(request.GET['homework'])
+
+    return render(request, 'pages/course/homework_dashboard.html', context)
 
 
 @require_POST

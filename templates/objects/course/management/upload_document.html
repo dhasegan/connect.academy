@@ -8,22 +8,24 @@
         <input class="form-control" type="text" name="name" id="documentName{{course.id}}" maxlength="200" required>
     </div>
 
-    <div class="form-group">
-        <label for="documentTopic{{course.id}}">{% trans "Course Topic" %}</label>
-        <select class="form-control" name="topic_id" id="documentTopic{{course.id}}">
-            <option value=""> {% trans "No specific topic" %} </option>
-            {% for topic in syllabus %}
-                <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
-            {% endfor %} 
-        </select>
-    </div>
+    {% if syllabus|length > 0 %}
+        <div class="form-group">
+            <label for="documentTopic{{course.id}}">{% trans "Course Topic" %}</label>
+            <select class="form-control" name="topic_id" id="documentTopic{{course.id}}">
+                <option value=""> {% trans "No specific topic" %} </option>
+                {% for topic in syllabus %}
+                    <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
+                {% endfor %} 
+            </select>
+        </div>
+    {% endif %}
 
     <div class="form-group">
         <label for="documentDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
         <textarea class="form-control" type="text" name="description" id="documentDescription{{course.id}}" maxlength="1000" rows="3"></textarea>
     </div>
     <div class="form-group">
-        {% with "True" as required %}
+        {% with "True" as frequired %}
         {% with "document" as fname %}
             {% include 'objects/file_input.html' %}
         {% endwith %}
