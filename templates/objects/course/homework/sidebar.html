@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load connect_extras %}
 
 <div class="panel panel-default sidebar">
     <div class="panel-body">
@@ -12,7 +13,7 @@
             <nav class="nav-sidebar">
                 <ul class="nav tabs">
                     {% for hw in homework_requests|dictsort:'homework.deadline.end' %}
-                        <li class="{% if forloop.first %}active{% endif %}">
+                        <li class="{% if not current_homework and forloop.first %}active{% elif current_homework == hw.homework.id %}active{% endif %}">
                             <a href="#homework_req{{hw.homework.id}}" role="tab" data-toggle="tab">{{ hw.homework.name }}</a>
                         </li>
                     {% endfor %}

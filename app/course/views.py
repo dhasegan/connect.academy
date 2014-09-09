@@ -358,6 +358,11 @@ def homework_dashboard(request, slug):
     context = dict(context.items() + homework_dashboard_context(request, course, user).items())
     context['course'] = course
 
+    if 'homework' in request.GET and request.GET['homework']:
+        for hw in context['homework_requests']:
+            if str(hw['homework'].id) == request.GET['homework']:
+                context['current_homework'] = int(request.GET['homework'])
+
     return render(request, 'pages/course/homework_dashboard.html', context)
 
 

@@ -1,0 +1,32 @@
+
+
+<h3> Active Homework: </h3>
+
+{% for hw in all_homework %}
+    {% if hw.active_hw %}
+        <div>
+            <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+
+        </div>
+    {% endif %}
+{% endfor %}
+<hr> 
+
+<h3> Coming Homework: </h3>
+{% for hw in all_homework %}
+    {% if hw.coming_hw %}
+        <div>
+            {{hw.homework.name}}
+        </div>
+    {% endif %}
+{% endfor %}
+<hr> 
+
+<h3> Past Homework: </h3>
+{% for hw in all_homework %}
+    {% if hw.past_hw %}
+        <div>
+            {{hw.homework.name}}
+        </div>
+    {% endif %}
+{% endfor %}

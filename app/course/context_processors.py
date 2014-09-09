@@ -117,7 +117,7 @@ def homework_context(hw, current_user):
 
     homework_submitted = course_homework_count_submitted(course, hw)
 
-    return {
+    context = {
         "homework": hw,
         "can_submit": can_submit_homework,
         "is_allowed": is_allowed,
@@ -128,6 +128,12 @@ def homework_context(hw, current_user):
             "students": nr_students
         }
     }
+    if current_user.is_professor_of(course):
+        context['active_hw'] = within_deadline
+        context['coming_hw'] = hw.deadline.start > current_time
+        context['past_hw'] = hw.deadline.end <= current_time
+
+    return context
 
 def course_homework_context(course, current_user):
     context = []
