@@ -33,13 +33,15 @@
             Message for non ended
         {% endcomment %}
         {% if not hw.ended %}
-            <span> {% trans "You can view the homework submissions only after the deadline ends" %} </span>
+            <h4> {% trans "You can view the homework submissions only after the deadline ends" %} </h4>
         {% endif %}
 
         {% comment %}
             Hw Dashboard actions
         {% endcomment %}
-        {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% if hw.ended %}
+            {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% endif %}
 
         {% comment %}
             Table with all students
@@ -49,12 +51,16 @@
         {% comment %}
             Hw Dashboard actions again
         {% endcomment %}
-        {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% if hw.ended %}
+            {% include 'objects/course/homework/grader_table_actions.html' %}
+        {% endif %}
 
         {% comment %}
             Modal for publish info
         {% endcomment %}
-        {% include "objects/course/homework/grader_table_actions_modal.html" %}
+        {% if hw.ended %}
+            {% include "objects/course/homework/grader_table_actions_modal.html" %}
+        {% endif %}
 
     </form>
 {% else %}
