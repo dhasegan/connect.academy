@@ -1,6 +1,12 @@
 var HomeworkDashboard = (function() {
     var me = {
         settings: {
+            // Homework details edit
+            homeworkStartDatetime: $('.homework-start-datetime'),
+            homeworkDeadlineDatetime: $('.homework-deadline-datetime'),
+            homeworkDatetimeInput: $('.homework-datetime-input'),
+            homeworkForm: $('.homework-form'),
+
             // Main form
             graderFormSelector: '.grader-form',
 
@@ -21,10 +27,33 @@ var HomeworkDashboard = (function() {
 
     me.init = function() {
         s = me.settings;
+
+        // Datetimepicker and Time handlers
+        s.homeworkStartDatetime.datetimepicker({
+            minDate: moment().subtract("months", 1),
+            maxDate: moment().add("years", 1),
+            pick12HourFormat: false
+        });
+        s.homeworkDeadlineDatetime.datetimepicker({
+            minDate: moment().subtract("months", 1),
+            maxDate: moment().add("years", 1),
+            pick12HourFormat: false
+        });
+
         this.bindUIActions();
     };
 
     me.bindUIActions = function() {
+        s.homeworkDatetimeInput.click(function() {
+            var $parent = $(this.parentNode);
+            var $button = $parent.find(".homework-datetime-button");
+            $button.parent().data("DateTimePicker").show();
+        });
+        s.homeworkForm.ready(function() {
+            var tz = $(this).find('input[name="timezone"]');
+            tz.val( moment().zone() );
+        });
+
         s.saveButton.click(this.setSaveInput);
         s.savePublishButton.click(this.savePublishAction);
         s.publishHwSubmitButton.click(this.publishHwSubmit)

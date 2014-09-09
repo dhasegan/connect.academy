@@ -1,13 +1,15 @@
 {% load i18n %}
 {% load connect_extras %}
 
-<form class="form" class="homework-form" action="{% url 'submit_homework_request' course.slug %}" method="post" enctype="multipart/form-data">
+<form class="form" class="homework-form" method="post" enctype="multipart/form-data"
+    action="{% if not homework %}{% url 'submit_homework_request' course.slug %}{% else %}{% url 'edit_homework_request' course.slug %}{% endif %}">
     {% csrf_token %}
 
     <div class="form-group">
         <label for="homeworkName{{course.id}}">{% trans "Homework Name" %}</label>
         <small> {% trans "(Example: Homework1, Project1, ... )" %} </small>
-        <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" maxlength="200" required>
+        <input class="form-control" type="text" name="name" id="homeworkName{{course.id}}" maxlength="200"
+            value="{% if homework %}{{homework.name}}{% endif %}" required>
     </div>
 
     {% if syllabus|length > 0 %}
@@ -16,7 +18,11 @@
             <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}">
                 <option value=""> {% trans "No specific topic" %} </option>
                 {% for topic in syllabus %}
-                    <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
+                    {% if homework.course_topic.id == topic.topic.id %}
+                        <option value="{{topic.topic.id}}" selected> {{ topic.topic.name }} </option>
+                    {% else %}
+                        <option value="{{topic.topic.id}}" > {{ topic.topic.name }} </option>
+                    {% endif %}
                 {% endfor %} 
             </select>
         </div>
@@ -24,29 +30,40 @@
 
     <div class="form-group">
         <label for="homeworkDescription{{course.id}}">{% trans "Description" %} {% trans "(optional)" %}</label>
-        <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" maxlength="1000" rows="3"></textarea>
+        <textarea class="form-control" type="text" name="description" id="homeworkDescription{{course.id}}" maxlength="1000" rows="3">{% if homework and homework.description %}{{ homework.description }}{% endif %}</textarea>
     </div>
 
-    <div class="form-group">
-        <label>{% trans "Upload homework document" %} {% trans "(optional)" %}:</label>
-        {% with "document" as fname %}
-            {% include 'objects/file_input.html' %}
-        {% endwith %}
-    </div>
+    {% if not homework %}
+        <div class="form-group">
+            <label>{% trans "Upload homework document" %} {% trans "(optional)" %}:</label>
+            {% with "document" as fname %}
+                {% include 'objects/file_input.html' %}
+            {% endwith %}
+        </div>
+    {% else %}
+        {% comment %}
+            TODO, later
+        {% endcomment %}
+    {% endif %}
 
     <div class="form-group">
         <label for="nr_files{{course.id}}">{% trans "Files requested" %}</label>
-        <select class="form-control" name="nr_files" id="nr_files{{course.id}}">
-            {% for i in 10|get_range %}
-                <option value="{{ forloop.counter }}"> {{ forloop.counter }} </option>
-            {% endfor %} 
-        </select>
+        {% if not homework %}
+            <select class="form-control" name="nr_files" id="nr_files{{course.id}}">
+                {% for i in 10|get_range %}
+                    <option value="{{ forloop.counter }}"> {{ forloop.counter }} </option>
+                {% endfor %} 
+            </select>
+        {% else %}
+            <input class="form-control" type="text" name="nr_files" value="{{ homework.number_files }}" disabled="disabled">
+        {% endif %}
     </div>
 
     <div class="form-group">
         <label for="homeworkStart{{course.id}}">{% trans "Start" %}</label>
         <div class='input-group date homework-start-datetime' data-date-format="DD/MM/YYYY HH:mm">
-            <input type='text' class="form-control homework-datetime-input" name="start" id="homeworkStart{{course.id}}" />
+            <input type='text' class="form-control homework-datetime-input" name="start" id="homeworkStart{{course.id}}"
+                value='{% if homework and homework.deadline.start %}{{ homework.deadline.start|date:"d/m/Y" }} {{ homework.deadline.start|time:"H:i" }}{% endif %}' />
             <span class="input-group-addon homework-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -56,7 +73,8 @@
     <div class="form-group">
         <label for="homeworkDeadline{{course.id}}">{% trans "Deadline" %}</label>
         <div class='input-group date homework-deadline-datetime' data-date-format="DD/MM/YYYY HH:mm">
-            <input type='text' class="form-control homework-datetime-input" name="deadline" id="homeworkDeadline{{course.id}}" />
+            <input type='text' class="form-control homework-datetime-input" name="deadline" id="homeworkDeadline{{course.id}}"
+                value="{% if homework and homework.deadline.end %}{{ homework.deadline.end|date:"d/m/Y" }} {{ homework.deadline.end|time:"H:i" }}{% endif %}" />
             <span class="input-group-addon homework-datetime-button">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -70,7 +88,11 @@
     <input type="hidden" name="timezone" value="">
 
     <input type="hidden" name="course_id" value="{{ course.id }}">
-    <input type="hidden" name="url" value="{% url 'course_page' course.slug %}?page=resources">
+    <input type="hidden" name="hw_req_id" value="{{ homework.id }}">
 
-    <input class="btn btn-primary" type="submit" value="Request" />
+    {% if not homework %}
+        <input class="btn btn-primary" type="submit" value='{% trans "Assign" %}' />
+    {% else %}
+        <input class="btn btn-primary" type="submit" value='{% trans "Save" %}' />
+    {% endif %}
 </form>

@@ -169,6 +169,9 @@ def homework_dashboard_context(request, course, current_user):
             'ended': hw.deadline.end < current_time
         })
 
+    # Course syllabus for topic editing
+    context['syllabus'] = course_syllabus_context(course,current_user)
+
     return context
 
 def course_syllabus_context(course, current_user):
