@@ -169,8 +169,6 @@ def homework_dashboard_context(request, course, current_user):
             'ended': hw.deadline.end < current_time
         })
 
-
-
     return context
 
 def course_syllabus_context(course, current_user):
@@ -274,6 +272,10 @@ def course_page_context(request, course):
     if current_user.is_student_of(course) or current_user.is_professor_of(course):
         context['all_homework'] = course_homework_context(course, current_user)
         context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
+        if current_user.is_professor_of(course):
+            context['homework_has_active'] = [hw['active_hw'] for hw in context['all_homework']].count(True) > 0
+            context['homework_has_coming'] = [hw['coming_hw'] for hw in context['all_homework']].count(True) > 0
+            context['homework_has_past'] = [hw['past_hw'] for hw in context['all_homework']].count(True) > 0
 
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 

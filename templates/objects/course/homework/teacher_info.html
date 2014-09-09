@@ -1,32 +1,47 @@
+{% load humanize %}
+{% load i18n %}
 
+{% if homework_has_active %}
+    <h3> {% trans "Active Homework" %}: </h3>
+    <div class="homework-info-list">
+        {% for hw in all_homework %}
+            {% if hw.active_hw %}
+                <div>
+                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% trans "deadline" %}: {{ hw.homework.deadline.end|naturaltime }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <hr>
+{% endif %}
 
-<h3> Active Homework: </h3>
+{% if homework_has_coming %}
+    <h3> {% trans "Coming Homework" %}: </h3>
+    <div class="homework-info-list">
+        {% for hw in all_homework %}
+            {% if hw.coming_hw %}
+                <div>
+                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% trans "starts" %}: {{ hw.homework.deadline.start|naturaltime }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <hr>
+{% endif %}
 
-{% for hw in all_homework %}
-    {% if hw.active_hw %}
-        <div>
-            <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
-
-        </div>
-    {% endif %}
-{% endfor %}
-<hr> 
-
-<h3> Coming Homework: </h3>
-{% for hw in all_homework %}
-    {% if hw.coming_hw %}
-        <div>
-            {{hw.homework.name}}
-        </div>
-    {% endif %}
-{% endfor %}
-<hr> 
-
-<h3> Past Homework: </h3>
-{% for hw in all_homework %}
-    {% if hw.past_hw %}
-        <div>
-            {{hw.homework.name}}
-        </div>
-    {% endif %}
-{% endfor %}
+{% if homework_has_past %}
+    <h3> {% trans "Past Homework" %}: </h3>
+    <div class="homework-info-list">
+        {% for hw in all_homework %}
+            {% if hw.past_hw %}
+                <div>
+                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% trans "ended" %}: {{ hw.homework.deadline.end|naturaltime }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <hr>
+{% endif %}
