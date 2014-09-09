@@ -141,7 +141,6 @@ class SubmitHomeworkRequestForm(forms.Form):
     document = forms.FileField(required=False)
     
     course_id = forms.CharField()
-    url = forms.CharField()
 
     def clean(self):
         cleaned_data = super(SubmitHomeworkRequestForm, self).clean()
@@ -150,6 +149,49 @@ class SubmitHomeworkRequestForm(forms.Form):
         if len(courses) != 1:
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
         cleaned_data['course'] = courses[0]
+
+        if cleaned_data['topic_id']:
+            topics = CourseTopic.objects.filter(id=cleaned_data['topic_id'], course=cleaned_data["course"])
+            if topics: 
+                cleaned_data["topic"] = topics[0]
+            else:
+                raise forms.ValidationError("The selected topic does not belong to this course")
+        else:
+            cleaned_data["topic"] = None
+        
+        return cleaned_data
+
+    def clean_timezone(self):
+        tz = self.cleaned_data['timezone']
+        if tz == None or tz == "":
+            tz = 0
+        return tz
+
+class EditHomeworkRequestForm(forms.Form):
+    name = forms.CharField(max_length=200)
+    description = forms.CharField(max_length=1000, required=False)
+    topic_id = forms.CharField(required=False)
+    start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
+    timezone = forms.IntegerField()
+    course_id = forms.CharField()
+    hw_req_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(EditHomeworkRequestForm, self).clean()
+
+        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
+        if len(courses) != 1:
+            raise forms.ValidationError("Not a valid number of courses with this course_id!")
+        cleaned_data['course'] = courses[0]
+
+        hw_reqs = CourseHomeworkRequest.objects.filter(id=cleaned_data.get("hw_req_id"))
+        if len(hw_reqs) != 1:
+            raise forms.ValidationError("Not a valid number of homework requests with this hw_req_id!")
+        cleaned_data['homework_request'] = hw_reqs[0]
+
+        if cleaned_data['homework_request'].course != cleaned_data['course']:
+            raise forms.ValidationError("The course you are submitting does have this homework")
 
         if cleaned_data['topic_id']:
             topics = CourseTopic.objects.filter(id=cleaned_data['topic_id'], course=cleaned_data["course"])

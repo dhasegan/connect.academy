@@ -240,12 +240,16 @@ def submit_homework_request(request, slug):
     context = {}
 
     user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
 
     form = SubmitHomeworkRequestForm(request.POST, request.FILES)
     if not form.is_valid():
         raise Http404
 
-    if not user in form.cleaned_data['course'].professors.all():
+    if not course == form.cleaned_data['course']:
+        raise Http404
+
+    if not user.is_professor_of(course):
         raise Http404
 
     local_timezone = timezone.get_current_timezone()
@@ -264,11 +268,7 @@ def submit_homework_request(request, slug):
                                              number_files=form.cleaned_data['nr_files'])
 
     docfile = form.cleaned_data['document']
-    print request.POST
-    print form
-    print docfile
     if docfile:
-        print "uploading docfile"
         course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
                                      description=form.cleaned_data['description'], course=form.cleaned_data['course'], 
                                      submitter=user, course_topic=form.cleaned_data["topic"])
@@ -276,7 +276,49 @@ def submit_homework_request(request, slug):
         homework_request.document = course_document
     homework_request.save()
 
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def edit_homework_request(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+
+    form = EditHomeworkRequestForm(request.POST, request.FILES)
+    if not form.is_valid():
+        raise Http404
+
+    if not course == form.cleaned_data['course']:
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    local_timezone = timezone.get_current_timezone()
+    if timezone.is_naive(form.cleaned_data['start']):
+        form.cleaned_data['start'] = timezone.make_aware(form.cleaned_data['start'], local_timezone)
+    if timezone.is_naive(form.cleaned_data['deadline']):
+        form.cleaned_data['deadline'] = timezone.make_aware(form.cleaned_data['deadline'], local_timezone) 
+    start_time = timezone.localtime(form.cleaned_data['start'], pytz.utc)
+    end_time = timezone.localtime(form.cleaned_data['deadline'], pytz.utc)
+
+    homework_request = form.cleaned_data['homework_request']
+    deadline = homework_request.deadline
+    deadline.start = start_time
+    deadline.end = end_time
+    deadline.save()
+
+    homework_request.name=form.cleaned_data['name']
+    homework_request.description=form.cleaned_data['description']
+    homework_request.course_topic=form.cleaned_data["topic"]
+    homework_request.save()
+
+    get_params = "?homework=" + str(homework_request.id)
+    return redirect( reverse('homework_dashboard', args=(course.slug, )) + get_params )
 
 
 @require_POST
