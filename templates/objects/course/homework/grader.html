@@ -24,6 +24,17 @@
             </div>
         </div>
     {% endif %}
+
+    {% if hw.homework.document %}
+        <div class="row">
+            <div class="col-md-8">
+                <hr>
+                {% with document=hw.homework.document  %}
+                    {% include "objects/course/document.html" %}
+                {% endwith %}
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <hr>

@@ -89,6 +89,28 @@ class SubmitDocumentForm(forms.Form):
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
         return content
 
+class ResubmitDocumentForm(forms.Form):
+    document = forms.FileField()
+    doc_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(ResubmitDocumentForm, self).clean()
+
+        docs = CourseDocument.objects.filter(id=cleaned_data.get("doc_id"))
+        if len(docs) != 1:
+            raise forms.ValidationError("Not a valid number of documents with this doc_id!")
+        cleaned_data['doc_obj'] = docs[0]
+
+        return cleaned_data
+
+    def clean_document(self):
+        content = self.cleaned_data['document']
+        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        return content
+
+
 class SubmitHomeworkForm(forms.Form):
     course_id = forms.CharField()
     homework_request_id = forms.CharField()

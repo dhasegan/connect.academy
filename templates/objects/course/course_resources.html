@@ -24,8 +24,11 @@
             {% if documents %}
                 <h3> {% trans "Documents" %} </h3>
                 <hr class="top-line">
-
-                {% include 'objects/course/documents.html' %}
+                <div class="row">
+                    <div class="col-md-8">
+                        {% include 'objects/course/documents.html' %}
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>

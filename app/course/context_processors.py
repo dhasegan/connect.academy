@@ -172,6 +172,11 @@ def homework_dashboard_context(request, course, current_user):
     # Course syllabus for topic editing
     context['syllabus'] = course_syllabus_context(course,current_user)
 
+    # Is teacher
+    context['teacher'] = {
+        'is_teacher': True
+    }
+
     return context
 
 def course_syllabus_context(course, current_user):

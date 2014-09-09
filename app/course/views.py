@@ -196,7 +196,32 @@ def submit_document(request, slug):
                                      submitter=user, course_topic=form.cleaned_data["topic"])
     course_document.save()
 
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def resubmit_document(request, slug):
+    context = {}
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+
+    form = ResubmitDocumentForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    docfile = form.cleaned_data['document']
+    document = form.cleaned_data['doc_obj']
+    document.document = docfile
+    document.save()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
 
 
 @require_POST
@@ -231,7 +256,7 @@ def submit_homework(request, slug):
                                                        submitter=user, homework_request=homework_request, file_number=idx)
             course_homework.save()
 
-    return redirect(form.cleaned_data['url'])
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
 
 
 @require_POST

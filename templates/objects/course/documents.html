@@ -3,16 +3,12 @@
 {% if documents %}
     <div class="course-detail">
         <div class="content">
-            <ul>
-                {% for document in documents %}
-                    <li>
-                        <a href="{{ document.document.url }}"> {{ document.name }} </a>
-                        {% if document.description %}
-                            <small> {{ document.description }} </small>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+            {% for document in documents %}
+                {% include 'objects/course/document.html' %}
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% else %}
