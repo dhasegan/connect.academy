@@ -25,7 +25,7 @@
         <form class="form" action="{% url 'resubmit_document' course.slug %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            {% with "True" as required %}
+            {% with "True" as frequired %}
             {% with "document" as fname %}
                 {% include 'objects/file_input.html' %}
             {% endwith %}
