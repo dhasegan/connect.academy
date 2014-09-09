@@ -18,7 +18,8 @@
             <select class="form-control" name="topic_id" id="homeworkTopic{{course.id}}">
                 <option value=""> {% trans "No specific topic" %} </option>
                 {% for topic in syllabus %}
-                    <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
+
+                    <option value="{{topic.topic.id}}" {% if homework.course_topic.id == topic.topic.id %}selected{% endif %}> {{ topic.topic.name }} </option>
                 {% endfor %} 
             </select>
         </div>
@@ -37,7 +38,9 @@
             {% endwith %}
         </div>
     {% else %}
-        TODO
+        {% comment %}
+            TODO, later
+        {% endcomment %}
     {% endif %}
 
     <div class="form-group">
