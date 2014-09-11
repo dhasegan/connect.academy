@@ -349,7 +349,7 @@ def activity_context(activity, current_user):
         answer = activity_instance.forum_answer
         activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
     elif activity_type == "HomeworkActivity":
-        activity_context['homework'] = homework_context(activity.homeworkactivity.homework, current_user)
+        activity_context['homework'] = homework_context(activity_instance.homework, current_user)
     elif activity_type == "ReviewActivity":
         activity_context["review"] = review_context(activity_instance.review, current_user)
     elif activity_type == "WikiActivity":
