@@ -3,9 +3,9 @@
 @import "../../bootstrap/stylesheets/bootstrap/mixins";
 
 // Global variables 
-$connect-dark-blue:     #151621;
+$connect-dark-blue:     $brand-dark;
 $connect-light-blue:    $brand-primary;
-$connect-gray:          #E3E3E3;
+$connect-gray:          $gray-connect;
 
 body {
     padding-top: $navbar-height + 20px; // needed because fixed navbar covers content
@@ -14,22 +14,10 @@ body {
     }
 }
 
-div#copyLabel {
-    input {
-        &.tiny-text-input {
-            width: 50px;
-            display: inline;
-        }
-    }
-}
-
 .panel-default {
     .panel-heading {
         background-color: $connect-gray;
         border-bottom: 1px solid $connect-light-blue;
-        a {
-            color: $connect-dark-blue;
-        }
     }
 }
 .btn-primary {
@@ -143,9 +131,7 @@ $navbar-font-size:      15px;
 
 }
 
-
-
-
+// Connect specific sidebar
 $nav-sidebar-bg:                    transparent;
 $nav-sidebar-active-link:           $connect-light-blue;
 $nav-sidebar-active-focus-link:     darken($nav-sidebar-active-link, 8%);
@@ -275,6 +261,18 @@ $course-name-font-size:         17px;
         margin-bottom: 50px;
     }
     
+}
+
+// Schedule page
+#event_edit_container {
+    .copy-label {
+        input {
+            &.tiny-text-input {
+                width: 50px;
+                display: inline;
+            }
+        }   
+    }
 }
 
 // Course page

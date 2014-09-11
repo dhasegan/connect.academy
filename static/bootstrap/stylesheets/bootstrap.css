@@ -4296,11 +4296,13 @@ a.list-group-item-danger {
 
 .panel-heading {
   padding: 10px 15px;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid #4099FF;
   border-top-right-radius: -1px;
   border-top-left-radius: -1px; }
   .panel-heading > .dropdown .dropdown-toggle {
     color: inherit; }
+  .panel-heading a {
+    color: #151621; }
 
 .panel-title {
   margin-top: 0;
