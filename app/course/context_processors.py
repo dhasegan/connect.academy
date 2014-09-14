@@ -161,7 +161,11 @@ def homework_dashboard_context(request, course, current_user):
                 'file_numbers': [str(s.file_number) for s in submissions]
             })
 
-        percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
+        total_numfiles = hw.number_files * len(students)
+        if total_numfiles > 0:
+            percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
+        else:
+            percentage_completed = 0
         context['homework_requests'].append({
             'homework': hw,
             'all_submissions': submissions_context,
