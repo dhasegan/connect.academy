@@ -226,12 +226,12 @@ class Course(models.Model):
 
     class Meta:
         permissions = (
-            ('approve_registrations', "Approve students' registrations for this course."),
-            ('mail_students', "Send an e-mail to all students of this course"),
+            ('approve_registrations', "Approve students' registrations."),
+            ('mail_students', "See and e-mail all students."),
             ('manage_resources', "Manage course resources (Upload documents)"),
             ('assign_homework', "Assign Homework"),
-            ('grade_homework', "Access the homework dashboard and grade homework"),
-            ('manage_forum', "Manage the course forum and see the forum stats"),
+            ('grade_homework', "Grade homework"),
+            ('manage_forum', "Manage the course forum and see forum stats"),
             ('manage_info', "Manage course info (description, syllabus etc...)"),
         )
 

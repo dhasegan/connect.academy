@@ -319,3 +319,14 @@ class DeleteSyllabusEntryForm(forms.Form):
         cleaned_data['course_topic'] = entries[0]
 
         return cleaned_data
+
+
+class TAPermissionsForm(forms.Form):
+    user_id = forms.IntegerField()
+    approve_registrations = forms.BooleanField(required=False)
+    mail_students = forms.BooleanField(required=False)
+    manage_resources = forms.BooleanField(required=False)
+    assign_homework = forms.BooleanField(required=False)
+    grade_homework = forms.BooleanField(required=False)
+    manage_forum = forms.BooleanField(required=False)
+    manage_info = forms.BooleanField(required=False)

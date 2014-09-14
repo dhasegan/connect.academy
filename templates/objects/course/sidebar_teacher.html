@@ -40,6 +40,11 @@
                                 <a href="#teacher_details" data-toggle="tab">{% trans "Manage Course Info" %}</a>
                             </li>
                         {% endif %}
+                        {% if teacher.can_manage_assistants %}
+                            <li class="{% if current_teacher_tab == 'assistants' %}active{% endif %}">
+                                <a href="#teacher_assistants" data-toggle="tab">{% trans "Teaching Assistants" %}</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>

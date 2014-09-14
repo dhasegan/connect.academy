@@ -229,6 +229,18 @@ def course_teacher_dashboard(request, course, user):
     if context['can_manage_forum']:
         context['forum_stats'] = forum_stats_context(course.forum)
 
+    context['assistants'] = []
+    for ta in course.teaching_assistants.all():
+        ta_context = {'user': ta, 'permissions': []}
+        for perm in Course._meta.permissions:
+            ta_context['permissions'].append({
+                'name': perm[0],
+                'description': perm[1],
+                'owned': ta.has_perm(perm[0], course)
+            })
+        context['assistants'].append(ta_context)
+
+
     return context
 
 

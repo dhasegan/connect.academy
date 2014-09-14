@@ -14,6 +14,10 @@ body {
     }
 }
 
+.no-bullet {
+    list-style-type: none;
+}
+
 .panel-default {
     .panel-heading {
         background-color: $connect-gray;

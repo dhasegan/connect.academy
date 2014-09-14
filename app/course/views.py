@@ -4,6 +4,7 @@ import string
 import random
 import datetime
 import json
+from guardian.shortcuts import assign_perm, remove_perm
 
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
@@ -660,4 +661,38 @@ def load_new_course_activities(request,slug):
         data['new_last_id'] = activities[0]['activity'].id
 
     return HttpResponse(json.dumps(data))
+
+def add_new_ta(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    return HttpResponse()
+
+def change_ta_permissions(request,slug):
+    context = {
+        'page': 'course_page'
+    }
+    context.update(csrf(request))
+
+    user = request.user.juser
+    course = get_object_or_404(Course,slug=slug)
+
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = TAPermissionsForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    ta = get_object_or_404(jUser, id = form.cleaned_data['user_id'])
+
+    for perm in Course._meta.permissions:
+        permission = perm[0]
+        print permission
+        print str(form.cleaned_data[permission])
+        if form.cleaned_data[permission]:
+            assign_perm(permission, ta, course)
+        else:
+            remove_perm(permission, ta, course)
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?page=assistants" )
 
