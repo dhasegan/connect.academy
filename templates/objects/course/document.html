@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load i18n %}
 
-{% if teacher.is_teacher %}
+{% if teacher.is_teacher and teacher.can_manage_resources %}
     <div class="pull-right collapse reupload-doc-{{document.id}} fade active in">
         <a class="icon icon-cog" data-toggle="collapse" href=".reupload-doc-{{document.id}}"></a>
     </div>
@@ -20,7 +20,7 @@
     {% endif %}
 </div>
 
-{% if teacher.is_teacher %}
+{% if teacher.is_teacher and teacher.can_manage_resources %}
     <div class="reupload-doc-{{document.id}} collapse fade reupload-doc-form">
         <form class="form" action="{% url 'resubmit_document' course.slug %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
