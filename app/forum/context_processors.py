@@ -122,6 +122,7 @@ def forum_discussion_post_context(post, answer1, answer2, current_user):
     context = {
         'question': post,
         'answers': discussion_answers,
+        'is_following': current_user.is_following(post)
     }
     context = dict(context.items() + forum_vote_context(post, current_user).items())
     return context
