@@ -24,5 +24,6 @@ urlpatterns = patterns('app.course.views',
     url(r'^load_course_activities$', 'load_course_activities', name='load_course_activities'),
     url(r'^load_new_course_activities$', 'load_new_course_activities', name='load_new_course_activities'),
     url(r'^add_new_ta$', 'add_new_ta', name='new_ta'), #new Teaching Assistant
-    url(r'^change_ta_permissions$', 'change_ta_permissions', name='change_ta_permissions')
+    url(r'^change_ta_permissions$', 'change_ta_permissions', name='change_ta_permissions'),
+    url(r'^remove_ta$', 'remove_ta', name='remove_ta'),
 )

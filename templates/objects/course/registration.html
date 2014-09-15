@@ -18,7 +18,7 @@
                         {% csrf_token %}
                         <input type='hidden' name='courseID' value='{{course.id}}'/>
                         <button class="btn btn-danger" data-dismiss="modal">{% trans "No, cancel" %}</button>
-                        <input class="btn btn-primary" type="submit" value="Yes, register" />
+                        <input class="btn btn-primary" type="submit" value="{% trans 'Yes, register' %}" />
                     </form>
                 </div>
             </div>

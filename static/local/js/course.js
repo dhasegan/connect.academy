@@ -48,6 +48,8 @@ var CoursePage = (function() {
             taContainerSelector: '.teaching-assistants > ul.no-bullet',
             taPermissionsFormSelector: '.TA-permissions-form',
             newTAFormSelector: '#new-ta-form',
+            removeTAFormSelector: ".remove-ta-form",
+            TAPermissionsIdPrefix: '#ta-permissions-li',
         }
     }, s;
 
@@ -149,9 +151,8 @@ var CoursePage = (function() {
             tz.val( moment().zone() );
         });
 
-        $(s.taContainerSelector).on('submit', s.taPermissionsFormSelector, function(event) {
+        $(s.taContainerSelector).on('submit', s.removeTAFormSelector, function(event) {
             event.preventDefault();
-            console.log($(this));
             form = $(this);
             $.ajax({
                 'url': form.attr('action'),
@@ -159,21 +160,20 @@ var CoursePage = (function() {
                 'data': form.serialize(),
                 'success': function(data) {
                     json_data = $.parseJSON(data);
-                    console.log(json_data);
                     if (json_data.status == "OK") {
-                        form.find(".success").html(json_data.message).show();
+                        form.closest(".modal").modal('toggle');
                         setTimeout(function() {
-                            form.find(".success").hide();
-                        }, 3000);
+                            $(s.TAPermissionsIdPrefix + json_data.ta_id).remove();
+                        }, 500);
+                        
                     }
-                    else if (json_data.status == "warning") {
-
+                    else if (json_data.status == "Warning") {
                         form.find(".warning").html(json_data.message).show();
                         setTimeout(function() {
                             form.find(".warning").hide();
                         }, 3000);
                     }
-                    else if (json_data.status == "error") {
+                    else if (json_data.status == "Error") {
                         form.find(".error").html(json_data.message).show();
                         setTimeout(function() {
                             form.find(".error").hide();
@@ -198,7 +198,6 @@ var CoursePage = (function() {
                 'data': form.serialize(),
                 'success': function(data) {
                     json_data = $.parseJSON(data);
-                    window.console.log(json_data);
                     if (json_data.status == "OK") {
                         $(s.taContainerSelector).append(json_data.html);
                         form.find("input[type='email']").val('');
@@ -224,7 +223,45 @@ var CoursePage = (function() {
                 }
             });
 
-        })
+        });
+
+        $(s.taContainerSelector).on('submit', s.taPermissionsFormSelector, function(event) {
+            event.preventDefault();
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    if (json_data.status == "OK") {
+                        form.find(".success").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".success").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Warning") {
+
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+        });
 
     };
 

@@ -662,6 +662,10 @@ def load_new_course_activities(request,slug):
 
     return HttpResponse(json.dumps(data))
 
+@login_required
+@require_POST
+@require_professor
+@require_active_user
 def add_new_ta(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
@@ -680,7 +684,7 @@ def add_new_ta(request,slug):
         raise Http404
 
     # Default permissions
-    default_permissions = ['mail_students', 'manage_resources', 'grade_homework','manage_forum','manage_info']
+    default_permissions = ['mail_students', 'assign_homework', 'manage_resources', 'grade_homework','manage_forum','manage_info']
 
     user_email = form.cleaned_data['user']
     tas = jUser.objects.filter(email=user_email)
@@ -721,7 +725,10 @@ def add_new_ta(request,slug):
         }
         return HttpResponse(json.dumps(return_dict))
 
-
+@login_required
+@require_POST
+@require_professor
+@require_active_user
 def change_ta_permissions(request,slug):
     context = {
         'page': 'course_page'
@@ -756,3 +763,49 @@ def change_ta_permissions(request,slug):
     }
     return HttpResponse(json.dumps(return_dict))
 
+@login_required
+@require_POST
+@require_professor
+@require_active_user
+def remove_ta(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    current_user = request.user.juser
+
+    if not current_user.is_professor_of(course):
+        raise Http404
+
+    form = RemoveTAForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    ta_id = form.cleaned_data['user_id']
+
+    tas = jUser.objects.filter(id=ta_id)
+    if len(tas) != 1:
+        return_dict = {
+            'status': "Error",
+            'message': "User not found"
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+    ta = tas[0]
+    if not course.teaching_assistants.filter(id=ta.id).exists():
+        return_dict = {
+            'status': "Error",
+            'message': "User is not a TA of %s" % course.name
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+
+    # All is good
+    # Drop all permissions of the ex-TA
+    for perm in Course._meta.permissions:
+        remove_perm(perm[0], ta, course)
+    # Remove the ex-TA from the course's teaching assistants
+    course.teaching_assistants.remove(ta)
+    return_dict = {
+        'status': "OK",
+        'ta_id': ta.id
+    }
+
+    return HttpResponse(json.dumps(return_dict))

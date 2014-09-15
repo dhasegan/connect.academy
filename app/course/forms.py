@@ -333,3 +333,6 @@ class TAPermissionsForm(forms.Form):
 
 class NewTAForm(forms.Form):
     user = forms.EmailField()
+
+class RemoveTAForm(forms.Form):
+    user_id = forms.IntegerField()
