@@ -5,42 +5,20 @@
 		<h4> Current Teaching Assistants </h4>
 		<ul class="no-bullet">
 			{% for ta in teacher.assistants %}
-				<li> 
-					{% with ta.user as juser %}
-						{% include 'objects/user_link.html' %}
-					{% endwith %}
-					<div class="pull-right">
-						<a class="homework_number" data-toggle="collapse" data-parent=".teaching-assistants" href="#ta-permissions{{ta.user.id}}">
-                            Permissions <span class="caret"> </span>
-                        </a>
-					</div>
-					<div class="block collapse" id="ta-permissions{{ta.user.id}}">
-                    	<form method="POST" action="{% url 'change_ta_permissions' course.slug %}">
-                    		{% csrf_token %}
-                        	<input type='hidden' name='user_id' value='{{ta.user.id}}'/>
-                            <ul class="no-bullet">
-	                            {% for perm in ta.permissions %}
-	                            	<li>
-	                                	<input type='checkbox' name='{{perm.name}}' {% if perm.owned %}checked{% endif %}/> {{ perm.description }}
-	                                </li>
-	                            {% endfor %}
-	                            <input type='submit' value="Save" class="form-control btn btn-primary "/>
-                           	</ul>
-                            
-                        </form>
-                        
-                    </div>
-				</li>
+				{% include 'objects/course/management/ta_item.html' %}
 			{% endfor %}
 		</ul>
 	</div>
 	<div class="col-md-6">
 		<h4> Add a new TA </h4>
 		<form action="{% url 'new_ta' course.slug %}" method="POST" id="new_ta_form">
+			{% csrf_token %}
 			<div class="form-group">
-				<input type="text" class='form-control' name="user" placeholder="Search User" required/>
-				<input type="submit" class="btn btn-primary"/>
-			</div>
+				<label for="input[name='user']">E-mail address</label>
+				<input type="email" class='form-control' name="user" placeholder="User e-mail address" required/>
+			</div>	
+				<input type="submit" value="Add" class="btn btn-primary"/>
+			
 		</form>
 	</div>
 </div>

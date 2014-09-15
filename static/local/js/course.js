@@ -45,6 +45,8 @@ var CoursePage = (function() {
             homeworkForm: $('.homework-form'),
             addExtraTag: $('.add-extratag'),
             extraTagForm: $('.extratag-form'),
+            taContainerSelector: '.teaching-assistants > ul.no-bullet',
+            taPermissionsFormSelector: '.TA-permissions-form',
         }
     }, s;
 
@@ -145,6 +147,46 @@ var CoursePage = (function() {
             var tz = $(this).find('input[name="timezone"]');
             tz.val( moment().zone() );
         });
+
+        $(s.taContainerSelector).on('submit', s.taPermissionsFormSelector, function(event) {
+            event.preventDefault();
+            console.log($(this));
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+
+                    if (json_data.status == "OK") {
+                        form.find(".success").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".success").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "warning") {
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+        });
+
     };
 
     me.ratingFormSubmit = function(event) {

@@ -74,7 +74,7 @@ def course_page(request, slug):
     if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
         context['review_course_tab'] = True
 
-    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details']
+    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details', 'assistants']
     if 'teacher_page' in request.GET and request.GET['teacher_page'] and \
         request.GET['teacher_page'] in available_teacher_pages:
             context['current_teacher_tab'] = request.GET['teacher_page']
@@ -664,7 +664,63 @@ def load_new_course_activities(request,slug):
 
 def add_new_ta(request,slug):
     course = get_object_or_404(Course, slug=slug)
-    return HttpResponse()
+    user = request.user.juser
+    context = {
+        'page': 'course_page',
+        'user_auth': user,
+        'course': course,
+    }
+    context.update(csrf(request))
+
+    form = NewTAForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    # Default permissions
+    default_permissions = ['mail_students', 'manage_resources', 'grade_homework','manage_forum','manage_info']
+
+    user_email = form.cleaned_data['user']
+    tas = jUser.objects.filter(email=user_email)
+    if len(tas) > 0:
+        ta = tas[0]
+        if course.teaching_assistants.filter(email=user_email).exists():
+            return_dict = {
+                'status': "Warning",
+                'message': "%s %s is already a TA" % (ta.first_name, ta.last_name),
+            }
+            return HttpResponse(json.dumps(return_dict))
+        else:
+            course.teaching_assistants.add(ta)
+        for perm in default_permissions:
+            assign_perm(perm,ta,course)
+
+        ta_context = {'user': ta, 'permissions': []}
+        for perm in Course._meta.permissions:
+            ta_context['permissions'].append({
+                'name': perm[0],
+                'description': perm[1],
+                'owned': ta.has_perm(perm[0], course)
+            })
+        context['ta'] = ta_context
+
+        html = render_to_string('objects/course/management/ta_item.html', context)
+
+        return_dict = {
+            'status': "OK",
+            'html': html,
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+    else:
+        return_dict = {
+            'status': "Error",
+            'message': "User not found"
+        }
+        return HttpResponse(json.dumps(return_dict))
+
 
 def change_ta_permissions(request,slug):
     context = {
@@ -694,5 +750,9 @@ def change_ta_permissions(request,slug):
         else:
             remove_perm(permission, ta, course)
 
-    return redirect( reverse('course_page', args=(course.slug, )) + "?page=assistants" )
+    return_dict = {
+        "status": "OK",
+        "message": "Saved"
+    }
+    return HttpResponse(json.dumps(return_dict))
 

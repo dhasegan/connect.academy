@@ -1,0 +1,28 @@
+<li> 
+	{% with ta.user as juser %}
+		{% include 'objects/user_link.html' %}
+	{% endwith %}
+	<div class="pull-right">
+		<a class="homework_number pull-right" data-toggle="collapse" data-parent=".teaching-assistants" href="#ta-permissions{{ta.user.id}}">
+            Permissions <span class="caret"> </span>
+        </a>
+	</div>
+	<div class="block collapse" id="ta-permissions{{ta.user.id}}">
+    	<form method="POST" class="TA-permissions-form" action="{% url 'change_ta_permissions' course.slug %}">
+			{% csrf_token %}
+			<input type='hidden' name='user_id' value='{{ta.user.id}}'/>
+		    <ul class="no-bullet">
+		        {% for perm in ta.permissions %}
+		        	<li>
+		            	<input type='checkbox' name='{{perm.name}}' {% if perm.owned %}checked{% endif %}/> {{ perm.description }}
+		            </li>
+		        {% endfor %}
+		        <input type='submit' value="Save" class="form-control btn btn-primary "/> <br/>
+		        <div class='text-xs text-success success'></div>
+		        <div class='text-xs text-warning warning'></div>
+		        <div class="text-xs text-danger error"></div>
+		   	</ul>
+		    
+		</form>
+    </div>
+</li>

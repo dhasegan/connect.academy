@@ -330,3 +330,6 @@ class TAPermissionsForm(forms.Form):
     grade_homework = forms.BooleanField(required=False)
     manage_forum = forms.BooleanField(required=False)
     manage_info = forms.BooleanField(required=False)
+
+class NewTAForm(forms.Form):
+    user = forms.EmailField()
