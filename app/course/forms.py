@@ -290,6 +290,36 @@ class UpdateInfoForm(forms.Form):
     additional_info = forms.CharField(required=False, max_length=5000)
     abbreviation = forms.CharField(required=False, max_length=50)
 
+class CreateGroupForm(forms.Form):
+    group_name = forms.CharField(max_length=20)
+    group2_name = forms.CharField(required=False, max_length=20)
+
+    def clean(self):
+        cleaned_data = super(CreateGroupForm, self).clean()
+
+        name1 = cleaned_data.get("group_name")
+        name2 = cleaned_data.get("group2_name")
+        if name2:
+            if name1 == name2:
+                raise forms.ValidationError("The group names have to be different!")
+
+        return cleaned_data
+
+class DeleteGroupForm(forms.Form):
+    group_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(DeleteGroupForm, self).clean()
+
+        group_id = cleaned_data.get("group_id")
+        if group_id:
+            groups = CourseGroup.objects.filter(id=group_id)
+            if len(groups) != 1:
+                raise forms.ValidationError("Not a valid number of groups with this group_id!")
+            cleaned_data['course_group'] = groups[0]
+
+        return cleaned_data
+
 class UpdateSyllabusForm(forms.Form):
     entry_name = forms.CharField(max_length=200)
     entry_description = forms.CharField(max_length=500)

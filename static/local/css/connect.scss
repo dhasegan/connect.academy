@@ -396,6 +396,13 @@ $course-img-max-size:           150px;
         }
 
         .course-details {
+            .modify-groups {
+                .course-groups {
+                    .group {
+                        margin-top: 12px;
+                    }
+                }
+            }
             .modify-syllabus {
                 .delete-syllabus-entry-form {
                     margin-left: 12px;

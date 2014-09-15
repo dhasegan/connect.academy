@@ -3,7 +3,7 @@
 <div class="modify-description">
     {% if course.description %}
         <a class="pull-right" data-toggle="collapse" href=".collapseDescription">
-            <span class="glyphicon glyphicon-cog"></span> modify
+            <span class="glyphicon glyphicon-cog"></span> {% trans "modify" %}
         </a>
     {% endif %}
     <strong> {% trans "Description" %}: </strong>
@@ -16,7 +16,7 @@
         <form role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
             <textarea class="form-control" rows="3" name="description" maxlength="5000" required>{{ course.description }}</textarea>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
         </form>
     </div>
 </div>
@@ -26,7 +26,7 @@
 <div class="modify-abbreviation">
     {% if course.abbreviation %}
         <a class="pull-right" data-toggle="collapse" href=".collapseAbbrev">
-            <span class="glyphicon glyphicon-cog"></span> modify
+            <span class="glyphicon glyphicon-cog"></span> {% trans "modify" %}
         </a>
     {% endif %}
     <strong> {% trans "Abbreviation" %}: </strong>
@@ -37,7 +37,7 @@
         <form class="form-inline" role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
             <input class="form-control" name="abbreviation" type="text" value="{% if course.abbreviation %}{{ course.abbreviation }}{% endif %}" maxlength="20" required>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
         </form>
     </span>
 </div>
@@ -47,7 +47,7 @@
 <div class="modify-additional">
     {% if course.additional_info %}
         <a class="pull-right" data-toggle="collapse" href=".collapseAdditional">
-            <span class="glyphicon glyphicon-cog"></span> modify
+            <span class="glyphicon glyphicon-cog"></span> {% trans "modify" %}
         </a>
     {% endif %}
     <strong> {% trans "Additional information" %}: </strong>
@@ -60,9 +60,49 @@
         <form role="form" method="post" action="{% url 'update_info' course.slug %}">
             {% csrf_token %}
             <textarea class="form-control" rows="3" name="additional_info" maxlength="5000" required>{% if course.additional_info %}{{ course.additional_info }}{% endif %}</textarea>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
         </form>
     </div>
+</div>
+
+<hr>
+
+<h4> {% trans "Course groups" %}: </h4>
+
+<div class="modify-groups">
+    {% if course_groups %}
+        <ol class="course-groups">
+            {% for group in course_groups %}
+                <li class="group">
+                    <form role="form" class="form-inline pull-right" method="post" action="{% url 'delete_group' course.slug %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="group_id" value="{{ group.id }}" required>
+                        <button type="submit" class="btn btn-danger btn-xs">{% trans "delete" %}</button>
+                    </form>
+                    {{ group.name }}
+                </li>
+            {% endfor %}
+            <li class="group">
+                <form role="form" class="form-inline" method="post" action="{% url 'create_group' course.slug %}">
+                    {% csrf_token %}
+                    <input class="form-control" type="text" name="group_name" value="Group{{ course_groups|length|add:'1' }}" maxlength="20" required>
+                    <button type="submit" class="btn btn-primary">{% trans "Add group" %}</button>
+                </form>
+            </li>
+        </ol>
+    {% else %}
+        <h5>{% trans "By creating groups you can split the students into smaller sized classes." %}</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <form role="form" method="post" action="{% url 'create_group' course.slug %}">
+                    {% csrf_token %}
+                    <input class="form-control" type="text" name="group_name" value="Group1" maxlength="20" required>
+                    <input class="form-control" type="text" name="group2_name" value="Group2" maxlength="20" required>
+                    <button type="submit" class="btn btn-primary">{% trans "Create groups" %}</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <hr>
@@ -75,11 +115,11 @@
         <li>
             <form role="form" class="form-inline pull-right delete-syllabus-entry-form" method="post" action="{% url 'delete_syllabus_entry' course.slug %}">
                 {% csrf_token %}
-                <button class="btn btn-danger btn-xs">delete</button>
+                <button class="btn btn-danger btn-xs">{% trans "delete" %}</button>
                 <input type="hidden" name="entry_id" value="{{ entry.topic.id }}" required>
             </form>
             <a class="pull-right" data-toggle="collapse" href=".collapseEntry{{ entry.topic.id }}">
-                <span class="glyphicon glyphicon-cog"></span> modify
+                <span class="glyphicon glyphicon-cog"></span> {% trans "modify" %}
             </a>
             <div class="collapse collapseEntry{{ entry.topic.id }} in">
                 <div> {{ entry.topic.name }} </div>
@@ -92,7 +132,7 @@
                     <input type="text" name="entry_name" value="{{ entry.topic.name }}" maxlength="200" required>
                     <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required>{{ entry.topic.description }}</textarea>
                     <input type="hidden" name="entry_id" value="{{ entry.topic.id }}">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
                 </form>
             </div>
         </li>
@@ -103,7 +143,7 @@
                     {% csrf_token %}
                     <input type="text" name="entry_name" value="" maxlength="200" required>
                     <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required></textarea>
-                    <button type="submit" class="btn btn-primary">New Entry</button>
+                    <button type="submit" class="btn btn-primary">{% trans "New Entry" %}</button>
                 </form>
             </div>
         </li>

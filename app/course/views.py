@@ -582,6 +582,56 @@ def update_info(request, slug):
 @require_POST
 @require_active_user
 @login_required
+def create_group(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = CreateGroupForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    group_names = [gr.name for gr in course.course_groups.all()]
+
+    if not  form.cleaned_data['group_name'] in group_names:
+        CourseGroup.objects.create(name=form.cleaned_data['group_name'], course=course)
+    if 'group2_name' in form.cleaned_data and form.cleaned_data['group2_name']:
+        if not form.cleaned_data['group2_name'] in group_names:
+            CourseGroup.objects.create(name=form.cleaned_data['group2_name'], course=course)
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=registered" )
+
+@require_POST
+@require_active_user
+@login_required
+def delete_group(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = DeleteGroupForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    group = form.cleaned_data['course_group']
+    registrations = StudentCourseRegistration.objects.filter(course=course, group=group)
+    for reg in registrations:
+        reg.group = None
+        reg.save()
+
+    group.delete()
+
+    return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
+
+@require_POST
+@require_active_user
+@login_required
 def update_syllabus(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)

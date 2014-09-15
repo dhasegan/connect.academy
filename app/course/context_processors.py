@@ -287,6 +287,8 @@ def course_page_context(request, course):
 
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 
+    context['course_groups'] = course.course_groups.all()
+
     return context
 
 

@@ -122,6 +122,7 @@ class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
     is_approved = models.BooleanField(default = False) # True if registration is approved
+    group = models.ForeignKey('CourseGroup', null=True, default=None)
 
     def __unicode__(self):
         return str(self.student)
@@ -282,6 +283,13 @@ class Course(models.Model):
 
     def __unicode__(self):
         return str(self.name)
+
+class CourseGroup(models.Model):
+    name = models.CharField(max_length=20)
+    course = models.ForeignKey("Course", related_name='course_groups')
+
+    def __unicode__(self):
+        return "Group" + str(self.name)
 
 # Model that represents a course topic. Many topics of the same course form the 
 # course's syllabus 

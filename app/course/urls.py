@@ -18,6 +18,9 @@ urlpatterns = patterns('app.course.views',
     url(r'^edit_homework_request$', 'edit_homework_request', name='edit_homework_request'),
     url(r'^homework_dashboard$', 'homework_dashboard', name='homework_dashboard'),
 
+    url(r'^create_group$', 'create_group', name='create_group'),
+    url(r'^delete_group$', 'delete_group', name='delete_group'),
+
     url(r'^vote_review$', 'vote_review', name='vote_review'),
     url(r'^register$', 'register_course', name= 'register_course'),
     url(r'^send_mass_email$','send_mass_email',name='send_mass_email'),
