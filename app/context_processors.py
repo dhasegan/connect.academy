@@ -125,7 +125,7 @@ def dashboard_context(request):
     user = jUser.objects.get(id=request.user.id)
 
     context = {
-        'courses': [],
+        'courses': {'enrolled': [], 'assisted': [], 'managed': []},
         'schedule_items': [],
         'user': user,
         'hw_redirect_url': '/home'
@@ -133,12 +133,14 @@ def dashboard_context(request):
 
     registrations = StudentCourseRegistration.objects.filter(student = user)
     for reg in registrations:
-        context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved, 'homework': []})
+        context['courses']['enrolled'].append({'course': reg.course, 'is_approved': reg.is_approved, 'homework': []})
 
     registrations = ProfessorCourseRegistration.objects.filter(professor=user)
     for reg in registrations:
-        context['courses'].append({'course': reg.course, 'is_approved': reg.is_approved, 'homework': []})
+        context['courses']['managed'].append({'course': reg.course, 'is_approved': reg.is_approved, 'homework': []})
 
+    for c in user.courses_assisted.all():
+        context['courses']['assisted'].append({'course': c, 'is_approved': True, 'homework': []})
 
     today =  datetime.combine(date.today(), datetime.min.time())
     tomorrow = today + timedelta(days=1)
@@ -151,7 +153,25 @@ def dashboard_context(request):
 
     context['schedule_items'] = sorted(schedule_items, key= lambda a: a.start) 
 
-    for reg in context['courses']:
+    for reg in context['courses']['enrolled']:
+        if reg['is_approved']:
+            course_hw = reg['course'].coursehomeworkrequest_set
+            for homework in course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now())):
+                homework_submitted = CourseHomeworkSubmission.objects.filter(submitter=user,
+                                                                             homework_request=homework).count() > 0
+                reg['homework'].append({'submitted': homework_submitted,
+                                        'hw': homework})
+
+    for reg in context['courses']['assisted']:
+        if reg['is_approved']:
+            course_hw = reg['course'].coursehomeworkrequest_set
+            for homework in course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now())):
+                homework_submitted = CourseHomeworkSubmission.objects.filter(submitter=user,
+                                                                             homework_request=homework).count() > 0
+                reg['homework'].append({'submitted': homework_submitted,
+                                        'hw': homework})
+
+    for reg in context['courses']['managed']:
         if reg['is_approved']:
             course_hw = reg['course'].coursehomeworkrequest_set
             for homework in course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now())):
