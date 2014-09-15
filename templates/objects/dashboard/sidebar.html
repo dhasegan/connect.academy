@@ -22,8 +22,7 @@
                                 {% for item in schedule_items %}
                                     <tr> 
                                         <td class="time-col text-muted">
-                                            {{ item.start|short_time}}
-                                            
+                                            {{ item.start|time:"H:i"}}
                                         </td>
                                         <td class="description-col">
                                             {{ item.description|slice:":30" }}
