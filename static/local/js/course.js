@@ -38,6 +38,8 @@ var CoursePage = (function() {
             // Teacher management
             confirmRegistrationForm: $(".confirm_registration"),
             sendEmailForm: $(".send-mass-email-form"),
+            moveGroupForm: $('.move-group-form'),
+            registeredStudentsForm: $('.registered-students-form'),
             selectAll: $('.selectAll'),
             homeworkStartDatetime: $('.homework-start-datetime'),
             homeworkDeadlineDatetime: $('.homework-deadline-datetime'),
@@ -133,6 +135,7 @@ var CoursePage = (function() {
 
         s.confirmRegistrationForm.submit(this.confirmRegistrationFormSubmit);
         s.sendEmailForm.submit(this.sendEmailFormSubmit);
+        s.moveGroupForm.submit(this.moveGroupFormSubmit);
         s.selectAll.click(this.selectAllClick);
         s.extraTagForm.submit(this.extraTagFormSubmit);
 
@@ -245,13 +248,10 @@ var CoursePage = (function() {
 
     me.sendEmailFormSubmit = function(event) {
         var form = $(this);
-        var data = form.serialize();
-        var courseID = $("#course",form).val();
-        var success_div_id = "email-success" + courseID;
-        var error_div_id = "email-error" + courseID;
+        var data = form.serialize() + "&" + s.registeredStudentsForm.serialize();
         event.preventDefault();
         var checkedAtLeastOne = false;
-        $('input[type="checkbox"]',form).each(function() {
+        $('input[type="checkbox"]', s.registeredStudentsForm).each(function() {
             if ($(this).is(":checked")) {
                 checkedAtLeastOne = true;
             }
@@ -279,6 +279,33 @@ var CoursePage = (function() {
             $('.email-error',form).show();
             $('.email-error',form).html("Please select at least one recepient.");
             $('.email-error',form).delay(2000).fadeOut(300);
+        }
+    };
+
+    me.moveGroupFormSubmit = function(event) {
+        var form = $(this);
+        var data = form.serialize() + "&" + s.registeredStudentsForm.serialize();
+        event.preventDefault();
+        var checkedAtLeastOne = false;
+        $('input[type="checkbox"]', s.registeredStudentsForm).each(function() {
+            if ($(this).is(":checked")) {
+                checkedAtLeastOne = true;
+            }
+        });
+        if (checkedAtLeastOne) {
+            $.ajax({
+                'url': form.attr('action'),
+                'type': 'POST',
+                'data': data,
+                'success': function(data) {
+                    window.location = JSON.parse(data).url;
+                }
+            });
+        }
+        else {
+            $('.groups-error',form).show();
+            $('.groups-error',form).html("Please select at least one recepient.");
+            $('.groups-error',form).delay(2000).fadeOut(300);
         }
     };
 

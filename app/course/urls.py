@@ -20,6 +20,7 @@ urlpatterns = patterns('app.course.views',
 
     url(r'^create_group$', 'create_group', name='create_group'),
     url(r'^delete_group$', 'delete_group', name='delete_group'),
+    url(r'^move_to_group$', 'move_to_group', name='move_to_group'),
 
     url(r'^vote_review$', 'vote_review', name='vote_review'),
     url(r'^register$', 'register_course', name= 'register_course'),

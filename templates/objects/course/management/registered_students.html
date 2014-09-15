@@ -3,43 +3,86 @@
 {% if teacher.students.registered|length > 0 %}
 
   <div class="registered-students">
-    <h3> Registered students </h3>
+    <h3> {% trans "Registered students" %} </h3>
     <hr class="top-line">
+    <div class="row">
+      <div class='col-md-6'>
+        <form class="registered-students-form">
+          <ul>
+            {% if teacher.students.registered|length > 0 %}
+              <li>
+                  <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
+              </li>
+            {% endif %}
 
-    <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.slug %}">
-      <div class="row">
-        {% csrf_token %}
-        <div class='col-md-6 list-approve'>
-                          <h4> {% trans "Send an e-mail to" %}: </h4>
+            {% for group in teacher.groups %}
+              {% if group.nr_students > 0 %}
+                <h5> {{ group.group.name }} <small class="text-muted">({{group.nr_students}})</small> </h5>
+                {% for reg in teacher.registrations %}
+                  {% if reg.is_approved and reg.group.id == group.group.id %}
+                    <li>
+                      <input type='checkbox' name='user-{{reg.student.id}}'>
+                      {% with juser=reg.student %} {% include "objects/user_link.html" %} {% endwith %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
 
-            <ul>
-              {% if teacher.students.registered|length > 0 %}
+            {% if course_groups %}
+              <h5> {% trans "Unregistered to any group" %}: </h5>
+            {% endif %}
+
+            {% for reg in teacher.registrations %}
+              {% if reg.is_approved and not reg.group %}
                 <li>
-                    <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
+                  <input type='checkbox' name='user-{{reg.student.id}}'>
+                  {% with juser=reg.student %} {% include "objects/user_link.html" %} {% endwith %}
                 </li>
               {% endif %}
-              {% for student in teacher.students.registered %}
-                <li> 
-                    <input type='checkbox' name='user-{{student.id}}'> 
-                    <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
-                    </a> 
-                </li> 
-              {% endfor %}
-            </ul>
-            <input type='hidden' name='course' value='{{course.id}}'/>
-        </div>
+            {% endfor %}
+          </ul>
+        </form>
+      </div>
 
-        <div class='col-md-6 email-details'> 
+      <div class='col-md-6'>
+
+        {% if course_groups %}
+          <form class='move-group-form' method="POST" action="{% url 'move_to_group' course.slug %}">
+            {% csrf_token %}
+            <h4> {% trans "Move selected users to group" %}: </h4>
+            <div class="form-group">
+              <select class="form-control" name="group_id">
+                <option value="nogroup">{% trans "No group" %}</option>
+                {% for group in course_groups %}
+                  <option value="{{ group.id }}">{{ group.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <input type="submit" class="btn btn-primary" value='Move'>
+            </div>
+          </form>
+          <div class='groups-success text-success'> </div> 
+          <div class='groups-error text-danger'> </div>
+
+          <hr>
+        {% endif %}
+
+        <form class='send-mass-email-form' method="POST" action="{% url 'send_mass_email' course.slug %}">
+          {% csrf_token %}
+          <h4> {% trans "Send a mass e-mail" %}: </h4>
+
           <input type='text' class='form-control' name='subject' placeholder='{% trans "Subject" %}'/> <br/>
           <textarea class="form-control" rows="10" cols='40' max-length="5000" placeholder='{% trans "Email Body" %}' name="email" required></textarea><br/>
-          <input class='btn btn-primary' value='Send email' type='submit'/> 
-          <div  class='email-success text-success'> </div> 
-          <div  class='email-error text-danger'> </div>
-        </div>
+          <input class='btn btn-primary' value='Send email' type='submit'/>
+          <div class='email-success text-success'> </div>
+          <div class='email-error text-danger'> </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
-      
+
 {% else %}
   <p class="h3"> {% trans "There are no registered students for this course." %} </p>
 {% endif %} 

@@ -219,6 +219,13 @@ def course_teacher_dashboard(request, course, user):
                 context['students']['registered'].append(student_reg.student)
             else:
                 context['students']['pending'].append(student_reg.student)
+        context['registrations'] = student_registrations
+        context['groups'] = []
+        for group in course.course_groups.all():
+            context['groups'].append({
+                'group': group,
+                'nr_students': [reg.group == group for reg in student_registrations].count(True)
+            })
 
     context['forum_stats'] = forum_stats_context(course.forum)
 

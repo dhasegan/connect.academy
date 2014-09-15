@@ -320,6 +320,24 @@ class DeleteGroupForm(forms.Form):
 
         return cleaned_data
 
+class MoveToGroupForm(forms.Form):
+    group_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(MoveToGroupForm, self).clean()
+
+        group_id = cleaned_data.get("group_id")
+        if group_id:
+            if group_id == "nogroup":
+                cleaned_data['course_group'] = None
+            else:
+                groups = CourseGroup.objects.filter(id=group_id)
+                if len(groups) != 1:
+                    raise forms.ValidationError("Not a valid number of groups with this group_id!")
+                cleaned_data['course_group'] = groups[0]
+
+        return cleaned_data
+
 class UpdateSyllabusForm(forms.Form):
     entry_name = forms.CharField(max_length=200)
     entry_description = forms.CharField(max_length=500)

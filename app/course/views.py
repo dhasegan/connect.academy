@@ -528,6 +528,8 @@ def register_course(request, slug):
 def send_mass_email(request, slug):
     course = get_object_or_404(Course, slug=slug)
 
+    print request.POST
+
     context = {
         'page': 'send_mass_email',
         'user_auth': request.user
@@ -542,11 +544,12 @@ def send_mass_email(request, slug):
     sender = "%s %s <%s>" % (user.first_name, user.last_name, user.email)
     for key, val in request.POST.items():
         if 'user' in key:
-            _, user_id = key.split('-')
-            users = jUser.objects.filter(id=user_id)
-            if users is not None and val:  # if user exists (users is not None) and checkbox was checked (val)
-                email = users[0].email
-                to.append(email)
+            str_id, user_id = key.split('-')
+            if str_id == "user":
+                users = jUser.objects.filter(id=user_id)
+                if users is not None and val:  # if user exists (users is not None) and checkbox was checked (val)
+                    email = users[0].email
+                    to.append(email)
 
     if len(to) > 0:
         send_mail(subject, body, sender, to, fail_silently=False)
@@ -628,6 +631,38 @@ def delete_group(request, slug):
     group.delete()
 
     return redirect( reverse('course_page', args=(course.slug, )) + "?teacher_page=details" )
+
+@require_POST
+@require_active_user
+@login_required
+def move_to_group(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = MoveToGroupForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    course_group = form.cleaned_data['course_group']
+
+    registrations = StudentCourseRegistration.objects.filter(course=course)
+    for key, val in request.POST.items():
+        if 'user' in key:
+            str_id, user_id = key.split('-')
+            if str_id == "user":
+                regs = registrations.filter(student__id=user_id)
+                if regs is not None and val:  # if user exists (users is not None) and checkbox was checked (val)
+                    reg = regs[0]
+                    reg.group = course_group
+                    reg.save()
+
+    response_data = {
+        'url': reverse('course_page', args=(course.slug, )) + "?teacher_page=registered"
+    }
+    return HttpResponse(json.dumps(response_data))
 
 @require_POST
 @require_active_user
