@@ -47,6 +47,7 @@ var CoursePage = (function() {
             extraTagForm: $('.extratag-form'),
             taContainerSelector: '.teaching-assistants > ul.no-bullet',
             taPermissionsFormSelector: '.TA-permissions-form',
+            newTAFormSelector: '#new-ta-form',
         }
     }, s;
 
@@ -158,7 +159,7 @@ var CoursePage = (function() {
                 'data': form.serialize(),
                 'success': function(data) {
                     json_data = $.parseJSON(data);
-
+                    console.log(json_data);
                     if (json_data.status == "OK") {
                         form.find(".success").html(json_data.message).show();
                         setTimeout(function() {
@@ -166,6 +167,7 @@ var CoursePage = (function() {
                         }, 3000);
                     }
                     else if (json_data.status == "warning") {
+
                         form.find(".warning").html(json_data.message).show();
                         setTimeout(function() {
                             form.find(".warning").hide();
@@ -186,6 +188,43 @@ var CoursePage = (function() {
                 }
             });
         });
+        
+        $(s.newTAFormSelector).submit(function(event) {
+            event.preventDefault();
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    window.console.log(json_data);
+                    if (json_data.status == "OK") {
+                        $(s.taContainerSelector).append(json_data.html);
+                        form.find("input[type='email']").val('');
+                    }
+                    else if (json_data.status == "Warning") {
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+
+        })
 
     };
 

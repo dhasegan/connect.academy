@@ -17,10 +17,11 @@
 		            	<input type='checkbox' name='{{perm.name}}' {% if perm.owned %}checked{% endif %}/> {{ perm.description }}
 		            </li>
 		        {% endfor %}
+		        <div class='text-xs text-success success' visibility='hidden'></div>
+		        <div class='text-xs text-warning warning' visibility='hidden'></div>
+		        <div class="text-xs text-danger error" visibility='hidden'></div>
 		        <input type='submit' value="Save" class="form-control btn btn-primary "/> <br/>
-		        <div class='text-xs text-success success'></div>
-		        <div class='text-xs text-warning warning'></div>
-		        <div class="text-xs text-danger error"></div>
+		        
 		   	</ul>
 		    
 		</form>
