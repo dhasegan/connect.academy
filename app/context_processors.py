@@ -30,10 +30,10 @@ def user_authenticated(request):
 
 
 def dashboard_activities(request,user):
-    user_courses = list(user.courses_enrolled.all()) + list(user.courses_managed.all())
+    user_courses = list(user.courses_enrolled.all()) + list(user.courses_managed.all()) + list(user.courses_assisted.all())
 
     own_course_activities = list(CourseActivity.objects.filter(
-        Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())), ~Q(user=user)).reverse())
+        Q(course__in=user_courses), ~Q(user=user)).reverse())
 
     # get all answers to posts that the user is following, except those in the users's own courses,
     # to avoid duplication
@@ -77,14 +77,14 @@ def dashboard_activities(request,user):
 # loads NEW activities asynchronously, called with ajax
 def new_dashboard_activities(request,user):
     last_id = long(request.GET.get('last_id'))
-    user_courses = list(user_courses_enrolled.all()) + list(user.courses_managed.all())
+    user_courses = list(user.courses_enrolled.all()) + list(user.courses_managed.all()) + list(user.courses_assisted.all())
     own_course_activities = list(CourseActivity.objects.filter(
-        Q(course__in=list(user.courses_enrolled.all()) + list(user.courses_managed.all())), ~Q(user=user), Q(id__gt=last_id) ).reverse())  
+        Q(course__in=user_courses), ~Q(user=user), Q(id__gt=last_id) ).reverse())  
 
     # get all answers to posts that the user is following, except those in the users's own courses,
     # to avoid duplication
     # 
-    forum_post_activities= ForumPostActivity.objects.filter(Q( 
+    forum_post_activities= list(ForumPostActivity.objects.filter(Q( 
                                 Q (
                                      forum_post__forum__forum_type=FORUM_COURSE ,
                                      forum_post__forum__forumcourse__course__in=user_courses
@@ -92,14 +92,14 @@ def new_dashboard_activities(request,user):
                                 |
                                 Q (
                                     forum_post__followed_by= user
-                                )),~Q(user=user), Q(id__gt=last_id)).reverse()
+                                )),~Q(user=user), Q(id__gt=last_id)).reverse())
 
     #activities_list += [ a for a in all_post_activities if user.is_student_of(a.get_course()) \
     #                                    or user.is_professor_of(a.get_course) \
     #                                        or user.is_admin_of(a.get_course) ]
 
     # Forum answer activities
-    forum_answer_activities = ForumAnswerActivity.objects.filter(Q( 
+    forum_answer_activities = list(ForumAnswerActivity.objects.filter(Q( 
                                 Q (
                                     forum_answer__post__forum__forum_type=FORUM_COURSE,
                                     forum_answer__post__forum__forumcourse__course__in=user_courses
@@ -107,7 +107,7 @@ def new_dashboard_activities(request,user):
                                 |
                                 Q (
                                     forum_answer__post__followed_by = user
-                                )),~Q(user=user), Q(id__gt=last_id)).reverse()
+                                )),~Q(user=user), Q(id__gt=last_id)).reverse())
 
     activities_list = sorted(own_course_activities +  forum_post_activities + forum_answer_activities, 
                 key = lambda activity: activity.timestamp, 

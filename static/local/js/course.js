@@ -50,7 +50,8 @@ var CoursePage = (function() {
             newTAFormSelector: '#new-ta-form',
             removeTAFormSelector: ".remove-ta-form",
             TAPermissionsIdPrefix: '#ta-permissions-li',
-        }
+        },
+
     }, s;
 
     me.init = function() {
@@ -127,7 +128,7 @@ var CoursePage = (function() {
                 }
             }
         });
-    }
+    };
 
     me.bindUIActions = function() {
         $(s.ratingFormSelector).submit(this.ratingFormSubmit);
@@ -263,6 +264,7 @@ var CoursePage = (function() {
             });
         });
 
+        
     };
 
     me.ratingFormSubmit = function(event) {
@@ -412,7 +414,8 @@ var CoursePage = (function() {
                 this.checked = false;
             });
         }
-    }
+    };
+
 
     return me;
 }());

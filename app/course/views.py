@@ -633,7 +633,11 @@ def load_course_activities(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
     activities = course_activities(request,course)
-    
+    if len(activities) == 0:
+        return HttpResponse(json.dumps({
+                'status': "OK",
+                'html': ""
+            }))
     context = { "activities" : activities, "user_auth": user }
     context.update(csrf(request))
     html = render_to_string('objects/dashboard/activity_timeline.html', context )

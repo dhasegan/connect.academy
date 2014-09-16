@@ -314,6 +314,7 @@ PIPELINE_JS = {
     'connect': {
         'source_filenames': (
             'local/js/utils.js',
+            'local/js/activities.js',
             'local/js/forum.js',
             'local/js/course.js',
             'local/js/explore.js',

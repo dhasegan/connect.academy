@@ -340,10 +340,10 @@ def new_course_activities(request,course):
 
     # Forum post activities
     activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
-                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ))
+                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ).reverse())
 
     activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
-                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id))
+                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id).reverse())
 
     activities_list = [a for a in activities_list if a.can_view(user)]
     activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)

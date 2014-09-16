@@ -153,12 +153,17 @@ def load_profile_activities(request, username):
     user = get_object_or_404(jUser,username=username)
     
     activities = profile_activities(request,user)
-
-    html = render_to_string('objects/dashboard/activity_timeline.html',
-                            { 
-                                "activities" : activities , 
-                                "user_auth": request.user.juser
-                            })
+    if len(activities) == 0:
+        return HttpResponse(json.dumps({
+                'status': "OK",
+                'html': ""
+            }))
+    context = { 
+        "activities" : activities , 
+        "user_auth": request.user.juser
+    }
+    context.update(csrf(request))
+    html = render_to_string('objects/dashboard/activity_timeline.html', context)
     data = {
         'status': "OK",
         'html': html
@@ -170,12 +175,12 @@ def load_profile_activities(request, username):
 def load_new_profile_activities(request, username):
     user = get_object_or_404(jUser, username=username)
     activities = new_profile_activities(request,user)
-
-    html = render_to_string('objects/dashboard/activity_timeline.html', 
-                            { 
-                                "activities" : activities,
-                                "user_auth": request.user.juser
-                            } )
+    context = { 
+        "activities" : activities,
+        "user_auth": request.user.juser
+    } 
+    context.update(csrf(request))
+    html = render_to_string('objects/dashboard/activity_timeline.html', context)
     data = {
         'status': "OK",
         'html': html,
