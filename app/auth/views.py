@@ -139,6 +139,9 @@ def validate_user(request, username, confirmation):
     # Validate user based on username and confirmation hash
     user = get_object_or_404(jUser, username=username)
 
+    if user.is_active:
+        return redirect("/")
+
     if not default_token_generator.check_token(user, confirmation):
         raise Http404
 
@@ -154,7 +157,12 @@ def delete_user(request, username, confirmation):
     context = {
         "page": "delete"
     }
-    user = get_object_or_404(jUser, username=username)
+    users = jUser.objects.filter(username=username)
+    if not users:
+        context["success"] = "User successfully deleted. <br/>"
+        return render(request, "pages/welcome_page.html", context)
+
+    user = users[0]
     if not default_token_generator.check_token(user, confirmation):
         raise Http404
 
