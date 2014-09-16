@@ -11,7 +11,7 @@
                 {% else %}
                     {% with contribution.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
                 {% endif %}
-                changed the wiki for <a href="{% url 'course_page' activity.courseactivity.course.slug %}">{{ activity.course.name }}</a> to 
+                changed the wiki for <a href="{% url 'course_page' activity.courseactivity.course.slug %}">{{ course.name }}</a> to 
                 <a href="{% url 'course_page' activity.courseactivity.course.slug %}?page=wiki"> revision r{{ contribution.revision.revision }} </a> 
 
                 <hr class="end-of-activity">
