@@ -10,8 +10,8 @@ class AppointmentForm(forms.Form):
 	end = forms.DateTimeField(input_formats = settings.VALID_TIME_INPUTS)
 	timezone_minutes = forms.IntegerField()
 	eventId = forms.IntegerField(required=False)
-	copy = forms.CharField(required=False)
-	num_weeks = forms.CharField(required=False)
+	copy = forms.BooleanField(required=False)
+	num_weeks = forms.IntegerField(required=False)
 
 	def clean(self):
 		super(AppointmentForm,self).clean()
@@ -33,11 +33,6 @@ class AppointmentForm(forms.Form):
 		end_utc = timezone.make_aware(end_val,pytz.utc)
 		self.cleaned_data['start'] = start_utc
 		self.cleaned_data['end'] = end_utc
-
-		if self.cleaned_data['copy'] == '1':
-			self.cleaned_data['copy'] = True
-		else:
-			self.cleaned_data['copy'] = False
 
 		return self.cleaned_data
 

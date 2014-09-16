@@ -161,7 +161,7 @@ def add_personal_appointment(request):
     if copy_to_otherweeks:
         start_times = []
         length = end - start
-        for i in range(1,int(weeks)+1):
+        for i in range(1,weeks+1):
             start_time = start + timedelta(weeks=i)
             start_times.append(start_time)
 
