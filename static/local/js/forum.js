@@ -28,7 +28,7 @@ var ForumPage = (function() {
 
             //Follow-unfollow post
             postFollowForm: $('form.post-follow-form'),
-            postFollowContainer: $('div.post-follow-container')
+            postFollowContainerSelector: 'div.post-follow-container'
         }
     }, s;
 
@@ -76,25 +76,6 @@ var ForumPage = (function() {
                 }
             );
         });
-
-       $(s.postFollowContainer).on("submit", "form", function(event) {
-            event.preventDefault();
-            form = $(this);
-            container = form.parent().parent();
-            $.ajax({
-                type: form.attr("method"),
-                url: form.attr("action"),
-                data: form.serialize(),
-                success: function(data) {
-                    if (data['status'] == "OK") {;
-                        container.empty().hide().append(data['html']).fadeIn("slow");
-                    }
-                }
-
-
-            });
-        });
-
 
     };
 
@@ -211,7 +192,24 @@ var ForumPage = (function() {
         });
         // Upvote posts and answers
         
-        
+        // Follow post
+        SubtreeDOM.find(s.postFollowContainerSelector).on("submit", "form", function(event) {
+            event.preventDefault();
+            form = $(this);
+            container = form.parent().parent();
+            $.ajax({
+                type: form.attr("method"),
+                url: form.attr("action"),
+                data: form.serialize(),
+                success: function(data) {
+                    if (data['status'] == "OK") {;
+                        container.empty().hide().append(data['html']).fadeIn("slow");
+                    }
+                }
+
+
+            });
+        });
     };
 
     return me;

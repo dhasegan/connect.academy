@@ -1,0 +1,69 @@
+{% load i18n %}
+<li class="ta-permissions" id='ta-permissions-li{{ta.user.id}}'> 
+
+	<a data-toggle="modal" href="#removeTAModal{{ta.user.id}}" class='text-xs text-danger' ><span class="icon icon-cancel-circle"></span></a>
+	{% with ta.user as juser %}
+		{% include 'objects/user_link.html' %}
+	{% endwith %}
+	
+	<div class="pull-right">
+		<a class="pull-right" data-toggle="collapse" data-parent=".teaching-assistants" href="#ta-permissions{{ta.user.id}}">
+            Permissions <span class="caret"> </span>
+        </a>
+	</div>
+	<div class="block collapse" id="ta-permissions{{ta.user.id}}">
+
+    	<form method="POST" class="TA-permissions-form" action="{% url 'change_ta_permissions' course.slug %}">
+			{% csrf_token %}
+			<input type='hidden' name='user_id' value='{{ta.user.id}}'/>
+		    <ul class="no-bullet">
+		        {% for perm in ta.permissions %}
+		        	<li>
+		            	<input type='checkbox' name='{{perm.name}}' {% if perm.owned %}checked{% endif %}/> {{ perm.description }}
+		            </li>
+		        {% endfor %}
+		        <div class='text-xs text-success success' visibility='hidden'></div>
+		        <div class='text-xs text-warning warning' visibility='hidden'></div>
+		        <div class="text-xs text-danger error" visibility='hidden'></div>
+		        <input type='submit' value="Save" class="form-control btn btn-primary "/> <br/>
+		        
+		   	</ul>
+		    
+		</form>
+    </div>
+
+
+    {% comment %}
+    	Remove TA Modal
+    {% endcomment %}
+    <div id="removeTAModal{{ta.user.id}}" class="modal fade in" role="dialog" aria-labelledby="removeTAModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+
+	            <div class="modal-header">
+	                <a class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
+	                <h3 class="modal-title" id="removeTAModalLabel{{ta.user.id}}"><b>{% trans "Confirm TA removal" %} </b></h3>
+	            </div>
+	            <div class="modal-body">
+	                <h4><b>{{course.name}}</b></h4>
+	                <p> Are you sure you want to remove {% with ta.user as juser %} {% include 'objects/user_link.html' %} {% endwith %} from the TAs of this course?</p>
+	            </div>
+	            <div class="modal-footer">
+	                <div class="btn-group">
+	                    <form action='{% url "remove_ta" course.slug %}' method="POST" class="remove-ta-form">
+	                        {% csrf_token %}
+	                        <input type='hidden' name='user_id' value='{{ta.user.id}}'/>
+	                        <button class="btn btn-danger" data-dismiss="modal">{% trans "No, cancel" %}</button>
+	                        <input class="btn btn-primary" type="submit" value="{% trans 'Yes, remove' %}" />
+
+	                        <div class='text-xs text-success success' visibility='hidden'></div>
+					        <div class='text-xs text-warning warning' visibility='hidden'></div>
+					        <div class="text-xs text-danger error" visibility='hidden'></div>
+                    	</form>
+	                </div>
+	            </div>
+
+	        </div>
+	    </div>
+	</div>
+</li>

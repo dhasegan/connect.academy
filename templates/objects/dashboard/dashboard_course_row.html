@@ -1,0 +1,21 @@
+{% load humanize %}
+{% load i18n %}
+{% load connect_extras %}
+<tr> 
+    <td class='course_name'>
+        <a href="{% url 'course_page' course_item.course.slug %}"> {{ course_item.course.name }} </a> {% if not course_item.is_approved %} <small class='text text-danger'> (Pending) </small> {% endif %} 
+        <div class="block collapse" id="homework-list{{course_item.course.id}}">
+            
+            {% for hw in course_item.homework %}
+                <span {% if hw.submitted %}class="text-success"{% else %}class="text-danger"{% endif %}> {{hw.hw.name}} </span> <small class="text-muted"> due {{hw.hw.deadline.end|naturaltime}} </small> <br/>
+            {% endfor %}
+            
+        </div>
+    </td>
+    <td class='homework_number'>
+        <a class="homework_number" data-toggle="collapse" data-parent=".sidebar-courses-table" href="#homework-list{{course_item.course.id}}">
+            {{course_item.homework|length}}
+        </a>
+    </td>
+   
+</tr>

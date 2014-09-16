@@ -27,7 +27,9 @@
             {% endwith %}
           {% elif a.type == 'WikiActivity' %}
             {% with a.contribution as contribution %}
-              {% include 'objects/dashboard/wiki_activity.html' %}
+              {% with activity.courseactivity.course as course %}
+                {% include 'objects/dashboard/wiki_activity.html' %}
+              {% endwith %}
             {% endwith %}
           {% endif %}
       {% endwith %}

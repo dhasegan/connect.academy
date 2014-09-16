@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.utils import timezone
 # For wikis versioning
 from django.contrib.contenttypes.models import ContentType
 from versioning.models import Revision
@@ -103,7 +103,7 @@ def course_homework_count_submitted(course, homework_request):
 
 def homework_context(hw, current_user):
     course = hw.course
-    current_time = pytz.utc.localize(datetime.now())
+    current_time = timezone.now()
     nr_students = StudentCourseRegistration.objects.filter(course=course, is_approved=True).count()
 
     within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
@@ -112,7 +112,7 @@ def homework_context(hw, current_user):
     can_submit_homework = is_student and is_allowed and within_deadline
     
     homework_submissions = []
-    if current_user.is_student():
+    if current_user.is_student_of(course):
         homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
 
     homework_submitted = course_homework_count_submitted(course, hw)
@@ -128,7 +128,7 @@ def homework_context(hw, current_user):
             "students": nr_students
         }
     }
-    if current_user.is_professor_of(course):
+    if current_user.has_perm('assign_homework', course) or current_user.has_perm('grade_homework',course):
         context['active_hw'] = within_deadline
         context['coming_hw'] = hw.deadline.start > current_time
         context['past_hw'] = hw.deadline.end <= current_time
@@ -143,10 +143,12 @@ def course_homework_context(course, current_user):
     return context
 
 def homework_dashboard_context(request, course, current_user):
+    if not current_user.has_perm('grade_homework', course):
+        raise Http404
     context = {}
     homework_requests = CourseHomeworkRequest.objects.filter(course=course)
     students = sorted(list(course.students.all()), key=lambda st:st.username)
-    current_time = pytz.utc.localize(datetime.now())
+    current_time = timezone.now()
     context['homework_requests'] = []
 
     for hw in homework_requests:
@@ -161,7 +163,11 @@ def homework_dashboard_context(request, course, current_user):
                 'file_numbers': [str(s.file_number) for s in submissions]
             })
 
-        percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
+        total_numfiles = hw.number_files * len(students)
+        if total_numfiles > 0:
+            percentage_completed = 100.0 * all_submissions.count() / (hw.number_files * len(students))
+        else:
+            percentage_completed = 0
         context['homework_requests'].append({
             'homework': hw,
             'all_submissions': submissions_context,
@@ -198,29 +204,42 @@ def course_syllabus_context(course, current_user):
 # Professor extra settings
 def course_teacher_dashboard(request, course, user):
     context = {
-        'is_teacher': user.is_professor_of(course)
+        'is_teacher': user.is_professor_of(course)  or user.is_assistant_of(course)
     }
     if not context['is_teacher']:
         return context
 
-    registrations = ProfessorCourseRegistration.objects.filter(professor=user, course=course)
-    if not registrations:
-        return context
-    prof_reg = registrations[0]
+    context['can_mail_students'] = user.has_perm('mail_students', course)
+    context['can_approve_registrations'] = user.has_perm('approve_registrations', course)
+    context['can_manage_forum'] = user.has_perm('manage_forum', course)
+    context['can_manage_resources'] = user.has_perm('manage_resources', course)
+    context['can_assign_homework'] = user.has_perm('assign_homework', course)
+    context['can_grade_homework'] = user.has_perm('grade_homework', course)
+    context['can_manage_info'] = user.has_perm('manage_info', course)
+    context['can_manage_assistants'] = user.is_professor_of(course)
 
-    context ['is_approved'] = prof_reg.is_approved
+    context['students'] = {}
 
-    if prof_reg.is_approved:
-        context['students'] = {'registered': [], 'pending': []}
-        # for each student registration
-        student_registrations = StudentCourseRegistration.objects.filter(course=course)
-        for student_reg in student_registrations:
-            if student_reg.is_approved:
-                context['students']['registered'].append(student_reg.student)
-            else:
-                context['students']['pending'].append(student_reg.student)
+    student_registrations = StudentCourseRegistration.objects.filter(course=course)
 
-    context['forum_stats'] = forum_stats_context(course.forum)
+    if context['can_mail_students']:
+        context['students']['registered'] = [r.student for r in student_registrations if r.is_approved]
+    if context['can_approve_registrations']:
+        context['students']['pending'] = [r.student for r in student_registrations if not r.is_approved]
+    if context['can_manage_forum']:
+        context['forum_stats'] = forum_stats_context(course.forum)
+
+    context['assistants'] = []
+    for ta in course.teaching_assistants.all():
+        ta_context = {'user': ta, 'permissions': []}
+        for perm in Course._meta.permissions:
+            ta_context['permissions'].append({
+                'name': perm[0],
+                'description': perm[1],
+                'owned': ta.has_perm(perm[0], course)
+            })
+        context['assistants'].append(ta_context)
+
 
     return context
 
@@ -275,12 +294,12 @@ def course_page_context(request, course):
         context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
 
     context['documents'] = course.documents.all()
-    context['can_upload_docs'] = current_user.is_professor_of(course)
+    context['can_upload_docs'] = current_user.has_perm('manage_resources', course)
     # Show documents/homework only if the user is registered and student/prof
-    if current_user.is_student_of(course) or current_user.is_professor_of(course):
+    if current_user.is_student_of(course) or current_user.is_professor_of(course) or current_user.is_assistant_of(course):
         context['all_homework'] = course_homework_context(course, current_user)
         context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
-        if current_user.is_professor_of(course):
+        if current_user.has_perm('assign_homework',course) or current_user.has_perm('grade_homework',course):
             context['homework_has_active'] = [hw['active_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_coming'] = [hw['coming_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_past'] = [hw['past_hw'] for hw in context['all_homework']].count(True) > 0
@@ -321,10 +340,10 @@ def new_course_activities(request,course):
 
     # Forum post activities
     activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
-                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ))
+                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ).reverse())
 
     activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
-                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id))
+                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id).reverse())
 
     activities_list = [a for a in activities_list if a.can_view(user)]
     activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
@@ -349,7 +368,7 @@ def activity_context(activity, current_user):
         answer = activity_instance.forum_answer
         activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
     elif activity_type == "HomeworkActivity":
-        activity_context['homework'] = homework_context(activity.homeworkactivity.homework, current_user)
+        activity_context['homework'] = homework_context(activity_instance.homework, current_user)
     elif activity_type == "ReviewActivity":
         activity_context["review"] = review_context(activity_instance.review, current_user)
     elif activity_type == "WikiActivity":
