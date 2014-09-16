@@ -18,7 +18,7 @@
 				{% else %}
 					for
 				{% endif %}
-				<a href="{% url 'course_page' activity.get_instance.course.slug %}">{{activity.get_instance.course.name}}</a>
+				<a href="{% url 'course_page' activity.get_instance.courseactivity.course.slug %}">{{activity.get_instance.courseactivity.course.name}}</a>
 				<small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
 
 				<div class="homework-body">
@@ -31,7 +31,7 @@
 				</div>
 
 				<hr class="end-of-activity">
-                <a href="{% url 'course_page' activity.get_instance.course.slug %}?page=resources"> {% trans "Check all homework" %} </a>
+                <a href="{% url 'course_page' activity.get_instance.courseactivity.course.slug %}?page=resources"> {% trans "Check all homework" %} </a>
 
 			</div>
 		</div>
