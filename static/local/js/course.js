@@ -45,7 +45,13 @@ var CoursePage = (function() {
             homeworkForm: $('.homework-form'),
             addExtraTag: $('.add-extratag'),
             extraTagForm: $('.extratag-form'),
-        }
+            taContainerSelector: '.teaching-assistants > ul.no-bullet',
+            taPermissionsFormSelector: '.TA-permissions-form',
+            newTAFormSelector: '#new-ta-form',
+            removeTAFormSelector: ".remove-ta-form",
+            TAPermissionsIdPrefix: '#ta-permissions-li',
+        },
+
     }, s;
 
     me.init = function() {
@@ -122,7 +128,7 @@ var CoursePage = (function() {
                 }
             }
         });
-    }
+    };
 
     me.bindUIActions = function() {
         $(s.ratingFormSelector).submit(this.ratingFormSubmit);
@@ -145,6 +151,120 @@ var CoursePage = (function() {
             var tz = $(this).find('input[name="timezone"]');
             tz.val( moment().zone() );
         });
+
+        $(s.taContainerSelector).on('submit', s.removeTAFormSelector, function(event) {
+            event.preventDefault();
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    if (json_data.status == "OK") {
+                        form.closest(".modal").modal('toggle');
+                        setTimeout(function() {
+                            $(s.TAPermissionsIdPrefix + json_data.ta_id).remove();
+                        }, 500);
+                        
+                    }
+                    else if (json_data.status == "Warning") {
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+        });
+        
+        $(s.newTAFormSelector).submit(function(event) {
+            event.preventDefault();
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    if (json_data.status == "OK") {
+                        $(s.taContainerSelector).append(json_data.html);
+                        form.find("input[type='email']").val('');
+                    }
+                    else if (json_data.status == "Warning") {
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+
+        });
+
+        $(s.taContainerSelector).on('submit', s.taPermissionsFormSelector, function(event) {
+            event.preventDefault();
+            form = $(this);
+            $.ajax({
+                'url': form.attr('action'),
+                'type': form.attr('method'),
+                'data': form.serialize(),
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    if (json_data.status == "OK") {
+                        form.find(".success").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".success").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Warning") {
+
+                        form.find(".warning").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".warning").hide();
+                        }, 3000);
+                    }
+                    else if (json_data.status == "Error") {
+                        form.find(".error").html(json_data.message).show();
+                        setTimeout(function() {
+                            form.find(".error").hide();
+                        }, 3000);
+                    }
+                },
+                'error': function() {
+                    form.find(".error").html("Error processing request.").show();
+                    setTimeout(function() {
+                        form.find(".error").hide();
+                    }, 3000);
+                }
+            });
+        });
+
+        
     };
 
     me.ratingFormSubmit = function(event) {
@@ -294,7 +414,8 @@ var CoursePage = (function() {
                 this.checked = false;
             });
         }
-    }
+    };
+
 
     return me;
 }());

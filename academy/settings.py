@@ -118,7 +118,10 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'app.auth.helpers.jUserBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
+
+ANONYMOUS_USER_ID = -1
 
 ROOT_URLCONF = 'academy.urls'
 
@@ -159,6 +162,7 @@ INSTALLED_APPS = (
     'storages',
     'versioning',  # Should be after apps with versioned models
     'south', # db migrations
+    'guardian', # manage user permissions
 )
 
 # A sample logging configuration. The only tangible logging
@@ -310,6 +314,7 @@ PIPELINE_JS = {
     'connect': {
         'source_filenames': (
             'local/js/utils.js',
+            'local/js/activities.js',
             'local/js/forum.js',
             'local/js/course.js',
             'local/js/explore.js',

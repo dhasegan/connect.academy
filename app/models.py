@@ -3,6 +3,7 @@ import pytz # timezones
 from django.utils import timezone
 import versioning
 import re 
+from guardian.shortcuts import assign_perm
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,6 +14,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django import forms
 
 from app.helpers import get_slug_for
+
 
 
 ###########################################################################
@@ -97,6 +99,9 @@ class jUser(User):
         registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
         return registration and registration[0].is_approved
 
+    def is_assistant_of(self,course):
+        return self in list(course.teaching_assistants.all())
+
     def is_admin_of(self, course):
         if not self.is_admin():
             return False
@@ -135,6 +140,14 @@ class ProfessorCourseRegistration(models.Model):
 
     def __unicode__(self):
         return str(self.professor)
+
+    def save(self, *args, **kwargs):
+        super(ProfessorCourseRegistration, self).save(*args, **kwargs)
+        if self.is_approved:
+            for perm in Course._meta.permissions:
+                if not self.professor.has_perm(perm[0], self.course):
+                    assign_perm(perm[0], self.professor, self.course) # perm[0] is the name of the permission
+
 
 
 
@@ -199,6 +212,7 @@ class Course(models.Model):
     majors = models.ManyToManyField('Major', related_name='courses')
     prerequisites = models.ManyToManyField('self', related_name='next_courses')
     external_link = models.CharField(max_length=200, null=True, blank=True)
+    teaching_assistants = models.ManyToManyField('jUser', related_name='courses_assisted')
     # !!
     # Relations declared in other models define the following:
     #   forum (<course>.forum returns the forum of the <course>)
@@ -209,6 +223,17 @@ class Course(models.Model):
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
     #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
     #   activities (<course>.activities.all() returns all (newsfeed) activities of <course>)
+
+    class Meta:
+        permissions = (
+            ('approve_registrations', "Approve students' registrations."),
+            ('mail_students', "See and e-mail all students."),
+            ('manage_resources', "Manage course resources (Upload documents)"),
+            ('assign_homework', "Assign Homework"),
+            ('grade_homework', "Grade homework"),
+            ('manage_forum', "Manage the course forum and see forum stats"),
+            ('manage_info', "Manage course info (description, syllabus etc...)"),
+        )
 
     def get_non_topic_documents(self):
         return self.documents.filter(course_topic=None)

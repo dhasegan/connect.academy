@@ -22,8 +22,7 @@
                                 {% for item in schedule_items %}
                                     <tr> 
                                         <td class="time-col text-muted">
-                                            {{ item.start|short_time}}
-                                            
+                                            {{ item.start|time:"H:i"}}
                                         </td>
                                         <td class="description-col">
                                             {{ item.description|slice:":30" }}
@@ -53,41 +52,55 @@
             <!--  COURSES  -->
             <!-- ######### -->
             <div class="row">
-                <div class="row text-center">
-                    <span id="dashboard-scheduler-icon" class="icon icon-book"> Courses </span>
-                </div>
-                <br>
+                
 
                 <div class="row center-block">
-                    
-                    <table class="sidebar-courses-table">
-                        {% if courses %}
-                            {% for course_item in courses %}
-                                <tr> 
-                                    <td class='course_name'>
-                                        <a href="{% url 'course_page' course_item.course.slug %}"> {{ course_item.course.name }} </a> {% if not course_item.is_approved %} <small class='text text-danger'> (Pending) </small> {% endif %} 
-                                        <div class="block collapse" id="homework-list{{course_item.course.id}}">
-                                            
-                                            {% for hw in course_item.homework %}
-                                                <span {% if hw.submitted %}class="text-success"{% else %}class="text-danger"{% endif %}> {{hw.hw.name}} </span> <small class="text-muted"> due {{hw.hw.deadline.end|naturaltime}} </small> <br/>
-                                            {% endfor %}
-                                            
-                                        </div>
-                                    </td>
-                                    <td class='homework_number'>
-                                        <a class="homework_number" data-toggle="collapse" data-parent=".sidebar-courses-table" href="#homework-list{{course_item.course.id}}">
-                                            {{course_item.homework|length}}
-                                        </a>
-                                    </td>
-                                   
-                                </tr>
+                                        
+                    {% if courses.enrolled %}
+                        <div class="row text-center">
+                            <span id="dashboard-scheduler-icon" class="icon icon-book"> Courses Enrolled </span>
+                        </div>
+                        <br>
+                        <table class="sidebar-courses-table">
+                            {% for course_item in courses.enrolled %}
+                                {% include 'objects/dashboard/dashboard_course_row.html' %}
                             {% endfor %}
-                        {% else %}
+                        </table>
+                        <br/>
+                    {% endif %}
+
+                    {% if courses.managed %}
+                        <div class="row text-center">
+                            <span id="dashboard-scheduler-icon" class="icon icon-book"> Courses Taught </span>
+                        </div>
+                        <br>
+                        <table class="sidebar-courses-table">
+                            {% for course_item in courses.managed %}
+                                {% include 'objects/dashboard/dashboard_course_row.html' %}
+                            {% endfor %}
+                        </table>
+                        <br/>
+                    {% endif %}
+
+                    {% if courses.assisted %}
+                        <div class="row text-center">
+                            <span id="dashboard-scheduler-icon" class="icon icon-book"> Courses Assisted </span>
+                        </div>
+                        <br>
+                        <table class="sidebar-courses-table">
+                            {% for course_item in courses.assisted %}
+                                {% include 'objects/dashboard/dashboard_course_row.html' %}
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+
+                    {% if not courses.enrolled and not courses.managed and not courses.assisted %}
+                        <table class="sidebar-courses-table">
                             <tr>
                                 <td> You are not registered in any courses </td>
                             </tr>
-                        {% endif %}
-                    </table>
+                        </table>
+                    {% endif %}
                     
                 </div>
 

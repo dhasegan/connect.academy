@@ -4,6 +4,7 @@ import string
 import random
 import datetime
 import json
+from guardian.shortcuts import assign_perm, remove_perm
 
 from django.core.context_processors import csrf
 from django.core.files import File
@@ -76,7 +77,7 @@ def course_page(request, slug):
     if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
         context['review_course_tab'] = True
 
-    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details']
+    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details', 'assistants']
     if 'teacher_page' in request.GET and request.GET['teacher_page'] and \
         request.GET['teacher_page'] in available_teacher_pages:
             context['current_teacher_tab'] = request.GET['teacher_page']
@@ -218,7 +219,7 @@ def submit_document(request, slug):
     if not form.is_valid():
         raise Http404
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_resources', course):
         raise Http404
 
     docfile = form.cleaned_data['document']
@@ -244,7 +245,7 @@ def resubmit_document(request, slug):
     if not form.is_valid():
         raise Http404
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_resources', course):
         raise Http404
 
     docfile = form.cleaned_data['document']
@@ -306,7 +307,7 @@ def submit_homework_request(request, slug):
     if not course == form.cleaned_data['course']:
         raise Http404
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('assign_homework', course):
         raise Http404
 
     local_timezone = timezone.get_current_timezone()
@@ -352,7 +353,7 @@ def edit_homework_request(request, slug):
     if not course == form.cleaned_data['course']:
         raise Http404
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('assign_homework', course):
         raise Http404
 
     local_timezone = timezone.get_current_timezone()
@@ -385,7 +386,7 @@ def submit_homework_grades(request, slug):
 
     user = get_object_or_404(jUser, id=request.user.id)
     course = get_object_or_404(Course, slug=slug)
-    if not user.is_professor_of(course):
+    if not user.has_perm('grade_homework', course):
         raise Http404
 
     form = SubmitHomeworkGradesForm(request.POST)
@@ -463,7 +464,7 @@ def homework_dashboard(request, slug):
 
     user = get_object_or_404(jUser, id=request.user.id)
     course = get_object_or_404(Course, slug=slug)
-    if not user.is_professor_of(course):
+    if not user.has_perm('grade_homework', course):
         raise Http404
 
     context = dict(context.items() + homework_dashboard_context(request, course, user).items())
@@ -558,7 +559,6 @@ def register_course(request, slug):
 @login_required
 def send_mass_email(request, slug):
     course = get_object_or_404(Course, slug=slug)
-
     context = {
         'page': 'send_mass_email',
         'user_auth': request.user
@@ -567,6 +567,8 @@ def send_mass_email(request, slug):
 
     # Make sure the logged in user is allowed to approve these registrations
     user = request.user
+    if not user.has_perm('mail_students', course):
+        return HttpResponse("You don't have permission to perform this action")
     subject = request.POST['subject']
     body = request.POST['email']
     to = []
@@ -592,7 +594,7 @@ def update_info(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_info', course):
         raise Http404
 
     form = UpdateInfoForm(request.POST)
@@ -617,7 +619,7 @@ def update_syllabus(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_info', course):
         raise Http404
 
     form = UpdateSyllabusForm(request.POST)
@@ -643,7 +645,7 @@ def delete_syllabus_entry(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
 
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_info', course):
         raise Http404
 
     form = DeleteSyllabusEntryForm(request.POST)
@@ -662,7 +664,11 @@ def load_course_activities(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
     activities = course_activities(request,course)
-    
+    if len(activities) == 0:
+        return HttpResponse(json.dumps({
+                'status': "OK",
+                'html': ""
+            }))
     context = { "activities" : activities, "user_auth": user }
     context.update(csrf(request))
     html = render_to_string('objects/dashboard/activity_timeline.html', context )
@@ -691,7 +697,10 @@ def load_new_course_activities(request,slug):
 
     return HttpResponse(json.dumps(data))
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 @login_required
 @require_POST
 @require_professor

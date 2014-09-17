@@ -7,7 +7,11 @@
         {% for hw in all_homework %}
             {% if hw.active_hw %}
                 <div>
-                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% if teacher.can_grade_homework %}
+                        <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% else %} 
+                        {{hw.homework.name}}
+                    {% endif %}
                     {% trans "deadline" %}: {{ hw.homework.deadline.end|naturaltime }}
                 </div>
             {% endif %}
@@ -22,7 +26,11 @@
         {% for hw in all_homework %}
             {% if hw.coming_hw %}
                 <div>
-                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% if teacher.can_grade_homework %}
+                        <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% else %}
+                        {{hw.homework.name}}
+                    {% endif %}
                     {% trans "starts" %}: {{ hw.homework.deadline.start|naturaltime }}
                 </div>
             {% endif %}
@@ -37,7 +45,11 @@
         {% for hw in all_homework %}
             {% if hw.past_hw %}
                 <div>
-                    <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% if teacher.can_grade_homework %}
+                        <a href="{% url 'homework_dashboard' course.slug %}?homework={{hw.homework.id}}"> {{hw.homework.name}} </a>
+                    {% else %}
+                        {{hw.homework.name}}
+                    {% endif %}
                     {% trans "ended" %}: {{ hw.homework.deadline.end|naturaltime }}
                 </div>
             {% endif %}

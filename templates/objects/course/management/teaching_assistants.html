@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<div class="row">
+	<div class="col-md-6 teaching-assistants">
+		<h4> Current Teaching Assistants </h4>
+		<ul class="no-bullet">
+			{% for ta in teacher.assistants %}
+				{% include 'objects/course/management/ta_item.html' %}
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<h4> Add a new TA </h4>
+		<form action="{% url 'new_ta' course.slug %}" method="POST" id="new-ta-form">
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="input[name='user']">E-mail address</label>
+				<input type="email" class='form-control' name="user" placeholder="User e-mail address" required/>
+			</div>
+				<div class="text-xs text-success success"></div>
+				<div class="text-xs text-warning warning"></div>
+				<div class="text-xs text-danger error"></div>	
+				<input type="submit" value="Add" class="btn btn-primary"/>
+			
+		</form>
+	</div>
+</div>

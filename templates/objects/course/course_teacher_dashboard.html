@@ -1,120 +1,150 @@
 {% load i18n %}
 
-{% if teacher.is_approved %}
+{% if teacher.is_teacher %}
 
-<div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
-    <div class="panel panel-default">
-        <div class="panel-body">
+    <div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
+        <div class="panel panel-default">
+            <div class="panel-body">
 
-            <!-- Tab panes -->
-            <div class="tab-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
 
-                {% if teacher.students.registered|length > 0 %}
-                    <div class="tab-pane fade {% if not current_teacher_tab or current_teacher_tab == 'registered' %}active in{% endif %}" id="teacher_registered">
-                        <div class="tabpane-contents registered-students">
-                            {% include 'objects/course/management/registered_students.html' %}
+                    {% if teacher.students.registered|length > 0 %}
+                        <div class="tab-pane fade {% if not current_teacher_tab or current_teacher_tab == 'registered' %}active in{% endif %}" id="teacher_registered">
+                            {% if teacher.can_mail_students %}
+                                <div class="tabpane-contents registered-students">
+                                    {% include 'objects/course/management/registered_students.html' %}
+                                </div>
+                            {% else %}
+                                <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if teacher.students.pending|length > 0 %}
+                        <div class="tab-pane fade {% if teacher.students.registered|length == 0 or current_teacher_tab == 'pending' %}in active{% endif %}" id="teacher_pending">
+                            {% if teacher.can_approve_registrations %}
+                                <div class="tabpane-contents pending-registrations">
+                                    {% include 'objects/course/management/pending_registrations.html' %}
+                                </div>
+                            {% else %}
+                                <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+
+                    <div class="tab-pane fade {% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0 %}in active{% elif current_teacher_tab == 'upload' %}in active{% endif %}" id="teacher_documents">
+                        {% if teacher.can_manage_resources %}
+                            <div class="tabpane-contents course-documents">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h3> {% trans "Current resources" %} </h3>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h3> {% trans "Upload course resource" %} </h3>
+                                    </div>
+                                </div>
+                                <hr class="top-line">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'objects/course/documents.html' %}
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        {% with course.topics as topics %}
+                                            {% include 'objects/course/management/upload_document.html' %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                        {% endif %}
+                    </div>
+
+                    <div class="tab-pane fade {% if current_teacher_tab == 'homework' %}in active{% endif %}" id="teacher_homework">
+                        <div class="tabpane-contents course-homework">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3> {% trans "Homework" %} </h3>
+                                </div>
+                                {% if teacher.can_assign_homework %}
+                                    <div class="col-md-6">
+                                        <h3> {% trans "Assign homework" %} </h3>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <hr class="top-line">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include "objects/course/homework/teacher_info.html" %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    {% if teacher.can_assign_homework %}
+                                        {% with course.topics as topics %}
+                                            {% include 'objects/course/management/assign_homework.html' %}
+                                        {% endwith %}
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                {% endif %}
 
-                {% if teacher.students.pending|length > 0 %}
-                    <div class="tab-pane fade {% if teacher.students.registered|length == 0 or current_teacher_tab == 'pending' %}in active{% endif %}" id="teacher_pending">
-                        <div class="tabpane-contents pending-registrations">
-                            {% include 'objects/course/management/pending_registrations.html' %}
-                        </div>
+
+                    <div class="tab-pane fade {% if current_teacher_tab == 'forum' %}in active{% endif %}" id="teacher_forum">
+                        {% if teacher.can_manage_forum %}
+                            <div class="tabpane-contents class-forum">
+                                <h3> {% trans "Forum statistics" %} </h3>
+                                <hr class="top-line">
+
+                                {% include "objects/forum/forum_management.html" %}
+                            </div>
+                        {% else %}
+                            <div class="panel panel-default">
+                                <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
 
 
-                <div class="tab-pane fade {% if teacher.students.registered|length == 0 and teacher.students.pending|length == 0 %}in active{% elif current_teacher_tab == 'upload' %}in active{% endif %}" id="teacher_documents">
-                    <div class="tabpane-contents course-documents">
+                    <div class="tab-pane fade {% if current_teacher_tab == 'details' %}in active{% endif %}" id="teacher_details">
+                        {% if teacher.can_manage_info %}
+                            <div class="tabpane-contents course-details">
+                                <h3> {% trans "Manage Course Info" %} </h3>
+                                <hr class="top-line">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3> {% trans "Current resources" %} </h3>
+                                {% include "objects/course/management/course_info.html" %}
                             </div>
+                        {% else %}
+                           
+                            <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                               
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade {% if current_teacher_tab == 'assistants' %}in active{% endif %}" id="teacher_assistants">
+                        {% if teacher.can_manage_assistants %}
+                            <div class="tabpane-contents course-details">
+                                <h3> {% trans "Manage Teaching Assistants" %} </h3>
+                                <hr class="top-line">
 
-                            <div class="col-md-6">
-                                <h3> {% trans "Upload course resource" %} </h3>
+                                {% include "objects/course/management/teaching_assistants.html" %}
                             </div>
-                        </div>
-                        <hr class="top-line">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'objects/course/documents.html' %}
-                            </div>
-
-                            <div class="col-md-6">
-                                {% with course.topics as topics %}
-                                    {% include 'objects/course/management/upload_document.html' %}
-                                {% endwith %}
-                            </div>
-                        </div>
+                        {% else %}
+                           
+                            <p class="h3"> {% trans "You do not have permission to view the contents of this tab" %} </p> 
+                               
+                        {% endif %}
                     </div>
 
                 </div>
-
-                <div class="tab-pane fade {% if current_teacher_tab == 'homework' %}in active{% endif %}" id="teacher_homework">
-                    <div class="tabpane-contents course-homework">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3> {% trans "Homework" %} </h3>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h3> {% trans "Assign homework" %} </h3>
-                            </div>
-                        </div>
-                        <hr class="top-line">
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include "objects/course/homework/teacher_info.html" %}
-                            </div>
-
-                            <div class="col-md-6">
-                                {% with course.topics as topics %}
-                                    {% include 'objects/course/management/assign_homework.html' %}
-                                {% endwith %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="tab-pane fade {% if current_teacher_tab == 'forum' %}in active{% endif %}" id="teacher_forum">
-                    <div class="tabpane-contents class-forum">
-                        <h3> {% trans "Forum statistics" %} </h3>
-                        <hr class="top-line">
-
-                        {% include "objects/forum/forum_management.html" %}
-                    </div>
-                </div>
-
-                <div class="tab-pane fade {% if current_teacher_tab == 'details' %}in active{% endif %}" id="teacher_details">
-                    <div class="tabpane-contents course-details">
-                        <h3> {% trans "Manage Course Info" %} </h3>
-                        <hr class="top-line">
-
-                        {% include "objects/course/management/course_info.html" %}
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
-
-{% else %}
-
-<div class="tab-pane course-teacher fade {% if current_tab == 'teacher' %}in active{% endif %}">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <p class="h3"> {% trans "You are not approved yet as a teacher for this course!" %} </p> 
-        </div>
-    </div>
-</div>
-
 {% endif %}

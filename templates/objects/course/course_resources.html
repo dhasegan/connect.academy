@@ -13,10 +13,10 @@
 
                 {% with current_homework as homework %}
                 
-                {% with 'main' as hw_modal_spec %} 
-                    {% include 'objects/course/homework/student.html' %}
-                    {% comment %} on course page there are 2 such modals {% endcomment %}    
-                {% endwith %}
+                    {% with 'main' as hw_modal_spec %} 
+                        {% include 'objects/course/homework/student.html' %}
+                        {% comment %} on course page there are 2 such modals {% endcomment %}    
+                    {% endwith %}
                     
                 {% endwith %}
             {% endif %}

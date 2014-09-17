@@ -361,7 +361,7 @@ def add_extratag(request):
         raise Http404
 
     course = form.cleaned_data['course']
-    if not user.is_professor_of(course):
+    if not user.has_perm('manage_forum', course):
         raise Http404
 
     tag = ForumExtraTag(name=form.cleaned_data['tag_name'], forum=course.forum)

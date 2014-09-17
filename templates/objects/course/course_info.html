@@ -51,7 +51,17 @@
                         {% if course.abbreviation %}
                             {% trans "Abbrev" %}: {{ course.abbreviation }}
                         {% endif %}
-                        {# {% trans "Teaching Assistants" %} <span class="caret"></span> #}
+                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                            {% trans "Teaching Assistants" %} <span class="caret"></span> 
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            {% for ta in course.teaching_assistants.all %}
+                                {% with ta as juser %}
+                                    <li> {% include 'objects/user_link.html' %} </li>
+                                {% endwith %}
+                            {% endfor %}
+                        </ul>
+
                     </div>
                     <div class="col-md-3">
                         {% trans "Semester" %}: {{ semester }}

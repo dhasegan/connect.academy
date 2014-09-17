@@ -27,15 +27,28 @@
 			<td>Professors</td>
 			<td> 
 			{% for prof in professors %}
+				{% if forloop.counter > 1 %}
+					,&nbsp;
+				{% endif %}
 				<a href="{% url 'profile' prof.username %}">
 					{{prof.first_name}} {{prof.last_name}}
-				</a>,&nbsp;
+				</a>
 			{% endfor %}
 			</td>
 		</tr>
 		<tr>
 			<td>Teaching Assistants</td>
-			<td>TAs</td>
+			<td>
+				{% for ta in course.teaching_assistants.all %}
+					{% if forloop.counter > 1 %}
+						,&nbsp;
+					{% endif %}
+					{% with ta as juser %}
+						{% include 'objects/user_link.html' %}
+					{% endwith %}
+				{% endfor %}
+
+			</td>
 		</tr>
 		<tr>
 			<td>Student Registrations</td>

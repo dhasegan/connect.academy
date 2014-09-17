@@ -20,6 +20,7 @@ def welcome(request):
     context = {
         "page": "welcome",
     }
+    context.update(csrf(request))
     return render(request, "pages/welcome_page.html", context)
 
 
@@ -30,7 +31,7 @@ def dashboard(request):
         'page': 'dashboard',
         'user_auth': request.user.juser
     }
-
+    context.update(csrf(request))
     context = dict(context.items() + dashboard_context(request).items())
 
     # if not len(context['activities']) and not len(context['schedule_items']) and \
@@ -73,10 +74,18 @@ def error_page(request, error_type):
 def load_dashboard_activities(request):
     user = request.user.juser
     activities = dashboard_activities(request,user)
-    html = render_to_string('objects/dashboard/activity_timeline.html', 
-                            { "activities" : activities, 
-                               "user_auth": user
-                            })
+    if len(activities) == 0:
+        return HttpResponse(json.dumps({
+                'status': "OK",
+                'html': ""
+            }))
+
+    context = { 
+        "activities" : activities, 
+        "user_auth": user
+    }
+    context.update(csrf(request))
+    html = render_to_string('objects/dashboard/activity_timeline.html',  context)
     data = {
         'status': "OK",
         'html': html
