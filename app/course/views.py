@@ -697,10 +697,6 @@ def load_new_course_activities(request,slug):
 
     return HttpResponse(json.dumps(data))
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 @login_required
 @require_POST
 @require_professor
