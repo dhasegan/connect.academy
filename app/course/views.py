@@ -6,16 +6,19 @@ import datetime
 import json
 
 from django.core.context_processors import csrf
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
-from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from django.views.decorators.http import require_GET, require_POST
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_GET, require_POST
 
 from app.models import *
 from app.course.context_processors import *
@@ -172,6 +175,34 @@ def rate_course(request, slug):
     response_data['ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+@require_GET
+@require_active_user
+@login_required
+def view_document(request, slug, document_id):
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    document = get_object_or_404(CourseDocument, id=document_id)
+
+    if not user.is_student_of(course) and not user.is_professor_of(course) and user.is_admin_of(course):
+        raise Http404
+
+    if not document.course == course:
+        raise Http404
+
+    # In development
+    if settings.DEBUG:
+        content_type = guess_type(document.document.name)
+        return HttpResponse(document.document, content_type=content_type)
+
+    conn = boto.connect_s3()
+    bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    key = bucket.get_key(document.name)
+
+    doc_file = NamedTemporaryFile(delete=True)
+    key.get_file(doc_file)
+
+    content_type = guess_type(document.name)
+    return HttpResponse(doc_file, content_type=content_type)
 
 @require_POST
 @require_active_user
@@ -660,3 +691,151 @@ def load_new_course_activities(request,slug):
 
     return HttpResponse(json.dumps(data))
 
+
+@login_required
+@require_POST
+@require_professor
+@require_active_user
+def add_new_ta(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = request.user.juser
+    context = {
+        'page': 'course_page',
+        'user_auth': user,
+        'course': course,
+    }
+    context.update(csrf(request))
+
+    form = NewTAForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    # Default permissions
+    default_permissions = ['mail_students', 'assign_homework', 'manage_resources', 'grade_homework','manage_forum','manage_info']
+
+    user_email = form.cleaned_data['user']
+    tas = jUser.objects.filter(email=user_email)
+    if len(tas) > 0:
+        ta = tas[0]
+        if course.teaching_assistants.filter(email=user_email).exists():
+            return_dict = {
+                'status': "Warning",
+                'message': "%s %s is already a TA" % (ta.first_name, ta.last_name),
+            }
+            return HttpResponse(json.dumps(return_dict))
+        else:
+            course.teaching_assistants.add(ta)
+        for perm in default_permissions:
+            assign_perm(perm,ta,course)
+
+        ta_context = {'user': ta, 'permissions': []}
+        for perm in Course._meta.permissions:
+            ta_context['permissions'].append({
+                'name': perm[0],
+                'description': perm[1],
+                'owned': ta.has_perm(perm[0], course)
+            })
+        context['ta'] = ta_context
+
+        html = render_to_string('objects/course/management/ta_item.html', context)
+
+        return_dict = {
+            'status': "OK",
+            'html': html,
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+    else:
+        return_dict = {
+            'status': "Error",
+            'message': "User not found"
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+@login_required
+@require_POST
+@require_professor
+@require_active_user
+def change_ta_permissions(request,slug):
+    context = {
+        'page': 'course_page'
+    }
+    context.update(csrf(request))
+
+    user = request.user.juser
+    course = get_object_or_404(Course,slug=slug)
+
+
+    if not user.is_professor_of(course):
+        raise Http404
+
+    form = TAPermissionsForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    ta = get_object_or_404(jUser, id = form.cleaned_data['user_id'])
+
+    for perm in Course._meta.permissions:
+        permission = perm[0]
+        print permission
+        print str(form.cleaned_data[permission])
+        if form.cleaned_data[permission]:
+            assign_perm(permission, ta, course)
+        else:
+            remove_perm(permission, ta, course)
+
+    return_dict = {
+        "status": "OK",
+        "message": "Saved"
+    }
+    return HttpResponse(json.dumps(return_dict))
+
+@login_required
+@require_POST
+@require_professor
+@require_active_user
+def remove_ta(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    current_user = request.user.juser
+
+    if not current_user.is_professor_of(course):
+        raise Http404
+
+    form = RemoveTAForm(request.POST)
+    if not form.is_valid():
+        raise Http404
+
+    ta_id = form.cleaned_data['user_id']
+
+    tas = jUser.objects.filter(id=ta_id)
+    if len(tas) != 1:
+        return_dict = {
+            'status': "Error",
+            'message': "User not found"
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+    ta = tas[0]
+    if not course.teaching_assistants.filter(id=ta.id).exists():
+        return_dict = {
+            'status': "Error",
+            'message': "User is not a TA of %s" % course.name
+        }
+        return HttpResponse(json.dumps(return_dict))
+
+
+    # All is good
+    # Drop all permissions of the ex-TA
+    for perm in Course._meta.permissions:
+        remove_perm(perm[0], ta, course)
+    # Remove the ex-TA from the course's teaching assistants
+    course.teaching_assistants.remove(ta)
+    return_dict = {
+        'status': "OK",
+        'ta_id': ta.id
+    }
+
+    return HttpResponse(json.dumps(return_dict))
