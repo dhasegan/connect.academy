@@ -203,6 +203,15 @@ class SubmitHomeworkRequestForm(forms.Form):
             tz = 0
         return tz
 
+    def clean_document(self):
+        content = self.cleaned_data['document']
+        if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+            raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        _, fileExtension = os.path.splitext(content.name)
+        content.name = generateRandomFilename(fileExtension)
+        return content
+
 class EditHomeworkRequestForm(forms.Form):
     name = forms.CharField(max_length=200)
     description = forms.CharField(max_length=1000, required=False)
