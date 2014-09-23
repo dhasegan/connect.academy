@@ -302,7 +302,7 @@ def view_homework(request, slug, homework_id):
 
     content_type = guess_type(filename)
     response = HttpResponse(content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    response['Content-Disposition'] = 'attachment; filename="' + display_name + '"'
     key.get_file(response)
 
     return response
