@@ -1,6 +1,14 @@
+import hashlib
+import random
+import os
+
 from django import forms
 from django.template.defaultfilters import filesizeformat
 from app.models import *
+
+
+def generateRandomFilename(fileExtension):
+    return hashlib.sha256(str(random.randint(0,128))).hexdigest() + fileExtension
 
 
 class RateCourseForm(forms.Form):
@@ -87,6 +95,8 @@ class SubmitDocumentForm(forms.Form):
         if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
             raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        _, fileExtension = os.path.splitext(content.name)
+        content.name = generateRandomFilename(fileExtension)
         return content
 
 class ResubmitDocumentForm(forms.Form):
@@ -108,6 +118,8 @@ class ResubmitDocumentForm(forms.Form):
         if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
             raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+        _, fileExtension = os.path.splitext(content.name)
+        content.name = generateRandomFilename(fileExtension)
         return content
 
 
@@ -145,6 +157,8 @@ class SubmitHomeworkForm(forms.Form):
             if content and content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
                 raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                     % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+                _, fileExtension = os.path.splitext(content.name)
+                cleaned_data['document' + str(idx)].name = generateRandomFilename(fileExtension)
 
         if not homework_requests[0].course == courses[0]:
             raise forms.ValidationError("Integration error!")
