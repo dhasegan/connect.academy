@@ -158,7 +158,8 @@ class SubmitHomeworkForm(forms.Form):
                 raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                     % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
                 _, fileExtension = os.path.splitext(content.name)
-                cleaned_data['document' + str(idx)].name = generateRandomFilename(fileExtension)
+                content.name = generateRandomFilename(fileExtension)
+                cleaned_data['document' + str(idx)] = content
 
         if not homework_requests[0].course == courses[0]:
             raise forms.ValidationError("Integration error!")
