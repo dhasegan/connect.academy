@@ -154,9 +154,10 @@ class SubmitHomeworkForm(forms.Form):
 
         for idx in range(HOMEWORK_MIN_FILES, hw_req.number_files + 1):
             content = cleaned_data.get('document' + str(idx))
-            if content and content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
-                raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
-                    % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
+            if content:
+                if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
+                    raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
+                        % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
                 _, fileExtension = os.path.splitext(content.name)
                 content.name = generateRandomFilename(fileExtension)
                 cleaned_data['document' + str(idx)] = content
