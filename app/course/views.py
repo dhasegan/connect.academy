@@ -191,20 +191,25 @@ def view_document(request, slug, document_id):
     if not document.course == course:
         raise Http404
 
+    # Document filename
+    filename = document.document.name
+
     # In development
     if settings.DEBUG:
-        content_type = guess_type(document.document.name)
+        content_type = guess_type(filename)
         return HttpResponse(document.document, content_type=content_type)
 
     conn = boto.connect_s3()
     bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    key = bucket.get_key(document.name)
+    key = bucket.get_key(filename)
 
     doc_file = NamedTemporaryFile(delete=True)
     key.get_file(doc_file)
 
-    content_type = guess_type(document.name)
-    return HttpResponse(doc_file, content_type=content_type)
+    content_type = guess_type(filename)
+    response = HttpResponse(doc_file, content_type=content_type)
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    return response
 
 @require_POST
 @require_active_user
