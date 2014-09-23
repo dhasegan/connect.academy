@@ -4,15 +4,11 @@ import string
 import random
 import datetime
 import json
-import boto
 from guardian.shortcuts import assign_perm, remove_perm
 
 from django.core.context_processors import csrf
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -177,39 +173,6 @@ def rate_course(request, slug):
     response_data['ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-@require_GET
-@require_active_user
-@login_required
-def view_document(request, slug, document_id):
-    user = get_object_or_404(jUser, id=request.user.id)
-    course = get_object_or_404(Course, slug=slug)
-    document = get_object_or_404(CourseDocument, id=document_id)
-
-    if not user.is_student_of(course) and not user.is_professor_of(course) and user.is_admin_of(course):
-        raise Http404
-
-    if not document.course == course:
-        raise Http404
-
-    # Document filename
-    filename = document.document.name
-
-    # In development
-    if settings.DEBUG:
-        content_type = guess_type(filename)
-        return HttpResponse(document.document, content_type=content_type)
-
-    conn = boto.connect_s3()
-    bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-    key = bucket.get_key(filename)
-
-    doc_file = NamedTemporaryFile(delete=True)
-    key.get_file(doc_file)
-
-    content_type = guess_type(filename)
-    response = HttpResponse(doc_file, content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
-    return response
 
 @require_POST
 @require_active_user
