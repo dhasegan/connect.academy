@@ -4,6 +4,7 @@ import string
 import random
 import datetime
 import json
+import boto
 from guardian.shortcuts import assign_perm, remove_perm
 
 from django.core.context_processors import csrf
