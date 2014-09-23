@@ -5,6 +5,7 @@ import random
 import datetime
 import json
 import boto
+import os
 from guardian.shortcuts import assign_perm, remove_perm
 
 from django.core.context_processors import csrf
@@ -195,8 +196,10 @@ def view_document(request, slug, document_id):
 
     # Document filename
     filename = document.document.name
+    _, fileExtension = os.path.splitext(filename)
+    display_name = document.name + fileExtension
 
-    # In development
+    # In development only
     if settings.DEBUG:
         content_type = guess_type(filename)
         return HttpResponse(document.document, content_type=content_type)
@@ -207,7 +210,7 @@ def view_document(request, slug, document_id):
 
     content_type = guess_type(filename)
     response = HttpResponse(content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    response['Content-Disposition'] = 'attachment; filename="' + display_name + '"'
     key.get_file(response)
 
     return response
@@ -285,6 +288,8 @@ def view_homework(request, slug, homework_id):
 
     # Document filename
     filename = homework.document.name
+    _, fileExtension = os.path.splitext(filename)
+    display_name = homework.name + fileExtension
 
     # In development
     if settings.DEBUG:
