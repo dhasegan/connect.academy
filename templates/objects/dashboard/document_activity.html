@@ -11,7 +11,7 @@
 				{% else %}
 					{% with activity.user as juser %} {% include 'objects/user_link.html' %} {% endwith %}
 				{% endif %}
-				uploaded a <a href="{{ document.document.url }}">document</a>
+				uploaded a <a href="{% url 'view_document' activity.get_instance.course.slug document.id %}">document</a>
 				{% if document.course_topic %}
 					on the topic <i> "{{ document.course_topic.name }}" </i> of
 				{% else %}
@@ -21,7 +21,7 @@
 				<span class="text-muted"> {{activity.timestamp|naturaltime}} </span>
 
 				<div class="document-body">
-					<a target="_blank" href="{{ document.document.url }}"> {{ document.name|linebreaks }} </a>
+					<a target="_blank" href="{% url 'view_document' activity.get_instance.course.slug document.id %}"> {{ document.name|linebreaks }} </a>
 					{% if document.description %}
 						{{ document.description|linebreaks|truncatechars:"200" }}
                         {% if document.description|length > 200 %}

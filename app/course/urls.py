@@ -8,10 +8,12 @@ urlpatterns = patterns('app.course.views',
     url(r'^update_info$', 'update_info', name='update_info'),
     url(r'^update_syllabus$', 'update_syllabus', name='update_syllabus'),
     url(r'^delete_syllabus_entry$', 'delete_syllabus_entry', name='delete_syllabus_entry'),
-    
+
+    url(r'^view_document/(?P<document_id>[0-9-]+)$', 'view_document', name='view_document'),
     url(r'^submit_document$', 'submit_document', name='submit_document'),
     url(r'^resubmit_document$', 'resubmit_document', name='resubmit_document'),
 
+    # url(r'^view_homework/(?P<homework_id>[0-9-]+)$', 'view_homework', name='view_homework'),
     url(r'^submit_homework$', 'submit_homework', name='submit_homework'),
     url(r'^submit_homework_request$', 'submit_homework_request', name='submit_homework_request'),
     url(r'^submit_homework_grades$', 'submit_homework_grades', name='submit_homework_grades'),

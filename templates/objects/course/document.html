@@ -11,7 +11,7 @@
 
 <div class="doc-details">
     <div class="doc-header">
-        <h4><a href="{{ document.document.url }}"> {{ document.name }} </a> </h4>
+        <h4><a href="{% url 'view_document' course.slug document.id %}"> {{ document.name }} </a> </h4>
         <div> {% trans "submitted by" %} {% with juser=document.submitter %}{% include "objects/user_link.html" %}{% endwith %} {{ document.submit_time|naturaltime }} </div>
     </div>
     {% if document.description %}
