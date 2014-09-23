@@ -15,6 +15,7 @@ django-toolbelt==0.0.1
 futures==2.1.6
 gunicorn==18.0
 ipython==2.1.0
+newrelic==2.30.0.27
 psycopg2==2.5.2
 pygraphviz==1.2
 pyparsing==2.0.2

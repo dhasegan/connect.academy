@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput; gunicorn academy.wsgi
+web: python manage.py collectstatic --noinput; newrelic-admin run-program gunicorn academy.wsgi
