@@ -41,7 +41,7 @@
                                         </span>
                                     </td>
                                 {% elif not hw.homework.is_published %} {% comment %} if the homework deadline ended and not published {% endcomment %}
-                                    <td> <a href="{{ s.document.url }}"> {{ s.name }} </a> </td>
+                                    <td> <a href="{% url 'view_homework' course.slug s.id %}"> {{ s.name }} </a> </td>
                                     <td>
                                         <fieldset class="form-inline">
                                             {% comment %} Input to give grade {% endcomment %}
@@ -50,7 +50,7 @@
                                         </fieldset>
                                     </td>
                                 {% elif hw.homework.is_published %} {% comment %} if the homework is published {% endcomment %}
-                                    <td> <a href="{{ s.document.url }}"> {{ s.name }} </a> </td>
+                                    <td> <a href="{% url 'view_homework' course.slug s.id %}"> {{ s.name }} </a> </td>
                                     <td>
                                         <fieldset class="form-inline">
                                             {% comment %} Input to give grade {% endcomment %}

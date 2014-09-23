@@ -41,7 +41,7 @@
                             {% for prev in hw.previous_submissions %}
                                 {% if prev.file_number|str == "1" %}
                                     <small class="text-success"> {% trans "You already submitted" %}
-                                        <a target="_blank" href="{{ prev.document.url }}">{% trans "this document" %}</a>
+                                        <a target="_blank" href="{% url 'view_homework' course.slug prev.id %}">{% trans "this document" %}</a>
                                     </small>
                                 {% endif %}
                             {% endfor %}
@@ -54,7 +54,7 @@
                                         {% for prev in hw.previous_submissions %}
                                             {% if prev.file_number|str == istr %}
                                                 <small class="text-success"> {% trans "You already submitted" %}
-                                                    <a target="_blank" href="{{ prev.document.url }}">{% trans "this document" %}</a>
+                                                    <a target="_blank" href="{% url 'view_homework' course.slug prev.id %}">{% trans "this document" %}</a>
                                                 </small>
                                             {% endif %}
                                         {% endfor %}
