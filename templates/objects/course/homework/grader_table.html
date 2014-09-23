@@ -31,15 +31,7 @@
                         {% for s in sub.submissions %} {% comment %} For each submission {% endcomment %}
                             {% if s.file_number|str == istr %} {% comment %} if this is the submitted document {% endcomment %}
                                 {% if not hw.ended %} {% comment %} if the homework deadline did NOT end yet {% endcomment %}
-                                    <td>
-                                        <span class="text-success"> 
-                                            {% if hw.homework.number_files == 1 %}
-                                                {% trans "Homework submitted" %}
-                                            {% else %}
-                                                {% blocktrans %} Homework file {{istr}} submitted {% endblocktrans %}
-                                            {% endif %}
-                                        </span>
-                                    </td>
+                                    <td> <a href="{% url 'view_homework' course.slug s.id %}"> {{ s.name }} </a> </td>
                                 {% elif not hw.homework.is_published %} {% comment %} if the homework deadline ended and not published {% endcomment %}
                                     <td> <a href="{% url 'view_homework' course.slug s.id %}"> {{ s.name }} </a> </td>
                                     <td>
