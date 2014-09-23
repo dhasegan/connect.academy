@@ -205,12 +205,11 @@ def view_document(request, slug, document_id):
     bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
     key = bucket.get_key(filename)
 
-    doc_file = NamedTemporaryFile(delete=True)
-    key.get_file(doc_file)
-
     content_type = guess_type(filename)
-    response = HttpResponse(doc_file, content_type=content_type)
+    response = HttpResponse(content_type=content_type)
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    key.get_file(response)
+
     return response
 
 
@@ -296,12 +295,11 @@ def view_homework(request, slug, homework_id):
     bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
     key = bucket.get_key(filename)
 
-    doc_file = NamedTemporaryFile(delete=True)
-    key.get_file(doc_file)
-
     content_type = guess_type(filename)
-    response = HttpResponse(doc_file, content_type=content_type)
+    response = HttpResponse(content_type=content_type)
     response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    key.get_file(response)
+
     return response
 
 
