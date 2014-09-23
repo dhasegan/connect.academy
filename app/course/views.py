@@ -186,8 +186,9 @@ def view_document(request, slug, document_id):
     course = get_object_or_404(Course, slug=slug)
     document = get_object_or_404(CourseDocument, id=document_id)
 
-    if not user.is_student_of(course) and not user.is_professor_of(course) and user.is_admin_of(course):
-        raise Http404
+    if not (user.is_student_of(course) or user.is_professor_of(course) \
+        or user.is_admin_of(course) or user.is_assistant_of(course)):
+            raise Http404
 
     if not document.course == course:
         raise Http404
@@ -262,6 +263,46 @@ def resubmit_document(request, slug):
     document.save()
 
     return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
+
+
+@require_GET
+@require_active_user
+@login_required
+def view_homework(request, slug, homework_id):
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
+    homework = get_object_or_404(CourseHomeworkSubmission, id=homework_id)
+
+    if not (user.is_student_of(course) or user.is_professor_of(course) \
+        or user.is_admin_of(course) or user.is_assistant_of(course)):
+            raise Http404
+
+    if not homework.course == course:
+        raise Http404
+
+    # Either submitter or has permissions to view the submission
+    if not (homework.submitter == user or user.has_perm('grade_homework', course)):
+        raise Http404
+
+    # Document filename
+    filename = homework.document.name
+
+    # In development
+    if settings.DEBUG:
+        content_type = guess_type(filename)
+        return HttpResponse(homework.document, content_type=content_type)
+
+    conn = boto.connect_s3()
+    bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    key = bucket.get_key(filename)
+
+    doc_file = NamedTemporaryFile(delete=True)
+    key.get_file(doc_file)
+
+    content_type = guess_type(filename)
+    response = HttpResponse(doc_file, content_type=content_type)
+    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    return response
 
 
 @require_POST

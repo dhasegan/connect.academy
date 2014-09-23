@@ -13,7 +13,7 @@ urlpatterns = patterns('app.course.views',
     url(r'^submit_document$', 'submit_document', name='submit_document'),
     url(r'^resubmit_document$', 'resubmit_document', name='resubmit_document'),
 
-    # url(r'^view_homework/(?P<homework_id>[0-9-]+)$', 'view_homework', name='view_homework'),
+    url(r'^view_homework/(?P<homework_id>[0-9-]+)$', 'view_homework', name='view_homework'),
     url(r'^submit_homework$', 'submit_homework', name='submit_homework'),
     url(r'^submit_homework_request$', 'submit_homework_request', name='submit_homework_request'),
     url(r'^submit_homework_grades$', 'submit_homework_grades', name='submit_homework_grades'),
