@@ -82,7 +82,7 @@
 <ol>
 	{% for topic in course.course_topics.all %}
 		{% for document in topic.documents.all %}
-			<li> <a href="{{ document.document.url }}"> {{ document.name }} </a> </li>
+			<li> <a href="{% url 'view_document' course.slug document.id %}"> {{ document.name }} </a> </li>
 		{% endfor %}
 	{% endfor %}
 <ol>

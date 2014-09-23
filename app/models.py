@@ -1099,7 +1099,8 @@ class Activity(models.Model):
             return tag.can_view(user, instance.get_course())
         elif activity_type == "HomeworkActivity":
             if self.homeworkactivity.homework.course.students.filter(id=user.id).exists() \
-            or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists():
+            or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists() \
+            or self.homeworkactivity.homework.course.teaching_assistants.filter(id=user.id).exists():
                 return True
             else:
                 return False
