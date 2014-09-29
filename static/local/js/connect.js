@@ -10,6 +10,7 @@ var ConnectGlobal = (function() {
             dismissableAlerts: $(".dismissable-alert"),
             emailConfirmationLinks: $(".email-confirmation-link"),
             campusnetPopover: $("#campusnet-popover"),
+            forgotPasswordPopover: $("#forgot-pw-popover"),
             localeLinks: $('.locale-change-link'),
             helpsigns: $('.help-sign'),
             fileUploads: $('.file-input')
@@ -49,7 +50,7 @@ var ConnectGlobal = (function() {
 
         // Tooltip for CampusNet
         s.campusnetPopover.tooltip({title: 'Please log in with your CampusNet credentials!'});
-
+        s.forgotPasswordPopover.tooltip({title: 'Forgot Password?'});
         // Locale change
         s.localeLinks.click(function(event) {
             $(this).find('form')[0].submit();
