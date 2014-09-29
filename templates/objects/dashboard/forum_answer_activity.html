@@ -55,7 +55,7 @@
                         {% if activity.get_instance.forum_answer.post.forum.forumcourse %}
                             <a href="{% url 'course_page' activity.get_instance.forum_answer.post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ answer.answer.post.id }}">{% trans "(more)" %}</a>
                         {% else %}
-                            <a href="{% url 'forum_general'%}/?post={{ answer.answer.post.id }}">{% trans "(more)" %}</a>
+                            <a href="{% url 'forum_general'%}?post={{ answer.answer.post.id }}">{% trans "(more)" %}</a>
                         {% endif %}
                     {% endif %}
                 </div>
