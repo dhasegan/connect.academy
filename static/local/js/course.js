@@ -152,6 +152,7 @@ var CoursePage = (function() {
             tz.val( moment().zone() );
         });
 
+        // AJAX to remove TA
         $(s.taContainerSelector).on('submit', s.removeTAFormSelector, function(event) {
             event.preventDefault();
             form = $(this);
@@ -190,6 +191,7 @@ var CoursePage = (function() {
             });
         });
         
+        // Ajax to add new TA
         $(s.newTAFormSelector).submit(function(event) {
             event.preventDefault();
             form = $(this);
@@ -225,7 +227,9 @@ var CoursePage = (function() {
             });
 
         });
+        
 
+        // Ajax to change TA permissions
         $(s.taContainerSelector).on('submit', s.taPermissionsFormSelector, function(event) {
             event.preventDefault();
             form = $(this);
@@ -263,7 +267,6 @@ var CoursePage = (function() {
                 }
             });
         });
-
         
     };
 
@@ -355,13 +358,18 @@ var CoursePage = (function() {
             'data': data,
             'success': function(data) {
                 if (data == "OK") {
-                    $('#register_button' + courseID).text('Pending Registration...');
+                    $('#register_button' + courseID).html('<b>Pending Registration</b>');
                     $('#register_button' + courseID).attr('disabled',true);
+                    $('#register_button' + courseID).removeClass("btn-defaut").addClass("btn-success");
                     $("#registrationModal"+courseID).modal('hide');
+
                 }
             }
         });
     };
+
+
+
 
     me.sendEmailFormSubmit = function(event) {
         var form = $(this);

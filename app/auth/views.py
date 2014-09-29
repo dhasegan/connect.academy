@@ -419,3 +419,75 @@ def approve_student_registrations(request):
 
     get_params = "?page=teacher"
     return redirect( reverse('course_page', args=(course.slug,)) + get_params )
+
+@require_POST
+def send_email_pw_reset(request):
+    context = {
+        "page": "welcome"
+    }
+    context.update(csrf(request))
+
+    form = EmailPasswordResetForm(request.POST)
+
+    if not form.is_valid():
+        context['error'] = form.non_field_errors
+        return render(request, "pages/welcome_page.html" , context)
+
+    user = form.cleaned_data['user']
+    token = default_token_generator.make_token(user)
+    password_reset_link = request.build_absolute_uri( reverse('password_reset', args=(user.username, token)) )
+    
+    email_context = {
+        "fname": user.first_name,
+        "password_reset_link": password_reset_link
+    }
+    email_body = render_to_string("emails/reset_password.html", email_context)
+
+    send_mail("Reset your password on connect.academy", email_body, "noreply@connect.academy", [user.email], fail_silently=False)
+
+    context["success"] = render_to_string("objects/notifications/auth/pw_reset_email_sent.html", {})
+
+    return render(request, "pages/welcome_page.html", context)
+
+
+
+def password_reset(request, username, token):
+    context = {
+        "page": "user_account",
+        "reset_password": True,
+        "page_id": "reset_password"
+    }
+    context.update(csrf(request))
+
+    user = get_object_or_404(jUser, username=username)
+    if not default_token_generator.check_token(user, token):
+        raise Http404
+
+    # Fake the call to authenticate() by setting the backend attribute
+    user.backend = "app.auth.helpers.jUserBackend"
+    login(request,user)
+
+    return render(request, "pages/auth/user_account.html", context)
+
+def new_password(request):
+    context = {
+        "page": "user_account",
+    }
+    context.update(csrf(request))
+
+    user = request.user
+    form = NewPasswordForm(request.POST)
+
+    if not form.is_valid():
+        context["reset_password"] = True
+        context["page_id"] = "reset_password"
+        context["error"] = form.non_field_errors
+        return render(request, "pages/auth/user_account.html", context)
+
+    
+    user.set_password(form.cleaned_data['new_pass'])
+    user.save()
+
+    context["success"] = "Your password has been changed successfully"
+
+    return render(request, "pages/auth/user_account.html", context)

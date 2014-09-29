@@ -100,4 +100,50 @@ class EmailConfirmationForm(forms.Form):
             raise forms.ValidationError(errors)
 
         cleaned_data['university'] = universities[0]
+
+        return cleaned_data
+
+
+class EmailPasswordResetForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean(self):
+        cleaned_data = super(EmailPasswordResetForm, self).clean()
+        email = cleaned_data.get("email")
+
+        errors = []
+
+        try:
+            cleaned_data['user'] = jUser.objects.get(email = email)
+        except Exception:
+            errors.append(forms.ValidationError("A user with that e-mail address does not exist. Please register if you don't have an account."))
+
+        if errors:
+            raise forms.ValidationError(errors)
+
+        return cleaned_data
+
+class NewPasswordForm(forms.Form):
+    new_pass = forms.CharField(widget = forms.PasswordInput(), required = True)
+    confirm_new_pass = forms.CharField(widget = forms.PasswordInput(), required = True)
+
+    def clean(self):
+        cleaned_data = super(NewPasswordForm, self).clean()
+        errors = []
+        try:
+            new_pass = self.cleaned_data["new_pass"]
+            confirm_new_pass = self.cleaned_data["confirm_new_pass"]
+        except Exception:
+            errors.append(forms.ValidationError("Please fill out all required fields"))
+
+
+        if new_pass != confirm_new_pass:
+            errors.append(forms.ValidationError("Passwords do not match."))
+        
+        if len(new_pass) < 6:
+            errors.append(forms.ValidationError("Password is too short."))
+
+        if errors:
+            raise forms.ValidationError(errors)
+
         return cleaned_data

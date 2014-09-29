@@ -41,6 +41,8 @@ def manage_account(request):
     context = {
         'page': 'manage_account'
     }
+    if "page_id" in request.GET:
+        context["page_id"] = request.GET["page_id"]
     return render(request, "pages/auth/user_account.html", context)
 
 

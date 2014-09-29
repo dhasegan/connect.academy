@@ -441,6 +441,14 @@ a:after {
 	font-size: 25px;
 }
 
+.textdivider.whitebackground h1 {
+    color:#333;
+}
+
+.textdivider.whitebackground p {
+    color:#555;
+    
+}
 
 /* Section Dividers Backgrounds */
 

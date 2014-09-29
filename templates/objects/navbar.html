@@ -1,6 +1,7 @@
 {% load i18n %}
 {% if page == "welcome" %}
   {% include 'objects/welcome/register_form.html' %}
+  {% include 'objects/welcome/forgot_pw_form.html' %}
 {% endif %}
 <nav class="navbar navbar-inverse navbar-fixed-top connect-navigation {% if page == "welcome" %} welcome-page-navbar {% endif %}" role="navigation">
   <div class="container navigation-container" id="navbar_container">
