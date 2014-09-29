@@ -26,10 +26,13 @@
                                         </td>
                                         <td class="description-col">
                                             {% if item.courseappointment %}
-                                                <a href="{% url 'course_page' item.courseappointment.course.slug %}"> {{ item.courseappointment.description|slice:":30" }} </a>
-
+                                                <a href="{% url 'course_page' item.courseappointment.course.slug %}">{{ item.courseappointment.description|slice:":30" }}</a>
                                             {% else %}
                                                 {{ item.description|slice:":30" }}
+                                            {% endif %}
+
+                                            {% if item.location %}
+                                                @ {{ item.location|slice:":30" }}
                                             {% endif %}
                                         </td>
                                     </tr>
