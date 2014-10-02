@@ -47,9 +47,11 @@
             <h3 class="post-name">
                 {{ post.question.name }}
             </h3>
-            {% if post.question.text %}
-                {{ post.question.text|linebreaks }}
-            {% endif %}
+            <div class="rich-cke-text" id="post-{{post.question.id}}">
+                {% if post.question.text %}
+                    {{ post.question.text|safe }}
+                {% endif %}
+            </div>
         </div>
     {% endif %}
 

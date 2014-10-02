@@ -26,3 +26,10 @@
 	 </div>
 {% endblock %}
 
+{% block extra_js_includes %}
+  <script type="application/javascript" src="{{ STATIC_URL }}ckeditor_mini/ckeditor.js" charset="utf-8"></script>
+{% endblock %}
+
+{% block extra_css_includes %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}ckeditor_mini/plugins/codesnippet/lib/highlight/styles/github.css">
+{% endblock %}

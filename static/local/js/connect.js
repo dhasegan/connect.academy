@@ -13,7 +13,8 @@ var ConnectGlobal = (function() {
             forgotPasswordPopover: $("#forgot-pw-popover"),
             localeLinks: $('.locale-change-link'),
             helpsigns: $('.help-sign'),
-            fileUploads: $('.file-input')
+            fileUploads: $('.file-input'),
+            ckeditorNonEditable: $('.rich-cke-text')
         },
     }, s;
 
@@ -58,7 +59,18 @@ var ConnectGlobal = (function() {
 
         s.helpsigns.tooltip();
 
+        $.each(s.ckeditorNonEditable, function(i, el) {
+            var el_id = $(el).attr('id');
+            var editor = CKEDITOR.inline(el_id);
+            
+            setTimeout(function() { 
+                editor.editable(false);
+            }, 2000);
+        
+        });
+        
     };
+    
 
     return me;
 }());

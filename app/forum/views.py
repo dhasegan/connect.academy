@@ -142,10 +142,13 @@ def new_post(request):
 def new_answer(request):
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
-
+    print "text is:"
+    print request.POST["text"]
     form = SubmitForumAnswer(request.POST)
+
     if not form.is_valid():
         raise Http404
+
 
     forum = form.cleaned_data['forum']
     if forum.forum_type == FORUM_COURSE:
