@@ -65,7 +65,7 @@ var ConnectGlobal = (function() {
             
             setTimeout(function() { 
                 editor.editable(false);
-            }, 2000);
+            }, 500);
         
         });
         

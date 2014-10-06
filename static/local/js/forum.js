@@ -108,7 +108,13 @@ var ForumPage = (function() {
     me.onRefreshAnswerTab = function(SubtreeDOM) {
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
+            event.preventDefault();
+            //console.log($(this));
             $(this).find(s.postAnswerButtonSelector).attr('disabled', 'disabled');
+            // Add CKEDITOR data into the textarea
+            var content = $($(this).find("iframe")[0]).contents().find("body")[0].innerHTML;
+            $(this).find("textarea[name='text']").val(content);
+            //console.log($(this).serialize());
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);
