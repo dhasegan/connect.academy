@@ -100,11 +100,7 @@ var ConnectGlobal = (function() {
         });
 
         s.helpsigns.tooltip();
-
-    
-
-
-        
+   
     };
     
 
