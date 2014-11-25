@@ -211,6 +211,3 @@ def professor_dashboard_context(request, user):
         context['courses'].append(course_dict)
 
     return context
-
-
-

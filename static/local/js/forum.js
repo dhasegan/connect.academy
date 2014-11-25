@@ -22,6 +22,8 @@ var ForumPage = (function() {
             upvotePostFormSelector: '.upvote-post-form',
             upvoteAnswerFormSelector: '.upvote-answer-form',
 
+            ckeditorNonEditable: $('.rich-cke-text'),
+
             // New post page
             newPostForm: $('.forumnewpost-form'),
             newPostButton: $('.newpost-btn'),
@@ -41,6 +43,8 @@ var ForumPage = (function() {
         // Bind ui actions for answers tab
         me.onRefreshAnswerTab($('html'));
         me.bindUIActions();
+        //ConnectGlobal.refreshCKInline();
+
     };
 
     me.bindUIActions = function() {
@@ -62,20 +66,18 @@ var ForumPage = (function() {
         var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
 
         $(document).on("click", upvote_selector, function(event) {
-            window.console.log(event.target.id);
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     for (idx in result.id_selectors) {
-                        //window.console.log(idx);
                         $(result.id_selectors[idx]).html(result.html);
                     }
-                    
                 }, 
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus);
                 }
             );
         });
+        
 
     };
 
@@ -104,29 +106,31 @@ var ForumPage = (function() {
         }
     };
 
+
+
     // Refresh something in the DOM, relink everything in its subtree
     me.onRefreshAnswerTab = function(SubtreeDOM) {
+        if (typeof(SubtreeDOM) === "undefined" ) SubtreeDOM = $('html');
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
-            event.preventDefault();
-            //console.log($(this));
             $(this).find(s.postAnswerButtonSelector).attr('disabled', 'disabled');
             // Add CKEDITOR data into the textarea
             var content = $($(this).find("iframe")[0]).contents().find("body")[0].innerHTML;
             $(this).find("textarea[name='text']").val(content);
-            //console.log($(this).serialize());
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);
                     $answer_tab.html(result.html);
-
                     ForumPage.onRefreshAnswerTab($answer_tab);
+                    
                 }, 
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
                 }
+
             );
         });
+
         // Get the reply form ajax
         SubtreeDOM.find(s.getReplyLinkSelector).click( function(event) {
             event.preventDefault();
@@ -139,7 +143,8 @@ var ForumPage = (function() {
                     success: function(response) {
                         $reply_form.html(response.html).slideDown();
                         $reply_form.addClass('active');
-
+                        var textarea_id = $(response.html).find("textarea[name='text']").attr("id");
+                        //CKEDITOR.replace(textarea_id);
                         ForumPage.onRefreshAnswerTab($reply_form);
                     }
                 })
@@ -159,6 +164,7 @@ var ForumPage = (function() {
                     $forum_answers.html(response.html).slideDown();
 
                     ForumPage.onRefreshAnswerTab($forum_answers);
+
                 }
             })
         });
@@ -216,6 +222,8 @@ var ForumPage = (function() {
 
             });
         });
+       ConnectGlobal.refreshCKInline(SubtreeDOM);
+       ConnectGlobal.refreshCK(SubtreeDOM); 
     };
 
     return me;

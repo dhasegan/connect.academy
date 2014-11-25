@@ -12,7 +12,9 @@
             {% block answer_question_form %}
                 <div id="answerquestion{{post.question.id}}" class="collapse">
                     {% with post.question as question %}
-                        {% include 'objects/forum/new_answer.html' %}
+                        {% with question.id as answer_parent_id %}
+                            {% include 'objects/forum/new_answer.html' %}
+                        {% endwith %}
                     {% endwith %}
                     <hr>
                 </div>

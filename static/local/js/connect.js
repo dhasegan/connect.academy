@@ -1,5 +1,4 @@
 jQuery( document ).ready(function( $ ) {
-
     ConnectGlobal.init();
 
 });
@@ -14,7 +13,8 @@ var ConnectGlobal = (function() {
             localeLinks: $('.locale-change-link'),
             helpsigns: $('.help-sign'),
             fileUploads: $('.file-input'),
-            ckeditorNonEditable: $('.rich-cke-text')
+            ckeditorNonEditableSelector: '.rich-cke-text',
+            ckeditorEditableSelector: ".ckeditor"
         },
     }, s;
 
@@ -22,6 +22,7 @@ var ConnectGlobal = (function() {
         s = this.settings;
         
         this.bindUIActions();
+        this.refreshCKInline();
 
         if ($('.explore-page').length > 0) { ExplorePage.init(); }
         else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); Activities.init(); }
@@ -31,11 +32,52 @@ var ConnectGlobal = (function() {
         else if ($('.dashboard-page').length > 0) { ForumPage.init(); CoursePage.init(); Activities.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
         else if ($('.comments-page').length > 0) { CoursePage.init(); }
         else if ($('.homework-dashboard-page').length > 0) { HomeworkDashboard.init(); }
+
+
     };
 
-    
+    me.refreshCK = function(subtree) {
+        if (typeof(subtree) === 'undefined') subtree = $('body');
+        subtree.find(s.ckeditorEditableSelector).each(function(i, el) {
+            var el_id = $(el).attr('id');
+            var editor = undefined;
+            
+            if (el_id in CKEDITOR.instances) {
+                delete CKEDITOR.instances[el_id];
+            } 
+            
+            CKEDITOR.replace(el_id);
+            
+        });
+    };
+
+    me.refreshCKInline = function(subtree) {
+        if (typeof(subtree) === 'undefined') subtree = $('body');
+
+
+        subtree.find(s.ckeditorNonEditableSelector).each(function(i, el) {
+            var el_id = $(el).attr('id');
+            var editor = undefined;
+            if (el_id in CKEDITOR.instances) {
+                delete CKEDITOR.instances[el_id];
+            } 
+           
+            editor = CKEDITOR.inline(el_id, {
+                on: {
+                    instanceReady: function() {
+                        this.editable(false);
+                        
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub, el_id]); 
+                        
+                    }
+                } 
+            });  
+        });
+
+    };
 
     me.bindUIActions = function() {
+
         // Activate Alerts
         s.dismissableAlerts.alert();
         // Email confirmation link
@@ -59,15 +101,9 @@ var ConnectGlobal = (function() {
 
         s.helpsigns.tooltip();
 
-        $.each(s.ckeditorNonEditable, function(i, el) {
-            var el_id = $(el).attr('id');
-            var editor = CKEDITOR.inline(el_id);
-            
-            setTimeout(function() { 
-                editor.editable(false);
-            }, 500);
-        
-        });
+    
+
+
         
     };
     
