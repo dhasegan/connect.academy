@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
-# For wikis versioning
+from django.db.models import Q
+from aggregate_if import Count, Sum, Avg
 from django.contrib.contenttypes.models import ContentType
 from versioning.models import Revision
 
@@ -9,77 +10,87 @@ from app.models import *
 from app.ratings import *
 from app.forum.context_processors import forum_stats_context, forum_answer_context, forum_post_context
 
+import itertools
+
+
 
 def course_ratings_context(course, current_user=None):
     context = []
-    allratings = course.rating_set.all()
+    types_dict = { key: val for key, val in RATING_TYPES }
+    profs_dict = { prof.id: prof for prof in course.professors.all().annotate(
+        score = Avg('rated__rating'), 
+        count =  Count('rated'),
+        my_score = Sum('rated', only= Q(rated__user__id=current_user.id)) 
+        )}
+    # We will need all ratings to create the course rating context
+    # Therefore it is better to get them all in 1 query and then do the rest of the filtering in python structures
 
-    # All rating types
-    for rating_type in RATING_TYPES:
-        ratings = allratings.filter(rating_type=rating_type[0])
+    other_ratings = course.rating_set.filter(~Q(rating_type=PROFESSOR_R)).values('rating_type').annotate(
+        score=Avg('rating'), 
+        count=Count('id'),
+        my_score = Sum('rating', only = Q(user__id=current_user.id))
+        )
 
-        rating = None
-        if len(ratings) > 0:
-            rating = sum([cur.rating for cur in ratings]) / len(ratings)
-        # Add the general ratings
+    for prof_id in profs_dict:
+        prof = profs_dict[prof_id]
         context_rating = {
-            'type': rating_type[1],
-            'type_db': rating_type[0],
+            'type_db': PROFESSOR_R,
+            'type': types_dict[PROFESSOR_R],
+            'score': prof.score if prof.count > 0 else None ,
+            'count': prof.count,
+            'my_score':  prof.my_score if prof.my_score > 0 else None,
+            'professor': prof
         }
-        specific_rating = {
-            'score': rating,
-            'count': len(ratings)
-        }
-        if current_user:
-            my_ratings = ratings.filter(user=current_user)
-            if my_ratings:
-                specific_rating['my_score'] = my_ratings[0].rating
+        context.append(context_rating)
 
-        if rating_type[0] == PROFESSOR_R:
-            professors = course.professors.all()
-            for prof in professors:
-                profratings = ratings.filter(professor=prof)
-                profrating = None
-                if profratings:
-                    profrating = sum([cur.rating for cur in profratings]) / len(profratings)
-                specific_rating = {
-                    'score': profrating,
-                    'count': len(profratings),
-                    'professor': prof,
-                }
-                if current_user:
-                    my_ratings = profratings.filter(user=current_user)
-                    if my_ratings:
-                        specific_rating['my_score'] = my_ratings[0].rating
-                context.append(dict(context_rating.items() + specific_rating.items()))
-        else:
-            context.append(dict(context_rating.items() + specific_rating.items()))
+    del types_dict[PROFESSOR_R] # Done with professors
+
+    for r in other_ratings:
+        context_rating = {
+            'type_db': r['rating_type'],
+            'type': types_dict[r['rating_type']],
+            'score': r['score'],
+            'count': r['count'],
+            'my_score': r['my_score'] if r['my_score'] > 0 else None
+        }
+        context.append(context_rating)
+        del types_dict[r['rating_type']] # Done with this rating type
+
+    # Add an entry to the context for every remaining rating_type (with no scores)
+    for rating_type in types_dict:
+        context_rating = {
+            'type_db': rating_type,
+            'type': types_dict[rating_type],
+            'score': None,
+            'count': 0,
+            'my_score': None
+        }
+        context.append(context_rating)
+
+    
     return context
-
 
 def review_context(comment, current_user=None):
     context_comment = {
         'comment': comment
     }
-    upvotes = comment.upvoted_by.all()
-    downvotes = comment.downvoted_by.all()
+    votes = Review.objects.filter(id=comment.id).aggregate(
+        upvotes = Count('upvoted_by'), 
+        downvotes = Count('downvoted_by'),
+        my_upvote = Count('upvoted_by', only = Q(upvoted_by__id=current_user.id)),
+        my_downvote = Count('downvoted_by', only = Q(upvoted_by__id=current_user.id)))
 
+    context_comment['upvotes'] = votes['upvotes']
+    context_comment['downvotes']  = votes['downvotes']
+    context_comment['upvoted'] = votes['my_upvote'] > 0
+    context_comment['downvoted'] = votes['my_downvote'] > 0
     if not comment.anonymous:
         context_comment['posted_by'] = comment.posted_by
 
-    nr_upvotes = upvotes.count()
-    nr_downvotes = downvotes.count()
-    context_comment['upvotes'] = nr_upvotes
-    context_comment['downvotes'] = nr_downvotes
-    if nr_downvotes >= 3:
+    if context_comment['downvotes'] >= 3:
         context_comment['dont_show'] = True
-    if nr_downvotes >= 7:
+    if context_comment['downvotes'] >= 7:
         context_comment['dont_show_at_all'] = True
-
-    if upvotes.filter(id=current_user.id).count() > 0:
-        context_comment['upvoted'] = True
-    if downvotes.filter(id=current_user.id).count() > 0:
-        context_comment['downvoted'] = True
 
     return context_comment
 
@@ -92,13 +103,15 @@ def course_reviews_context(course, current_user=None):
     return context
 
 def course_homework_count_submitted(course, homework_request):
+    num_files = homework_request.number_files
     students = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
-    submissions = CourseHomeworkSubmission.objects.filter(homework_request=homework_request)
-    cnt_submitted = 0
-    for st in students:
-        files_submitted = submissions.filter(submitter=st.student)
-        if files_submitted.count() == homework_request.number_files:
-            cnt_submitted += 1
+    
+    students = students.annotate(files_submitted=Count('student__coursehomeworksubmission', 
+        only=Q(student__coursehomeworksubmission__homework_request__id=homework_request.id) ))
+    
+    cnt_submitted = students.filter(files_submitted=num_files).count()
+    # Only 1 big ass query
+
     return cnt_submitted
 
 def homework_context(hw, current_user):
@@ -147,7 +160,7 @@ def homework_dashboard_context(request, course, current_user):
         raise Http404
     context = {}
     homework_requests = CourseHomeworkRequest.objects.filter(course=course)
-    students = sorted(list(course.students.all()), key=lambda st:st.username)
+    students = course.students.all().order_by('username')
     current_time = timezone.now()
     context['homework_requests'] = []
 
@@ -155,7 +168,7 @@ def homework_dashboard_context(request, course, current_user):
         all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
         submissions_context = []
         for st in students:
-            submissions = all_submissions.filter(submitter=st)
+            submissions = all_submissions.filter(submitter=st).order_by('file_number')
             submissions = sorted(submissions, key=lambda s:s.file_number)
             submissions_context.append({
                 'student': st,
@@ -180,7 +193,7 @@ def homework_dashboard_context(request, course, current_user):
 
     # Is teacher
     context['teacher'] = {
-        'is_teacher': True
+        'is_teacher': True 
     }
 
     return context

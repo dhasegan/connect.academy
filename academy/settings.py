@@ -337,7 +337,8 @@ PIPELINE_JS = {
 
 SHELL_PLUS_POST_IMPORTS = (
     ('app.models', '*'),
-    ('app.populator', '*')
+    ('app.populator', '*'),
+    ('django.db', 'connection')
 )
 
 ########################## Other settings

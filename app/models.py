@@ -90,14 +90,12 @@ class jUser(User):
     def is_student_of(self, course):
         if not self.is_student():
             return False
-        registration = StudentCourseRegistration.objects.filter(student=self, course=course)
-        return self.is_student() and registration and registration[0].is_approved
+        is_registered = StudentCourseRegistration.objects.filter(student=self, course=course, is_approved = True).exists()
+        return self.is_student() and is_registered
 
     def is_professor_of(self, course):
-        if not self.is_professor():
-            return False
-        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
-        return registration and registration[0].is_approved
+        is_registered = ProfessorCourseRegistration.objects.filter(professor=self, course=course, is_approved = True).exists()
+        return self.is_professor() and is_registered
 
     def is_assistant_of(self,course):
         return self in list(course.teaching_assistants.all())
