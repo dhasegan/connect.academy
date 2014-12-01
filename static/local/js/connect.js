@@ -23,6 +23,7 @@ var ConnectGlobal = (function() {
         
         this.bindUIActions();
         this.refreshCKInline();
+        this.refreshCK();
 
         if ($('.explore-page').length > 0) { ExplorePage.init(); }
         else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); Activities.init(); }
@@ -46,7 +47,17 @@ var ConnectGlobal = (function() {
                 delete CKEDITOR.instances[el_id];
             } 
             
-            CKEDITOR.replace(el_id);
+            CKEDITOR.replace(el_id, {
+                on: {
+                    instanceReady: function(e) {
+                        var node = e.editor.element.$;
+                        if ($(node).attr("contenteditable") == "false") {
+                            $(node).attr("contenteditable", true);
+                            e.editor.setReadOnly(false);
+                        }
+                    }
+                }
+            });
             
         });
     };
@@ -66,7 +77,6 @@ var ConnectGlobal = (function() {
                 on: {
                     instanceReady: function() {
                         this.editable(false);
-                        
                         MathJax.Hub.Queue(["Typeset",MathJax.Hub, el_id]); 
                         
                     }

@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
-from django.db.models import Q
-from aggregate_if import Count, Sum, Avg
+from django.db.models import Q, F, Count, Avg, Sum
+from aggregate_if import Count as CountIf, Sum as SumIf, Avg as AvgIf
 from django.contrib.contenttypes.models import ContentType
 from versioning.models import Revision
 
@@ -20,15 +20,13 @@ def course_ratings_context(course, current_user=None):
     profs_dict = { prof.id: prof for prof in course.professors.all().annotate(
         score = Avg('rated__rating'), 
         count =  Count('rated'),
-        my_score = Sum('rated', only= Q(rated__user__id=current_user.id)) 
+        my_score = SumIf('rated', only= Q(rated__user__id=current_user.id)) 
         )}
-    # We will need all ratings to create the course rating context
-    # Therefore it is better to get them all in 1 query and then do the rest of the filtering in python structures
-
+   
     other_ratings = course.rating_set.filter(~Q(rating_type=PROFESSOR_R)).values('rating_type').annotate(
         score=Avg('rating'), 
         count=Count('id'),
-        my_score = Sum('rating', only = Q(user__id=current_user.id))
+        my_score = SumIf('rating', only = Q(user__id=current_user.id))
         )
 
     for prof_id in profs_dict:
@@ -77,8 +75,8 @@ def review_context(comment, current_user=None):
     votes = Review.objects.filter(id=comment.id).aggregate(
         upvotes = Count('upvoted_by'), 
         downvotes = Count('downvoted_by'),
-        my_upvote = Count('upvoted_by', only = Q(upvoted_by__id=current_user.id)),
-        my_downvote = Count('downvoted_by', only = Q(upvoted_by__id=current_user.id)))
+        my_upvote = CountIf('upvoted_by', only = Q(upvoted_by__id=current_user.id)),
+        my_downvote = CountIf('downvoted_by', only = Q(upvoted_by__id=current_user.id)))
 
     context_comment['upvotes'] = votes['upvotes']
     context_comment['downvotes']  = votes['downvotes']
@@ -106,7 +104,7 @@ def course_homework_count_submitted(course, homework_request):
     num_files = homework_request.number_files
     students = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
     
-    students = students.annotate(files_submitted=Count('student__coursehomeworksubmission', 
+    students = students.annotate(files_submitted=CountIf('student__coursehomeworksubmission', 
         only=Q(student__coursehomeworksubmission__homework_request__id=homework_request.id) ))
     
     cnt_submitted = students.filter(files_submitted=num_files).count()
@@ -169,7 +167,6 @@ def homework_dashboard_context(request, course, current_user):
         submissions_context = []
         for st in students:
             submissions = all_submissions.filter(submitter=st).order_by('file_number')
-            submissions = sorted(submissions, key=lambda s:s.file_number)
             submissions_context.append({
                 'student': st,
                 'submissions': submissions,
@@ -193,7 +190,46 @@ def homework_dashboard_context(request, course, current_user):
 
     # Is teacher
     context['teacher'] = {
-        'is_teacher': True 
+        'is_teacher': True # Why is this here?
+    }
+
+    return context
+
+def homework_dashboard_context_1(request, course, current_user):
+    if not current_user.has_perm('grade_homework', course):
+        raise Http404
+    context = {}
+    current_time = timezone.now()
+    homework_requests = CourseHomeworkRequest.objects.filter(course=course).annotate(
+        submitted =  Count('coursehomeworksubmission') )
+    students = course.students.all().order_by('username')
+    
+    context['homework_requests'] = []
+
+    for hw in homework_requests:
+        all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
+        submissions_context = []
+        for st, submissions in itertools.groupby(all_submissions, key= lambda sub: sub.submitter):
+            submissions_context.append({
+                'student': st,
+                'submissions': submissions,
+                'file_numbers': [str(s.file_number) for s in submissions]
+            })
+
+       
+        context['homework_requests'].append({
+            'homework': hw,
+            'all_submissions': submissions_context,
+            'percentage_completed': hw.submitted / (hw.number_files * len(students)),
+            'ended': hw.deadline.end < current_time
+        })
+
+    # Course syllabus for topic editing
+    context['syllabus'] = course_syllabus_context(course,current_user)
+
+    # Is teacher
+    context['teacher'] = {
+        'is_teacher': True # Why is this here?
     }
 
     return context

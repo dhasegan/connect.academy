@@ -207,6 +207,8 @@ class SubmitHomeworkRequestForm(forms.Form):
 
     def clean_document(self):
         content = self.cleaned_data['document']
+        if not content:
+            return content
         if content._size > settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE:
             raise forms.ValidationError( ('Please keep filesize under %s. Current filesize %s')
                 % (filesizeformat(settings.COURSE_DOCUMENT_MAX_UPLOAD_SIZE), filesizeformat(content._size)))
