@@ -10,3 +10,6 @@ staticfiles/
 app/migrations/
 academy/db/database.db
 academy/media/course/
+media/
+static/local/css/connect.css
+static/local/css/connect.css.map
