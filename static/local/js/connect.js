@@ -22,8 +22,8 @@ var ConnectGlobal = (function() {
         s = this.settings;
         
         this.bindUIActions();
-        this.refreshCKInline();
-        this.refreshCK();
+        //this.refreshCKInline();
+        //this.refreshCK();
 
         if ($('.explore-page').length > 0) { ExplorePage.init(); }
         else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); Activities.init(); }

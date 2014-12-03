@@ -146,9 +146,13 @@ def homework_context(hw, current_user):
 
     return context
 
-def course_homework_context(course, current_user):
+def course_homework_context(course, current_user, topic_id=None):
     context = []
-    all_homework = course.coursehomeworkrequest_set.all()
+    all_homework = None
+    if topic_id:
+        all_homework = course.coursehomeworkrequest_set.filter(course_topic__id = topic_id)
+    else:
+        all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
         context.append(homework_context(hw, current_user))
     return context
@@ -190,49 +194,12 @@ def homework_dashboard_context(request, course, current_user):
 
     # Is teacher
     context['teacher'] = {
-        'is_teacher': True # Why is this here?
+        'is_teacher': current_user.is_professor_of(course) or current_user.is_assistant_of(course)
     }
 
     return context
 
-def homework_dashboard_context_1(request, course, current_user):
-    if not current_user.has_perm('grade_homework', course):
-        raise Http404
-    context = {}
-    current_time = timezone.now()
-    homework_requests = CourseHomeworkRequest.objects.filter(course=course).annotate(
-        submitted =  Count('coursehomeworksubmission') )
-    students = course.students.all().order_by('username')
-    
-    context['homework_requests'] = []
 
-    for hw in homework_requests:
-        all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
-        submissions_context = []
-        for st, submissions in itertools.groupby(all_submissions, key= lambda sub: sub.submitter):
-            submissions_context.append({
-                'student': st,
-                'submissions': submissions,
-                'file_numbers': [str(s.file_number) for s in submissions]
-            })
-
-       
-        context['homework_requests'].append({
-            'homework': hw,
-            'all_submissions': submissions_context,
-            'percentage_completed': hw.submitted / (hw.number_files * len(students)),
-            'ended': hw.deadline.end < current_time
-        })
-
-    # Course syllabus for topic editing
-    context['syllabus'] = course_syllabus_context(course,current_user)
-
-    # Is teacher
-    context['teacher'] = {
-        'is_teacher': True # Why is this here?
-    }
-
-    return context
 
 def course_syllabus_context(course, current_user):
     context = []
@@ -242,9 +209,8 @@ def course_syllabus_context(course, current_user):
             'documents': topic.documents.all(),
 
         }
-        if current_user in course.students.all() or current_user in course.professors.all():
-            topic_context['homework'] = [hw for hw in course_homework_context(course,current_user) 
-                                            if hw['homework'].course_topic == topic]
+        if current_user.is_student_of(course) or current_user.is_assistant_of(course) or current_user.is_professor_of(course):
+            topic_context['homework'] = course_homework_context(course,current_user, topic.id)
 
         context.append(topic_context)
     return context
@@ -269,12 +235,15 @@ def course_teacher_dashboard(request, course, user):
 
     context['students'] = {}
 
-    student_registrations = StudentCourseRegistration.objects.filter(course=course)
+    # From python docs when using groupby: Generally, the iterable needs to already be sorted on the same key function.
+    student_registrations = StudentCourseRegistration.objects.filter(course=course).order_by('is_approved')
 
-    if context['can_mail_students']:
-        context['students']['registered'] = [r.student for r in student_registrations if r.is_approved]
-    if context['can_approve_registrations']:
-        context['students']['pending'] = [r.student for r in student_registrations if not r.is_approved]
+    for reg_approved, registrations in itertools.groupby(student_registrations, key = lambda reg: reg.is_approved):
+        if reg_approved and context['can_mail_students']:
+            context['students']['registered'] = list(registrations)
+        elif not reg_approved and context['can_approve_registrations']:
+            context['students']['pending'] = list(registrations)
+   
     if context['can_manage_forum']:
         context['forum_stats'] = forum_stats_context(course.forum)
 
@@ -314,7 +283,7 @@ def course_page_context(request, course):
 
     # Course path
     context['course_path'] = course.get_catalogue()
-    context['semester'] = context['course_path'].split(" > ")[0]
+    context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change 
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(current_user)
@@ -360,45 +329,25 @@ def course_page_context(request, course):
 
 def course_activities(request, course):
     user = request.user.juser
-
-    # Course activities 
-    activities_list = list(CourseActivity.objects.filter(course=course).reverse())
-
-    # Forum post activities
-    activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
-                                                            forum_post__forum__forumcourse__course=course ))
-
-    activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
-                                                            forum_answer__post__forum__forumcourse__course=course ))
-
+    # Needs discussion - This is getting all activities from the db and then doing the pagination
+    activities_list = Activity.course_page_activities(course)
     activities_list = [a for a in activities_list if a.can_view(user)]
-    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
-    
+
     activities_context = [activity_context(activity,user) for activity in activities_list]
-    return paginated(request,activities_context, 20)
+    return paginated(request, activities_context, 20)
 
 
 
 # loads NEW activities asynchronously, called with ajax
 def new_course_activities(request,course):
     user = request.user.juser
-    last_id = long(request.GET.get('last_id'))
+    last_id = long(request.GET.get('last_id', 0))
     
     # Course activities 
-    activities_list = list(CourseActivity.objects.filter(course=course,  id__gt=last_id).reverse())
-
-    # Forum post activities
-    activities_list += list(ForumPostActivity.objects.filter(forum_post__forum__forum_type=FORUM_COURSE,
-                                                            forum_post__forum__forumcourse__course=course, id__gt=last_id ).reverse())
-
-    activities_list += list(ForumAnswerActivity.objects.filter(forum_answer__post__forum__forum_type=FORUM_COURSE,
-                                                            forum_answer__post__forum__forumcourse__course=course, id__gt=last_id).reverse())
-
+    activities_list = Activity.course_page_activities(course).filter(id__gt=last_id)
     activities_list = [a for a in activities_list if a.can_view(user)]
-    activities_list = sorted(activities_list, key= lambda a: a.timestamp, reverse=True)
-    
-    activities_context = [activity_context(activity,user) for activity in activities_list]
 
+    activities_context = [activity_context(activity,user) for activity in activities_list]
     return activities_context 
 
 
@@ -423,7 +372,9 @@ def activity_context(activity, current_user):
     elif activity_type == "WikiActivity":
         activity_context['contribution'] = activity_instance.contribution
     return activity_context
-    
+
+# The page number is assumed to be in the GET parameters of the request.   
+# objects_list should ideally be an unevaluated QuerySet
 def paginated(request, objects_list, per_page):
     paginator = Paginator(objects_list, per_page) # 20 activities per page
 
@@ -434,7 +385,6 @@ def paginated(request, objects_list, per_page):
         # If page is not an integer, deliver first page.
         objects = paginator.page(1).object_list
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         objects = []
 
     return objects

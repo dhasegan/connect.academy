@@ -43,7 +43,6 @@ var ForumPage = (function() {
         // Bind ui actions for answers tab
         me.onRefreshAnswerTab($('html'));
         me.bindUIActions();
-        //ConnectGlobal.refreshCKInline();
 
     };
 

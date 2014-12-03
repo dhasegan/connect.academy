@@ -6,6 +6,7 @@ import re
 from guardian.shortcuts import assign_perm
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
@@ -98,7 +99,7 @@ class jUser(User):
         return self.is_professor() and is_registered
 
     def is_assistant_of(self,course):
-        return self in list(course.teaching_assistants.all())
+        return course.teaching_assistants.filter(id=self.id).exists()
 
     def is_admin_of(self, course):
         if not self.is_admin():
@@ -1096,9 +1097,9 @@ class Activity(models.Model):
             tag = instance.forum_answer.post.tag
             return tag.can_view(user, instance.get_course())
         elif activity_type == "HomeworkActivity":
-            if self.homeworkactivity.homework.course.students.filter(id=user.id).exists() \
-            or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists() \
-            or self.homeworkactivity.homework.course.teaching_assistants.filter(id=user.id).exists():
+            if instance.homework.course.students.filter(id=user.id).exists() \
+            or instance.homework.course.professors.filter(id=user.id).exists() \
+            or instance.homework.course.teaching_assistants.filter(id=user.id).exists():
                 return True
             else:
                 return False
@@ -1121,6 +1122,17 @@ class Activity(models.Model):
                 self.timestamp = timezone.now()
         super(Activity, self).save(*args, **kwargs)
 
+    @staticmethod
+    def course_page_activities(course):
+        return Activity.objects.filter(Q(
+            Q(courseactivity__course=course) 
+            | 
+            Q(generalactivity__forumpostactivity__forum_post__forum__forum_type=FORUM_COURSE, 
+                generalactivity__forumpostactivity__forum_post__forum__forumcourse__course=course) 
+            | 
+            Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type=FORUM_COURSE, 
+                generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course=course)
+            )).order_by('-timestamp')
 
 class GeneralActivity(Activity):
     pass
