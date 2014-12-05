@@ -2,7 +2,7 @@ import json
 
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
@@ -38,7 +38,10 @@ def dashboard(request):
     #     not len(context['courses']) and not len(context['forum_posts']):
     #         return redirect( reverse('explore') )
 
-    return render(request, "pages/dashboard.html", context)
+    response = render(request, "pages/dashboard.html", context)
+    if context['activities']:
+        response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
+    return response
 
 
 @login_required
@@ -91,7 +94,11 @@ def load_dashboard_activities(request):
         'html': html
     }
 
-    return HttpResponse(json.dumps(data))
+    response = StreamingHttpResponse(json.dumps(data))
+    if activities:
+        response.set_cookie("oldest_activity_id", str(activities[-1]['activity'].id), path="/")
+
+    return response
 
 @login_required
 def load_new_dashboard_activities(request):

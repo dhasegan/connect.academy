@@ -20,7 +20,6 @@ var ConnectGlobal = (function() {
 
     me.init = function() {
         s = this.settings;
-        
         this.bindUIActions();
         //this.refreshCKInline();
         //this.refreshCK();
@@ -85,6 +84,45 @@ var ConnectGlobal = (function() {
         });
 
     };
+
+    // setCookie, getCookie and checkCookie were taken from w3schools.com
+    // http://www.w3schools.com/js/js_cookies.asp
+    me.setCookie = function (cname, cvalue, days, hours, min, sec) {
+        // Default to 1 day long lifetime
+        var d = new Date();
+        if (typeof(days) === "undefined") days = 1;
+        if (typeof(hours) === "undefined") hours = 0;
+        if (typeof(min) === "undefined") min = 0;
+        if (typeof(sec) === "undefined") sec = 0;
+
+        d.setTime(d.getTime() + (days*24*60*60*1000) + (hours*60*60*1000) + (min*60*1000) + (sec*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    me.getCookie = function(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+
+    me.checkCookie = function(cname) {
+        var cvalue = getCookie(cname);
+        if (cvalue != "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    me.deleteCookie = function(cname) {
+        document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+    }
 
     me.bindUIActions = function() {
 
