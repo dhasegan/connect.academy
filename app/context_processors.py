@@ -6,7 +6,8 @@ from django.db.models import Q
 
 from app.models import *
 from app.ratings import *
-from app.course.context_processors import *
+from app.forum.context_processors import forum_stats_context, forum_answer_context, forum_post_context
+#from app.course.context_processors import *
 
 
 def debug(context):
@@ -30,96 +31,34 @@ def user_authenticated(request):
 
 
 def dashboard_activities(request,user):
-    user_courses = list(user.courses_enrolled.all()) + list(user.courses_managed.all()) + list(user.courses_assisted.all())
+    logged_in_user = request.user.juser # Should normally always be the same as user, adding this as a safety check
+    last_id = request.GET.get('last_id', None)
+    ACTIVITIES_PER_PAGE = 20
 
-    own_course_activities = list(CourseActivity.objects.filter(
-        Q(course__in=user_courses), ~Q(user=user)).reverse())
+    # Get the (unevaluated) course page activities list
+    activities_queryset = Activity.dashboard_page_activities(user)
+    if last_id is not None:
+        activities_queryset = activities_queryset.filter(id__lt=last_id)
 
-    # get all answers to posts that the user is following, except those in the users's own courses,
-    # to avoid duplication
-    #
-    forum_post_activities = list(ForumPostActivity.objects.filter(Q( 
-                                Q (
-                                    forum_post__forum__forum_type=FORUM_COURSE,
-                                    forum_post__forum__forumcourse__course__in=user_courses
-                                  )
-                                |
-                                Q (
-                                    forum_post__followed_by = user
-                                ), ~Q(user=user))).reverse())
+    # Always get page 1, because we are filtering out activities with id >= last_id (so we're only getting the older ones from the db)
+    filtered_list = paginate_activities(activities_queryset, 1, ACTIVITIES_PER_PAGE, logged_in_user)
 
-    #activities_list += [ a for a in all_post_activities if user.is_student_of(a.get_course()) \
-    #                                    or user.is_professor_of(a.get_course) \
-    #                                        or user.is_admin_of(a.get_course) ]
 
-    # Forum answer activities
-    forum_answer_activities = list(ForumAnswerActivity.objects.filter(Q( 
-                                Q (
-                                    forum_answer__post__forum__forum_type = FORUM_COURSE ,
-                                    forum_answer__post__forum__forumcourse__course__in = user_courses
-                                  )
-                                |
-                                Q (
-                                    forum_answer__post__followed_by = user
-                                ), ~Q(user=user))).reverse())
-
-    activities_list = sorted(own_course_activities + forum_post_activities + forum_answer_activities,
-                             key=lambda activity: activity.timestamp, 
-                             reverse=True)
-    activities_list = [a for a in activities_list if a.can_view(user)]
-    
-
-    activities_context = [activity_context(activity,user) for activity in activities_list]
-  
-    return paginated(request,activities_context, 20)
+    activities_context = [activity_context(activity,user) for activity in filtered_list]
+    return activities_context
 
 
 # loads NEW activities asynchronously, called with ajax
 def new_dashboard_activities(request,user):
-    last_id = long(request.GET.get('last_id'))
-    user_courses = list(user.courses_enrolled.all()) + list(user.courses_managed.all()) + list(user.courses_assisted.all())
-    own_course_activities = list(CourseActivity.objects.filter(
-        Q(course__in=user_courses), ~Q(user=user), Q(id__gt=last_id) ).reverse())  
-
-    # get all answers to posts that the user is following, except those in the users's own courses,
-    # to avoid duplication
-    # 
-    forum_post_activities= list(ForumPostActivity.objects.filter(Q( 
-                                Q (
-                                     forum_post__forum__forum_type=FORUM_COURSE ,
-                                     forum_post__forum__forumcourse__course__in=user_courses
-                                  )
-                                |
-                                Q (
-                                    forum_post__followed_by= user
-                                )),~Q(user=user), Q(id__gt=last_id)).reverse())
-
-    #activities_list += [ a for a in all_post_activities if user.is_student_of(a.get_course()) \
-    #                                    or user.is_professor_of(a.get_course) \
-    #                                        or user.is_admin_of(a.get_course) ]
-
-    # Forum answer activities
-    forum_answer_activities = list(ForumAnswerActivity.objects.filter(Q( 
-                                Q (
-                                    forum_answer__post__forum__forum_type=FORUM_COURSE,
-                                    forum_answer__post__forum__forumcourse__course__in=user_courses
-                                  )
-                                |
-                                Q (
-                                    forum_answer__post__followed_by = user
-                                )),~Q(user=user), Q(id__gt=last_id)).reverse())
-
-    activities_list = sorted(own_course_activities +  forum_post_activities + forum_answer_activities, 
-                key = lambda activity: activity.timestamp, 
-                reverse=True)
-    activities_list = [a for a in activities_list if a.can_view(user)]
+    logged_in_user = request.user.juser # Should normally always be the same as user, adding this as a safety check
+    last_id = long(request.GET.get('last_id', 0))
     
+    # Course activities 
+    activities_list = Activity.dashboard_page_activities(user).filter(id__gt=last_id)
+    activities_list = [a for a in activities_list if a.can_view(logged_in_user)]
 
     activities_context = [activity_context(activity,user) for activity in activities_list]
-
-
-    return activities_context 
-
+    return activities_context
 
 def dashboard_context(request):
     user = jUser.objects.get(id=request.user.id)
@@ -211,3 +150,64 @@ def professor_dashboard_context(request, user):
         context['courses'].append(course_dict)
 
     return context
+
+
+def activity_context(activity, current_user):
+    import app.course.context_processors as course_cp
+    import app.forum.context_processors as forum_cp
+    activity_context = {
+        "type": activity.get_type(),
+        "activity": activity,
+    }
+    activity_type = activity_context["type"]
+    activity_instance = activity.get_instance() # the most derived type
+
+
+    if activity_type  == "ForumPostActivity":
+        activity_context["post"] = forum_cp.forum_post_context(activity_instance.forum_post, current_user)
+    elif activity_type == "ForumAnswerActivity":
+        answer = activity_instance.forum_answer
+        activity_context["answer"] = forum_cp.forum_answer_context(answer.post, answer, current_user)
+    elif activity_type == "HomeworkActivity":
+        activity_context['homework'] = course_cp.homework_context(activity_instance.homework, current_user)
+    elif activity_type == "ReviewActivity":
+        activity_context["review"] = course_cp.review_context(activity_instance.review, current_user)
+    elif activity_type == "WikiActivity":
+        activity_context['contribution'] = activity_instance.contribution
+    return activity_context
+
+# If objects is an unevaluated queryset, it will only retrieve the objects of the requested page from the db
+# Otherwise it slices the container into pages and returns the requested page
+def paginated(objects, page_num, per_page):
+    paginator = Paginator(objects, per_page)
+
+    try:
+        objects = paginator.page(page_num).object_list
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        objects = paginator.page(1).object_list
+    except EmptyPage:
+        objects = []
+
+    return objects
+
+def paginate_activities(activities_queryset, page, per_page, user):
+    activities_list = paginated(activities_queryset, page, per_page)
+    filtered_list = [a for a in activities_list if a.can_view(user)]
+
+    if len(activities_list) == per_page:
+        while len(filtered_list) < per_page:
+            # Some entries were removed. Fill with new ones
+            page += 1
+            activities_list = paginated(activities_queryset, page, per_page)
+            if len(activities_list) == 0: 
+                # Nothing more to show
+                break
+
+            for a in activities_list:
+                if a.can_view(user):
+                    filtered_list.append(a)
+                    if len(filtered_list)  >= per_page:
+                        break
+
+    return filtered_list

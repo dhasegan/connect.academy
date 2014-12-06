@@ -8,8 +8,8 @@ from versioning.models import Revision
 
 from app.models import *
 from app.ratings import *
-from app.forum.context_processors import forum_stats_context, forum_answer_context, forum_post_context
 
+import app.context_processors as cp_main
 import itertools
 
 
@@ -326,19 +326,28 @@ def course_page_context(request, course):
 
     return context
 
-
+# returns a page of course activities. The request GET parameters MUST carry the oldest activity loaded with key="last_id"
 def course_activities(request, course):
     user = request.user.juser
-    # Needs discussion - This is getting all activities from the db and then doing the pagination
-    activities_list = Activity.course_page_activities(course)
-    activities_list = [a for a in activities_list if a.can_view(user)]
+    last_id = request.GET.get('last_id', None)
+    ACTIVITIES_PER_PAGE = 20
 
-    activities_context = [activity_context(activity,user) for activity in activities_list]
-    return paginated(request, activities_context, 20)
+    # Get the (unevaluated) course page activities list
+    activities_queryset = Activity.course_page_activities(course)
+    if last_id is not None:
+        activities_queryset = activities_queryset.filter(id__lt=last_id)
+
+    # Always get page 1, because we are filtering out activities with id >= last_id (so we're only getting the older ones from the db)
+    filtered_list = cp_main.paginate_activities(activities_queryset, 1, ACTIVITIES_PER_PAGE, user)
+
+
+    activities_context = [cp_main.activity_context(activity,user) for activity in filtered_list]
+    return activities_context
 
 
 
-# loads NEW activities asynchronously, called with ajax
+# returns the context for NEW activities (those that were created after page load) 
+# The request GET parameters must carry the id of the most recent activity loaded with key="last_id"
 def new_course_activities(request,course):
     user = request.user.juser
     last_id = long(request.GET.get('last_id', 0))
@@ -351,40 +360,5 @@ def new_course_activities(request,course):
     return activities_context 
 
 
-def activity_context(activity, current_user):
-    activity_context = {
-        "type": activity.get_type(),
-        "activity": activity,
-    }
-    activity_type = activity_context["type"]
-    activity_instance = activity.get_instance() # the most derived type
 
 
-    if activity_type  == "ForumPostActivity":
-        activity_context["post"] = forum_post_context(activity_instance.forum_post, current_user)
-    elif activity_type == "ForumAnswerActivity":
-        answer = activity_instance.forum_answer
-        activity_context["answer"] = forum_answer_context(answer.post, answer, current_user)
-    elif activity_type == "HomeworkActivity":
-        activity_context['homework'] = homework_context(activity_instance.homework, current_user)
-    elif activity_type == "ReviewActivity":
-        activity_context["review"] = review_context(activity_instance.review, current_user)
-    elif activity_type == "WikiActivity":
-        activity_context['contribution'] = activity_instance.contribution
-    return activity_context
-
-# The page number is assumed to be in the GET parameters of the request.   
-# objects_list should ideally be an unevaluated QuerySet
-def paginated(request, objects_list, per_page):
-    paginator = Paginator(objects_list, per_page) # 20 activities per page
-
-    page = request.GET.get('page')
-    try:
-        objects = paginator.page(page).object_list
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        objects = paginator.page(1).object_list
-    except EmptyPage:
-        objects = []
-
-    return objects

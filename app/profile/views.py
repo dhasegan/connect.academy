@@ -1,6 +1,6 @@
 from django.core.context_processors import csrf
 from django.shortcuts import render, get_object_or_404, render_to_response, redirect
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.views.decorators.http import require_GET, require_POST
@@ -32,7 +32,11 @@ def profile(request, username):
     context['own_profile'] = request.user.id == user.id
     context['activities'] = profile_activities(request,user)
 
-    return render(request, "pages/profile.html", context)
+    response = render(request, "pages/profile.html", context)
+    if context['activities']:
+        response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
+
+    return response
 
 
 @require_GET
@@ -171,7 +175,11 @@ def load_profile_activities(request, username):
         'html': html
     }
 
-    return HttpResponse(json.dumps(data))
+    response = StreamingHttpResponse(json.dumps(data))
+    if activities:
+        response.set_cookie("oldest_activity_id", str(activities[-1]['activity'].id), path="/")
+
+    return response
 
 @login_required
 def load_new_profile_activities(request, username):

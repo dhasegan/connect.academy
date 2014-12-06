@@ -1049,43 +1049,48 @@ class Activity(models.Model):
 
     def get_type(self):
         if hasattr(self, 'generalactivity'):
-            if hasattr(self.generalactivity, 'forumpostactivity'):
+            general_activity = self.generalactivity
+            if hasattr(general_activity, 'forumpostactivity'):
                 return "ForumPostActivity"
-            elif hasattr(self.generalactivity, 'forumansweractivity'):
+            elif hasattr(general_activity, 'forumansweractivity'):
                 return "ForumAnswerActivity"
             else:
                 return "GeneralActivity"
         elif hasattr(self,'courseactivity'):
-            if hasattr(self.courseactivity, 'homeworkactivity'):
+            course_activity = self.courseactivity
+            if hasattr(course_activity, 'homeworkactivity'):
                 return "HomeworkActivity"
-            if hasattr(self.courseactivity, 'documentactivity'):
+            elif hasattr(course_activity, 'documentactivity'):
                 return "DocumentActivity"
-            if hasattr(self.courseactivity, 'reviewactivity'):
+            elif hasattr(course_activity, 'reviewactivity'):
                 return "ReviewActivity"
-            if hasattr(self.courseactivity, 'wikiactivity'):
+            elif hasattr(course_activity, 'wikiactivity'):
                 return "WikiActivity"
             else:
                 return "CourseActivity"
 
     def get_instance(self):
+
         if hasattr(self, 'generalactivity'):
-            if hasattr(self.generalactivity, 'forumpostactivity'):
-                return self.generalactivity.forumpostactivity
-            elif hasattr(self.generalactivity, 'forumansweractivity'):
-                return self.generalactivity.forumansweractivity
+            general_activity = self.generalactivity
+            if hasattr(general_activity, 'forumpostactivity'):
+                return general_activity.forumpostactivity
+            elif hasattr(general_activity, 'forumansweractivity'):
+                return general_activity.forumansweractivity
             else:
-                return self.generalactivity
+                return general_activity
         elif hasattr(self,'courseactivity'):
-            if hasattr(self.courseactivity, 'homeworkactivity'):
-                return self.courseactivity.homeworkactivity
-            if hasattr(self.courseactivity, 'documentactivity'):
-                return self.courseactivity.documentactivity
-            if hasattr(self.courseactivity, 'reviewactivity'):
-                return self.courseactivity.reviewactivity
-            if hasattr(self.courseactivity, 'wikiactivity'):
-                return self.courseactivity.wikiactivity
+            course_activity = self.courseactivity
+            if hasattr(course_activity, 'homeworkactivity'):
+                return course_activity.homeworkactivity
+            elif hasattr(course_activity, 'documentactivity'):
+                return course_activity.documentactivity
+            elif hasattr(course_activity, 'reviewactivity'):
+                return course_activity.reviewactivity
+            elif hasattr(course_activity, 'wikiactivity'):
+                return course_activity.wikiactivity
             else:
-                return self.courseactivity
+                return course_activity
 
     def can_view(self,user):
         activity_type = self.get_type()
@@ -1097,9 +1102,10 @@ class Activity(models.Model):
             tag = instance.forum_answer.post.tag
             return tag.can_view(user, instance.get_course())
         elif activity_type == "HomeworkActivity":
-            if instance.homework.course.students.filter(id=user.id).exists() \
-            or instance.homework.course.professors.filter(id=user.id).exists() \
-            or instance.homework.course.teaching_assistants.filter(id=user.id).exists():
+            course = instance.homework.course
+            if course.students.filter(id=user.id).exists() \
+            or course.professors.filter(id=user.id).exists() \
+            or course.teaching_assistants.filter(id=user.id).exists():
                 return True
             else:
                 return False
@@ -1133,6 +1139,64 @@ class Activity(models.Model):
             Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type=FORUM_COURSE, 
                 generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course=course)
             )).order_by('-timestamp')
+
+    @staticmethod
+    def dashboard_page_activities(user):
+        courses_enrolled = user.courses_enrolled
+        courses_managed = user.courses_managed
+        courses_assisted = user.courses_assisted
+
+        return Activity.objects.filter(
+            Q(
+                Q(  # Course Activities
+                    Q(courseactivity__course__in=courses_enrolled.all()) 
+                    | 
+                    Q(courseactivity__course__in=courses_managed.all()) 
+                    | 
+                    Q(courseactivity__course__in=courses_assisted.all())
+                )
+                |
+                Q(  # Forum Post Activities
+                    Q(  Q(generalactivity__forumpostactivity__forum_post__forum__forum_type=FORUM_COURSE),
+                        Q(  # Posts from Course Forums that belong to user's courses
+                            Q(generalactivity__forumpostactivity__forum_post__forum__forumcourse__course__in = courses_enrolled.all())
+                            |
+                            Q(generalactivity__forumpostactivity__forum_post__forum__forumcourse__course__in = courses_managed.all())
+                            |
+                            Q(generalactivity__forumpostactivity__forum_post__forum__forumcourse__course__in = courses_assisted.all())
+                        )       
+                    )
+                    |  # Posts the user is following
+                    Q ( generalactivity__forumpostactivity__forum_post__followed_by = user )
+                )
+                |
+                Q( # Forum Answer Activities
+                    Q(  Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type = FORUM_COURSE), 
+                        Q(  # Answers to posts from course forums that belong to user's courses
+                            Q(generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course__in = courses_enrolled.all() )
+                            |
+                            Q(generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course__in = courses_managed.all() )
+                            |
+                            Q(generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course__in = courses_assisted.all() )
+                        )
+                    )
+                    | # Answers to posts the user is following
+                    Q ( generalactivity__forumansweractivity__forum_answer__post__followed_by = user )
+                )        
+            ), 
+            ~Q(user=user) ).order_by('-timestamp')
+    
+    @staticmethod
+    def profile_page_activities(user):
+        activities = Activity.objects.filter(user=user)
+        activities = activities.filter(
+            ~Q(generalactivity__forumpostactivity__forum_post__anonymous=True),
+            ~Q(generalactivity__forumansweractivity__forum_answer__anonymous=True),
+            ~Q(courseactivity__reviewactivity__review__anonymous=True)
+        )
+        
+        return activities.order_by('-timestamp')
+
 
 class GeneralActivity(Activity):
     pass
