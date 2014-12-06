@@ -92,6 +92,14 @@ class Populator:
         for i in range(count):
             self.add_juser(USER_TYPE_STUDENT)
 
+    def populate_majors(self, count):  
+        for i in range(count):
+            major = self.random_word().capitalize() + " " + self.random_word().capitalize()
+            major_list = major.split()
+            abbreviation = major_list[0][0:2] + " " + major_list[1][0:2]
+            m = Major.objects.create(name=major, abbreviation=abbreviation)
+            m.save()
+        
     def populate_admins(self, count):
         for i in range(count):
             self.add_juser(USER_TYPE_ADMIN)
@@ -111,7 +119,9 @@ class Populator:
         name = fname + " " + lname
         abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
         univ = parent.university
-        category = Category(parent=parent, name=name, university=univ, level=level, abbreviation=abbreviation)
+        deadline = self.add_registration_deadline()
+        category = Category(parent=parent, name=name, university=univ, level=level, \
+                            abbreviation=abbreviation, registration_deadline=deadline)
         category.save()
 
     def populate_categories(self, count):
@@ -200,6 +210,76 @@ class Populator:
             for i in range(nr_registered):
                 is_approved = random.random() > 0.1
                 StudentCourseRegistration.objects.create(student=students[i], course=course, is_approved=is_approved)
+
+
+    def add_registration_deadline(self):
+        start = datetime.now() + timedelta(days=random.randint(-10,-1),hours=random.randint(7,22),minutes=random.randint(0,59))
+        deadline = datetime.now()
+        ddl = CourseRegistrationDeadline.objects.create(start=start, end=deadline)
+        ddl.save()
+        return ddl
+
+    def populate_course_documents(self):
+        courses = Course.objects.all()
+        for course in courses:
+            topics = course.course_topics.all()
+            students = course.students.all()
+            for topic in topics: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseDocument.objects.create(name=self.random_word().capitalize(), \
+                                                  description = 5 * self.random_word().capitalize(), \
+                                                  course_topic  = topic,\
+                                                  course = course,\
+                                                  submitter = s,\
+                                                  submit_time = datetime.now()).save()
+
+
+    def populate_course_homework_request(self):
+        courses = Course.objects.all()
+        for course in courses:
+            topics = course.course_topics.all()
+            students = course.students.all()
+            d = Deadline.objects.create(end=datetime.now())
+            d.save()
+            for topic in topics: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseHomeworkRequest.objects.create(name=self.random_word().capitalize(), \
+                                                         description = 5 * self.random_word().capitalize(), \
+                                                         course_topic  = topic,\
+                                                         course = course,\
+                                                         submitter = s,\
+                                                         deadline = d).save()
+
+
+    def populate_course_homework_submission(self):
+        courses = Course.objects.all()
+        for course in courses:
+            homework_requests = CourseHomeworkRequest.objects.filter(course=course)
+            students = course.students.all()
+            submit_time = datetime.now()
+            for homework_request in homework_requests: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseHomeworkSubmission.objects.create(name=self.random_word().capitalize(), \
+                                                         homework_request = homework_request,\
+                                                         course = course,\
+                                                         submit_time = submit_time,\
+                                                         submitter = s).save()
+
+
+
+    def populate_course_homework_grade(self):
+        homework_requests = CourseHomeworkRequest.objects.all()
+        students = jUser.objects.filter(user_type=0)
+        for homework_request in homework_requests: 
+            if random.randint(1,10) > 5 and len(students) > 0:
+                s = students[random.randint(0,len(students)-1)]
+                CourseHomeworkGrade.objects.create(homework_request = homework_request,\
+                                                   student =s,\
+                                                   submitter = s).save()
+
 
     def add_comment(self, course):
         comment = ""
