@@ -31,29 +31,35 @@ class SignupForm(forms.Form):
         errors = []
 
         if jUser.objects.filter(username = username, is_fake=False ).count() > 0:
-            errors.append(forms.ValidationError("A user with that username already exists."))
+            errors.append(forms.ValidationError("A user with that username already exists. Choose another one"))
         
         if jUser.objects.filter(email = email, is_fake = False).count() > 0:
-            errors.append(forms.ValidationError("A user with that e-mail address already exists."))
+            errors.append(forms.ValidationError("A user with that e-mail address already exists. Choose another one"))
         
         if password != password_confirmation:
-            errors.append(forms.ValidationError("Passwords do not match."))
+            errors.append(forms.ValidationError("Passwords do not match. Please try again"))
         
         if len(password) < 6:
-            errors.append(forms.ValidationError("Password is too short."))
+            errors.append(forms.ValidationError("Password is too short. Please enter at least 6 characters"))
         
-        cleaned_data['is_alumnus'] = False
+        if not email:
+            if errors:
+                raise forms.ValidationError(errors)
+            return cleaned_data
+
         try:
             emailID, domain = email.split('@')
+            university = University.objects.get(domains__name=domain)
+            cleaned_data['is_alumnus'] = False
             if Domain.objects.get(name=domain).domain_type == DOMAIN_TYPE_ALUMNI:
                 cleaned_data['is_alumnus'] = True
         except ValueError:
             errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
-
-        university = University.objects.get(domains__name=domain)
-        if not university:
+        except University.DoesNotExist:
             errors.append(forms.ValidationError("Sorry, we don't have any university with the domain of your \
                 e-mail address. Please check if you made any errors or come back soon."))
+        except Domain.DoesNotExist:
+            errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
 
         if errors:
             raise forms.ValidationError(errors)
@@ -65,10 +71,7 @@ class SignupForm(forms.Form):
 
         cleaned_data['university'] = university
 
-        print errors
-
         return cleaned_data
-
 
 
 

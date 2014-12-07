@@ -2,6 +2,8 @@ var WelcomePage = (function() {
     var me = { 
         settings: {
             registrationFormSelector: "#registration_form",
+            registerModal: $('#register_modal'),
+            signupErrors: $('.signup-errors'),
 
             firstNameSelector: "#fname",
             lastNameSelector: "#lname",
@@ -27,12 +29,15 @@ var WelcomePage = (function() {
             universityByEmailLink:'/university_by_email',
             checkUsernameLink: '/check_username',
             validateRegistrationLink: '/validate_registration'
-
         }
     }, s;
 
     me.init = function() {
         s = this.settings;
+
+        if (s.signupErrors.length > 0) {
+            s.registerModal.modal('show');
+        }
 
         this.bindUIActions();
     };

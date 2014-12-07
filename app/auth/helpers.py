@@ -4,6 +4,9 @@ from django.http import HttpRequest
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Q
 from django.template.loader import render_to_string
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 
 from app.models import *
 
@@ -26,6 +29,13 @@ def send_email_confirmation(request, user):
 
     send_mail("Connect.Academy Account Confirmation", message, "noreply@connect.academy", [user.email], fail_silently=False)
 
+def token_failed(request):
+    error_message = render_to_string("objects/notifications/auth/token_failed.html", {})
+    messages.error(request, error_message)
+    if request.user.is_authenticated:
+        return redirect( reverse("home") )
+    else:
+        return redirect( reverse("welcome") )
 
 class jUserBackend(object):
 
