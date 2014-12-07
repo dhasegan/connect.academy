@@ -13,12 +13,13 @@ from app.models import *
 from app.context_processors import *
 from app.forms import *
 
+
 def welcome(request):
     if request.user and request.user.is_authenticated():
         return redirect('/home')
 
     context = {
-        "page": "welcome",
+        "page": "welcome"
     }
     context.update(csrf(request))
     return render(request, "pages/welcome_page.html", context)

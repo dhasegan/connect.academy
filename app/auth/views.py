@@ -8,6 +8,7 @@ from django.core.files.temp import NamedTemporaryFile
 from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
@@ -22,6 +23,7 @@ from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
 from app.auth.specific_login import get_university
+
 
 @require_POST
 def login_action(request):
@@ -78,14 +80,15 @@ def login_action(request):
 
         if not auth_univ or user is None:
             # User not found neither on our database nor on campusnet
-            context['error'] = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
-            context['page'] = "welcome"
-            return render(request, "pages/welcome_page.html", context)
+            error_message = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
+            messages.error(request, error_message)
+            return redirect( reverse('welcome') )
 
     login(request, user)
     if new_user:
         return redirect( reverse('explore') )
     return redirect( reverse('dashboard') )
+
 
 
 @login_required
