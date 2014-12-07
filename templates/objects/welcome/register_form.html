@@ -1,7 +1,7 @@
 {% load i18n %}
 
 
-<div id="register_modal" class="modal fade in" tabindex="1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+<div id="register_modal" class="modal fade in" tabindex="1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="false" >
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -10,6 +10,16 @@
                 <h3 class="modal-title" id="registrationModalLabel"><b>{% trans "Register with Connect.Academy" %}</b></h3>
             </div>
             <div class="modal-body">
+                {% if signup_errors %}
+                <div class="alert alert-danger signup-errors">
+                    <ul>
+                        {% for error in signup_errors %}
+                            <li class="signup-error"> {{error}} </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
                 <!-- #### BEGIN -->
                 <div class="panel panel-default register-panel">
                     

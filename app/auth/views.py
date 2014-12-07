@@ -28,8 +28,6 @@ from app.auth.specific_login import get_university
 
 @require_POST
 def login_action(request):
-    context = {}
-    context.update(csrf(request))
     form = LoginForm(request.POST)
     if not form.is_valid():
         raise Http404
@@ -90,104 +88,17 @@ def login_action(request):
     return redirect( reverse('dashboard') )
 
 
-
-@login_required
-def logout_action(request):
-    logout(request)
-    return redirect('/')
-
-
-@require_GET
-@login_required
-def resend_confirmation_email(request):
-    user = request.user
-    if not user.email:
-        raise Http404
-
-    send_email_confirmation(request, user)
-    return HttpResponse()
-
-
-@require_http_methods(["POST", "GET"])
-@login_required
-def set_email(request):
-    context = {
-        "page": "set_email",
-    }
-    user = request.user
-
-    if user.email:
-        return redirect("/home")
-
-    if request.method == "GET":
-        return render(request, "pages/auth/set_email.html", context)
-
-    form = EmailConfirmationForm(request.POST)
-    if not form.is_valid():
-        context['error'] = form.non_field_errors
-        return render(request, "pages/auth/set_email.html", context)
-
-    email = form.cleaned_data["email"]
-    university = form.cleaned_data["university"]
-
-    user.university = university
-    user.email = email
-    user.save()
-
-    send_email_confirmation(request, user)
-    return redirect("/home")
-
-
-def validate_user(request, username, confirmation):
-    # Validate user based on username and confirmation hash
-    user = get_object_or_404(jUser, username=username)
-
-    if user.is_active:
-        return redirect("/")
-
-    if not default_token_generator.check_token(user, confirmation):
-        raise Http404
-
-    user.is_active = True
-    user.save()
-
-    return redirect("/")
-
-
-def delete_user(request, username, confirmation):
-    # If a user receives a confirmation e-mail, but they didn't sign up, they can delete their account by following
-    # the delete link.
-    context = {
-        "page": "delete"
-    }
-    users = jUser.objects.filter(username=username)
-    if not users:
-        context["success"] = "User successfully deleted. <br/>"
-        return render(request, "pages/welcome_page.html", context)
-
-    user = users[0]
-    if not default_token_generator.check_token(user, confirmation):
-        raise Http404
-
-    user.delete()
-    context["success"] = "User successfully deleted. <br/>"
-    return render(request, "pages/welcome_page.html", context)
-
-
 @require_POST
 def signup_action(request):
-    context = {}
-    context.update(csrf(request))
 
     form = SignupForm(request.POST)
-
     if not form.is_valid():
-        context['error'] = form.non_field_errors
-        return render(request, "pages/welcome_page.html", context)
+        error_message = serialize_form_errors(request, form, PREFIX_SIGNUP_ERROR)
+        messages.error(request, error_message, extra_tags="hidden")
+        return redirect( reverse('welcome') )
 
     username = form.cleaned_data["username"]
     password = form.cleaned_data["password"]
-    password_confirmation = form.cleaned_data["password_confirmation"]
     email = form.cleaned_data["email"]
     fname = form.cleaned_data["fname"]
     lname = form.cleaned_data["lname"]
@@ -204,35 +115,116 @@ def signup_action(request):
         user_type = USER_TYPE_STUDENT
 
     if has_fake_account:
-        user = jUser.objects.get(email = email)
-        print user.username
+        user = jUser.objects.get_object_or_404(email = email)
         user.set_password(password)
         # If they have chosen a different username, let them keep it if it is free
-        if username != user.username and jUser.objects.filter(username=username).count() == 0:
+        if username != user.username:
             user.username = username
         user.is_active = False
         user.is_fake = False
         user.save()
     else:
         # No user with the same email exists (no fake account)
-        same_username_count = jUser.objects.filter(username=username).count()
-        if same_username_count > 0:
-            context['page'] = 'welcome'
-            context['error'] = "A user with that username already exists. Please choose another one."
-            return render(request, "pages/welcome_page.html", context)
-        user = jUser.objects.create_user(username=username, user_type=user_type, password=password, email=email, university=university,
-                                     first_name=fname, last_name=lname)
-        
+        user = jUser.objects.create_user(username=username, user_type=user_type,
+                                    password=password, email=email, university=university,
+                                    first_name=fname, last_name=lname)
         user.is_active = False
         user.save()
+
     # Authenticate user
-    print 
     auth_user = authenticate(username=user.username, password=password)
     if auth_user is not None:
         login(request, auth_user)
         send_email_confirmation(request, request.user)
 
     return redirect('/')
+
+
+@login_required
+def logout_action(request):
+    logout(request)
+    return redirect('/')
+
+
+@require_GET
+@login_required
+def resend_confirmation_email(request):
+    user = request.user
+    if not user.email:
+        redirect( reverse('set_email') )
+
+    send_email_confirmation(request, user)
+    return HttpResponse()
+
+
+@require_http_methods(["POST", "GET"])
+@login_required
+def set_email(request):
+    context = {
+        "page": "set_email",
+    }
+    user = request.user
+
+    if user.email:
+        return redirect( reverse("home") )
+
+    if request.method == "GET":
+        return render(request, "pages/auth/set_email.html", context)
+
+    form = EmailConfirmationForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, form.non_field_errors)
+        return redirect( reverse('set_email') )
+
+    email = form.cleaned_data["email"]
+    university = form.cleaned_data["university"]
+
+    user.university = university
+    user.email = email
+    user.save()
+
+    send_email_confirmation(request, user)
+    return redirect( reverse("home") )
+
+
+def validate_user(request, username, confirmation):
+    # Validate users email based on username and confirmation hash
+    users = jUser.objects.filter(username=username)
+    if not users:
+        return token_failed(request)
+    user = users[0]
+
+    if user.is_active:
+        return redirect( reverse('home') )
+
+    if not default_token_generator.check_token(user, confirmation):
+        return token_failed(request)
+
+    user.is_active = True
+    user.save()
+
+    return redirect( reverse('home') )
+
+
+def delete_user(request, username, confirmation):
+    # If a user receives a confirmation e-mail, but they didn't sign up,
+    # they can delete their account by following the delete link.
+    message = render_to_string("objects/notifications/auth/user_deleted.html", {})
+
+    users = jUser.objects.filter(username=username)
+    if not users:
+        messages.success(request, message)
+        return redirect( reverse("welcome") )
+
+    user = users[0]
+    if not default_token_generator.check_token(user, confirmation):
+        return token_failed(request)
+
+    logout(request)
+    user.delete()
+
+    messages.success(request, message)
+    return redirect( reverse("welcome") )
 
 
 @require_GET
@@ -246,39 +238,30 @@ def university_by_email(request):
 #   "NotFound" if a university with that domain is not found
 
     email = request.GET["email"]
+    dict_error = {
+        "status": "Error"
+    }
 
     if len(email) == 0:
-        return_dict = {
-            "status": "Error",
-            "message": "E-mail cannot be empty"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "E-mail cannot be empty"
+        return HttpResponse(json.dumps(dict_error))
 
 
     if jUser.objects.filter(email=email, is_fake = False).count() > 0:
-        return_dict = {
-            "status": "Error",
-            "message": "E-mail address exists"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "E-mail address exists"
+        return HttpResponse(json.dumps(dict_error))
 
     try:
         _, domain = email.split("@")
     except ValueError as e:
-        return_dict = {
-            "status": "Error",
-            "message": "Not a valid e-mail address"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "Not a valid e-mail address"
+        return HttpResponse(json.dumps(dict_error))
 
     universities = University.objects.filter(domains__name=domain)
 
     if not universities:
-        return_dict = {
-            "status": "Error",
-            "message": "University not found"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "University not found"
+        return HttpResponse(json.dumps(dict_error))
     else:
         university = universities[0]
         return_dict = {
@@ -298,28 +281,23 @@ def check_username(request):
 #   "OK" if the username is available
     username_regex = re.compile("^[A-Za-z0-9\._-]{3,25}$")
     username = request.GET["username"]
+    dict_error = {
+        "status": "Error"
+    }
+
     if username == "":
-        return_dict = {
-            "status": "Error",
-            "message": "Username is required"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "Username is required"
+        return HttpResponse(json.dumps(dict_error))
     elif not username_regex.match(username):
-        return_dict = {
-            "status": "Error",
-            "message": "Username can only contain alphanumeric characters, underscores, hyphens or dots."
-        }
+        dict_error["message"] = "Username can only contain alphanumeric characters, underscores, hyphens or dots."
         if len(username) < 3:
-            return_dict['message'] = "Username cannot have less than 3 characters."
+            dict_error['message'] = "Username cannot have less than 3 characters."
         elif len(username) > 25:
-            return_dict['message'] = "Username cannot have more thatn 25 characters."
-        return HttpResponse(json.dumps(return_dict))
+            dict_error['message'] = "Username cannot have more thatn 25 characters."
+        return HttpResponse(json.dumps(dict_error))
     elif jUser.objects.filter(username=username, is_fake = False).count() > 0:
-        return_dict = {
-            "status": "Error",
-            "message": "Username exists"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "Username exists"
+        return HttpResponse(json.dumps(dict_error))
     else:
         return_dict = {
             "status": "OK",
@@ -338,103 +316,41 @@ def validate_registration(request):
     username = request.GET['username']
     email = request.GET['email']
     username_regex = re.compile("^[A-Za-z0-9\._-]{3,25}$")
+    dict_error = {
+        "status": "Error"
+    }
 
     try:
         _, domain = email.split('@')
     except ValueError:
-        return_dict = {
-            "status": "Error",
-            "message": "Not a valid e-mail address"
-        }
-        return HttpResponse(json.dumps(return_dict))
-
+        dict_error["message"] = "Not a valid e-mail address"
+        return HttpResponse(json.dumps(dict_error))
     if jUser.objects.filter(email=email, is_fake=False).count() > 0:
-        return_dict = {
-            "status": "Error",
-            "message": "E-mail address exists"
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "E-mail address exists"
+        return HttpResponse(json.dumps(dict_error))
     elif not username_regex.match(username):
-        return_dict = {
-            "status": "Error",
-            "message": "Username not valid."
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "Username not valid."
+        return HttpResponse(json.dumps(dict_error))
     elif jUser.objects.filter(username=username, is_fake = False).count() > 0:
-        return_dict = {
-            "status": "Error",
-            "message": "Username exists."
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "Username exists."
+        return HttpResponse(json.dumps(dict_error))
     elif University.objects.filter(domains__name=domain).count() == 0:
-        return_dict = {
-            "status": "Error",
-            "message": "University not found"
-        }
-        return HttpResponse(json.dumps(return_dict))
-    else:
-        return_dict = {
-            "status": "OK",
-        }
-        return HttpResponse(json.dumps(return_dict))
+        dict_error["message"] = "University not found"
+        return HttpResponse(json.dumps(dict_error))
 
-
-@require_POST
-@require_active_user
-@login_required
-def approve_student_registrations(request):
-    context = {
-        'page': 'approve_student_registrations',
+    return_dict = {
+        "status": "OK",
     }
-    context.update(csrf(request))
+    return HttpResponse(json.dumps(return_dict))
 
-    # Make sure the logged in user is allowed to approve these registrations
-    user = request.user
-    course_id = request.POST['course']
-    courses = Course.objects.filter(id=course_id)
-    if courses is None:
-        raise Http404
-    else:
-        course = courses[0]
-    registrations = ProfessorCourseRegistration.objects.filter(course=course, professor=user, is_approved=True)
-    if registrations is None:
-        raise Http404
-
-    # At this point we know that an approved professor of the course
-    # is attempting to approve sudent registrations
-
-    # Approve each registration
-    for key, val in request.POST.items():
-        if 'student' in key:
-            _, student_id = key.split('-')
-            registrations = StudentCourseRegistration.objects.filter(course_id=course_id,
-                                                                     student_id=student_id,
-                                                                     is_approved=False)
-            if registrations is not None:
-                registration = registrations[0]
-            else:
-                raise Http404
-
-            # Approve registration
-            if val:
-                registration.is_approved = True
-                registration.save()
-
-    get_params = "?page=teacher"
-    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
 
 @require_POST
 def send_email_pw_reset(request):
-    context = {
-        "page": "welcome"
-    }
-    context.update(csrf(request))
-
     form = EmailPasswordResetForm(request.POST)
 
     if not form.is_valid():
-        context['error'] = form.non_field_errors
-        return render(request, "pages/welcome_page.html" , context)
+        messages.error(request, "There is no such user registered with that email.")
+        return redirect( reverse('welcome') )
 
     user = form.cleaned_data['user']
     token = default_token_generator.make_token(user)
@@ -448,10 +364,9 @@ def send_email_pw_reset(request):
 
     send_mail("Reset your password on connect.academy", email_body, "noreply@connect.academy", [user.email], fail_silently=False)
 
-    context["success"] = render_to_string("objects/notifications/auth/pw_reset_email_sent.html", {})
-
-    return render(request, "pages/welcome_page.html", context)
-
+    success_message = render_to_string("objects/notifications/auth/pw_reset_email_sent.html", {})
+    messages.success(request, success_message)
+    return redirect( reverse('welcome') )
 
 
 def password_reset(request, username, token):
@@ -460,7 +375,6 @@ def password_reset(request, username, token):
         "reset_password": True,
         "page_id": "reset_password"
     }
-    context.update(csrf(request))
 
     user = get_object_or_404(jUser, username=username)
     if not default_token_generator.check_token(user, token):
@@ -476,7 +390,6 @@ def new_password(request):
     context = {
         "page": "user_account",
     }
-    context.update(csrf(request))
 
     user = request.user
     form = NewPasswordForm(request.POST)
@@ -486,7 +399,6 @@ def new_password(request):
         context["page_id"] = "reset_password"
         context["error"] = form.non_field_errors
         return render(request, "pages/auth/user_account.html", context)
-
     
     user.set_password(form.cleaned_data['new_pass'])
     user.save()

@@ -611,6 +611,49 @@ def register_course(request, slug):
 @require_POST
 @require_active_user
 @login_required
+def approve_student_registrations(request):
+    # Make sure the logged in user is allowed to approve these registrations
+    user = request.user
+    course_id = request.POST['course']
+    courses = Course.objects.filter(id=course_id)
+    if not courses:
+        raise Http404
+
+    course = courses[0]
+    is_registered = ProfessorCourseRegistration.objects.filter(
+                    course=course, professor=user, is_approved=True).count()
+    if not is_registered:
+        raise Http404
+
+    # At this point we know that an approved professor of the course
+    # is attempting to approve student registrations
+
+    unregistered = 0
+    # Approve each registration
+    for key, val in request.POST.items():
+        if 'student' in key:
+            _, student_id = key.split('-')
+            registrations = StudentCourseRegistration.objects.filter(
+                            course_id=course_id, student_id=student_id, is_approved=False).count()
+            if registrations:
+                unregistered += 1
+
+            # Approve registration
+            if val:
+                registration = registrations[0]
+                registration.is_approved = True
+                registration.save()
+
+    if unregistered:
+        warning_message = "There were " + unregistered + " registrations that failed. Please try again."
+        messages.warning(warning_message)
+    get_params = "?page=teacher"
+    return redirect( reverse('course_page', args=(course.slug,)) + get_params )
+
+
+@require_POST
+@require_active_user
+@login_required
 def send_mass_email(request, slug):
     course = get_object_or_404(Course, slug=slug)
     context = {
