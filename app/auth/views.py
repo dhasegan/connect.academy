@@ -23,6 +23,7 @@ from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
 from app.messages import *
+from app.helpers import *
 from app.auth.specific_login import get_university
 
 
@@ -371,7 +372,7 @@ def send_email_pw_reset(request):
 
 def password_reset(request, username, token):
     context = {
-        "page": "user_account",
+        "page": "manage_account",
         "reset_password": True,
         "page_id": "reset_password"
     }
@@ -384,11 +385,11 @@ def password_reset(request, username, token):
     user.backend = "app.auth.helpers.jUserBackend"
     login(request,user)
 
-    return render(request, "pages/auth/user_account.html", context)
+    return render(request, "pages/auth/manage_account.html", context)
 
 def new_password(request):
     context = {
-        "page": "user_account",
+        "page": "manage_account",
     }
 
     user = request.user
@@ -398,11 +399,11 @@ def new_password(request):
         context["reset_password"] = True
         context["page_id"] = "reset_password"
         context["error"] = form.non_field_errors
-        return render(request, "pages/auth/user_account.html", context)
+        return render(request, "pages/auth/manage_account.html", context)
     
     user.set_password(form.cleaned_data['new_pass'])
     user.save()
 
     context["success"] = "Your password has been changed successfully"
 
-    return render(request, "pages/auth/user_account.html", context)
+    return render(request, "pages/auth/manage_account.html", context)
