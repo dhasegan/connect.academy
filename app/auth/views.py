@@ -22,6 +22,7 @@ from app.models import *
 from app.auth.forms import *
 from app.auth.helpers import *
 from app.decorators import *
+from app.messages import *
 from app.auth.specific_login import get_university
 
 
@@ -45,8 +46,8 @@ def login_action(request):
         if auth_univ:
             # CN success
             if not login_user in settings.JACOBS_USER_DETAILS:
-                context['error'] = render_to_string("objects/notifications/auth/CN_connected_but_no_email.html", {})
-                return render(request, "pages/welcome_page.html", context)
+                messages.error(request, UNIV_CONNECTEDED_NO_EMAIL, extra_tags="hidden")
+                return redirect( reverse('welcome') )
             users = jUser.objects.filter(username=login_user)
             if not users:
                 university = University.objects.get(name=auth_univ["name"])
@@ -80,8 +81,7 @@ def login_action(request):
 
         if not auth_univ or user is None:
             # User not found neither on our database nor on campusnet
-            error_message = render_to_string("objects/notifications/auth/wrong_username_or_password.html", {})
-            messages.error(request, error_message)
+            messages.error(request, WRONG_USERNAME_OR_PASSWORD, extra_tags="hidden")
             return redirect( reverse('welcome') )
 
     login(request, user)

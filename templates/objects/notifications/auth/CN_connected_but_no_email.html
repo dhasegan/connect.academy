@@ -1,2 +1,2 @@
 {% load i18n %}
-{% trans "You successfully connected to Campus Net, but we do not have your email address. To create an account, please register below!" %}
+{% blocktrans with start_link='<a data-toggle="modal" href="#register_modal">' end_link='</a>' %}You successfully connected to Campus Net, but we do not have your email address. To create an account, please register {{start_link}}here{{end_link}}!{% endblocktrans %}

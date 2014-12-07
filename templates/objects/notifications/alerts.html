@@ -21,9 +21,11 @@
 
 {% if messages %}
     {% for message in messages %}
-        <div class="alert dismissable-alert fade in {% if message.tags == 'error' %} alert-danger {% else %} alert-{{message.tags}} {% endif %}">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message }}
-        </div>
+        {% if not message.extra_tags == "hidden" %}
+            <div class="alert dismissable-alert fade in {% if message.level_tag == 'error' %} alert-danger {% else %} alert-{{message.level_tag}} {% endif %}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ message }}
+            </div>
+        {% endif %}
     {% endfor %}
 {% endif %}
