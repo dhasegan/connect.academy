@@ -1,8 +1,11 @@
 import random
-
 from django.db import IntegrityError
-
 from app.models import *
+from django.contrib.contenttypes.models import ContentType
+from versioning.models import Revision
+import inspect
+import sys
+
 
 class Populator:
 
@@ -74,6 +77,7 @@ class Populator:
         active = True
         password = "1234"
         domain = university.domains.all()[0]
+        major = Major.objects.all()[random.randint(0,Major.objects.all().count()-1)]
         email = username + "@" + domain.name
         user = jUser.objects.create_user(username=username, password=password,
                                          email=email, first_name=fname, last_name=lname,
@@ -81,6 +85,7 @@ class Populator:
         if user_type == 1:
             user.is_confirmed = True
         
+        user.majors.add(major)
         user.save()
         return user # needed by add_admin()
 
@@ -92,6 +97,14 @@ class Populator:
         for i in range(count):
             self.add_juser(USER_TYPE_STUDENT)
 
+    def populate_majors(self, count):  
+        for i in range(count):
+            major = self.random_word().capitalize() + " " + self.random_word().capitalize()
+            major_list = major.split()
+            abbreviation = major_list[0][0:2] + " " + major_list[1][0:2]
+            m = Major.objects.create(name=major, abbreviation=abbreviation)
+            m.save()
+        
     def populate_admins(self, count):
         for i in range(count):
             self.add_juser(USER_TYPE_ADMIN)
@@ -111,7 +124,9 @@ class Populator:
         name = fname + " " + lname
         abbreviation = fname[0:min(len(fname), 4)] + lname[0:min(len(lname), 4)]
         univ = parent.university
-        category = Category(parent=parent, name=name, university=univ, level=level, abbreviation=abbreviation)
+        deadline = self.add_registration_deadline()
+        category = Category(parent=parent, name=name, university=univ, level=level, \
+                            abbreviation=abbreviation, registration_deadline=deadline)
         category.save()
 
     def populate_categories(self, count):
@@ -200,6 +215,76 @@ class Populator:
             for i in range(nr_registered):
                 is_approved = random.random() > 0.1
                 StudentCourseRegistration.objects.create(student=students[i], course=course, is_approved=is_approved)
+
+
+    def add_registration_deadline(self):
+        start = datetime.now() + timedelta(days=random.randint(-10,-1),hours=random.randint(7,22),minutes=random.randint(0,59))
+        deadline = datetime.now()
+        ddl = CourseRegistrationDeadline.objects.create(start=start, end=deadline)
+        ddl.save()
+        return ddl
+
+    def populate_course_documents(self):
+        courses = Course.objects.all()
+        for course in courses:
+            topics = course.course_topics.all()
+            students = course.students.all()
+            for topic in topics: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseDocument.objects.create(name=self.random_word().capitalize(), \
+                                                  description = 5 * self.random_word().capitalize(), \
+                                                  course_topic  = topic,\
+                                                  course = course,\
+                                                  submitter = s,\
+                                                  submit_time = datetime.now()).save()
+
+
+    def populate_course_homework_request(self):
+        courses = Course.objects.all()
+        for course in courses:
+            topics = course.course_topics.all()
+            students = course.students.all()
+            d = Deadline.objects.create(end=datetime.now())
+            d.save()
+            for topic in topics: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseHomeworkRequest.objects.create(name=self.random_word().capitalize(), \
+                                                         description = 5 * self.random_word().capitalize(), \
+                                                         course_topic  = topic,\
+                                                         course = course,\
+                                                         submitter = s,\
+                                                         deadline = d).save()
+
+
+    def populate_course_homework_submission(self):
+        courses = Course.objects.all()
+        for course in courses:
+            homework_requests = CourseHomeworkRequest.objects.filter(course=course)
+            students = course.students.all()
+            submit_time = datetime.now()
+            for homework_request in homework_requests: 
+                if random.randint(1,10) > 5 and len(students) > 0:
+                    s = students[random.randint(0,len(students)-1)]
+                    CourseHomeworkSubmission.objects.create(name=self.random_word().capitalize(), \
+                                                         homework_request = homework_request,\
+                                                         course = course,\
+                                                         submit_time = submit_time,\
+                                                         submitter = s).save()
+
+
+
+    def populate_course_homework_grade(self):
+        homework_requests = CourseHomeworkRequest.objects.all()
+        students = jUser.objects.filter(user_type=0)
+        for homework_request in homework_requests: 
+            if random.randint(1,10) > 5 and len(students) > 0:
+                s = students[random.randint(0,len(students)-1)]
+                CourseHomeworkGrade.objects.create(homework_request = homework_request,\
+                                                   student =s,\
+                                                   submitter = s).save()
+
 
     def add_comment(self, course):
         comment = ""
@@ -322,7 +407,7 @@ class Populator:
     def populate_forum_upvotes_object(self, obj, students):
         random.shuffle(students)
         nr_students = len(students)
-        for i in range( random.randint(0, nr_students/2-1) ):
+        for i in range( random.randint(1, nr_students/2-1) ):
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
@@ -350,7 +435,6 @@ class Populator:
             raise IntegrityError("Please load the initial data fixture!")
         if len(jUser.objects.all()) < 2:
             raise IntegrityError("Please load the initial data fixture!")
-
         if nr_courses + len(Course.objects.all()) > 0 \
             and (nr_professors + len(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR)) <= 0):
             raise RuntimeError("Not enough professors in the DB")
@@ -365,15 +449,20 @@ class Populator:
         if nr_forum_answers > 0 and nr_forum_posts + len(ForumPost.objects.all()) <= 0:
             raise RuntimeError("Not enough forum posts in the DB for the forum answers")
 
-    def populate_database(self, nr_universities=0, nr_students=0, nr_categories=0,
+    def populate_database(self, nr_universities=0, nr_students=0, nr_majors=0, nr_categories=0,
                           nr_professors=0, nr_courses=0, nr_reviews=0, nr_ratings=0,
-                          nr_forum_posts=0, nr_forum_answers=0):
+                          nr_forum_posts=0, nr_forum_answers=0, nr_homework_requests=0, nr_homework_submissions=0,
+                          nr_homework_grades=0, nr_wikis=0, nr_wiki_contributions=0):
 
         print "check_dependencies... "
         self.check_dependencies(nr_universities=nr_universities, nr_students=nr_students, nr_categories=nr_categories,
                                 nr_professors=nr_professors, nr_courses=nr_courses, nr_reviews=nr_reviews,
                                 nr_ratings=nr_ratings, nr_forum_posts=nr_forum_posts, nr_forum_answers=nr_forum_answers)
         print "ok"
+
+        if nr_majors: print "populate majors...."
+        self.populate_majors(nr_majors)
+        if nr_majors: print "ok"
 
         if nr_universities: print "populate_universities... "
         self.populate_universities(nr_universities)
@@ -395,6 +484,27 @@ class Populator:
         self.populate_courses(nr_courses)
         if nr_courses: print "ok"
 
+        if nr_homework_requests: print "populate homework_request..."
+        self.populate_course_homework_request()
+        if nr_homework_requests: print "ok"
+
+        if nr_homework_submissions: print "populate homework_submissions..."
+        self.populate_course_homework_submission()
+        if nr_homework_submissions: print "ok"
+
+        if nr_homework_grades: print "populate homework_grades...."
+        self.populate_course_homework_grade()
+        if nr_homework_grades: print "ok"
+
+        if nr_wikis > 0: 
+            print "populate wikis...."
+            self.populate_wiki_page()
+        if nr_wikis: print "ok"
+
+        if nr_wiki_contributions: print "populate wiki contributions...."
+        self.populate_wiki_contributions()
+        if nr_wiki_contributions: print "ok"
+
         if nr_reviews: print "populate_comments... "
         self.populate_comments(nr_reviews)
         if nr_reviews: print "ok"
@@ -415,8 +525,9 @@ class Populator:
     @staticmethod
     def populate_small():
         populator = Populator()
-        populator.populate_database(nr_universities=2, nr_students=200, nr_categories=20,
-            nr_professors=20, nr_courses=15, nr_reviews=20, nr_ratings=100)
+        populator.populate_database(nr_universities=2, nr_students=200, nr_majors= 30, nr_categories=20,
+            nr_professors=20, nr_courses=15, nr_reviews=20, nr_ratings=100,  nr_homework_requests=1,
+            nr_homework_submissions=1, nr_homework_grades=1, nr_wikis=1, nr_wiki_contributions=1 )
 
         print "populate_registrations... "
         populator.populate_registrations()
@@ -436,8 +547,9 @@ class Populator:
     @staticmethod
     def populate_xsmall():
         populator = Populator()
-        populator.populate_database(nr_universities=1, nr_students=40, nr_categories=15,
-            nr_professors=10, nr_courses=10, nr_reviews=20, nr_ratings=30)
+        populator.populate_database(nr_universities=1, nr_students=40, nr_majors= 30, nr_categories=15,
+            nr_professors=10, nr_courses=10, nr_reviews=20, nr_ratings=30, nr_homework_requests=1,
+            nr_homework_submissions=1, nr_homework_grades=1, nr_wikis=1, nr_wiki_contributions=1)
 
         print "populate_registrations... "
         populator.populate_registrations()
@@ -519,3 +631,28 @@ class Populator:
 
         if status_course and status_person:
             print "\tSuccessfully populated the appointment tables"
+
+
+    def populate_wiki_page(self):
+        courses = Course.objects.all()
+        for course in courses: 
+            if random.randint(1,10) > 5:
+                wiki = ""
+                for i in range(50):
+                    wiki = wiki + " " + self.random_word().capitalize()
+                WikiPage.objects.create(course=course, content=wiki)
+
+
+    def populate_wiki_contributions(self):
+        users = jUser.objects.all()
+        wikis = WikiPage.objects.all()
+        for wiki in wikis:
+            user = users[random.randint(0, len(users)-1)]
+            wiki.content += " REVISED"
+            wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
+            content_object = wiki_ctype.get_object_for_this_type(pk=wiki.id)
+            revision = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk).latest('created_at')
+            WikiContributions.objects.create(wiki=wiki, user=user, revision=revision).save()
+
+
+

@@ -4,6 +4,7 @@ from django.core.context_processors import csrf
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages import get_messages
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.conf import settings
@@ -12,14 +13,28 @@ from django.core.urlresolvers import reverse
 from app.models import *
 from app.context_processors import *
 from app.forms import *
+from app.messages import *
+
 
 def welcome(request):
     if request.user and request.user.is_authenticated():
         return redirect('/home')
 
     context = {
-        "page": "welcome",
+        "page": "welcome"
     }
+
+    for message in get_messages(request):
+        if message.extra_tags == "hidden":
+            if message.message == WRONG_USERNAME_OR_PASSWORD:
+                context['error'] = render_to_string(
+                    "objects/notifications/auth/wrong_username_or_password.html", {})
+            if message.message == UNIV_CONNECTEDED_NO_EMAIL:
+                context['error'] = render_to_string(
+                    "objects/notifications/auth/CN_connected_but_no_email.html", {})
+            if message.message.startswith(PREFIX_SIGNUP_ERROR):
+                    context['signup_errors'] = message.message.replace(PREFIX_SIGNUP_ERROR, "").split("<!>")
+
     context.update(csrf(request))
     return render(request, "pages/welcome_page.html", context)
 

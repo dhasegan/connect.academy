@@ -18,3 +18,14 @@
         {{ error | safe }}
     </div>
 {% endif %}
+
+{% if messages %}
+    {% for message in messages %}
+        {% if not message.extra_tags == "hidden" %}
+            <div class="alert dismissable-alert fade in  {% if 'error' in message.tags %} alert-danger {% elif 'success' in message.tags %} alert-success {% elif 'warning' in message.tags %} alert-warning {% elif 'info' in message.tags %} alert-info {% else %} alert-info {% endif %}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}

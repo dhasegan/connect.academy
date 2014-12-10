@@ -49,8 +49,6 @@ var ProfilePage = (function() {
             event.preventDefault();
             var csrf = $.cookie('csrftoken');
             var summary = $(s.summaryContentSelector).html();
-            window.console.log(summary);
-            window.console.log(me.br2nl(summary));
             $(s.summaryContainerSelector).empty();
             s['summary_form_html'] = "<form id='edit-summary-form' method='POST' action='/edit_profile_summary'>";
             s['summary_form_html'] +=        "<input type='hidden' name='csrfmiddlewaretoken' value='" + csrf + "'/>";
