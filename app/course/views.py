@@ -19,6 +19,7 @@ from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.template.loader import render_to_string
@@ -60,20 +61,26 @@ def course_page(request, slug):
 
     if 'post' in request.GET and request.GET['post']:
         post_id = int(request.GET['post'])
-        posts = ForumPost.objects.filter(id=post_id)
-        if len(posts) and posts[0].forum.id == forum.id:
-            context['current_post'] = post_id
-            if 'current_tab' not in context:
-                context['current_tab'] = 'connect'
+        try:
+            post = ForumPost.objects.get(id=post_id)
+            if post.forum_id == forum.id:
+                context['current_post'] = post_id
+                if 'current_tab' not in context:
+                    context['current_tab'] = 'connect'
+        except ObjectDoesNotExist:
+            pass
 
     if 'answer' in request.GET and request.GET['answer']:
         answer_id = int(request.GET['answer'])
-        answers = ForumAnswer.objects.filter(id=answer_id)
-        if len(answers) and answers[0].post.forum.id == forum.id:
-            context['current_post'] = answers[0].post.id
-            context['current_answer'] = answer_id
-            if 'current_tab' not in context:
-                context['current_tab'] = 'connect'
+        try:
+            answer = ForumAnswer.objects.get(id=answer_id)
+            if answer.post.forum_id == forum.id:
+                context['current_post'] = answer.post_id
+                context['current_answer'] = answer_id
+                if 'current_tab' not in context:
+                    context['current_tab'] = 'connect'
+        except ObjectDoesNotExist:
+            pass
 
 
     if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
@@ -130,7 +137,7 @@ def submit_review(request, slug):
     }
     response_data = {}
     response_data['html'] = render_to_string("objects/course/review.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return StreamingHttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_POST
@@ -152,24 +159,21 @@ def rate_course(request, slug):
     rating_type = form.cleaned_data['rating_type']
 
     if rating_type != PROFESSOR_R:
-        ratings = Rating.objects.filter(user=user, course=course, rating_type=rating_type)
-        if len(ratings) == 0:
-            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type)
-            rating.save()
-        else:
-            rating = ratings[0]
+        try:
+            rating = Rating.objects.get(user=user, course=course, rating_type=rating_type)
             rating.rating = rating_value
-            rating.save()
+        except ObjectDoesNotExist:
+            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type)    
+        rating.save()
+            
     else:
         prof = form.cleaned_data['prof']
-        ratings = Rating.objects.filter(user=user, course=course, rating_type=rating_type, professor=prof)
-        if len(ratings) == 0:
-            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type, professor=prof)
-            rating.save()
-        else:
-            rating = ratings[0]
+        try:
+            rating = Rating.objects.get(user=user, course=course, rating_type=rating_type, professor=prof)
             rating.rating = rating_value
-            rating.save()
+        except ObjectDoesNotExist:
+            rating = Rating(user=user, course=course, rating=rating_value, rating_type=rating_type, professor=prof)            
+        rating.save()
 
 
     context = {
@@ -178,7 +182,7 @@ def rate_course(request, slug):
     }
     response_data = {}
     response_data['ratings'] = render_to_string("objects/course/ratings.html", RequestContext(request, context))
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return StreamingHttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 @require_GET
@@ -193,7 +197,7 @@ def view_document(request, slug, document_id):
         or user.is_admin_of(course) or user.is_assistant_of(course)):
             raise Http404
 
-    if not document.course == course:
+    if document.course_id != course.id:
         raise Http404
 
     # Document filename
@@ -202,9 +206,9 @@ def view_document(request, slug, document_id):
     display_name = document.name + fileExtension
 
     # In development only
-    if settings.DEBUG:
+    if settings.DEBUG: 
         content_type = guess_type(filename)
-        return HttpResponse(document.document, content_type=content_type)
+        return StreamingHttpResponse(document.document, content_type=content_type)
 
     conn = boto.connect_s3()
     bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
@@ -334,9 +338,7 @@ def submit_homework(request, slug):
         docfile = form.cleaned_data.get('document' + str(idx))
         if docfile:
             # Delete previous
-            previous_homework = CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request, file_number=idx)
-            for prev_hw in previous_homework:
-                prev_hw.delete()
+            CourseHomeworkSubmission.objects.filter(submitter=user, homework_request=homework_request, file_number=idx).delete()
             # Create new
             course_homework = CourseHomeworkSubmission(document=docfile, course=form.cleaned_data['course'],
                                                        submitter=user, homework_request=homework_request, file_number=idx)
@@ -458,23 +460,23 @@ def submit_homework_grades(request, slug):
                 field_name = st.username + "-" + str(idx)
                 grade = form.cleaned_data.get(field_name)
                 if grade:
-                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
-                    if not hw_grades:
-                        grade = CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
-                                                                   submitter=user, is_published=False, grade=grade)
-                        subms = CourseHomeworkSubmission.objects.filter(submitter=st, file_number=idx, homework_request=hw)
-                        if subms:
-                            grade.submission = subms[0]
-                            grade.save()
-                    else:
-                        hw_grade = hw_grades[0]
+                    try:
+                        hw_grade = CourseHomeworkGrade.objects.get(student=st, file_number=idx, homework_request=hw)
                         hw_grade.grade = grade
                         hw_grade.submitter = user
-                        hw_grade.save()
+                    except ObjectDoesNotExist:
+                        hw_grade = CourseHomeworkGrade.objects.create(student=st, file_number=idx, homework_request=hw,
+                                                                   submitter=user, is_published=False, grade=grade)
+                        try:
+                            subm = CourseHomeworkSubmission.objects.get(submitter=st, file_number=idx, homework_request=hw)
+                            hw_grade.submission = subm
+                        except ObjectDoesNotExist:
+                            pass # TODO: Add an error message about the user submitting a grade for an inexistent hw submission.
+                        
+                    hw_grade.save()
                 else:
-                    hw_grades = CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw)
-                    if hw_grades:
-                        hw_grades[0].delete()
+                    CourseHomeworkGrade.objects.filter(student=st, file_number=idx, homework_request=hw).delete()
+
 
 
     if form.cleaned_data.get('publish'):

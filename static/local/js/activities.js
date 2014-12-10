@@ -1,7 +1,7 @@
 var Activities = (function() {
     var me = {
         settings: {
-        	activities: $(".recent_activities"),
+        	activities: $(".activity-timeline"),
             isProfilePage: $('.profile-page').length > 0,
             isCoursePage: $('.course-page').length > 0,
             isDashboardPage: $('.dashboard-page').length > 0,
@@ -11,19 +11,21 @@ var Activities = (function() {
             course_wiki_tab: $("#course-wiki-tab"),
             course_forum_tab: $("#course-forum-tab"),
             course_resources_tab: $("#course-resources-tab"),
+            loading_activities_img: $("#loading-activities-gif"),
+            
         },
         global_variables: {
-        	oldest_activity_id: null
+            no_more: false, // No more (older) activities to load?
+        	oldest_activity_id: null,
+            busy: false
         }
     }, s, globals;
 
     me.init = function() {
     	s = this.settings;
-        this.global_variables.oldest_activity_id = ConnectGlobal.getCookie(s.oldest_activity_id_cookie);
+        this.global_variables.oldest_activity_id = ConnectGlobal.getCookieAndDelete(s.oldest_activity_id_cookie);
     	globals = this.global_variables;
-        console.log("cookie:" + globals.oldest_activity_id);
-        ConnectGlobal.deleteCookie(s.oldest_activity_id_cookie);
-                
+  
     	this.bindUIActions();
     };
 
@@ -46,6 +48,8 @@ var Activities = (function() {
                 action = 'load_new_profile_activities';
             }
 
+            // In the course page, only load new activities when the user is on the activity tab
+            // In other pages, always load new activities
             if (me.isTabActive(s.course_activity_tab) || !s.isCoursePage) {
                 $.ajax({ 
                     type: "GET",
@@ -80,7 +84,7 @@ var Activities = (function() {
 
     	/* Load more activities when reaching the bottom of the page */
     	$(document).scroll(function () {
-            if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 1)) {
+            if ($(window).scrollTop() == ($(document).height() - $(window).height())) {
                 /* Load more activities */
                 var action;
                 if (s.isDashboardPage) {
@@ -92,7 +96,11 @@ var Activities = (function() {
                 else if (s.isProfilePage) {
                     action = 'load_profile_activities';
                 }
-                if (me.isTabActive(s.course_activity_tab) || !s.isCoursePage) {
+                // In the course page, only load more activities when the user is on the activity tab
+                // In other pages, always load more activities as long as the server doesn't return empty html
+                if ((me.isTabActive(s.course_activity_tab) || !s.isCoursePage) && !globals.no_more && !globals.busy) {
+                    globals.busy = true;
+                    s.loading_activities_img.show();
                     $.ajax({
                         type: "GET",
                         url: action,
@@ -103,15 +111,23 @@ var Activities = (function() {
                             html = json_data.html;
                             if (status == "OK") {
                                 if (html != "") {
-                                    console.log(ConnectGlobal.getCookie(s.oldest_activity_id_cookie));
-                                    globals.oldest_activity_id = ConnectGlobal.getCookie(s.oldest_activity_id_cookie);
-                                    ConnectGlobal.deleteCookie(s.oldest_activity_id_cookie);
+                                    oldest_activity = ConnectGlobal.getCookieAndDelete(s.oldest_activity_id_cookie);
+                                    if (oldest_activity) {
+                                        globals.oldest_activity_id = oldest_activity;
+                                    }
                                     s.activities.append(html);
+                                }
+                                else  {
+                                    globals.no_more = true;
                                 }
                             }
                         },
                         error: function() {
                             //fail silently
+                        },
+                        complete: function() {
+                            s.loading_activities_img.hide();
+                            globals.busy=false;
                         }
                     });
                 }

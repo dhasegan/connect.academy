@@ -1,4 +1,3 @@
-// Bootstrap variables and mixins
 @import "../../bootstrap/stylesheets/bootstrap/variables";
 @import "../../bootstrap/stylesheets/bootstrap/mixins";
 
@@ -702,6 +701,9 @@ $tables-margin-left:            20px;
     }
 }
 
+
+
+
 // Profile page
 
 $profile-picture-max-width: 300px;
@@ -768,7 +770,15 @@ $profile-picture-height: 200px;
     }
 }
 
+
 // Activity timelines
+.recent_activities {
+    #loading-activities-gif {
+        display: none;
+        width: 30px;
+    }
+}
+
 .activity-timeline {
     .activity {
         .end-of-activity {

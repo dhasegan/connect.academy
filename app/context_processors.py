@@ -35,7 +35,7 @@ def dashboard_activities(request,user):
     last_id = request.GET.get('last_id', None)
     ACTIVITIES_PER_PAGE = 20
 
-    # Get the (unevaluated) course page activities list
+    # Get the (unevaluated) dashboard activities queryset
     activities_queryset = Activity.dashboard_page_activities(user)
     if last_id is not None:
         activities_queryset = activities_queryset.filter(id__lt=last_id)
@@ -53,7 +53,7 @@ def new_dashboard_activities(request,user):
     logged_in_user = request.user.juser # Should normally always be the same as user, adding this as a safety check
     last_id = long(request.GET.get('last_id', 0))
     
-    # Course activities 
+    # Dashboard activities 
     activities_list = Activity.dashboard_page_activities(user).filter(id__gt=last_id)
     activities_list = [a for a in activities_list if a.can_view(logged_in_user)]
 

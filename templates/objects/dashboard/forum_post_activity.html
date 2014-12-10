@@ -28,7 +28,7 @@
                             {% else %}
                                 <a href="{% url 'forum_general' %}?post={{post.question.id}}"> Connect </a>
                             {% endif %}
-                            <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>
+                            
                             {% trans "under" %} 
                             {% with post.question.tag as tag %}
                               
@@ -37,6 +37,7 @@
                                 {% endwith %}
 
                             {% endwith %}
+                            <small class='text-muted'> {{ activity.timestamp|naturaltime }} </small>
                             
                             
                         </div>

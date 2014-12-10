@@ -98,7 +98,7 @@ var ConnectGlobal = (function() {
         d.setTime(d.getTime() + (days*24*60*60*1000) + (hours*60*60*1000) + (min*60*1000) + (sec*1000));
         var expires = "expires="+d.toUTCString();
         document.cookie = cname + "=" + cvalue + "; " + expires;
-    }
+    };
 
     me.getCookie = function(cname) {
         var name = cname + "=";
@@ -109,7 +109,7 @@ var ConnectGlobal = (function() {
             if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
         }
         return "";
-    }
+    };
 
     me.checkCookie = function(cname) {
         var cvalue = getCookie(cname);
@@ -118,11 +118,17 @@ var ConnectGlobal = (function() {
         } else {
             return false;
         }
-    }
+    };
+
+    me.getCookieAndDelete = function(cname) {
+        var cookie = this.getCookie(cname);
+        this.deleteCookie(cname);
+        return cookie;
+    };
 
     me.deleteCookie = function(cname) {
         document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-    }
+    };
 
     me.bindUIActions = function() {
 

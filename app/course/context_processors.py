@@ -332,7 +332,7 @@ def course_activities(request, course):
     last_id = request.GET.get('last_id', None)
     ACTIVITIES_PER_PAGE = 20
 
-    # Get the (unevaluated) course page activities list
+    # Get the (unevaluated) course page activities queryset
     activities_queryset = Activity.course_page_activities(course)
     if last_id is not None:
         activities_queryset = activities_queryset.filter(id__lt=last_id)

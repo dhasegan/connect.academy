@@ -9,7 +9,7 @@ def profile_activities(request, user):
     last_id = request.GET.get('last_id', None)
     ACTIVITIES_PER_PAGE = 20
 
-    # Get the (unevaluated) course page activities list
+    # Get the (unevaluated) profile page activities queryset
     activities_queryset = Activity.profile_page_activities(user)
     if last_id is not None:
         activities_queryset = activities_queryset.filter(id__lt=last_id)
@@ -28,7 +28,7 @@ def new_profile_activities(request,user):
     logged_in_user = request.user.juser
     last_id = long(request.GET.get('last_id', 0))
     
-    # Course activities 
+    # Provile activities 
     activities_list = Activity.profile_page_activities(user).filter(id__gt=last_id)
     activities_list = [a for a in activities_list if a.can_view(logged_in_user)]
 
