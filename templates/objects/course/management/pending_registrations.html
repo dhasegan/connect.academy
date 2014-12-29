@@ -6,30 +6,63 @@
     <h3> Pending Registrations </h3>
     <hr class="top-line">
 
-    <form method="POST" action="/approve_student_registrations">
+    <form method="POST" action="approve_student_registrations">
       <div class="row">
         {% csrf_token %}
         <div class='col-md-8 list-approve'>
         
-            <ul>
-              {% if teacher.students.pending|length > 1 %}
-                <li>
-                    <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
-                </li>
-              {% endif %}
+            <table id="course-pending-registrations" class="table table-striped">
+            {% if teacher.students.pending|length > 0 %}
+              <thead>
+                <tr>
+                  <td> 
+                    <input type='checkbox' class='selectAll'/> All &nbsp; &nbsp;
+                  </td>
+
+                  <td> Name </td>
+                  <td> Email </td>
+                  {% if teacher.course_modules %}
+                    <td> Course Module </td>
+                  {% endif %}
+                </tr>
+              </thead>
+            {% endif %}
+            <tbody>
               {% for student in teacher.students.pending %}
-                <li> 
+                <tr> 
+                  <td>
                     <input type='checkbox' name='student-{{student.id}}'> 
-                    <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
-                    </a> 
-                </li> 
+                  </td>
+                  <td>
+                    <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} </a> 
+                  </td>
+                  <td>
+                    <a target='_blank' href='mailto:{{student.email}}'> {{student.email}} </a> 
+                  </td>
+                  {% if teacher.course_modules %}
+                    <td>
+                      <select name='module-{{student.id}}' class="form-control choose-module">
+                        {% for module in teacher.course_modules %}
+                          <option value="{{module.id}}" {% if module.id == student.module_id %} selected {% endif %} > {{ module.name }} 
+                          </option> 
+                        {% endfor %}  
+                      </select>
+                      <div class='validation-ok'>
+                      </div>
+                      <div class='validation-error'>
+                      </div>
+                      <div class='validation-warning'>
+                      </div>
+                    </td>
+                  {% endif %}
+                </tr> 
               {% endfor %}
-            </ul>
-            <input type='hidden' name='course' value='{{course.id}}'/>
+            </tbody>
+            </table>
         </div>
 
         <div class='col-md-4'> 
-          <input class='btn btn-primary' value='Approve Registrations' type='submit'/>
+          <input class='btn btn-primary' value='{% trans "Approve Selected" %}' type='submit'/>
         </div>
       </div>
     </form>

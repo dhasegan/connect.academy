@@ -9,30 +9,66 @@
     <form method="POST" class='send-mass-email-form' action="{% url 'send_mass_email' course.slug %}">
       <div class="row">
         {% csrf_token %}
-        <div class='col-md-6 list-approve'>
+        <div class='col-md-8 list-approve'>
                           <h4> {% trans "Send an e-mail to" %}: </h4>
 
-            <ul>
+            <table id="course-registered-students" class='table table-striped'>
               {% if teacher.students.registered|length > 0 %}
-                <li>
-                    <input type='checkbox' class='selectAll'/> {% trans "Select All" %}
-                </li>
+                <thead>
+                  <tr>
+                    <td> 
+                      <input type='checkbox' class='selectAll'/> All &nbsp; &nbsp;
+                    </td>
+
+                    <td> Name </td>
+                    <td> Email </td>
+                    {% if teacher.course_modules %}
+                      <td> Course Module </td>
+                    {% endif %}
+                  </tr>
+                </thead>
               {% endif %}
-              {% for student in teacher.students.registered %}
-                <li> 
-                    <input type='checkbox' name='user-{{student.id}}'> 
-                    <a target='_blank' href='/profile/{{student.username}}'> {{student.first_name}} {{student.last_name}} 
-                    </a> 
-                </li> 
-              {% endfor %}
-            </ul>
-            <input type='hidden' name='course' value='{{course.id}}'/>
+                <tbody>
+                  {% for student in teacher.students.registered %}
+                    <tr> 
+                      <td>
+                        <input type='checkbox' name='student-{{student.id}}'> 
+                      </td>
+                      <td>
+                        <a target='_blank' href='{% url "profile" student.username%}'> {{student.first_name}} {{student.last_name}} </a> 
+                      </td>
+                      <td>
+                        <a target='_blank' href='mailto:{{student.email}}'> {{student.email}} </a> 
+                      </td>
+                      {% if teacher.course_modules %}
+                        <td>
+                          <select name='module-{{student.id}}' class="form-control choose-module" required>
+                            {% if not student.module_id %}
+                              <option value=""> Select one </option>
+                            {% endif %}
+                            {% for module in teacher.course_modules %}
+                              <option value="{{module.id}}" {% if module.id == student.module_id %} selected {% endif %} > {{ module.name }} 
+                              </option> 
+                            {% endfor %}  
+                          </select>
+                          <div class='validation-ok'>
+                          </div>
+                          <div class='validation-error'>
+                          </div>
+                          <div class='validation-warning'>
+                          </div>
+                        </td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        <div class='col-md-6 email-details'> 
+        <div class='col-md-4 email-details'> 
           <input type='text' class='form-control' name='subject' placeholder='{% trans "Subject" %}'/> <br/>
           <textarea class="form-control" rows="10" cols='40' max-length="5000" placeholder='{% trans "Email Body" %}' name="email" required></textarea><br/>
-          <input class='btn btn-primary' value='Send email' type='submit'/> 
+          <input class='btn btn-primary' value='{% trans "Mail Selected" %}' type='submit'/> 
           <div  class='email-success text-success'> </div> 
           <div  class='email-error text-danger'> </div>
         </div>

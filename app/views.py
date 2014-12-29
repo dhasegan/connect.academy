@@ -93,7 +93,7 @@ def load_dashboard_activities(request):
     user = request.user.juser
     activities = dashboard_activities(request,user)
     if len(activities) == 0:
-        return HttpResponse(json.dumps({
+        return StreamingHttpResponse(json.dumps({
                 'status': "OK",
                 'html': ""
             }))

@@ -13,6 +13,7 @@ var CoursePage = (function() {
             starOnURL: '/static/images/star-on.png',
             starOffURL: '/static/images/star-off.png',
             starHalfURL: '/static/images/star-half.png',
+            changeRegistrationModuleURL: 'change_reg_module',
 
             // Reviews settings
             reviewsWrapperSelector: '.reviews-display',
@@ -50,6 +51,25 @@ var CoursePage = (function() {
             newTAFormSelector: '#new-ta-form',
             removeTAFormSelector: ".remove-ta-form",
             TAPermissionsIdPrefix: '#ta-permissions-li',
+            pendingRegistrationsTable: "#course-pending-registrations",
+            registeredStudentsTable: "#course-registered-students",
+            registrationModuleSelector: "select.choose-module",
+            courseStudentsDataTableConfig: {
+                "columnDefs": [
+                    {
+                        "orderable": false,
+                        "targets": [0]
+                    }
+                ],
+                "columns": [
+                        null,
+                        null,
+                        null,
+                        { "orderDataType": "dom-select" }
+                    ],
+                "order": [[1,'asc']]
+            },
+            
         },
 
     }, s;
@@ -151,6 +171,89 @@ var CoursePage = (function() {
             var tz = $(this).find('input[name="timezone"]');
             tz.val( moment().zone() );
         });
+
+
+        this.initDataTables();
+        
+        $(s.pendingRegistrationsTable).dataTable( {
+            "columnDefs": [
+                {
+                    "orderable": false,
+                    "targets": [0]
+                }
+            ],
+            "columns": [
+                    null,
+                    null,
+                    null,
+                    { "orderDataType": "dom-select" }
+                ],
+            "order": [[1,'asc']]
+        } );
+
+        $(s.registeredStudentsTable).dataTable( {
+            "columnDefs": [
+                {
+                    "orderable": false,
+                    "targets": [0]
+                }
+            ],
+            "columns": [
+                    null,
+                    null,
+                    null,
+                    { "orderDataType": "dom-select" }
+            ],
+            "order": [[1,'asc']]
+
+        })
+
+
+        $(s.registrationModuleSelector).change(function() {
+            var success = $($(this).closest('td')[0]).find('.validation-ok')[0];
+            var warning = $($(this).closest('td')[0]).find('.validation-warning')[0];
+            var error =   $($(this).closest('td')[0]).find('.validation-error')[0];
+            
+
+            var name = $(this).attr('name');
+            var val = $(this).val();
+            data = {
+                'csrfmiddlewaretoken': ConnectGlobal.getCookie('csrftoken')
+            }
+            data[name] = val;
+
+            $.ajax({
+                'url': s.changeRegistrationModuleURL,
+                'type': "POST",
+                'data': data,
+                'success': function(data) {
+                    json_data = $.parseJSON(data);
+                    var container = null;
+                    if (json_data.status == "OK") {
+                        container = success;
+                    }
+                    else if (json_data.status == "Warning") {
+                        container = warning;
+                    }
+                    else if (json_data.status == "Error") {
+                        container = error;
+                    }
+                    $(container).html(json_data.message).show();
+                    setTimeout(function() {
+                        $(container).hide();
+                    }, 2000);
+                    
+                },
+                'error': function() {
+                    container = error;
+                    $(container).html("Error processing request.").show()
+                    setTimeout(function() {
+                        $(container).find(".validation-error").hide();
+                    }, 2000);
+                }
+            });
+        });
+
 
         // AJAX to remove TA
         $(s.taContainerSelector).on('submit', s.removeTAFormSelector, function(event) {
@@ -413,16 +516,49 @@ var CoursePage = (function() {
     me.selectAllClick = function(event) {
         if(this.checked) {
         // Iterate each checkbox
-            $(this).parent().parent().find("input[type='checkbox']").each(function() {
+            $(this).closest('table').find("input[type='checkbox']").each(function() {
                 this.checked = true;
             });
         }
         else {
-            $(this).parent().parent().find("input[type='checkbox']").each(function() {
+            $(this).closest('table').find("input[type='checkbox']").each(function() {
                 this.checked = false;
             });
         }
     };
+
+    me.initDataTables = function() {
+        $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).val();
+            } );
+        }
+         
+        /* Create an array with the values of all the input boxes in a column, parsed as numbers */
+        $.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).val() * 1;
+            } );
+        }
+         
+        /* Create an array with the values of all the select options in a column */
+        $.fn.dataTable.ext.order['dom-select'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('select', td).val() * 1;
+            } );
+        }
+         
+        /* Create an array with the values of all the checkboxes in a column */
+        $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).prop('checked') ? '1' : '0';
+            } );
+        }
+    }
 
 
     return me;

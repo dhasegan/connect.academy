@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models import Q, F, Count, Avg, Sum
 from aggregate_if import Count as CountIf, Sum as SumIf, Avg as AvgIf
 from django.contrib.contenttypes.models import ContentType
+from django.forms.models import model_to_dict
 from versioning.models import Revision
 
 from app.models import *
@@ -115,8 +116,11 @@ def course_homework_count_submitted(course, homework_request):
 def homework_context(hw, current_user):
     course = hw.course
     current_time = timezone.now()
-    nr_students = StudentCourseRegistration.objects.filter(course=course, is_approved=True).count()
+    students_qs = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
+    if hw.course_module is not None:
+        students_qs = students_qs.filter(module=hw.course_module)
 
+    nr_students = students_qs.count()
     within_deadline = hw.deadline.start <= current_time and current_time < hw.deadline.end
     is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
     is_student = current_user.is_student_of(course)
@@ -154,7 +158,8 @@ def course_homework_context(course, current_user, topic_id=None):
     else:
         all_homework = course.coursehomeworkrequest_set.all()
     for hw in all_homework:
-        context.append(homework_context(hw, current_user))
+        if hw.can_view(current_user):
+            context.append(homework_context(hw, current_user))
     return context
 
 def homework_dashboard_context(request, course, current_user):
@@ -162,13 +167,17 @@ def homework_dashboard_context(request, course, current_user):
         raise Http404
     context = {}
     homework_requests = CourseHomeworkRequest.objects.filter(course=course)
-    students = course.students.all().order_by('username')
+    all_students = course.students.all().order_by('username')
     current_time = timezone.now()
     context['homework_requests'] = []
 
     for hw in homework_requests:
         all_submissions = CourseHomeworkSubmission.objects.filter(homework_request=hw)
         submissions_context = []
+        if hw.course_module_id:
+            students = all_students.filter(studentcourseregistration__module_id=hw.course_module_id)
+        else:
+            students = all_students
         for st in students:
             submissions = all_submissions.filter(submitter=st).order_by('file_number')
             submissions_context.append({
@@ -196,6 +205,7 @@ def homework_dashboard_context(request, course, current_user):
     context['teacher'] = {
         'is_teacher': current_user.is_professor_of(course) or current_user.is_assistant_of(course)
     }
+    context['teacher'].update(course_teacher_dashboard(request,course,current_user))
 
     return context
 
@@ -206,18 +216,22 @@ def course_syllabus_context(course, current_user):
     for topic in course.course_topics.all():
         topic_context = {
             'topic': topic,
-            'documents': topic.documents.all(),
+            'documents': [doc for doc in topic.documents.all() if doc.can_view(current_user)],
 
         }
-        if current_user.is_student_of(course) or current_user.is_assistant_of(course) or current_user.is_professor_of(course):
+        if current_user.is_participant_of(course):
             topic_context['homework'] = course_homework_context(course,current_user, topic.id)
 
         context.append(topic_context)
     return context
 
 
+
+
 # Professor extra settings
 def course_teacher_dashboard(request, course, user):
+    from app.forum.context_processors import forum_stats_context
+    
     context = {
         'is_teacher': user.is_professor_of(course)  or user.is_assistant_of(course)
     }
@@ -236,15 +250,15 @@ def course_teacher_dashboard(request, course, user):
     context['students'] = {}
 
     # From python docs when using groupby: Generally, the iterable needs to already be sorted on the same key function.
-    student_registrations = StudentCourseRegistration.objects.filter(course=course).order_by('is_approved')
+    student_registrations = student_registrations = course.students.all().order_by('studentcourseregistration__is_approved').annotate(
+        is_approved=CountIf('studentcourseregistration',only=Q(studentcourseregistration__is_approved=True)),
+        module_id=Sum('studentcourseregistration__module__id'))
 
     for reg_approved, registrations in itertools.groupby(student_registrations, key = lambda reg: reg.is_approved):
         if reg_approved and context['can_mail_students']:
             context['students']['registered'] = list(registrations)
         elif not reg_approved and context['can_approve_registrations']:
             context['students']['pending'] = list(registrations)
-   
-    if context['can_manage_forum']:
         context['forum_stats'] = forum_stats_context(course.forum)
 
     context['assistants'] = []
@@ -258,13 +272,16 @@ def course_teacher_dashboard(request, course, user):
             })
         context['assistants'].append(ta_context)
 
+    # Course modules
+    if user.has_perm('manage_info', course):
+        context['course_modules'] = course.modules.all().values('name', 'id')
 
     return context
 
 
 def course_page_context(request, course):
     context = {}
-    context['course'] = course
+    context['course'] = model_to_dict(course)
     context['hw_redirect_url'] = '/course/' + course.slug
     course_types = dict(COURSE_TYPES)
     # Course type seems to be not working?
@@ -297,8 +314,13 @@ def course_page_context(request, course):
     context['registration_status'] = registration_status
     context['registration_open'] = registration_open
 
+    if registration_status in [COURSE_REGISTRATION_OPEN, COURSE_REGISTRATION_PENDING]:
+        context['course_modules'] = course.modules.all().values('name','id')
+
     # Course syllabus
     context['syllabus'] = course_syllabus_context(course,current_user)
+
+
 
     # Course forum link
     context['forum'] = course.forum
@@ -311,16 +333,19 @@ def course_page_context(request, course):
 
         context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
 
-    context['documents'] = course.documents.all()
+    documents = course.documents.annotate(num_hw=Count('homework_requests')).filter(num_hw = 0).order_by('-submit_time')
+    context['documents'] = [doc for doc in documents if doc.can_view(current_user)]
     context['can_upload_docs'] = current_user.has_perm('manage_resources', course)
+    context['doc_access_levels'] = [{"id": perm[0], "desc": perm[1] } for perm in DOC_ACCESS_LEVELS]
     # Show documents/homework only if the user is registered and student/prof
-    if current_user.is_student_of(course) or current_user.is_professor_of(course) or current_user.is_assistant_of(course):
+    if current_user.is_participant_of(course):
         context['all_homework'] = course_homework_context(course, current_user)
         context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
         if current_user.has_perm('assign_homework',course) or current_user.has_perm('grade_homework',course):
             context['homework_has_active'] = [hw['active_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_coming'] = [hw['coming_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_past'] = [hw['past_hw'] for hw in context['all_homework']].count(True) > 0
+        
 
     context['teacher'] = course_teacher_dashboard(request, course, current_user)
 

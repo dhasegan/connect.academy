@@ -36,7 +36,6 @@ from app.decorators import *
 def course_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
-
     context = {
         "page": "course",
         'user_auth': request.user.juser
@@ -242,7 +241,10 @@ def submit_document(request, slug):
     docfile = form.cleaned_data['document']
     course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
                                      description=form.cleaned_data['description'], course=form.cleaned_data['course'], 
-                                     submitter=user, course_topic=form.cleaned_data["topic"])
+                                     submitter=user, course_topic=form.cleaned_data["topic"],
+                                     access= form.cleaned_data['access_level'])
+    if 'module' in form.cleaned_data:
+        course_document.course_module = form.cleaned_data['module']
     course_document.save()
 
     return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
@@ -381,6 +383,7 @@ def submit_homework_request(request, slug):
                                              deadline=deadline, course_topic=form.cleaned_data["topic"],
                                              number_files=form.cleaned_data['nr_files'])
 
+
     docfile = form.cleaned_data['document']
     if docfile:
         course_document = CourseDocument(document=docfile, name=form.cleaned_data['name'],
@@ -388,7 +391,13 @@ def submit_homework_request(request, slug):
                                      submitter=user, course_topic=form.cleaned_data["topic"])
         course_document.save()
         homework_request.document = course_document
+
+    course_module = form.cleaned_data.get('module', None)
+    homework_request.course_module = course_module
+
     homework_request.save()
+    print "Module: " + str(homework_request.course_module.name if course_module else None)
+    print "Course: " + homework_request.course.name 
 
     return redirect( reverse('course_page', args=(course.slug, )) + "?page=resources" )
 
@@ -429,6 +438,7 @@ def edit_homework_request(request, slug):
     homework_request.name=form.cleaned_data['name']
     homework_request.description=form.cleaned_data['description']
     homework_request.course_topic=form.cleaned_data["topic"]
+    homework_request.course_module=form.cleaned_data["module"]
     homework_request.save()
 
     get_params = "?homework=" + str(homework_request.id)
@@ -575,6 +585,18 @@ def register_course(request, slug):
     }
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
+    course_module_id = request.POST.get('course_module', None)
+    course_module = None
+    if course_module_id is not None:
+        try:
+            course_module = CourseModule.objects.get(id=course_module_id)
+        except ObjectDoesNotExist, MultipleObjectsReturned:
+            return StramingHttpResponse("This course module does not exist")
+
+    if course_module is None and course.modules.count() > 0:
+        # No course module was selected, but the course has modules
+        return StreamingHttpResponse("Please select a course module to register for")
+
 
     context.update(csrf(request))
     registration_deadline = course.get_registration_deadline()
@@ -586,6 +608,7 @@ def register_course(request, slug):
             if registration_status == COURSE_REGISTRATION_OPEN:
                 course_registration = StudentCourseRegistration(student=user,
                                                                 course=course,
+                                                                module=course_module,
                                                                 is_approved=False)
                 course_registration.save()
                 return HttpResponse("OK", context)
@@ -613,18 +636,15 @@ def register_course(request, slug):
 @require_POST
 @require_active_user
 @login_required
-def approve_student_registrations(request):
+def approve_student_registrations(request,slug):
     # Make sure the logged in user is allowed to approve these registrations
-    user = request.user
-    course_id = request.POST['course']
-    courses = Course.objects.filter(id=course_id)
-    if not courses:
-        raise Http404
+    user = get_object_or_404(jUser, id=request.user.id)
+    course = get_object_or_404(Course, slug=slug)
 
-    course = courses[0]
     is_registered = ProfessorCourseRegistration.objects.filter(
                     course=course, professor=user, is_approved=True).count()
     if not is_registered:
+        print "2"
         raise Http404
 
     # At this point we know that an approved professor of the course
@@ -635,19 +655,26 @@ def approve_student_registrations(request):
     for key, val in request.POST.items():
         if 'student' in key:
             _, student_id = key.split('-')
-            registrations = StudentCourseRegistration.objects.filter(
-                            course_id=course_id, student_id=student_id, is_approved=False).count()
-            if registrations:
+            module_key = 'module-' + student_id
+            
+            try:
+                registration = StudentCourseRegistration.objects.get(
+                    course_id=course.id, student_id=student_id, is_approved=False)
+            except ObjectDoesNotExist, MultipleObjectsReturned:
                 unregistered += 1
+
+            if module_key in request.POST:
+                module_id = request.POST[module_key]
+                if course.modules.filter(id=module_id).exists():
+                    registration.module_id = module_id 
 
             # Approve registration
             if val:
-                registration = registrations[0]
                 registration.is_approved = True
                 registration.save()
 
     if unregistered:
-        warning_message = "There were " + unregistered + " registrations that failed. Please try again."
+        warning_message =  str(unregistered) + " registrations could not be approved."
         messages.warning(warning_message)
     get_params = "?page=teacher"
     return redirect( reverse('course_page', args=(course.slug,)) + get_params )
@@ -667,24 +694,27 @@ def send_mass_email(request, slug):
     # Make sure the logged in user is allowed to approve these registrations
     user = request.user
     if not user.has_perm('mail_students', course):
-        return HttpResponse("You don't have permission to perform this action")
+        return StreamingHttpResponse("Permission denied.")
     subject = request.POST['subject']
     body = request.POST['email']
     to = []
     sender = "%s %s <%s>" % (user.first_name, user.last_name, user.email)
     for key, val in request.POST.items():
-        if 'user' in key:
-            _, user_id = key.split('-')
+        if 'student' in key:
+            try:
+                _, user_id = key.split('-')
+            except ValueError:
+                continue
             users = jUser.objects.filter(id=user_id)
-            if users is not None and val:  # if user exists (users is not None) and checkbox was checked (val)
+            if users is not None and val:  # if user exists and checkbox was checked (val)
                 email = users[0].email
                 to.append(email)
 
     if len(to) > 0:
         send_mail(subject, body, sender, to, fail_silently=False)
-        return HttpResponse("OK")
+        return StreamingHttpResponse("OK")
     else:
-        return HttpResponse("Please select at least one recepient.")
+        return StreamingHttpResponse("Please select at least one recepient.")
 
 @require_POST
 @require_active_user
@@ -945,3 +975,106 @@ def remove_ta(request,slug):
     }
 
     return HttpResponse(json.dumps(return_dict))
+
+
+@require_POST
+@require_active_user
+@login_required
+def new_course_module(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.has_perm('manage_info', course):
+        raise Http404
+
+    form = NewCourseModuleForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    CourseModule.objects.create(name=form.cleaned_data['module_name'], course=course)
+
+    return redirect( reverse('course_page', args=(slug, )) + "?teacher_page=details" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def update_course_module(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.has_perm('manage_info', course):
+        raise Http404
+
+    form = UpdateCourseModuleForm(request.POST)
+
+    if not form.is_valid():
+        print form.non_field_errors()
+        raise Http404
+
+    
+    module = form.cleaned_data['course_module']
+    module.name = form.cleaned_data['module_name']
+    module.save()
+
+    return redirect( reverse('course_page', args=(slug, )) + "?teacher_page=details" )
+
+
+@require_POST
+@require_active_user
+@login_required
+def delete_course_module(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    if not user.has_perm('manage_info', course):
+        raise Http404
+
+    form = DeleteCourseModuleForm(request.POST)
+
+    if not form.is_valid():
+        raise Http404
+
+    form.cleaned_data['course_module'].delete()
+
+    return redirect( reverse('course_page', args=(slug, )) + "?teacher_page=details" ) 
+
+@require_POST
+@require_active_user
+@login_required
+def change_reg_module(request,slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+    if not user.has_perm('approve_registrations', course):
+        ret = {
+            'status': "Error",
+            'message': "Permission Denied"
+        }
+        return StreamingHttpResponse(json.dumps(ret))
+
+    for key,val in request.POST.items():
+        if 'module' in key:
+            _,student_id = key.split('-')
+            try:
+                reg = StudentCourseRegistration.objects.get(student_id=student_id, 
+                    course_id = course.id)
+                new_module = CourseModule.objects.get(course=course, id=val)
+                reg.module = new_module
+                reg.save()
+            except ObjectDoesNotExist, MultipleObjectsReturned:
+                ret = {
+                    'status': "Error",
+                    'message': "Registration does not exist"
+                }
+                return StreamingHttpResponse(json.dumps(ret))
+
+            ret = {
+                'status': "OK",
+                'message': "Saved"
+            }
+
+            return StreamingHttpResponse(json.dumps(ret))
+
+    # Should not reach this point
+    raise Http404

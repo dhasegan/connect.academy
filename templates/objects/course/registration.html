@@ -8,20 +8,32 @@
                 <a class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
                 <h3 class="modal-title" id="registrationModalLabel{{course.id}}"><b>{% trans "Are you sure you want to register for this course?" %}</b></h3>
             </div>
-            <div class="modal-body">
-                <h4><b>{{course.name}}</b></h4>
-                <p>{{course.description}}</p>
-            </div>
-            <div class="modal-footer">
-                <div class="btn-group">
-                    <form action='{% url "register_course" course.slug %}' method="POST" class="confirm_registration">
-                        {% csrf_token %}
+            <form action='{% url "register_course" course.slug %}' method="POST" class="confirm_registration">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <h4><b>{{course.name}}</b></h4>
+                    <p>{{course.description}}</p>
+                    {% if course_modules and user_auth.user_type == 0 %} <!-- Student -->
+                        <select name='course_module' class='form-control' required>
+                            <option value="">Please select a course module ...</option>
+                            {% for module in course_modules %}
+                                <option value='{{module.id}}'>{{module.name}}</option>
+                            {% endfor%}
+                        </select>
+                    {% endif %}
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="btn-group">
+
                         <input type='hidden' name='courseID' value='{{course.id}}'/>
                         <button class="btn btn-danger" data-dismiss="modal">{% trans "No, cancel" %}</button>
                         <input class="btn btn-primary" type="submit" value="{% trans 'Yes, register' %}" />
-                    </form>
-                </div>
+                       
+                    </div>
             </div>
+            </form>
 
         </div>
     </div>

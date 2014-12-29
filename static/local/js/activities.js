@@ -121,6 +121,7 @@ var Activities = (function() {
                                     globals.no_more = true;
                                 }
                             }
+
                         },
                         error: function() {
                             //fail silently
