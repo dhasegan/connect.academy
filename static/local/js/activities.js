@@ -1,17 +1,18 @@
 var Activities = (function() {
     var me = {
         settings: {
-        	activities: $(".activity-timeline"),
+        	activities: ".activity-timeline",
             isProfilePage: $('.profile-page').length > 0,
             isCoursePage: $('.course-page').length > 0,
             isDashboardPage: $('.dashboard-page').length > 0,
             oldest_activity_id_cookie: "oldest_activity_id",
-            course_activity_tab: $("#course-activity-tab"),
-            course_info_tab: $("#course-info-tab"),
-            course_wiki_tab: $("#course-wiki-tab"),
-            course_forum_tab: $("#course-forum-tab"),
-            course_resources_tab: $("#course-resources-tab"),
-            loading_activities_img: $("#loading-activities-gif"),
+            course_activity_tab: "#course-activity-tab",
+            course_info_tab: "#course-info-tab",
+            course_wiki_tab: "#course-wiki-tab",
+
+            course_forum_tab: "#course-forum-tab",
+            course_resources_tab: "#course-resources-tab",
+            loading_activities_img: "#loading-activities-gif",
             
         },
         global_variables: {
@@ -50,7 +51,7 @@ var Activities = (function() {
 
             // In the course page, only load new activities when the user is on the activity tab
             // In other pages, always load new activities
-            if (me.isTabActive(s.course_activity_tab) || !s.isCoursePage) {
+            if (me.isTabActive($(s.course_activity_tab)) || !s.isCoursePage) {
                 $.ajax({ 
                     type: "GET",
                     url: action,
@@ -62,8 +63,8 @@ var Activities = (function() {
                         new_last_id = json_data.new_last_id;
                         if (status == "OK" && new_last_id) {
                             $(".new_activities_form > input[name='last_id']").val(new_last_id);
-                            $(html).hide().prependTo(s.activities).slideDown("slow");
-                            //s.activities.prepend(html).slideDown("slow");
+                            $(html).hide().prependTo($(s.activities)).slideDown("slow");
+                            //$(s.activities).prepend(html).slideDown("slow");
                         }
                         //bind UI actions again to catch the newly loaded activities
                         //ForumPage.onRefreshAnswerTab();
@@ -83,8 +84,8 @@ var Activities = (function() {
     me.bindUIActions = function() {
 
     	/* Load more activities when reaching the bottom of the page */
-    	$(document).scroll(function () {
-            if ($(window).scrollTop() == ($(document).height() - $(window).height())) {
+    	$(document).on("scroll", function () {
+            if ($(window).scrollTop() >= 0.9*($(document).height() - $(window).height())) {   
                 /* Load more activities */
                 var action;
                 if (s.isDashboardPage) {
@@ -98,9 +99,9 @@ var Activities = (function() {
                 }
                 // In the course page, only load more activities when the user is on the activity tab
                 // In other pages, always load more activities as long as the server doesn't return empty html
-                if ((me.isTabActive(s.course_activity_tab) || !s.isCoursePage) && !globals.no_more && !globals.busy) {
+                if ((me.isTabActive($(s.course_activity_tab)) || !s.isCoursePage) && !globals.no_more && !globals.busy) {
                     globals.busy = true;
-                    s.loading_activities_img.show();
+                    $(s.loading_activities_img).show();
                     $.ajax({
                         type: "GET",
                         url: action,
@@ -115,7 +116,8 @@ var Activities = (function() {
                                     if (oldest_activity) {
                                         globals.oldest_activity_id = oldest_activity;
                                     }
-                                    s.activities.append(html);
+                                    $(s.activities).append(html);
+                                    ConnectGlobal.refreshCKInline($(html));
                                 }
                                 else  {
                                     globals.no_more = true;
@@ -127,7 +129,7 @@ var Activities = (function() {
                             //fail silently
                         },
                         complete: function() {
-                            s.loading_activities_img.hide();
+                            $(s.loading_activities_img).hide();
                             globals.busy=false;
                         }
                     });

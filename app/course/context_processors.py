@@ -11,6 +11,7 @@ from app.models import *
 from app.ratings import *
 
 import app.context_processors as cp_main
+from app.forum.context_processors import forum_context
 import itertools
 
 
@@ -279,7 +280,7 @@ def course_teacher_dashboard(request, course, user):
     return context
 
 
-def course_page_context(request, course):
+def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
     context = {}
     context['course'] = model_to_dict(course)
     context['hw_redirect_url'] = '/course/' + course.slug
@@ -292,15 +293,6 @@ def course_page_context(request, course):
     current_user = None
     if request.user.is_authenticated():
         current_user = jUser.objects.get(id=request.user.id)
-
-    # Ratings and comments
-    context['ratings'] = course_ratings_context(course, current_user)
-    context['comments'] = course_reviews_context(course, current_user)
-    context['activities'] = course_activities(request, course)
-
-    # Course path
-    context['course_path'] = course.get_catalogue()
-    context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change 
 
     # User - Course Registration status (open|pending|registered|not allowed)
     registration_status = course.get_registration_status(current_user)
@@ -317,27 +309,60 @@ def course_page_context(request, course):
     if registration_status in [COURSE_REGISTRATION_OPEN, COURSE_REGISTRATION_PENDING]:
         context['course_modules'] = course.modules.all().values('name','id')
 
-    # Course syllabus
-    context['syllabus'] = course_syllabus_context(course,current_user)
+    context['teacher'] = {
+        "is_teacher":  current_user.is_professor_of(course)  or current_user.is_assistant_of(course)
+    }
+
+
+    ##########################################################################################
+    # Up to this point, the context contains only generic data that is required for all tabs #
+    # Below, the tab-specific context data                                                   #
+    ##########################################################################################
 
 
 
-    # Course forum link
-    context['forum'] = course.forum
 
-    context['can_edit_wiki'] = course.can_edit_wiki(current_user)
-    if hasattr(course, 'wiki'):
-        context['wiki'] = course.wiki
-        wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
-        content_object = wiki_ctype.get_object_for_this_type(pk=course.wiki.id)
+    if page == "activity":
+        context['activities'] = course_activities(request, course)
+    
+    elif page == "info":
+        context['ratings'] = course_ratings_context(course, current_user)
+        context['comments'] = course_reviews_context(course, current_user)
+        context['course_path'] = course.get_catalogue()
+        context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change 
+        context['syllabus'] = course_syllabus_context(course,current_user)
+    
+    elif page == "wiki":
+        context['can_edit_wiki'] = course.can_edit_wiki(current_user)
+        if hasattr(course, 'wiki'):
+            context['wiki'] = course.wiki
+            wiki_ctype = ContentType.objects.get(app_label="app", model="wikipage")
+            content_object = wiki_ctype.get_object_for_this_type(pk=course.wiki.id)
 
-        context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
+            context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
+    
+    elif page == "connect":
+        # Course forum link
+        context['forum'] = course.forum
+        context.update(forum_context(course.forum, current_user)) 
+    elif page == "resources":
+        context.update(course_resources_context(course, current_user))
 
+    elif page == "teacher":
+        context['teacher'] = course_teacher_dashboard(request, course, current_user)
+        context['syllabus'] = course_syllabus_context(course,current_user)
+        context.update(course_resources_context(course,current_user))
+
+
+    return context
+
+def course_resources_context( course, current_user):
+    context = {}
     documents = course.documents.annotate(num_hw=Count('homework_requests')).filter(num_hw = 0).order_by('-submit_time')
     context['documents'] = [doc for doc in documents if doc.can_view(current_user)]
     context['can_upload_docs'] = current_user.has_perm('manage_resources', course)
     context['doc_access_levels'] = [{"id": perm[0], "desc": perm[1] } for perm in DOC_ACCESS_LEVELS]
-    # Show documents/homework only if the user is registered and student/prof
+    # Show documents/homework only if the user is registered and student/prof/ta
     if current_user.is_participant_of(course):
         context['all_homework'] = course_homework_context(course, current_user)
         context['current_homework'] = [hw for hw in context['all_homework'] if hw['is_allowed']]
@@ -345,10 +370,6 @@ def course_page_context(request, course):
             context['homework_has_active'] = [hw['active_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_coming'] = [hw['coming_hw'] for hw in context['all_homework']].count(True) > 0
             context['homework_has_past'] = [hw['past_hw'] for hw in context['all_homework']].count(True) > 0
-        
-
-    context['teacher'] = course_teacher_dashboard(request, course, current_user)
-
     return context
 
 # returns a page of course activities. The request GET parameters MUST carry the oldest activity loaded with key="last_id"
@@ -381,7 +402,7 @@ def new_course_activities(request,course):
     activities_list = Activity.course_page_activities(course).filter(id__gt=last_id)
     activities_list = [a for a in activities_list if a.can_view(user)]
 
-    activities_context = [activity_context(activity,user) for activity in activities_list]
+    activities_context = [cp_main.activity_context(activity,user) for activity in activities_list]
     return activities_context 
 
 

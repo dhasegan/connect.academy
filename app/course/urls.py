@@ -33,6 +33,7 @@ urlpatterns = patterns('app.course.views',
     url(r'^update_course_module$', 'update_course_module', name='update_course_module'),
     url(r'^delete_course_module$', 'delete_course_module', name='delete_course_module'),
     url(r'^change_reg_module$', 'change_reg_module', name='change_reg_module'),
+    url(r'^load_course_tab$', 'load_course_tab', name='load_course_tab'),
 
 
 )

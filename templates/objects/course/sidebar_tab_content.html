@@ -1,0 +1,13 @@
+{% if current_tab == "activity" or not current_tab %}
+    {% include 'objects/course/sidebar_activity.html' %}
+{% elif current_tab == "info" %}
+    {% include 'objects/course/sidebar_info.html' %}
+{% elif current_tab == "wiki" %}
+    {% include 'objects/course/sidebar_wiki.html' %}
+{% elif current_tab == "connect" %}
+    {% include 'objects/course/sidebar_forum.html' %}
+{% elif current_tab == "resources" and current_homework or current_tab == "resources" and documents %}
+    {% include 'objects/course/sidebar_resources.html' %}
+{% elif current_tab == "teacher" and teacher.is_teacher %}
+    {% include 'objects/course/sidebar_teacher.html' %}
+{% endif %}

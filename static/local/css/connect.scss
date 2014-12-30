@@ -289,6 +289,8 @@ $course-name-font-size:         17px;
 $course-img-max-size:           150px;
 
 .course-page {
+
+
     .course-sidebar {
         .registration-btn {
             width: 100%;
@@ -306,6 +308,11 @@ $course-img-max-size:           150px;
         li.ta-permissions {
             padding-bottom:10px;
         }
+    }
+
+    .loading-course-tab {
+        display: none;
+        width:30px;
     }
 
     // Course info page

@@ -38,15 +38,18 @@ def course_page(request, slug):
     user = get_object_or_404(jUser, id=request.user.id)
     context = {
         "page": "course",
-        'user_auth': request.user.juser
+        'user_auth': user
     }
     context.update(csrf(request))
-    context = dict(context.items() + course_page_context(request, course).items())
+    curr_tab = request.GET.get('page', AVAILABLE_COURSE_PAGES[0])
+    if curr_tab not in AVAILABLE_COURSE_PAGES:
+        curr_tab = AVAILABLE_COURSE_PAGES[0]
+    context = dict(context.items() + course_page_context(request, course, curr_tab).items())
 
     forum = course.forum
     context = dict(context.items() + forum_context(forum, user).items())
 
-    available_pages = ['activity', 'info', 'connect', 'wiki', 'resources', 'teacher']
+    available_pages = AVAILABLE_COURSE_PAGES
     if 'page' in request.GET and request.GET['page'] and \
         request.GET['page'] in available_pages:
             context['current_tab'] = request.GET['page']
@@ -85,17 +88,17 @@ def course_page(request, slug):
     if 'review_course_tab' in request.GET and request.GET['review_course_tab']:
         context['review_course_tab'] = True
 
-    available_teacher_pages = ['registered', 'pending', 'upload', 'homework', 'forum', 'details', 'assistants']
+    available_teacher_pages = AVAILABLE_COURSE_TEACHER_PAGES
     if 'teacher_page' in request.GET and request.GET['teacher_page'] and \
         request.GET['teacher_page'] in available_teacher_pages:
             context['current_teacher_tab'] = request.GET['teacher_page']
             if 'current_tab' not in context:
                 context['current_tab'] = 'teacher'
 
-    if 'current_tab' not in context and not len(context['activities']):
+    if 'current_tab' not in context and not context.get('activities'):
         context['current_tab'] = 'info'
     response = render(request, "pages/course.html", context)
-    if context['activities']:
+    if context.get('activities'):
         response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
     return response
 
@@ -1078,3 +1081,38 @@ def change_reg_module(request,slug):
 
     # Should not reach this point
     raise Http404
+
+
+@login_required
+def load_course_tab(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    page = request.GET.get("page")
+    if page is None or page not in AVAILABLE_COURSE_PAGES:
+        page = AVAILABLE_COURSE_PAGES[0]
+
+    context = {
+        "current_tab":  page,
+        "STATIC_URL": settings.STATIC_URL,
+        "user_auth":user
+    }
+
+    context.update(course_page_context(request, course, page))
+    context.update(csrf(request))
+
+    sidebar_content = render_to_string("objects/course/sidebar_tab_content.html", context)
+    main_content =  render_to_string("objects/course/course_tab_content.html", context)
+
+    data = {
+        "status": "OK",
+        "sidebar": sidebar_content,
+        "main": main_content
+    }
+    response = StreamingHttpResponse(json.dumps(data))
+
+    if context.get('activities'):
+        print "setting cookie"
+        response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
+
+    return response

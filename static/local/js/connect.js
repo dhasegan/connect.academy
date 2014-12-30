@@ -16,16 +16,20 @@ var ConnectGlobal = (function() {
             ckeditorNonEditableSelector: '.rich-cke-text',
             ckeditorEditableSelector: ".ckeditor"
         },
-    }, s;
+        global_variables: {
+            boundForumActions: false, // Has ForumPage.bindUIActions been called?
+        }
+    }, s, globals;
 
     me.init = function() {
         s = this.settings;
+        globals = this.global_variables;
         this.bindUIActions();
         //this.refreshCKInline();
         //this.refreshCK();
 
         if ($('.explore-page').length > 0) { ExplorePage.init(); }
-        else if ($('.course-page').length > 0) { CoursePage.init(); ForumPage.init(); Activities.init(); }
+        else if ($('.course-page').length > 0) { CoursePage.init(); }
         else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); CoursePage.init(); Activities.init(); } // ForumPage needed to upvote forum posts
         else if ($('.forum-page').length > 0) { ForumPage.init(); } 
         else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
@@ -35,6 +39,7 @@ var ConnectGlobal = (function() {
 
 
     };
+
 
     me.refreshCK = function(subtree) {
         if (typeof(subtree) === 'undefined') subtree = $('body');
@@ -129,6 +134,19 @@ var ConnectGlobal = (function() {
     me.deleteCookie = function(cname) {
         document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
     };
+
+    me.getUrlParameter = function(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) 
+            {
+                return sParameterName[1];
+            }
+        }
+        return null;         
+    }
 
     me.bindUIActions = function() {
 

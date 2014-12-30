@@ -207,7 +207,8 @@ class Major(models.Model):
     def __unicode__(self):
         return str(self.name)
 
-
+AVAILABLE_COURSE_PAGES = ['activity', 'info', 'connect', 'wiki', 'resources', 'teacher']
+AVAILABLE_COURSE_TEACHER_PAGES = ['registered', 'pending', 'upload', 'homework', 'forum', 'details', 'assistants']
 
 class Course(models.Model):
     course_id = models.IntegerField()

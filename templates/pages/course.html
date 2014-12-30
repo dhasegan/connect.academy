@@ -9,17 +9,11 @@
         </div>
         <div class="col-md-8">
             <div class="course-details">
-                <div class="tab-content">
-                    {% include 'objects/course/course_activity.html' %}
-                    {% include 'objects/course/course_info.html' %}
-                    {% include 'objects/course/course_wiki.html' %}
-                    {% include 'objects/course/course_forum.html' %}
-                    {% if current_homework or documents %}
-                        {% include 'objects/course/course_resources.html' %}
-                    {% endif %}
-                    {% if teacher.is_teacher %}
-                        {% include 'objects/course/course_teacher_dashboard.html' %}
-                    {% endif %}
+                <div class="tab-content" id="course_main_content">
+                    <center>
+                        <img src="{{STATIC_URL}}loading.gif" class="loading-course-tab" alt="Loading..."/> 
+                    </center>
+                    {% include 'objects/course/course_tab_content.html' %}
                 </div>
             </div>
         </div>

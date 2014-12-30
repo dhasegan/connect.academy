@@ -61,7 +61,7 @@ class SubmitCommentForm(forms.Form):
         cleaned_data = super(SubmitCommentForm, self).clean()
 
         try:
-            course = Course.objects.filter(id=cleaned_data.get("course_id"))
+            course = Course.objects.get(id=cleaned_data.get("course_id"))
         except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("This course does not exist")
         cleaned_data['course'] = course
@@ -309,7 +309,7 @@ class SubmitHomeworkGradesForm(forms.Form):
         if not hw_req_id:
             return 
         try:
-            hw = CourseHomeworkRequest.objects.filter(id=hw_req_id)
+            hw = CourseHomeworkRequest.objects.get(id=hw_req_id)
         except ObjectDoesNotExist, MultipleObjectsReturned:
             return
     

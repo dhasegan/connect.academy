@@ -25,19 +25,14 @@
                 <div class="sidebar-tabs">
                     <nav class="nav-sidebar">
                         <ul class="nav tabs">
-                            {% if activities|length %}
-                                <li {% if not current_tab or current_tab == 'activity' %}class="active"{% endif %} id='course-activity-tab'><a href=".course-activity" role="tab" data-toggle="tab">{% trans "Activity log" %}</a></li>
-                            {% endif %}
-                            <li {% if current_tab == 'info' %}class="active"{% endif %} id='course-info-tab'><a href=".course-info" role="tab" data-toggle="tab">{% trans "Course Info" %}</a></li>
-                            <li {% if current_tab == 'wiki' %}class="active"{% endif %} id='course-wikki-tab'><a href=".course-wiki" role="tab" data-toggle="tab">{% trans "Wiki" %}</a></li>
-                            <li {% if current_tab == 'connect' %}class="active"{% endif %} id='course-forum-tab'><a href=".course-forum" role="tab" data-toggle="tab">{% trans "Forum" %}</a></li>
-
-                            {% if current_homework or documents %}
-                                <li {% if current_tab == 'resources' %}class="active"{% endif %} id='course-resources-tab'><a href=".course-resources" role="tab" data-toggle="tab">{% trans "Resources and Assignments" %}</a></li>
-                            {% endif %}
+                            <li class="course_page_tab {% if not current_tab or current_tab == 'activity' %}active{% endif %}" data-page="activity" id='course-activity-tab'><a href=".course-activity" role="tab" data-toggle="tab">{% trans "Activity log" %}</a></li>
+                            <li class="course_page_tab {% if current_tab == 'info' %}active{% endif %}" id='course-info-tab' data-page="info"><a href=".course-info" role="tab" data-toggle="tab">{% trans "Course Info" %}</a></li>
+                            <li class="course_page_tab {% if current_tab == 'wiki' %}active{% endif %}" id='course-wikki-tab' data-page="wiki"><a href=".course-wiki" role="tab" data-toggle="tab">{% trans "Wiki" %}</a></li>
+                            <li class="course_page_tab {% if current_tab == 'connect' %}active{% endif %}" id='course-forum-tab' data-page="connect"><a href=".course-forum" role="tab" data-toggle="tab">{% trans "Forum" %}</a></li>
+                            <li class="course_page_tab {% if current_tab == 'resources' %}active{% endif %}" id='course-resources-tab' data-page="resources"><a href=".course-resources" role="tab" data-toggle="tab">{% trans "Resources and Assignments" %}</a></li>
 
                             {% if teacher.is_teacher %}
-                                <li {% if current_tab == 'teacher' %}class="active"{% endif %} id='course-teacher-tab'><a href=".course-teacher" role="tab" data-toggle="tab">{% trans "Teacher" %}</a></li>
+                                <li class="course_page_tab {% if current_tab == 'teacher' %}active{% endif %}" id='course-teacher-tab' data-page="teacher"><a href=".course-teacher" role="tab" data-toggle="tab">{% trans "Teacher" %}</a></li>
                             {% endif %}
                         </ul>
                     </nav>
@@ -47,15 +42,10 @@
     </div>
 </div>
 
-<div class="tab-content ">
-    {% include 'objects/course/sidebar_activity.html' %}
-    {% include 'objects/course/sidebar_info.html' %}
-    {% include 'objects/course/sidebar_wiki.html' %}
-    {% include 'objects/course/sidebar_forum.html' %}
-    {% if current_homework or documents %}
-        {% include 'objects/course/sidebar_resources.html' %}
-    {% endif %}
-    {% if teacher.is_teacher %}
-        {% include 'objects/course/sidebar_teacher.html' %}
-    {% endif %}
+<div class="tab-content" id="course_sidebar_tabs">
+    <center>
+        <img src="{{STATIC_URL}}loading.gif" class="loading-course-tab" alt="Loading..."/> 
+    </center>
+    {% include 'objects/course/sidebar_tab_content.html' %}
 </div>
+
