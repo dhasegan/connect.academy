@@ -46,30 +46,34 @@ def login_action(request):
             # CN success
             if not login_user in settings.JACOBS_USER_DETAILS:
                 messages.error(request, UNIV_CONNECTEDED_NO_EMAIL, extra_tags="hidden")
-                return redirect( reverse('welcome') )
+                return redirect( reverse('welcome'))
             users = jUser.objects.filter(username=login_user)
             if not users:
                 university = University.objects.get(name=auth_univ["name"])
                 user_details = settings.JACOBS_USER_DETAILS[login_user]
-                user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=user_details['email'], \
-                                                 first_name=user_details['first_name'], last_name=user_details['last_name'], 
-                                                 user_type=USER_TYPE_STUDENT)
-                user.is_active = True
-                if 'description' in user_details:
-                    user.summary = user_details['description']
-                if 'photourl' in user_details:
-                    photo_url = user_details['photourl']
-                    photo_ext = urlparse(photo_url).path.split('/')[-1].split('.')[-1]
-                    photo_name = login_user + "." + photo_ext
+                if not jUser.objects.filter(email=user_details['email']).exists():
+                    user = jUser.objects.create_user(username=login_user, password=login_pass, university=university, email=user_details['email'], \
+                                                     first_name=user_details['first_name'], last_name=user_details['last_name'], 
+                                                     user_type=USER_TYPE_STUDENT)
+                    user.is_active = True
+                    if 'description' in user_details:
+                        user.summary = user_details['description']
+                    if 'photourl' in user_details:
+                        photo_url = user_details['photourl']
+                        photo_ext = urlparse(photo_url).path.split('/')[-1].split('.')[-1]
+                        photo_name = login_user + "." + photo_ext
 
-                    img_temp = NamedTemporaryFile(delete=True)
-                    img_temp.write(urllib2.urlopen(photo_url).read())
-                    img_temp.flush()
+                        img_temp = NamedTemporaryFile(delete=True)
+                        img_temp.write(urllib2.urlopen(photo_url).read())
+                        img_temp.flush()
 
-                    user.profile_picture.save(photo_name, File(img_temp), save=False)
-                user.save()
-                send_email_confirmation(request, user)
-                new_user = True
+                        user.profile_picture.save(photo_name, File(img_temp), save=False)
+                    user.save()
+                    send_email_confirmation(request, user)
+                    new_user = True
+                else:
+                    messages.error(request, CN_OK_BUT_ACCOUNT_EXISTS, extra_tags="hidden")
+                    return redirect( reverse('welcome') )
             else:
                 user = users[0]
                 user.set_password(login_pass)
