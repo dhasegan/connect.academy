@@ -15,9 +15,11 @@ $(document).ready(function() {
   addToOtherWeeks = dialogContent.find("input[name='copy']");
       
   courseLabel = dialogContent.find("#courseLabel");
+
+  courseModuleBox = dialogContent.find(".courseModuleBox");
   copyLabel = dialogContent.find("#copyLabel");
   form = dialogContent.find("form[id='appointmentForm']");
-      
+  modulePH = $("#modulePH");
       
 
   var $calendar = $('#calendar');
@@ -62,12 +64,23 @@ $(document).ready(function() {
       copyLabel.show();
 
       typeField.change(function(){
+          
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
           }else{ // course appointment
             courseLabel.show(400);
           }
           
+      });
+
+      courseField.change(function() {
+        //console.log($(courseModuleBox));
+        $(courseModuleBox).hide();
+        var selected_course = courseLabel.find("select[name=course_id]").val();
+        //console.log(selected_course);
+        modulePH.html($("#courseModule" + selected_course).html());
+        //$("#courseModule" + selected_course).show();
+
       });
 
 
@@ -146,6 +159,7 @@ $(document).ready(function() {
       setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
       dialogContent.find("select[name='type']").attr('disabled', false);
       dialogContent.find("select[name='course_id']").attr('disabled', false);
+      dialogContent.find("select[name='module_id']").attr('disabled', false);
     },
 
     eventDrop: function(calEvent, $event) {
@@ -189,6 +203,7 @@ $(document).ready(function() {
                         'end': calEvent.end,
                         'type':'Course',
                         'courseName':calEvent.courseName,
+                        'courseModule': calEvent.courseModule,
                         'modifiable' :true,
                 });
             }
@@ -261,6 +276,7 @@ $(document).ready(function() {
                         'end': calEvent.end,
                         'type':'Course',
                         'courseName':calEvent.courseName,
+                        'courseModule': calEvent.courseModule,
                         'modifiable' :true,
                 });
             }
@@ -294,7 +310,6 @@ $(document).ready(function() {
 
     // to modify existing calEvents (or remove them)
     eventClick: function(calEvent, $event) {
-      
       if (calEvent.readOnly || !calEvent.modifiable) {
           return;
        }
@@ -317,7 +332,6 @@ $(document).ready(function() {
        dialogContent.find("input[name='eventId']").val(calEvent.id);
        
        setupCourseFields(calEvent);
-      
        if(calEvent.type === 'Personal'){
         courseLabel.hide();
        }
@@ -339,6 +353,7 @@ $(document).ready(function() {
                 //reenable the 'select' to serialize the form, otherwise a KeyError is raised.
                 //it is set to true again after the ajax request is sent
                 dialogContent.find("select[name='course_id']").attr('disabled', false);
+                dialogContent.find("select[name='module_id']").attr('disabled', false);
 
                 if(calEvent.type === 'Course' && calEvent.modifiable){
                   $.ajax({
@@ -399,6 +414,7 @@ $(document).ready(function() {
                 }  
 
                 dialogContent.find("select[name='course_id']").attr('disabled', true);
+                dialogContent.find("select[name='module_id']").attr('disabled', true);
 
              },
 
@@ -458,7 +474,11 @@ $(document).ready(function() {
        setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
        setupCourseFields(calEvent);
        dialogContent.find("select[name='type']").attr('disabled', true);
-       dialogContent.find("select[name='course_id']").attr('disabled', true)
+       dialogContent.find("select[name='course_id']").attr('disabled', true);
+       dialogContent.find("select[name='module_id']").attr('disabled', true);
+       if(calEvent.type === 'Personal'){
+        modulePH.empty();
+       }
     },
 
     eventMouseover: function(calEvent, $event) {
@@ -496,6 +516,7 @@ function prepareFields(dialogContent,calEvent) {
   $("#end_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.end)));
 
   dialogContent.find("select[name='course']").empty();
+  $("#modulePH").empty();
 }
 
 function getCookie(c_name){
@@ -542,11 +563,25 @@ function setupCourseFields(calEvent){
       return;
 
     if(calEvent.courseName.trim() === $(this).text().trim()){
-      $(this).attr('selected', true);  
+      $(this).attr('selected', true);
+      var selected_course = $(this).val()
+      modulePH.html($("#courseModule" + selected_course).html());  
     }
   });
-  courseField.trigger("change");
+  courseField.trigger("change"); // Don't move this! Don't ask why!
+
+  $("#modulePH select[name='module_id'] option").each(function() {
+    if (calEvent.type === 'Personal') 
+      return;
+
+    if (calEvent.courseModule != null)
+      if (calEvent.courseModule.trim() === $(this).text().trim()) {
+        $(this).attr('selected', true);
+      }
+  });
 }
+
+
 
 var $endTimeField = $("select[name='end']");
 var $endTimeOptions = $endTimeField.find("option");

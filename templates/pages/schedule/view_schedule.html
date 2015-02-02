@@ -64,12 +64,18 @@
             <select class="form-control" name='course_id'>
                   <option value="">{% trans 'Select Course' %} </option>
                 
-                {% for course in courses%}
+                {% for course in courses %}
                   <option value="{{course.id}}"> {{course.name}} </option>
                 {% endfor %}
 
             </select>
           </div>
+
+          <div id='modulePH'>
+          </div>
+            
+            
+          
 
         {% else %}
 
@@ -84,8 +90,36 @@
           
 
       </form>
+
+
+
+
+
+      {% for course in courses %}
+        <div class="form-group courseModuleBox" id="courseModule{{course.id}}">
+          {% if course.modules.all %}
+              <label id="courseModuleLabel" for="module_id"> Course Modules:</label>
+              <select class="form-control" name='module_id'>
+                  <option value="">{% trans 'All Modules' %} </option>
+              
+                  {% for module in course.modules.all%}
+                      <option value="{{module.id}}"> {{module.name}} </option>
+                  {% endfor %}
+              </select>
+          {% endif%}
+        </div>
+      {% endfor %}
+
+
+
     </div>
 </div>
+
+
+
+
+
+
 
 {% endblock %}
 

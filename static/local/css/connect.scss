@@ -284,7 +284,9 @@ $course-name-font-size:         17px;
         }   
     }
 }
-
+.courseModuleBox {
+    display:none;
+}
 // Course page
 $course-img-max-size:           150px;
 

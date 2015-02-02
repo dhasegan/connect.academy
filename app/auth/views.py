@@ -116,7 +116,7 @@ def signup_action(request):
         user_type = USER_TYPE_STUDENT
 
     if has_fake_account:
-        user = jUser.objects.get_object_or_404(email = email)
+        user = get_object_or_404(jUser, email = email)
         user.set_password(password)
         # If they have chosen a different username, let them keep it if it is free
         if username != user.username:

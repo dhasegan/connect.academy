@@ -373,6 +373,7 @@ class CourseModule(models.Model):
     #   student_registrations
     #   activities
     #   documents
+    #   appointments
 
 
 class Tag(models.Model):
@@ -1040,6 +1041,13 @@ class ForumPost(models.Model):
             if not (user.is_professor_of(course) or user.is_student_of(course)):
                 self.followed_by.add(user)
 
+    def get_absolute_url(self):
+        if self.forum.forum_type == FORUM_GENERAL:
+            return reverse('forum_general', args=()) + "?post=%s" % self.id
+        else: # FORUM_COURSE
+            return reverse('forum_course', args=(self.forum.forumcourse.course.slug,)) + "?post=%s" % self.id
+
+
 
 class ForumAnswer(models.Model):
     post = models.ForeignKey('ForumPost')
@@ -1116,6 +1124,7 @@ class PersonalAppointment(Appointment):
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
     course_topic = models.ForeignKey('CourseTopic', related_name='appointments', null= True)
+    course_module = models.ForeignKey('CourseModule', related_name='appointments', null=True)
     def __unicode__(self):
         return self.course.name
 
