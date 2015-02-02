@@ -3,7 +3,11 @@
 
 <div class="homework-content">
     <div class="h4"> 
-        {{ hw.homework.name }} {% if hw.homework.document %}(<a href="{% url 'view_document' hw.homework.course.slug hw.homework.document.id %}">document</a>){% endif %}
+        {% if hw.homework.document %}
+        	<a href="{% url 'view_document' hw.homework.course.slug hw.homework.document.id %}">{{ hw.homework.name }}</a>
+        {% else %}
+        	{{ hw.homework.name }}
+        {% endif %}
     </div>
     {% if hw.homework.description %}
         <p> {{ hw.homework.description }} </p>

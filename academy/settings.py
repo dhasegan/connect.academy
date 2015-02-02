@@ -13,6 +13,8 @@ ADMINS = (
     ('Tomas Pllaha', 'tomaspllaha@gmail.com')
 )
 
+WEBSITE = "http://www.connect.academy/" if not DEBUG else "http://localhost/"
+
 MANAGERS = ADMINS
 
 SETTINGS_ROOT = path.realpath(path.dirname(__file__)) + '/'
@@ -134,6 +136,7 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
+    'django.core.context_processors.csrf',
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
@@ -163,7 +166,18 @@ INSTALLED_APPS = (
     'versioning',  # Should be after apps with versioned models
     'south', # db migrations
     'guardian', # manage user permissions
+    'haystack', # Search
 )
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': WEBSITE + ':9200',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -337,7 +351,8 @@ PIPELINE_JS = {
 
 SHELL_PLUS_POST_IMPORTS = (
     ('app.models', '*'),
-    ('app.populator', '*')
+    ('app.populator', '*'),
+    ('django.db', 'connection')
 )
 
 ########################## Other settings

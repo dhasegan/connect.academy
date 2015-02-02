@@ -6,6 +6,7 @@ import re
 from guardian.shortcuts import assign_perm
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings 
@@ -54,7 +55,8 @@ class jUser(User):
     # Courses the user is enrolled to
     courses_enrolled = models.ManyToManyField('Course', related_name='students', 
                                                through = 'StudentCourseRegistration')
-
+    course_modules = models.ManyToManyField('CourseModule', related_name='students',
+                                               through='StudentCourseRegistration')
     # courses the user is managing (i.e: if they're professors)
     courses_managed = models.ManyToManyField('Course', related_name='professors',
                                               through = 'ProfessorCourseRegistration')
@@ -90,17 +92,15 @@ class jUser(User):
     def is_student_of(self, course):
         if not self.is_student():
             return False
-        registration = StudentCourseRegistration.objects.filter(student=self, course=course)
-        return self.is_student() and registration and registration[0].is_approved
+        is_registered = StudentCourseRegistration.objects.filter(student=self, course=course, is_approved = True).exists()
+        return self.is_student() and is_registered
 
     def is_professor_of(self, course):
-        if not self.is_professor():
-            return False
-        registration = ProfessorCourseRegistration.objects.filter(professor=self, course=course)
-        return registration and registration[0].is_approved
+        is_registered = ProfessorCourseRegistration.objects.filter(professor=self, course=course, is_approved = True).exists()
+        return self.is_professor() and is_registered
 
     def is_assistant_of(self,course):
-        return self in list(course.teaching_assistants.all())
+        return course.teaching_assistants.filter(id=self.id).exists()
 
     def is_admin_of(self, course):
         if not self.is_admin():
@@ -119,6 +119,13 @@ class jUser(User):
         else:
             return self.posts_following.filter(id=post.id).exists()
 
+    def get_courses(self):
+        return self.courses_enrolled.all() | self.courses_assisted.all() | self.courses_managed.all()
+
+
+    def is_participant_of(self,course):
+        return self.get_courses().values('id').filter(id=course.id).exists()
+
     def __unicode__(self):
         return str(self.username)
 
@@ -126,7 +133,10 @@ class jUser(User):
 class StudentCourseRegistration(models.Model):
     student = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
+    module = models.ForeignKey('CourseModule',related_name='student_registrations', null=True)
     is_approved = models.BooleanField(default = False) # True if registration is approved
+    reg_time = models.DateField(default = timezone.now())
+    
 
     def __unicode__(self):
         return str(self.student)
@@ -137,6 +147,7 @@ class ProfessorCourseRegistration(models.Model):
     professor = models.ForeignKey('jUser')
     course = models.ForeignKey('Course')
     is_approved = models.BooleanField(default = False) # True if registration is approved
+    reg_time = models.DateField(default=timezone.now())
 
     def __unicode__(self):
         return str(self.professor)
@@ -196,6 +207,9 @@ class Major(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+AVAILABLE_COURSE_PAGES = ['activity', 'info', 'connect', 'wiki', 'resources', 'teacher']
+AVAILABLE_COURSE_TEACHER_PAGES = ['registered', 'pending', 'upload', 'homework', 'forum', 'details', 'assistants']
+
 class Course(models.Model):
     course_id = models.IntegerField()
     name = models.CharField(max_length=200)
@@ -223,7 +237,7 @@ class Course(models.Model):
     #   course_topics (<course>.course_topics.all() returns all topics of the <course>)
     #   appointments (<course>.appointments.all() returns all the appointment of the <course>)
     #   activities (<course>.activities.all() returns all (newsfeed) activities of <course>)
-
+    #   modules (<course>.modules.all() returns all course modules of <course>)
     class Meta:
         permissions = (
             ('approve_registrations', "Approve students' registrations."),
@@ -305,8 +319,11 @@ class Course(models.Model):
         super(Course, self).save(*args, **kwargs)
         ForumCourse.objects.get_or_create(course=self)
 
+
+   
     def __unicode__(self):
         return str(self.name)
+
 
 # Model that represents a course topic. Many topics of the same course form the 
 # course's syllabus 
@@ -344,6 +361,20 @@ class CourseTopic(models.Model):
 
     def __unicode__(self):
         return str(self.name)
+
+
+
+class CourseModule(models.Model):
+    name = models.CharField(max_length=200)
+    course = models.ForeignKey('Course',related_name='modules')
+    # !!
+    # Relations declared in other models define the following:
+    #   homework_requests
+    #   student_registrations
+    #   activities
+    #   documents
+    #   appointments
+
 
 class Tag(models.Model):
     # Besides name, we might need to add more fancy things to tags (we can group them etc)
@@ -527,7 +558,6 @@ class Deadline(models.Model):
     end = models.DateTimeField()
 
 class CourseRegistrationDeadline(Deadline):
-    # need to change the field above to non-nullable.
     def is_open(self):
         now = timezone.now()  #using utc as reference time zone
         if now >= self.start and now < self.end:
@@ -594,22 +624,54 @@ class Review(models.Model):
     def __unicode__(self):
         return str(self.review)
 
+DOC_ACCESS_LEVEL_PUBLIC = 1
+DOC_ACCESS_LEVEL_SAME_COURSE = 2
+DOC_ACCESS_LEVEL_PRIVATE = 3
+
+DOC_ACCESS_LEVELS = (
+    (DOC_ACCESS_LEVEL_PUBLIC, "Everyone"),
+    (DOC_ACCESS_LEVEL_SAME_COURSE, "Only the participants of this course (module)"),
+    (DOC_ACCESS_LEVEL_PRIVATE, "Only me")
+)
+
 class CourseDocument(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=1000, null=True, blank=True)
     document = models.FileField(upload_to='course/documents/')
     course_topic = models.ForeignKey('CourseTopic', null=True, related_name="documents")
     course = models.ForeignKey('Course', related_name="documents")
+    course_module = models.ForeignKey('CourseModule', related_name="documents", null=True)
     submitter = models.ForeignKey('jUser')
-    submit_time = models.DateTimeField()
+    submit_time = models.DateTimeField(default=timezone.now())
+
+    # Allow people who are not registered for the course to see this document?
+    access = models.IntegerField(choices=DOC_ACCESS_LEVELS,default=DOC_ACCESS_LEVEL_PUBLIC)
 
     def __unicode__(self):
         return str(self.name)
+    def can_view(self,user):
+        access = self.access
+
+        if access == DOC_ACCESS_LEVEL_PUBLIC:
+            return True
+        elif access == DOC_ACCESS_LEVEL_SAME_COURSE:
+            course = self.course
+            if self.course_module_id is None:
+                return user.is_participant_of(course)
+            else:
+                is_student = self.course_module.students.filter(studentcourseregistration__student=user).exists()
+                is_manager = user.is_professor_of(course) or user.is_assistant_of(course)
+                return is_student or is_manager
+        elif access == DOC_ACCESS_LEVEL_PRIVATE:
+            return user.id == self.submitter_id
+        else:
+            raise Exception("Invalid access level (%d) for document (%s)" % (access, self.name))
+
+
 
     def save(self, *args, **kwargs):
         just_created = False
         if not self.id:
-            self.submit_time = timezone.now()
             just_created = True
         super(CourseDocument, self).save(*args, **kwargs)
         if just_created:
@@ -629,15 +691,11 @@ class CourseHomeworkRequest(models.Model):
                                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
     is_published = models.BooleanField(default=False)
     document = models.ForeignKey('CourseDocument', related_name='homework_requests', null=True, blank=True)
-
+    course_module = models.ForeignKey('CourseModule', related_name='homework_requests', null=True)
     def save(self, *args, **kwargs):
-        
         just_created = False
         if not self.id:
-            print "Just Created"
             just_created = True
-        else:
-            print "not just created"
         super(CourseHomeworkRequest, self).save(*args, **kwargs)
         if just_created:
             HomeworkActivity.objects.create(user=self.submitter, course=self.course, homework=self)
@@ -646,6 +704,28 @@ class CourseHomeworkRequest(models.Model):
         deadline = self.deadline
         super(CourseHomeworkRequest, self).delete(*args, **kwargs)
         deadline.delete()
+
+    def can_view(self,user):
+        user_courses = user.courses_assisted.all() | user.courses_managed.all()
+        is_ta_or_prof = user_courses.filter(id=self.course_id).exists()
+        is_student_same_module = None
+        if self.course_module is not None:
+            is_student_same_module = self.course_module.students.filter(id=user.id).exists()
+        else:
+            is_student_same_module = user.is_student_of(self.course)
+        return is_ta_or_prof or is_student_same_module
+
+    @staticmethod
+    def filter_qs_by_permission_to_view(qs,user):
+        user_courses = user.courses_assisted.all() | user.courses_managed.all()
+        if self.course_module_id is None:
+            user_courses |= user.courses_enrolled.all()
+            return qs.filter(course__in=user_courses)
+        else:
+            module_students = self.course_module.students.all()
+            return qs.filter(Q(Q(course__in=user_courses) | Q(user__in=module_students)))
+
+
 
     def __unicode__(self):
         return str(self.name)
@@ -898,6 +978,7 @@ class ForumTag(models.Model):
             return (self.name in AdminAnswerTags)
         return False
 
+
     @staticmethod
     def create_tag_name(name):
         clean_name = re.sub('[.!,;]', '', name)
@@ -959,6 +1040,13 @@ class ForumPost(models.Model):
             user = self.posted_by
             if not (user.is_professor_of(course) or user.is_student_of(course)):
                 self.followed_by.add(user)
+
+    def get_absolute_url(self):
+        if self.forum.forum_type == FORUM_GENERAL:
+            return reverse('forum_general', args=()) + "?post=%s" % self.id
+        else: # FORUM_COURSE
+            return reverse('forum_course', args=(self.forum.forumcourse.course.slug,)) + "?post=%s" % self.id
+
 
 
 class ForumAnswer(models.Model):
@@ -1036,6 +1124,7 @@ class PersonalAppointment(Appointment):
 class CourseAppointment(Appointment):
     course = models.ForeignKey('Course',related_name='appointments')
     course_topic = models.ForeignKey('CourseTopic', related_name='appointments', null= True)
+    course_module = models.ForeignKey('CourseModule', related_name='appointments', null=True)
     def __unicode__(self):
         return self.course.name
 
@@ -1050,43 +1139,48 @@ class Activity(models.Model):
 
     def get_type(self):
         if hasattr(self, 'generalactivity'):
-            if hasattr(self.generalactivity, 'forumpostactivity'):
+            general_activity = self.generalactivity
+            if hasattr(general_activity, 'forumpostactivity'):
                 return "ForumPostActivity"
-            elif hasattr(self.generalactivity, 'forumansweractivity'):
+            elif hasattr(general_activity, 'forumansweractivity'):
                 return "ForumAnswerActivity"
             else:
                 return "GeneralActivity"
         elif hasattr(self,'courseactivity'):
-            if hasattr(self.courseactivity, 'homeworkactivity'):
+            course_activity = self.courseactivity
+            if hasattr(course_activity, 'homeworkactivity'):
                 return "HomeworkActivity"
-            if hasattr(self.courseactivity, 'documentactivity'):
+            elif hasattr(course_activity, 'documentactivity'):
                 return "DocumentActivity"
-            if hasattr(self.courseactivity, 'reviewactivity'):
+            elif hasattr(course_activity, 'reviewactivity'):
                 return "ReviewActivity"
-            if hasattr(self.courseactivity, 'wikiactivity'):
+            elif hasattr(course_activity, 'wikiactivity'):
                 return "WikiActivity"
             else:
                 return "CourseActivity"
 
     def get_instance(self):
+
         if hasattr(self, 'generalactivity'):
-            if hasattr(self.generalactivity, 'forumpostactivity'):
-                return self.generalactivity.forumpostactivity
-            elif hasattr(self.generalactivity, 'forumansweractivity'):
-                return self.generalactivity.forumansweractivity
+            general_activity = self.generalactivity
+            if hasattr(general_activity, 'forumpostactivity'):
+                return general_activity.forumpostactivity
+            elif hasattr(general_activity, 'forumansweractivity'):
+                return general_activity.forumansweractivity
             else:
-                return self.generalactivity
+                return general_activity
         elif hasattr(self,'courseactivity'):
-            if hasattr(self.courseactivity, 'homeworkactivity'):
-                return self.courseactivity.homeworkactivity
-            if hasattr(self.courseactivity, 'documentactivity'):
-                return self.courseactivity.documentactivity
-            if hasattr(self.courseactivity, 'reviewactivity'):
-                return self.courseactivity.reviewactivity
-            if hasattr(self.courseactivity, 'wikiactivity'):
-                return self.courseactivity.wikiactivity
+            course_activity = self.courseactivity
+            if hasattr(course_activity, 'homeworkactivity'):
+                return course_activity.homeworkactivity
+            elif hasattr(course_activity, 'documentactivity'):
+                return course_activity.documentactivity
+            elif hasattr(course_activity, 'reviewactivity'):
+                return course_activity.reviewactivity
+            elif hasattr(course_activity, 'wikiactivity'):
+                return course_activity.wikiactivity
             else:
-                return self.courseactivity
+                return course_activity
 
     def can_view(self,user):
         activity_type = self.get_type()
@@ -1098,14 +1192,13 @@ class Activity(models.Model):
             tag = instance.forum_answer.post.tag
             return tag.can_view(user, instance.get_course())
         elif activity_type == "HomeworkActivity":
-            if self.homeworkactivity.homework.course.students.filter(id=user.id).exists() \
-            or self.homeworkactivity.homework.course.professors.filter(id=user.id).exists() \
-            or self.homeworkactivity.homework.course.teaching_assistants.filter(id=user.id).exists():
-                return True
-            else:
-                return False
+            return instance.homework.can_view(user)
+        elif activity_type == "DocumentActivity":
+            return instance.document.can_view(user)
         else:
             return True
+
+
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -1123,6 +1216,59 @@ class Activity(models.Model):
                 self.timestamp = timezone.now()
         super(Activity, self).save(*args, **kwargs)
 
+    @staticmethod
+    def course_page_activities(course, course_module=None):
+        course_module_id = course_module.id if course_module is not None else None
+        return Activity.objects.filter(Q(
+            Q(courseactivity__course=course)
+            | 
+            Q(generalactivity__forumpostactivity__forum_post__forum__forum_type=FORUM_COURSE, 
+                generalactivity__forumpostactivity__forum_post__forum__forumcourse__course=course) 
+            | 
+            Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type=FORUM_COURSE, 
+                generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course=course)
+            )).order_by('-timestamp')
+
+    @staticmethod
+    def dashboard_page_activities(user):
+        user_courses = user.courses_enrolled.all() | user.courses_managed.all() | user.courses_assisted.all()
+        user_module_ids = [u['id'] for u in user.course_modules.all().values('id')]
+        return Activity.objects.filter(
+            Q(
+                # Course Activities
+                Q(courseactivity__course__in = user_courses)                   
+                |
+                Q(  # Forum Post Activities
+                    Q(  # Posts in forums of current user's courses
+                        Q(generalactivity__forumpostactivity__forum_post__forum__forum_type=FORUM_COURSE),
+                        Q(generalactivity__forumpostactivity__forum_post__forum__forumcourse__course__in = user_courses)          
+                    )
+                    |  # Posts the user is following
+                    Q ( generalactivity__forumpostactivity__forum_post__followed_by = user )
+                )
+                |
+                Q( # Forum Answer Activities
+                    Q(  # Answers to posts from course forums that belong to user's courses
+                        Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type = FORUM_COURSE), 
+                        Q(generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course__in = user_courses )      
+                    )
+                    | # Answers to posts the user is following
+                    Q ( generalactivity__forumansweractivity__forum_answer__post__followed_by = user )
+                )        
+            ), 
+            ~Q(user=user) ).order_by('-timestamp')
+    
+    @staticmethod
+    def profile_page_activities(user):
+        activities = Activity.objects.filter(user=user)
+        activities = activities.filter(
+            ~Q(generalactivity__forumpostactivity__forum_post__anonymous=True),
+            ~Q(generalactivity__forumansweractivity__forum_answer__anonymous=True),
+            ~Q(courseactivity__reviewactivity__review__anonymous=True)
+        )
+        
+        return activities.order_by('-timestamp')
+
 
 class GeneralActivity(Activity):
     pass
@@ -1130,8 +1276,6 @@ class GeneralActivity(Activity):
 # Base class for all activities
 class CourseActivity(Activity):
     course = models.ForeignKey('Course', related_name="activities")
-
-
     def __unicode__(self):
         return self.get_type() + " Object"
 
@@ -1166,6 +1310,7 @@ class HomeworkActivity(CourseActivity):
 # When a user uploads a new document11
 class DocumentActivity(CourseActivity): 
     document = models.ForeignKey('CourseDocument')
+
 
 # When a user writes a review for a course
 class ReviewActivity(CourseActivity):

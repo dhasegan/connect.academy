@@ -10,7 +10,7 @@
             </div>
             <div class="form-group">
                 <label for="postdesc-input">{% trans "Additional description" %} {% trans "(optional)" %}</label>
-                <textarea type="text" class="form-control" id="postdesc-input" name="description" rows="4" maxlength="5000"></textarea>
+                <textarea type="text" class="ckeditor form-control" id="postdesc-input" name="description" rows="4" maxlength="5000"></textarea>
             </div>
             {% if user_auth.question_posted.all.count < 2 %}
                 {% include 'objects/reminders/posting.html' %}

@@ -142,10 +142,11 @@ def new_post(request):
 def new_answer(request):
     user = get_object_or_404(jUser, id=request.user.id)
     context = {}
-
     form = SubmitForumAnswer(request.POST)
+
     if not form.is_valid():
         raise Http404
+
 
     forum = form.cleaned_data['forum']
     if forum.forum_type == FORUM_COURSE:
@@ -197,6 +198,7 @@ def reply_form(request, answer_id):
         },
         'question': post,
         'forum': post.forum,
+        'answer_parent_id': "%d-%d" % (post.id, answer.id),
     }
     if post.forum.forum_type == FORUM_COURSE:
         context['course'] = post.forum.forumcourse.course

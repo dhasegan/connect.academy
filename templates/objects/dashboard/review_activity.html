@@ -17,7 +17,7 @@
                     Someone 
                 {% endif %}
                 submitted a review for <a href="{% url 'course_page' activity.courseactivity.course.slug %}">{{ activity.courseactivity.course.name }}</a>
-
+                <small class="text-muted"> {{activity.timestamp|naturaltime}} </small>
                 <div class="review-body">
                     {% include 'objects/course/review.html' %}
                 </div>

@@ -6,7 +6,7 @@
     {% block page_title %}
       <title>{% include 'objects/page_title.html' %}</title>
     {% endblock %}
-    <link rel="shortcut icon" href="{{ STATIC_URL }}/connect_favicon.png"  png="image/x-icon">
+    <link rel="shortcut icon" href="{{ STATIC_URL }}connect_favicon.png"  png="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Connect with a comunity of learners.">
     <meta name="author" content="jTeam">
@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="{{STATIC_URL}}assets/css/icomoon.css">
     {% compressed_css 'connect' %}
 
+    <!-- MathJax to display math on browsers that do not support MathML -->
+    <script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
 
     {% block extra_css_includes %}
     
@@ -70,6 +74,8 @@
     <script src="{{ STATIC_URL }}js/bootstrap-datetimepicker.min.js"></script>
     <!-- Include jcourse Javascript -->
     {% compressed_js 'connect' %}
+
+
 
     {% if not DEBUG %}
       <script src="{{ STATIC_URL }}js/ga.js"></script>

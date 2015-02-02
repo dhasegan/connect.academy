@@ -4,12 +4,24 @@
 
 {% block content %}
 
-
 <div class="schedule-page">
-    <!-- The calendar -->
-    <div id="calendar"></div>
 
-
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <a class="pull-right importExport" href="javascript:void(0)" id="importCalendar">Import iCal calendar</a>
+      </div>
+      <div class="col-md-6">
+        <a class="importExport" href="{% url 'export_as_ical' %}"> Export as iCal calendar </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <br>
+        <div id="calendar"></div>
+      </div>
+    </div>
+  </div>
     <div id="event_edit_container" hidden>
       <form method="post" id="appointmentForm">
         {%csrf_token%}
@@ -64,28 +76,76 @@
             <select class="form-control" name='course_id'>
                   <option value="">{% trans 'Select Course' %} </option>
                 
-                {% for course in courses%}
+                {% for course in courses %}
                   <option value="{{course.id}}"> {{course.name}} </option>
                 {% endfor %}
 
             </select>
           </div>
 
+          <div id='modulePH'>
+          </div>
+            
+            
+          
+
         {% else %}
 
         <input name="type" value="0" type="hidden" />
+        
+        {% endif %}
 
-
-      {% endif %}
-
-      <div class="form-group copy-label">
-            <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input form-control to-reset" name="num_weeks" type="text" /> weeks.  </b>   
-      </div>
-          
-
+        <div class="form-group copy-label">
+              <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input form-control to-reset" name="num_weeks" type="text" /> weeks.  </b>   
+        </div>
       </form>
+
     </div>
+
+    <!-- for the calendar import -->
+    <div hidden id='importCalendarContainer'>
+      <form id="importForm" action="{% url 'import_ical' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        This feature is a work-in-progress. Please contact us for any bugs that may occur.
+        A valid iCalendar should adhere to the <i> iCalendar 2.0 Strict </i> ruleset. <br/>
+        <fieldset class="form-inline">
+          <div class="form-group upload-file-wrapper">
+            <input class="form-control upload-file-input" placeholder="{% trans "no file chosen" %}" disabled="disabled"/>
+            <div class="btn btn-primary upload-file">
+              <span>{% trans "Browse" %}</span>
+              <input id='calFile'  type="file" name='calFile' class="file-input"/>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      
+      <div id="returnVal">
+      </div>
+    </div>
+
+      {% for course in courses %}
+        <div class="form-group courseModuleBox" id="courseModule{{course.id}}">
+          {% if course.modules.all %}
+              <label id="courseModuleLabel" for="module_id"> Course Modules:</label>
+              <select class="form-control" name='module_id'>
+                  <option value="">{% trans 'All Modules' %} </option>
+              
+                  {% for module in course.modules.all%}
+                      <option value="{{module.id}}"> {{module.name}} </option>
+                  {% endfor %}
+              </select>
+          {% endif%}
+        </div>
+      {% endfor %}
+  
+  </div>
 </div>
+
+
+
+
+
+
 
 {% endblock %}
 
@@ -126,7 +186,7 @@
       tz.val( moment().zone() );
   
 
-  });
+  });  
 </script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
 {% endblock %}

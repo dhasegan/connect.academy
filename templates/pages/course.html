@@ -9,19 +9,30 @@
         </div>
         <div class="col-md-8">
             <div class="course-details">
-                <div class="tab-content">
-                    {% include 'objects/course/course_activity.html' %}
-                    {% include 'objects/course/course_info.html' %}
-                    {% include 'objects/course/course_wiki.html' %}
-                    {% include 'objects/course/course_forum.html' %}
-                    {% if current_homework or documents %}
-                        {% include 'objects/course/course_resources.html' %}
-                    {% endif %}
-                    {% if teacher.is_teacher %}
-                        {% include 'objects/course/course_teacher_dashboard.html' %}
-                    {% endif %}
+                <div class="tab-content" id="course_main_content">
+                    <center>
+                        <img src="{{STATIC_URL}}loading.gif" class="loading-course-tab" alt="Loading..."/> 
+                    </center>
+                    {% include 'objects/course/course_tab_content.html' %}
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js_includes %}
+  <script type="text/javascript" src="{{STATIC_URL}}ckeditor_mini/ckeditor.js"></script>
+  <!-- DataTables -->
+  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+
+{% endblock %}
+
+{% block extra_css_includes %}
+    <!-- CKEditor CSS -->
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}ckeditor_mini/plugins/codesnippet/lib/highlight/styles/github.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.css">
+    
 {% endblock %}

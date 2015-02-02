@@ -2,12 +2,12 @@ var ForumPage = (function() {
     var me = {
         settings: {
             // Filters
-            postFilters: $('.post-filter'),
-            currentPostFilter: $('.current-post-filter'),
+            postFilters: '.post-filter',
+            currentPostFilter: '.current-post-filter',
             postFilterNameSelector: '.post-filter-name',
 
             // Posts sidebar
-            posts: $('.forum-post'),
+            posts: '.forum-post',
 
             // Answers tabs
             flagPostLinkSelector: '.flag-post-link',
@@ -22,12 +22,14 @@ var ForumPage = (function() {
             upvotePostFormSelector: '.upvote-post-form',
             upvoteAnswerFormSelector: '.upvote-answer-form',
 
+            ckeditorNonEditable: '.rich-cke-text',
+
             // New post page
-            newPostForm: $('.forumnewpost-form'),
-            newPostButton: $('.newpost-btn'),
+            newPostForm: '.forumnewpost-form',
+            newPostButton: '.newpost-btn',
 
             //Follow-unfollow post
-            postFollowForm: $('form.post-follow-form'),
+            postFollowForm: 'form.post-follow-form',
             postFollowContainerSelector: 'div.post-follow-container'
         }
     }, s;
@@ -41,53 +43,54 @@ var ForumPage = (function() {
         // Bind ui actions for answers tab
         me.onRefreshAnswerTab($('html'));
         me.bindUIActions();
+
     };
 
     me.bindUIActions = function() {
+        if (!ConnectGlobal.global_variables.boundForumActions) {
+            // On Filter change
+            $(document).on("click", s.postFilters, function() {
+                $(s.postFilters).removeClass("hidden");
+                $(this).addClass("hidden");
+                $(s.currentPostFilter).find(s.postFilterNameSelector).text(this.text);
 
-        // On Filter change
-        s.postFilters.click( function() {
-            s.postFilters.removeClass("hidden");
-            $(this).addClass("hidden");
-            s.currentPostFilter.find(s.postFilterNameSelector).text(this.text);
+                ForumPage.indexPosts();
+            });
 
-            ForumPage.indexPosts();
-        });
+            // On new post submit
+            $(document).on("submit", s.newPostForm, function(event) {
+                $(s.newPostButton).attr('disabled', 'disabled');
+            });
 
-        // On new post submit
-        s.newPostForm.submit( function(event) {
-            s.newPostButton.attr('disabled', 'disabled');
-        });
+            var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
 
-        var upvote_selector = s.upvotePostFormSelector + ", " + s.upvoteAnswerFormSelector;
-
-        $(document).on("click", upvote_selector, function(event) {
-            window.console.log(event.target.id);
-            Utils.SubmitFormAjax(event, this,
-                function(result) {
-                    for (idx in result.id_selectors) {
-                        //window.console.log(idx);
-                        $(result.id_selectors[idx]).html(result.html);
+            $(document).on("click", upvote_selector, function(event) {
+                Utils.SubmitFormAjax(event, this,
+                    function(result) {
+                        for (idx in result.id_selectors) {
+                            $(result.id_selectors[idx]).html(result.html);
+                        }
+                    }, 
+                    function(jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus);
                     }
-                    
-                }, 
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus);
-                }
-            );
-        });
+                );
+            });
+            ConnectGlobal.global_variables.boundForumActions = true;
+        }
+        
 
     };
 
     me.indexPosts = function() {
-        var tag_filter = s.currentPostFilter.find(s.postFilterNameSelector).text().replace("#", "");
+        var tag_filter = $(s.currentPostFilter).find(s.postFilterNameSelector).text().replace("#", "");
 
         if (tag_filter == "all") {
-            s.posts.show()
+            $(s.posts).show()
             return ;
         } 
 
-        s.posts.each( function() {
+        $(s.posts).each( function() {
             var show = $(this).hasClass('ptag-' + tag_filter)
 
             if (show) {
@@ -97,30 +100,38 @@ var ForumPage = (function() {
             }
         });
 
-        var active_post = s.posts.filter( function() { return $(this).hasClass('active') });
+        var active_post = $(s.posts).filter( function() { return $(this).hasClass('active') });
         if (active_post.is(':visible') == false) {
-            $visible_posts = s.posts.filter(':visible');
+            $visible_posts = $(s.posts).filter(':visible');
             $visible_posts.first().find('a').click();
         }
     };
 
+
+
     // Refresh something in the DOM, relink everything in its subtree
     me.onRefreshAnswerTab = function(SubtreeDOM) {
+        if (typeof(SubtreeDOM) === "undefined" ) SubtreeDOM = $('html');
         // Submit answers ajax
         SubtreeDOM.find(s.postAnswerFormSelector).submit(function(event) {
             $(this).find(s.postAnswerButtonSelector).attr('disabled', 'disabled');
+            // Add CKEDITOR data into the textarea
+            var content = $($(this).find("iframe")[0]).contents().find("body")[0].innerHTML;
+            $(this).find("textarea[name='text']").val(content);
             Utils.SubmitFormAjax(event, this,
                 function(result) {
                     var $answer_tab = $(result.id_selector);
                     $answer_tab.html(result.html);
-
                     ForumPage.onRefreshAnswerTab($answer_tab);
+                    
                 }, 
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
                 }
+
             );
         });
+
         // Get the reply form ajax
         SubtreeDOM.find(s.getReplyLinkSelector).click( function(event) {
             event.preventDefault();
@@ -133,7 +144,8 @@ var ForumPage = (function() {
                     success: function(response) {
                         $reply_form.html(response.html).slideDown();
                         $reply_form.addClass('active');
-
+                        var textarea_id = $(response.html).find("textarea[name='text']").attr("id");
+                        //CKEDITOR.replace(textarea_id);
                         ForumPage.onRefreshAnswerTab($reply_form);
                     }
                 })
@@ -153,6 +165,7 @@ var ForumPage = (function() {
                     $forum_answers.html(response.html).slideDown();
 
                     ForumPage.onRefreshAnswerTab($forum_answers);
+
                 }
             })
         });
@@ -210,6 +223,8 @@ var ForumPage = (function() {
 
             });
         });
+       ConnectGlobal.refreshCKInline(SubtreeDOM);
+       ConnectGlobal.refreshCK(SubtreeDOM); 
     };
 
     return me;

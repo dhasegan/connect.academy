@@ -11,5 +11,9 @@ urlpatterns = patterns('app.auth.views',
     url(r'^university_by_email\.*$', 'university_by_email', name='university_by_email'),
     url(r'^check_username\.*$', 'check_username', name='check_username'),
     url(r'^validate_registration\.*$', 'validate_registration', name='check_password'),
-    url(r'^approve_student_registrations$', 'approve_student_registrations', name='approve_student_registrations'),
+    
+    ## RESET PASSWORD
+    url(r'^send_email_pw_reset$', 'send_email_pw_reset', name='send_email_pw_reset'),
+    url(r'^password_reset/(?P<username>[A-Za-z0-9\._-]{3,25})/(?P<token>[A-Za-z0-9\._-]+)$', 'password_reset', name='password_reset'),
+    url(r'^new_password$', 'new_password', name='new_password'),
 )

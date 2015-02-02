@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   // some global variables, that are used in every event* . 
 
   dialogContent = $("#event_edit_container");
@@ -15,12 +14,15 @@ $(document).ready(function() {
   addToOtherWeeks = dialogContent.find("input[name='copy']");
       
   courseLabel = dialogContent.find("#courseLabel");
+
+  courseModuleBox = dialogContent.find(".courseModuleBox");
   copyLabel = dialogContent.find("#copyLabel");
   form = dialogContent.find("form[id='appointmentForm']");
-      
+  modulePH = $("#modulePH");
       
 
-  var $calendar = $('#calendar');
+  $calendar = $('#calendar');
+  
   $('#calendar').weekCalendar({
     data: eventData,
 
@@ -62,6 +64,7 @@ $(document).ready(function() {
       copyLabel.show();
 
       typeField.change(function(){
+          
           if (typeField.val() === '0'){ // personal appointment
             courseLabel.hide(400);
           }else{ // course appointment
@@ -70,9 +73,20 @@ $(document).ready(function() {
           
       });
 
+      courseField.change(function() {
+        //console.log($(courseModuleBox));
+        $(courseModuleBox).hide();
+        var selected_course = courseLabel.find("select[name=course_id]").val();
+        //console.log(selected_course);
+        modulePH.html($("#courseModule" + selected_course).html());
+        //$("#courseModule" + selected_course).show();
+
+      });
+
 
 
       dialogContent.dialog({
+          dialogClass: "no-close",
           modal: true,
           title: "New Appointment",
           
@@ -146,6 +160,7 @@ $(document).ready(function() {
       setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
       dialogContent.find("select[name='type']").attr('disabled', false);
       dialogContent.find("select[name='course_id']").attr('disabled', false);
+      dialogContent.find("select[name='module_id']").attr('disabled', false);
     },
 
     eventDrop: function(calEvent, $event) {
@@ -189,6 +204,7 @@ $(document).ready(function() {
                         'end': calEvent.end,
                         'type':'Course',
                         'courseName':calEvent.courseName,
+                        'courseModule': calEvent.courseModule,
                         'modifiable' :true,
                 });
             }
@@ -261,6 +277,7 @@ $(document).ready(function() {
                         'end': calEvent.end,
                         'type':'Course',
                         'courseName':calEvent.courseName,
+                        'courseModule': calEvent.courseModule,
                         'modifiable' :true,
                 });
             }
@@ -294,7 +311,6 @@ $(document).ready(function() {
 
     // to modify existing calEvents (or remove them)
     eventClick: function(calEvent, $event) {
-      
       if (calEvent.readOnly || !calEvent.modifiable) {
           return;
        }
@@ -317,7 +333,6 @@ $(document).ready(function() {
        dialogContent.find("input[name='eventId']").val(calEvent.id);
        
        setupCourseFields(calEvent);
-      
        if(calEvent.type === 'Personal'){
         courseLabel.hide();
        }
@@ -339,6 +354,7 @@ $(document).ready(function() {
                 //reenable the 'select' to serialize the form, otherwise a KeyError is raised.
                 //it is set to true again after the ajax request is sent
                 dialogContent.find("select[name='course_id']").attr('disabled', false);
+                dialogContent.find("select[name='module_id']").attr('disabled', false);
 
                 if(calEvent.type === 'Course' && calEvent.modifiable){
                   $.ajax({
@@ -399,6 +415,7 @@ $(document).ready(function() {
                 }  
 
                 dialogContent.find("select[name='course_id']").attr('disabled', true);
+                dialogContent.find("select[name='module_id']").attr('disabled', true);
 
              },
 
@@ -458,9 +475,14 @@ $(document).ready(function() {
        setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
        setupCourseFields(calEvent);
        dialogContent.find("select[name='type']").attr('disabled', true);
-       dialogContent.find("select[name='course_id']").attr('disabled', true)
+       dialogContent.find("select[name='course_id']").attr('disabled', true);
+       dialogContent.find("select[name='module_id']").attr('disabled', true);
+       if(calEvent.type === 'Personal'){
+        modulePH.empty();
+       }
     },
 
+    // might be needed after ... who knows :) 
     eventMouseover: function(calEvent, $event) {
       displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
     },
@@ -496,6 +518,7 @@ function prepareFields(dialogContent,calEvent) {
   $("#end_dp").data("DateTimePicker").setDate(moment(new Date(calEvent.end)));
 
   dialogContent.find("select[name='course']").empty();
+  $("#modulePH").empty();
 }
 
 function getCookie(c_name){
@@ -542,11 +565,25 @@ function setupCourseFields(calEvent){
       return;
 
     if(calEvent.courseName.trim() === $(this).text().trim()){
-      $(this).attr('selected', true);  
+      $(this).attr('selected', true);
+      var selected_course = $(this).val()
+      modulePH.html($("#courseModule" + selected_course).html());  
     }
   });
-  courseField.trigger("change");
+  courseField.trigger("change"); // Don't move this! Don't ask why!
+
+  $("#modulePH select[name='module_id'] option").each(function() {
+    if (calEvent.type === 'Personal') 
+      return;
+
+    if (calEvent.courseModule != null)
+      if (calEvent.courseModule.trim() === $(this).text().trim()) {
+        $(this).attr('selected', true);
+      }
+  });
 }
+
+
 
 var $endTimeField = $("select[name='end']");
 var $endTimeOptions = $endTimeField.find("option");
@@ -577,6 +614,75 @@ $("select[name='start']").change(function() {
 
 });
 
+// this deals with the rendering of the form together with the 
+// ajax submission to the server.
+$("a[id='importCalendar']").click(function(){
+  var output = document.getElementById("returnVal");
+  output.innerHTML = "";
+  $("#importCalendarContainer").dialog({
+    modal: true,
+    title: "Import your calendar",
+    dialogClass: 'no-close',
 
+    buttons:{
+      Import:function(){ // ajax submission
+        var form = document.getElementById("importForm");
+        var data = new FormData(form);
+        var $that = $(this); // stupid javascript
+        var $file = document.getElementById("calFile").files[0];
+        if($file === undefined){
+          return;
+        }
+        if ($file.name.split(".").pop() !== "ics"){
+          output.innerHTML = "Please submit a valid iCalendar file.";
+          return;
+        }
+
+        $.ajax({
+          url: $("form[id='importForm']").attr('action'),
+          type: $("form[id='importForm']").attr('method'),
+          data: data,
+          cache: false,
+          processData: false,
+          contentType: false,
+
+          success: function(data) {
+              data = $.parseJSON(data);
+              if(data.status === -1){
+                output.innerHTML = "Oops! There was an error. Please try again.";
+              }
+              if(data.status === -2 ){
+                output.innerHTML = "The file you submitted was not valid.";
+              }
+              if(data.status === 0){ // 'tis OK 
+                for(var i = 0; i< data.appointments.length; i++){
+                  var app = data.appointments[i];
+                  eventData.events.push(app);
+                  $calendar.weekCalendar("updateEvent", app);
+                  if(data.warnings === '')
+                    output.innerHTML = "Calendar imported successfully.\
+                                      This window will close in 2 seconds.";
+                  else
+                    output.innerHTML = data.warnings;
+                }
+              }
+
+              // this shizzle refreshes the calendar with the new events 
+              setTimeout(function(){
+                $that.dialog("destroy");
+                $calendar.weekCalendar("refresh");
+                output.innerHTML = "";
+              },2000);
+          }
+        });
+
+      },
+      Cancel:function(){
+        $(this).dialog('destroy');
+        output.innerHTML = "";
+      }
+    },
+  });
+});
 
 });

@@ -22,10 +22,18 @@ urlpatterns = patterns('app.course.views',
 
     url(r'^vote_review$', 'vote_review', name='vote_review'),
     url(r'^register$', 'register_course', name= 'register_course'),
+    url(r'^approve_student_registrations$', 'approve_student_registrations', name='approve_student_registrations'),
     url(r'^send_mass_email$','send_mass_email',name='send_mass_email'),
     url(r'^load_course_activities$', 'load_course_activities', name='load_course_activities'),
     url(r'^load_new_course_activities$', 'load_new_course_activities', name='load_new_course_activities'),
-    url(r'^add_new_ta$', 'add_new_ta', name='new_ta'), #new Teaching Assistant
+    url(r'^add_new_ta$', 'add_new_ta', name='new_ta'), # new Teaching Assistant
     url(r'^change_ta_permissions$', 'change_ta_permissions', name='change_ta_permissions'),
     url(r'^remove_ta$', 'remove_ta', name='remove_ta'),
+    url(r'^new_course_module$', 'new_course_module', name='new_course_module'),
+    url(r'^update_course_module$', 'update_course_module', name='update_course_module'),
+    url(r'^delete_course_module$', 'delete_course_module', name='delete_course_module'),
+    url(r'^change_reg_module$', 'change_reg_module', name='change_reg_module'),
+    url(r'^load_course_tab$', 'load_course_tab', name='load_course_tab'),
+
+
 )

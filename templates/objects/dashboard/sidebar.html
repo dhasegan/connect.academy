@@ -25,8 +25,15 @@
                                             {{ item.start|time:"H:i"}}
                                         </td>
                                         <td class="description-col">
-                                            {{ item.description|slice:":30" }}
+                                            {% if item.courseappointment %}
+                                                <a href="{% url 'course_page' item.courseappointment.course.slug %}">{{ item.courseappointment.description|slice:":30" }}</a>
+                                            {% else %}
+                                                {{ item.description|slice:":30" }}
+                                            {% endif %}
 
+                                            {% if item.location %}
+                                                @ {{ item.location|slice:":30" }}
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -95,6 +102,10 @@
                     {% endif %}
 
                     {% if not courses.enrolled and not courses.managed and not courses.assisted %}
+                        <div class="row text-center">
+                            <span id="dashboard-scheduler-icon" class="icon icon-book"> Coursesj     </span>
+                        </div>
+                        <br>
                         <table class="sidebar-courses-table">
                             <tr>
                                 <td> You are not registered in any courses </td>

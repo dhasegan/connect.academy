@@ -26,3 +26,15 @@
 	 </div>
 {% endblock %}
 
+{% block extra_js_includes %}
+  <script type="application/javascript" src="{{ STATIC_URL }}ckeditor_mini/ckeditor.js" charset="utf-8"></script>
+  <!-- DataTables -->
+  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+{% endblock %}
+
+{% block extra_css_includes %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}ckeditor_mini/plugins/codesnippet/lib/highlight/styles/github.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.css">
+{% endblock %}

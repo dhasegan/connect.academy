@@ -11,3 +11,21 @@ def get_slug_for(Model, pk, name):
             if not slug in same_slug_objects:
                 break
     return slug
+
+# Serialize the form errors to prepare them to be sent as message
+def serialize_form_errors(request, form, prefix):
+    field = {
+        "email": "Your email",
+        "username": "A username",
+        "fname": "Your first name",
+        "lname": "Your last name",
+        "password": "A password",
+        "password_confirmation": "Confirmation of the password"
+    }
+    field_errors = []
+    for e in form.errors.keys():
+        if e in field:
+            field_errors.append(field[e] + " is required. Please enter it below!")
+    errors = "<!>".join([e for e in field_errors + form.non_field_errors()])
+    
+    return prefix + errors

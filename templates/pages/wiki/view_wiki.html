@@ -16,7 +16,7 @@
 
 
     <div class="panel-body">
-  		<div class="content wiki-content">
+  		<div class="rich-cke-text" id="wiki_content">
       			{{wiki.content|safe}}
   		</div>
       {% if can_edit_wiki %}
@@ -29,4 +29,12 @@
 	</div>
 
 
+{% endblock %}
+
+{% block extra_js_includes %}
+  <script type="text/javascript" src="{{STATIC_URL}}ckeditor/ckeditor.js"></script>
+{% endblock %}
+
+{% block extra_css_includes %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}ckeditor/plugins/codesnippet/lib/highlight/styles/github.css">
 {% endblock %}

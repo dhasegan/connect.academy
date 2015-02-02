@@ -1,0 +1,47 @@
+{% load i18n %}
+
+
+<div id="forgot_pw_modal" class="modal fade in" tabindex="1" role="dialog" aria-labelledby="forgotPwModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></a>
+                <h3 class="modal-title" id="forgotPwModalLabel"><b>{% trans "Reset password" %}</b></h3>
+            </div>
+            <div class="modal-body">
+                <!-- #### BEGIN -->
+                <div class="panel panel-default">
+                    
+                    <div class="panel-body">
+                        
+                            {% trans "Please enter your e-mail address below and we will send you a link with instructions on how to reset your password" %}
+                       
+                        <form action="{% url 'send_email_pw_reset' %}" id="registration_form" method="POST">
+                            {%csrf_token%}
+                            <div class="form-group">
+                                
+                                <input type="email" class="form-control" placeholder="Your e-mail address" name="email" required/>
+                                
+                                <button class="form-control btn btn-primary">
+                                    {% trans "Send password reset link" %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- #### END -->
+            </div>
+
+            <div class="modal-footer">
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ########################################################################## -->
+

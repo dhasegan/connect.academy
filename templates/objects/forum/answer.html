@@ -27,8 +27,8 @@
             >>> Answer body <<<
         {% endcomment %}
         {% if not answer.dont_show_at_all %}
-            <div class="answer-body {% if answer.dont_show %}hidden{% endif %}">
-                {{ answer.answer.text|linebreaks }}
+            <div class="answer-body rich-cke-text {% if answer.dont_show %}hidden{% endif %}" id="answer-{{answer.answer.id}}">
+                {{ answer.answer.text|safe }}
             </div>
         {% endif %}
 
