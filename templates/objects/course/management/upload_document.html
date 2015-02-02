@@ -10,11 +10,42 @@
 
     {% if syllabus|length > 0 %}
         <div class="form-group">
-            <label for="documentTopic{{course.id}}">{% trans "Course Topic" %}</label>
+            <label for="documentTopic{{course.id}}">{% trans "Syllabus Topic" %}</label>
             <select class="form-control" name="topic_id" id="documentTopic{{course.id}}">
                 <option value=""> {% trans "No specific topic" %} </option>
                 {% for topic in syllabus %}
                     <option value="{{topic.topic.id}}"> {{ topic.topic.name }} </option>
+                {% endfor %} 
+            </select>
+        </div>
+    {% endif %}
+
+    {% if teacher.course_modules|length > 0 %}
+        <div class="form-group">
+            <label for="course_module{{course.id}}">{% trans "Course Module" %}</label>
+            <select class="form-control" name="module_id" id="course_module{{course.id}}">
+                <option value=""> {% trans "All Modules" %} </option>
+                {% for module in teacher.course_modules %}
+                    {% if homework.course_module.id == module.id %}
+                        <option value="{{module.id}}" selected> {{  module.name }} </option>
+                    {% else %}
+                        <option value="{{module.id}}" > {{ module.name }} </option>
+                    {% endif %}
+                {% endfor %} 
+            </select>
+        </div>
+    {% endif %}
+
+    {% if doc_access_levels %}
+        <div class="form-group">
+            <label for="doc_access_level{{course.id}}">{% trans "Who can see this document?" %}</label>
+            <select class="form-control" name="access_level" id="doc_access_level{{course.id}}">
+                {% for level in doc_access_levels %}
+                    {% if doc.access == level.id %}
+                        <option value="{{level.id}}" selected> {{  level.desc }} </option>
+                    {% else %}
+                        <option value="{{level.id}}" > {{ level.desc }} </option>
+                    {% endif %}
                 {% endfor %} 
             </select>
         </div>

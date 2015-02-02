@@ -98,8 +98,9 @@ def dashboard_context(request):
             for homework in course_hw.filter(deadline__end__gte=pytz.utc.localize(datetime.now())):
                 homework_submitted = CourseHomeworkSubmission.objects.filter(submitter=user,
                                                                              homework_request=homework).count() > 0
-                reg['homework'].append({'submitted': homework_submitted,
-                                        'hw': homework})
+                if homework.can_view(user):
+                    reg['homework'].append({'submitted': homework_submitted,
+                                            'hw': homework})
 
     for reg in context['courses']['assisted']:
         if reg['is_approved']:

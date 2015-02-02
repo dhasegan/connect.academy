@@ -3,7 +3,7 @@ import random
 import os
 
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.template.defaultfilters import filesizeformat
 from app.models import *
 
@@ -34,7 +34,7 @@ class RateCourseForm(forms.Form):
             raise forms.ValidationError("Not a valid rating type!")
         try:
             course = Course.objects.get(id=cleaned_data.get("course_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("This course does not exist")
 
         cleaned_data['course'] = course
@@ -45,7 +45,7 @@ class RateCourseForm(forms.Form):
 
             try:
                 prof = jUser.objects.get(username=cleaned_data['profname'])
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist, MultipleObjectsReturned:
                 raise forms.ValidationError("A professor with this username does not exist")
             cleaned_data['prof'] = prof
 
@@ -61,8 +61,8 @@ class SubmitCommentForm(forms.Form):
         cleaned_data = super(SubmitCommentForm, self).clean()
 
         try:
-            course = Course.objects.filter(id=cleaned_data.get("course_id"))
-        except ObjectDoesNotExist:
+            course = Course.objects.get(id=cleaned_data.get("course_id"))
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("This course does not exist")
         cleaned_data['course'] = course
 
@@ -72,29 +72,38 @@ class SubmitDocumentForm(forms.Form):
     name = forms.CharField(max_length=200)
     document = forms.FileField()
     topic_id = forms.CharField(required=False)
+    module_id = forms.CharField(required = False)
     description = forms.CharField(max_length=1000, required=False)
     course_id = forms.CharField()
     url = forms.CharField()
+    access_level = forms.IntegerField()
 
     def clean(self):
         cleaned_data = super(SubmitDocumentForm, self).clean()
 
         try:
             course = Course.objects.get(id=cleaned_data.get("course_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("This course does not exist")
         cleaned_data['course'] = course
 
         if cleaned_data['topic_id']:
             try:
                 topic = CourseTopic.objects.get(id=cleaned_data['topic_id'], course=cleaned_data["course"])
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist, MultipleObjectsReturned:
                 raise forms.ValidationError("The selected topic does not belong to this course")
-
             cleaned_data["topic"] = topic
-                
         else:
             cleaned_data["topic"] = None
+
+        if cleaned_data['module_id']:
+            try:
+                cleaned_data['module'] = CourseModule.objects.get(id=cleaned_data['module_id'], course=cleaned_data["course"])
+            except ObjectDoesNotExist, MultipleObjectsReturned: 
+                raise forms.ValidationError("The selected module does not exist or it does not belong to this course")
+        else:
+            cleaned_data['module'] = None
+
 
         return cleaned_data
 
@@ -116,7 +125,7 @@ class ResubmitDocumentForm(forms.Form):
         
         try:
             doc = CourseDocument.objects.get(id=cleaned_data.get("doc_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of documents with this doc_id!")
         
         cleaned_data['doc_obj'] = doc
@@ -150,14 +159,14 @@ class SubmitHomeworkForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(SubmitHomeworkForm, self).clean()
-
-        courses = Course.objects.filter(id=cleaned_data.get("course_id"))
-        if len(courses) != 1:
+        try:
+            course = Course.objects.get(id=cleaned_data.get("course_id"))
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
-        cleaned_data['course'] = courses[0]
+        cleaned_data['course'] = course
         try:
             hw_req = CourseHomeworkRequest.objects.get(id=cleaned_data.get("homework_request_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
         cleaned_data['homework_request'] = hw_req
 
@@ -171,7 +180,7 @@ class SubmitHomeworkForm(forms.Form):
                 content.name = generateRandomFilename(fileExtension)
                 cleaned_data['document' + str(idx)] = content
 
-        if not homework_requests[0].course == courses[0]:
+        if not hw_req.course == course:
             raise forms.ValidationError("Integration error!")
 
         return cleaned_data
@@ -183,6 +192,7 @@ class SubmitHomeworkRequestForm(forms.Form):
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     timezone = forms.IntegerField()
+    module_id = forms.CharField(required=False)
     nr_files = forms.IntegerField(validators=[MinValueValidator(HOMEWORK_MIN_FILES),
                                               MaxValueValidator(HOMEWORK_MAX_FILES)])
     document = forms.FileField(required=False)
@@ -193,20 +203,26 @@ class SubmitHomeworkRequestForm(forms.Form):
         cleaned_data = super(SubmitHomeworkRequestForm, self).clean()
         try:
             course = Course.objects.get(id=cleaned_data.get("course_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
         cleaned_data['course'] = course
 
         if cleaned_data['topic_id']:
             try:
-                topic = CourseTopic.objects.get(id=cleaned_data['topic_id'], course=cleaned_data["course"])
-            except ObjectDoesNotExist: 
-                cleaned_data["topic"] = topic
-            else:
-                raise forms.ValidationError("The selected topic does not belong to this course")
+                cleaned_data['topic'] = CourseTopic.objects.get(id=cleaned_data['topic_id'], course=cleaned_data["course"])
+            except ObjectDoesNotExist, MultipleObjectsReturned: 
+                raise forms.ValidationError("The selected topic does not exist or it does not belong to this course")      
         else:
             cleaned_data["topic"] = None
-        
+
+        if cleaned_data['module_id']:
+            try:
+                cleaned_data['module'] = CourseModule.objects.get(id=cleaned_data['module_id'], course=cleaned_data["course"])
+            except ObjectDoesNotExist, MultipleObjectsReturned: 
+                raise forms.ValidationError("The selected module does not exist or it does not belong to this course")
+        else:
+            cleaned_data["module"] = None
+
         return cleaned_data
 
     def clean_timezone(self):
@@ -230,6 +246,7 @@ class EditHomeworkRequestForm(forms.Form):
     name = forms.CharField(max_length=200)
     description = forms.CharField(max_length=1000, required=False)
     topic_id = forms.CharField(required=False)
+    module_id = forms.CharField(required=False)
     start = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     deadline = forms.DateTimeField(input_formats=settings.VALID_TIME_INPUTS)
     timezone = forms.IntegerField()
@@ -239,15 +256,15 @@ class EditHomeworkRequestForm(forms.Form):
     def clean(self):
         cleaned_data = super(EditHomeworkRequestForm, self).clean()
         try:
-            course = Course.objects.filter(id=cleaned_data.get("course_id"))
-        except ObjectDoesNotExist:
+            course = Course.objects.get(id=cleaned_data.get("course_id"))
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of courses with this course_id!")
 
         cleaned_data['course'] = course
 
         try:
             hw_req = CourseHomeworkRequest.objects.get(id=cleaned_data.get("hw_req_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of homework requests with this hw_req_id!")
         cleaned_data['homework_request'] = hw_req
 
@@ -257,13 +274,21 @@ class EditHomeworkRequestForm(forms.Form):
         if cleaned_data['topic_id']:
             try:
                 topic = CourseTopic.objects.get(id=cleaned_data['topic_id'], course=cleaned_data["course"])
-            except ObjectDoesNotExist: 
+            except ObjectDoesNotExist, MultipleObjectsReturned: 
                 raise forms.ValidationError("The selected topic does not belong to this course")
             
-            cleaned_data["topic"] = topics[0]
+            cleaned_data["topic"] = topic
                 
         else:
             cleaned_data["topic"] = None
+
+        if cleaned_data['module_id']:
+            try:
+                cleaned_data['module'] = CourseModule.objects.get(id=cleaned_data['module_id'], course=cleaned_data["course"])
+            except ObjectDoesNotExist, MultipleObjectsReturned: 
+                raise forms.ValidationError("The selected module does not exist or it does not belong to this course")
+        else:
+            cleaned_data['module'] = None
         
         return cleaned_data
 
@@ -283,10 +308,11 @@ class SubmitHomeworkGradesForm(forms.Form):
         super(SubmitHomeworkGradesForm, self).__init__(*args, **kwargs)
         if not hw_req_id:
             return 
-        reqs = CourseHomeworkRequest.objects.filter(id=hw_req_id)
-        if not reqs:
+        try:
+            hw = CourseHomeworkRequest.objects.get(id=hw_req_id)
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             return
-        hw = reqs[0]
+    
         students = hw.course.students.all()
         for st in students:
             for i in range(1,hw.number_files+1):
@@ -299,7 +325,7 @@ class SubmitHomeworkGradesForm(forms.Form):
         cleaned_data = super(SubmitHomeworkGradesForm, self).clean()
         try:
             hw_req = CourseHomeworkRequest.objects.get(id=cleaned_data.get("hw_req_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of homework requests with this homeworkRequest_id!")
         cleaned_data['homework_request'] = hw_req
 
@@ -313,9 +339,9 @@ class VoteReviewForm(forms.Form):
         cleaned_data = super(VoteReviewForm, self).clean()
         try:
             review = Review.objects.get(id=cleaned_data.get("review_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of reviews with this review_id!")
-        cleaned_data['review'] = reviews[0]
+        cleaned_data['review'] = review
 
         return cleaned_data
 
@@ -342,11 +368,12 @@ class UpdateSyllabusForm(forms.Form):
         if entry_id:
             try:
                 entry = CourseTopic.objects.get(id=entry_id)
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist, MultipleObjectsReturned:
                 raise forms.ValidationError("Not a valid number of entries with this entry_id!")
-            cleaned_data['course_topic'] = entries[0]
+            cleaned_data['course_topic'] = entry
 
         return cleaned_data
+
 
 class DeleteSyllabusEntryForm(forms.Form):
     entry_id = forms.CharField()
@@ -355,9 +382,39 @@ class DeleteSyllabusEntryForm(forms.Form):
         cleaned_data = super(DeleteSyllabusEntryForm, self).clean()
         try:
             entry = CourseTopic.objects.get(id=cleaned_data.get("entry_id"))
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist, MultipleObjectsReturned:
             raise forms.ValidationError("Not a valid number of entries with this entry_id!")
         cleaned_data['course_topic'] = entry
+
+        return cleaned_data
+
+class NewCourseModuleForm(forms.Form):
+    module_name = forms.CharField(max_length=200)
+
+class UpdateCourseModuleForm(forms.Form):
+    module_name = forms.CharField(max_length=200)
+    module_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(UpdateCourseModuleForm, self).clean()
+        try:
+            module = CourseModule.objects.get(id=cleaned_data.get("module_id"))
+        except ObjectDoesNotExist, MultipleObjectsReturned:
+            raise forms.ValidationError("Not a valid number of course modules with this module_id")
+        cleaned_data['course_module'] = module
+
+        return cleaned_data
+
+class DeleteCourseModuleForm(forms.Form):
+    module_id = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(DeleteCourseModuleForm, self).clean()
+        try:
+            module = CourseModule.objects.get(id=cleaned_data.get("module_id"))
+        except ObjectDoesNotExist, MultipleObjectsReturned:
+            raise forms.ValidationError("Not a valid number of course modules with this module_id")
+        cleaned_data['course_module'] = module
 
         return cleaned_data
 

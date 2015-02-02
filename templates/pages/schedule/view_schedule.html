@@ -1,49 +1,27 @@
 {% extends 'pages/base.html' %}
 {% load humanize %}
 {% load i18n %}
-{% load filetransfers %}
 
 {% block content %}
 
 <div class="schedule-page">
-  
-  <div class="col-md-4">
-    <div class="student-dashboard-sidebar">
-      <div class="panel panel-default sidebar">
-        <div class="panel-body">
-          <div>
-            <hr/>
-            <!-- ######### -->
-            <!-- SCHEDULE IMPORT / EXPORT -->
-              <!-- ######### -->
-            <div class="row">
-              <div class="row text-center">
-                <span id="dashboard-scheduler-icon" class="icon icon-calendar"> Schedule Actions </span>
-              </div>
-              <br>
-              <div class="row center-block sidebar-schedule">
-                <table class="sidebar-schedule-table">
-                  <tr>
-                    <td> <a href="javascript:void(0)" id="importCalendar">Import iCal calendar</a></td>
-                  </tr>
-                  <tr>
-                    <td> <a href="{% url 'export_as_ical' %}"> Export as iCal calendar </a> </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <a class="pull-right importExport" href="javascript:void(0)" id="importCalendar">Import iCal calendar</a>
+      </div>
+      <div class="col-md-6">
+        <a class="importExport" href="{% url 'export_as_ical' %}"> Export as iCal calendar </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <br>
+        <div id="calendar"></div>
       </div>
     </div>
   </div>
-
-  <div class="col-md-8">
-
-    <!-- The calendar -->
-    <div id="calendar"></div>
-
-
     <div id="event_edit_container" hidden>
       <form method="post" id="appointmentForm">
         {%csrf_token%}
@@ -98,12 +76,18 @@
             <select class="form-control" name='course_id'>
                   <option value="">{% trans 'Select Course' %} </option>
                 
-                {% for course in courses%}
+                {% for course in courses %}
                   <option value="{{course.id}}"> {{course.name}} </option>
                 {% endfor %}
 
             </select>
           </div>
+
+          <div id='modulePH'>
+          </div>
+            
+            
+          
 
         {% else %}
 
@@ -119,7 +103,6 @@
     </div>
 
     <!-- for the calendar import -->
-    
     <div hidden id='importCalendarContainer'>
       <form id="importForm" action="{% url 'import_ical' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -135,13 +118,34 @@
           </div>
         </fieldset>
       </form>
+      
       <div id="returnVal">
-        
       </div>
     </div>
+
+      {% for course in courses %}
+        <div class="form-group courseModuleBox" id="courseModule{{course.id}}">
+          {% if course.modules.all %}
+              <label id="courseModuleLabel" for="module_id"> Course Modules:</label>
+              <select class="form-control" name='module_id'>
+                  <option value="">{% trans 'All Modules' %} </option>
+              
+                  {% for module in course.modules.all%}
+                      <option value="{{module.id}}"> {{module.name}} </option>
+                  {% endfor %}
+              </select>
+          {% endif%}
+        </div>
+      {% endfor %}
   
   </div>
 </div>
+
+
+
+
+
+
 
 {% endblock %}
 

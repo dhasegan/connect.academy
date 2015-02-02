@@ -133,6 +133,8 @@ class NewPasswordForm(forms.Form):
     def clean(self):
         cleaned_data = super(NewPasswordForm, self).clean()
         errors = []
+        new_pass = ""
+        confirm_new_pass = ""
         try:
             new_pass = self.cleaned_data["new_pass"]
             confirm_new_pass = self.cleaned_data["confirm_new_pass"]

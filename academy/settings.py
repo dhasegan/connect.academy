@@ -13,6 +13,8 @@ ADMINS = (
     ('Tomas Pllaha', 'tomaspllaha@gmail.com')
 )
 
+WEBSITE = "http://www.connect.academy/" if not DEBUG else "http://localhost/"
+
 MANAGERS = ADMINS
 
 SETTINGS_ROOT = path.realpath(path.dirname(__file__)) + '/'
@@ -164,7 +166,18 @@ INSTALLED_APPS = (
     'versioning',  # Should be after apps with versioned models
     'south', # db migrations
     'guardian', # manage user permissions
+    'haystack', # Search
 )
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': WEBSITE + ':9200',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -26,9 +26,9 @@
               {% endif %}
 
               <li {% if page == 'dashboard' %} class="active" {% endif %}><a href="{% url 'dashboard' %}"> {% trans "Dashboard" %}</a></li>
-              <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}">{% trans "Schedule" %}</a></li>
               <li {% if page == 'forum_general' %} class="active" {% endif %}><a href="{% url 'forum_general' %}">{% trans "Connect" %}</a></li>
               <li {% if page == 'explore' %} class="active" {% endif %}><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li>
+              <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}">{% trans "Calendar" %}</a></li>
               
 
               {% if page == 'all_comments' %} 

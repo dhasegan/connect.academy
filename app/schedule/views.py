@@ -46,21 +46,29 @@ def view_schedule(request):
 
     courses_managed = []
     courses_managed_list = []
+    courses_assisted = []
     if user.is_professor():
         courses_managed = user.courses_managed.all()
 
     context['courses'] = courses_managed
 
-    
-    courses_enrolled = user.courses_enrolled.all()
+    student_registrations = StudentCourseRegistration.objects.filter(student=user)
+    #courses_enrolled = user.courses_enrolled.all()
 
     course_appointments = []
 
-    for course in courses_enrolled:
-        course_appointments.append(course.appointments.all())
+    for reg in student_registrations:
+        course_appointments += CourseAppointment.objects.filter(
+            Q(course_module=None)|Q(course_module=reg.module),
+            course = reg.course
+            
+        )
 
     for course in courses_managed:
-        course_appointments.append(course.appointments.all())
+        course_appointments += course.appointments.all()
+
+    for course in user.courses_assisted.all():
+        course_appointments += course.appointments.all()
 
     # get user's PersonalAppointments
     personal_appointments = user.appointments.all()
@@ -72,34 +80,35 @@ def view_schedule(request):
 
 
     # course appointments
-    for cappointments in course_appointments:
-        for appointment in cappointments:
-            data = {}
-            data['id'] = appointment.id
-            
-            start_local = timezone.localtime(appointment.start,local_timezone) # the time to display to the user
-            end_local = timezone.localtime(appointment.end,local_timezone)   
+    for appointment in course_appointments:
+
+        data = {}
+        data['id'] = appointment.id
+        
+        start_local = timezone.localtime(appointment.start,local_timezone) # the time to display to the user
+        end_local = timezone.localtime(appointment.end,local_timezone)   
 
 
-            data['start'] = format_date(start_local.strftime(date_format))
-            data['end'] = format_date(end_local.strftime(date_format))
-            
-            if appointment.course_topic:
-            	data['title'] = appointment.course_topic.name 
-            else:
-            	data['title']= appointment.location
+        data['start'] = format_date(start_local.strftime(date_format))
+        data['end'] = format_date(end_local.strftime(date_format))
+        
+        if appointment.course_topic:
+        	data['title'] = appointment.course_topic.name 
+        else:
+        	data['title']= appointment.location
 
-            data['body'] = appointment.description
-            
-            if user.is_professor_of(appointment.course):
-                data['modifiable'] = True
-            else:
-                data['modifiable'] = False
-            
-            data['type'] = 'Course'
-            data['courseName'] = appointment.course.name
+        data['body'] = appointment.description
+        
+        if user.is_professor_of(appointment.course):
+            data['modifiable'] = True
+        else:
+            data['modifiable'] = False
+        
+        data['type'] = 'Course'
+        data['courseName'] = appointment.course.name
+        data['courseModule'] = appointment.course_module.name if appointment.course_module else None
+        all_appointments.append(data)
 
-            all_appointments.append(data)
 
     for appointment in personal_appointments:
         data = {}
@@ -291,13 +300,17 @@ def add_course_appointment(request):
     copy_to_otherweeks = form.cleaned_data['copy']
     weeks = form.cleaned_data['num_weeks']
     course_to_add_appointment = form.cleaned_data['course']
-
+    course_module = form.cleaned_data.get('module',None)
     appointment = CourseAppointment.objects.create(start=start_time,\
                                                     end=end_time,\
                                                     location=location,\
                                                     course = course_to_add_appointment,\
                                                     description = description,\
-                                                    course_topic= None) # None for now.
+                                                    course_topic= None,
+                                                    ) # None for now.
+    if course_module:
+        appointment.course_module = course_module
+        appointment.save()
 
     appointmentsJSON = []
     local_timezone = timezone.get_current_timezone()
@@ -313,6 +326,7 @@ def add_course_appointment(request):
     data['modifiable'] = True
     data['type'] = 'Course'
     data['courseName'] = appointment.course.name
+    data['courseModule'] = appointment.course_module.name if appointment.course_module else None
     
     appointmentsJSON.append(data)
 
@@ -330,7 +344,9 @@ def add_course_appointment(request):
                                                             course = course_to_add_appointment,\
                                                             description = description,\
                                                             course_topic= None) # None for now.
-            
+            if course_module:
+                appointment.course_module = course_module
+                appointment.save()
             data = {}
             data['id'] = appointment.id
 
@@ -345,7 +361,7 @@ def add_course_appointment(request):
             data['modifiable'] = True
             data['type'] = 'Course'
             data['courseName'] = appointment.course.name
-            
+            data['courseModule'] = course_module.name if course_module else None
             appointmentsJSON.append(data)
 
     return_dict = {'status':'OK', 'appointments':appointmentsJSON }    
@@ -394,7 +410,7 @@ def edit_course_appointment(request):
     data['modifiable'] = True
     data['type'] = 'Course'
     data['courseName'] = appointment.course.name
-    
+    data['courseModule'] = appointment.course_module.name if appointment.course_module else None
     appointmentsJSON.append(data)
 
     return_dict = {'status':'OK','appointments':appointmentsJSON}    
@@ -525,7 +541,7 @@ def import_ical(request):
                     start = timezone.make_aware(start, tz)
                     start = start.astimezone(pytz.utc)
                 except Exception:
-                    context['warnings'] += 'TZID information (DTSTART) not supported.\
+                    context['warnings'] = 'TZID information (DTSTART) not supported.\
                                             Defaulting to UTC.\n'
 
             if not timezone.is_aware(end) \
@@ -541,7 +557,7 @@ def import_ical(request):
                     end = timezone.make_aware(end, tz)
                     end = end.astimezone(pytz.utc)
                 except Exception:
-                    context['warnings'] += 'TZID information (DTEND) not supported.\
+                    context['warnings'] = 'TZID information (DTEND) not supported.\
                                             Defaulting to UTC.\n'
 
             description = component.get('description')

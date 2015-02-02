@@ -1,6 +1,7 @@
 from django import forms
 from app.models import *
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 import pytz
 
 class AppointmentForm(forms.Form):
@@ -50,9 +51,21 @@ class CalendarImportForm(forms.Form):
 
 class CourseAppointmentForm(AppointmentForm):
 	course_id = forms.CharField()
+	module_id = forms.CharField(required=False)
 
 	def clean(self):
 		super(CourseAppointmentForm,self).clean()
-		course = Course.objects.get(id=self.cleaned_data['course_id'])
-		self.cleaned_data['course'] = course
+		try:
+			course = Course.objects.get(id=self.cleaned_data['course_id'])
+			self.cleaned_data['course'] = course
+		except ObjectDoesNotExist, MultipleObjectsReturned:
+			raise forms.ValidationError("Course does not exist.")
+		
+		if self.cleaned_data.get('module_id', None):
+			try:
+				module = CourseModule.objects.get(id=self.cleaned_data['module_id'], course=course)
+				self.cleaned_data['module'] = module
+ 			except ObjectDoesNotExist, MultipleObjectsReturned:
+				raise forms.ValidationError("Module does not exist.")
+
 		return self.cleaned_data

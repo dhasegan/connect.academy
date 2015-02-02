@@ -75,11 +75,11 @@
         <li>
             <form role="form" class="form-inline pull-right delete-syllabus-entry-form" method="post" action="{% url 'delete_syllabus_entry' course.slug %}">
                 {% csrf_token %}
-                <button class="btn btn-danger btn-xs">delete</button>
+                <button class="btn btn-danger btn-xs">{% trans "delete" %}</button>
                 <input type="hidden" name="entry_id" value="{{ entry.topic.id }}" required>
             </form>
             <a class="pull-right" data-toggle="collapse" href=".collapseEntry{{ entry.topic.id }}">
-                <span class="glyphicon glyphicon-cog"></span> modify
+                <span class="glyphicon glyphicon-cog"></span>{% trans "modify" %} 
             </a>
             <div class="collapse collapseEntry{{ entry.topic.id }} in">
                 <div> {{ entry.topic.name }} </div>
@@ -89,8 +89,8 @@
             <div class="collapse collapseEntry{{ entry.topic.id }}">
                 <form role="form" method="post" action="{% url 'update_syllabus' course.slug %}">
                     {% csrf_token %}
-                    <input type="text" name="entry_name" value="{{ entry.topic.name }}" maxlength="200" required>
-                    <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required>{{ entry.topic.description }}</textarea>
+                    <input type="text" name="entry_name" class="form-control syllabus-topic-input" placeholder="Topic" value="{{ entry.topic.name }}" maxlength="200" required>
+                    <textarea class="form-control syllabus-description-input" rows="3" placeholder="Description" name="entry_description" maxlength="500" required>{{ entry.topic.description }}</textarea>
                     <input type="hidden" name="entry_id" value="{{ entry.topic.id }}">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -101,14 +101,58 @@
             <div class="">
                 <form role="form" method="post" action="{% url 'update_syllabus' course.slug %}">
                     {% csrf_token %}
-                    <input type="text" name="entry_name" value="" maxlength="200" required>
-                    <textarea class="form-control" rows="3" name="entry_description" maxlength="500" required></textarea>
+                    <input type="text" name="entry_name" class="form-control syllabus-topic-input" placeholder="Topic" maxlength="200" required>
+                    <textarea class="form-control syllabus-description-input" rows="3" placeholder="Description" name="entry_description" maxlength="500" required></textarea>
                     <button type="submit" class="btn btn-primary">New Entry</button>
                 </form>
             </div>
         </li>
     </ol>
 </div>
+
+<hr>
+
+<h4> {% trans "Course Modules" %}: </h4>
+
+<div class="course_modules">
+    <ol>
+        {% for module in teacher.course_modules %}
+        <li>
+            <form role="form" class="form-inline pull-right delete-course-module-form" method="post" action="{% url 'delete_course_module' course.slug %}">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-xs">{% trans "delete" %}</button>
+                <input type="hidden" name="module_id" value="{{ module.id }}" required>
+            </form>
+            <a class="pull-right" data-toggle="collapse" href=".collapseModule{{ module.id }}">
+                <span class="glyphicon glyphicon-cog"></span>{% trans "modify" %} 
+            </a>
+            <div class="collapse collapseModule{{ module.id }} in">
+                <div> {{ module.name }} </div>
+            </div>
+
+            <div class="collapse collapseModule{{ module.id }}">
+                <form role="form" method="post" action="{% url 'update_course_module' course.slug %}">
+                    {% csrf_token %}
+                    <input type="text" name="module_name" class="form-control course-module-input" placeholder="Name" value="{{ module.name }}" maxlength="200" required>
+                    <input type="hidden" name="module_id" value="{{module.id}}" />
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+        <li>
+            <div class="">
+                <form role="form" method="post" action="{% url 'new_course_module' course.slug %}">
+                    {% csrf_token %}
+                    <input type="text" name="module_name" class="form-control course-module-input" placeholder="Name" maxlength="200" required>
+                    <button type="submit" class="btn btn-primary">New Entry</button>
+                </form>
+            </div>
+        </li>
+    </ol>
+</div>
+
+
 
 {% comment %}
 

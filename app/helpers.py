@@ -27,4 +27,5 @@ def serialize_form_errors(request, form, prefix):
         if e in field:
             field_errors.append(field[e] + " is required. Please enter it below!")
     errors = "<!>".join([e for e in field_errors + form.non_field_errors()])
+    
     return prefix + errors
