@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   // some global variables, that are used in every event* . 
 
   dialogContent = $("#event_edit_container");
@@ -20,7 +19,8 @@ $(document).ready(function() {
       
       
 
-  var $calendar = $('#calendar');
+  $calendar = $('#calendar');
+  
   $('#calendar').weekCalendar({
     data: eventData,
 
@@ -73,6 +73,7 @@ $(document).ready(function() {
 
 
       dialogContent.dialog({
+          dialogClass: "no-close",
           modal: true,
           title: "New Appointment",
           
@@ -461,6 +462,7 @@ $(document).ready(function() {
        dialogContent.find("select[name='course_id']").attr('disabled', true)
     },
 
+    // might be needed after ... who knows :) 
     eventMouseover: function(calEvent, $event) {
       displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
     },
@@ -577,6 +579,75 @@ $("select[name='start']").change(function() {
 
 });
 
+// this deals with the rendering of the form together with the 
+// ajax submission to the server.
+$("a[id='importCalendar']").click(function(){
+  
+  $("#importCalendarContainer").dialog({
+    modal: true,
+    title: "Import your calendar",
+    dialogClass: 'no-close',
 
+    buttons:{
+      Import:function(){ // ajax submission
+        var form = document.getElementById("importForm");
+        var data = new FormData(form);
+        var $that = $(this); // stupid javascript
+        var output = document.getElementById("returnVal");
+        var $file = document.getElementById("calFile").files[0];
+        if($file === undefined){
+          return;
+        }
+        if ($file.name.split(".").pop() !== "ics"){
+          output.innerHTML = "Please submit a valid iCalendar file.";
+          return;
+        }
+
+        $.ajax({
+          url: $("form[id='importForm']").attr('action'),
+          type: $("form[id='importForm']").attr('method'),
+          data: data,
+          cache: false,
+          processData: false,
+          contentType: false,
+
+          success: function(data) {
+              data = $.parseJSON(data);
+              if(data.status === -1){
+                output.innerHTML = "Oops! There was an error. Please try again.";
+              }
+              if(data.status === -2 ){
+                output.innerHTML = "The file you submitted was not valid.";
+              }
+              if(data.status === 0){ // 'tis OK 
+                for(var i = 0; i< data.appointments.length; i++){
+                  var app = data.appointments[i];
+                  eventData.events.push(app);
+                  $calendar.weekCalendar("updateEvent", app);
+                  if(data.warnings === '')
+                    output.innerHTML = "Calendar imported successfully.\
+                                      This window will close in 2 seconds.";
+                  else
+                    output.innerHTML = data.warnings;
+                }
+              }
+
+              // this shizzle refreshesh the calendar with the new events 
+              setTimeout(function(){
+                $that.dialog("destroy");
+                $calendar.weekCalendar("refresh");
+                output.innerHTML = "";
+              },2000);
+          }
+        });
+
+      },
+      Cancel:function(){
+        $(this).dialog('destroy');
+        output.innerHTML = "";
+      }
+    },
+  });
+});
 
 });

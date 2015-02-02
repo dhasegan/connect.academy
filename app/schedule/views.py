@@ -3,8 +3,12 @@ import time
 from datetime import * #datetime
 import pytz
 from helpers import *
+import random
 from dateutil.parser import parse
 from dateutil.tz import tzoffset
+
+# https://www.ietf.org/rfc/rfc2445.txt for iCalendar specification
+# use this for validation http://icalvalid.cloudapp.net/
 
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse
@@ -12,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.core.urlresolvers import reverse
+from django.core.files import *
 from django.template import RequestContext
 from django.views.decorators.http import require_GET, require_POST
 from django.core.context_processors import csrf
@@ -24,6 +29,7 @@ from django.views.decorators.csrf import requires_csrf_token
 
 #date formatting
 date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
+ical_date_format = "%Y%m%dT%H%M%S%f"
 
 @login_required
 def view_schedule(request):
@@ -269,6 +275,7 @@ def add_course_appointment(request):
 
 
     # there might be courses with the same name in the db, however, we want the course with that name and also managed by THIS professor
+    # TODO: fix this ... 
     courses_managed = user.courses_managed.all()
     
     course = form.cleaned_data['course']
@@ -467,4 +474,177 @@ def resize_appointment(request):
 
     raise Http404
 
+# only for personal appointments ? no distinction between personal and course (for now)
+# Note that the method uses AJAX.
+# TODO Timezones and shit.
+@require_POST
+@require_active_user
+@requires_csrf_token
+def import_ical(request):
+    
+    context = {'warnings':''}
 
+    form = CalendarImportForm(request.POST,request.FILES)
+
+    if not form.is_valid():
+        context['status'] = -1
+        return HttpResponse(json.dumps(context))
+
+    user = get_object_or_404(jUser, id=request.user.id)
+    calFile = form.cleaned_data['calFile']
+    calendar = None
+
+    #this returns a calendar object if valid, else None
+    calendar = validate_ical(calFile.read(),purpose='import')
+
+    if not calendar:
+        context['status'] = -2
+        return HttpResponse(json.dumps(context))
+    
+    #the file should be ok ... start creating appointments.
+    appointmentsJSON = [] # what will be sent back as HTTPResponse
+    for component in calendar.walk():
+        data = {}
+        if component.name == "VEVENT":
+            startComponent = component.get('dtstart')
+            start = startComponent.dt
+            endComponent = component.get('dtend')
+            end = endComponent.dt
+            
+            # SEE NOTES  
+            if not timezone.is_aware(start) \
+               and startComponent.params.to_ical() == '':
+                local_timezone = timezone.get_current_timezone()
+                start = timezone.make_aware(start,local_timezone)
+                start = start.astimezone(pytz.utc)
+            else:
+                try:
+                    tzid = startComponent.params['TZID'].to_ical().replace('-','/') # fix this
+                    tz = timezone(tzid)
+                    # 'start' is still unaware.
+                    start = timezone.make_aware(start, tz)
+                    start = start.astimezone(pytz.utc)
+                except Exception:
+                    context['warnings'] += 'TZID information (DTSTART) not supported.\
+                                            Defaulting to UTC.\n'
+
+            if not timezone.is_aware(end) \
+               and endComponent.params.to_ical() == '':
+                local_timezone = timezone.get_current_timezone()
+                end = timezone.make_aware(end,local_timezone)
+                end = end.astimezone(pytz.utc)
+            else:
+                try:
+                    tzid = endComponent.params['TZID'].to_ical().replace('-','/') # fix this
+                    tz = timezone(tzid)
+                    # 'end' is still unaware.
+                    end = timezone.make_aware(end, tz)
+                    end = end.astimezone(pytz.utc)
+                except Exception:
+                    context['warnings'] += 'TZID information (DTEND) not supported.\
+                                            Defaulting to UTC.\n'
+
+            description = component.get('description')
+            summary = component.get('summary')
+            if not description:
+                description = summary
+            
+            title = component.get('title')
+            location = component.get('location')
+            if not location:
+                location = title
+            # the DTSTAMP is not realy relevant
+            appointment = PersonalAppointment.objects.create(start=start,\
+                                              end=end,\
+                                              location=location,
+                                              description=description,\
+                                              user=user)
+            
+            data['start'] = format_date(start.strftime(date_format))
+            data['end'] = format_date(end.strftime(date_format))
+            data['body'] = description
+            data['title'] = location
+            data['modifiable'] = True
+            data['type'] = 'Personal'
+            data['id'] = appointment.id
+            appointmentsJSON.append(data)
+
+        if component.name == "VTODO":
+            pass
+
+        if component.name == "VFREEBUSY":
+            pass
+
+        if component.name == "VJOURNAL":
+            pass
+
+    context['appointments'] = appointmentsJSON
+    context['status'] = 0
+    return HttpResponse(json.dumps(context))
+
+
+def export_as_ical(request):
+    
+    user = get_object_or_404(jUser, id=request.user.id)
+    if user.is_professor():
+        user_appointments = Appointment.objects.filter(Q(Q(personalappointment__user=user)\
+                                                       |                                \
+                                                       Q(courseappointment__course__in=user.courses_managed.all())))
+    else:
+        user_appointments = Appointment.objects.filter(Q(Q(personalappointment__user=user)\
+                                                       |                                \
+                                                       Q(courseappointment__course__in=user.courses_enrolled.all())))
+    
+    # at this point, we have all the user appointments. Start creating ical events
+    calendar = Calendar()
+    calendar.add('prodid','-//Connect Academy//Schedule Exporter//') # should be probably taken to the settings.py
+    calendar.add('version','2.0') # and this too ... 
+
+    for appointment in user_appointments:
+        event = Event()
+        event['uid'] = appointment.id
+        # DO NOT CHANGE TO LOCAL TIME (see Notes below)
+        event['dtstamp'] = to_ical_date(datetime.now().strftime(ical_date_format),aware=True)
+        event['dtstart'] = to_ical_date(appointment.start.strftime(ical_date_format),aware=True)
+        event['dtend'] = to_ical_date(appointment.end.strftime(ical_date_format),aware=True)
+        
+        event['description'] = appointment.description
+        event['title'] = appointment.location
+        calendar.add_component(event)
+
+    data = calendar.to_ical()
+
+    if not validate_ical(data):
+        return Http404
+
+    export_name = user.username + "_schedule.ics"
+    response = HttpResponse(calendar.to_ical(), content_type='application/calendar')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % export_name
+    return response
+
+
+# NOTES:
+# The ics specification illustrates that timezone information is 'stored' in a couple
+# of different ways:
+# 1) DTSTART: <somedate>'Z' -> i.e.: with a Z in the end of the date string
+# 2) DTSTART;TZID=<sometz>: <somedate>
+# 3) BEGIN: VTIMEZONE
+#    TZID = <someID>
+#       <some specifications>
+#    END: VTIMEZONE -> i.e.: with a VTIMEZONE element provided inline, if the timezone
+#                      is suspected not to be included in the Olson db.
+# 4) DTSTART: <somedate> -> i.e.: without a Z in the end. Denotes the same time in EVERY timezone
+# 
+# On any schedue export (i.e.: Creating of a new calendar file). By default, 
+# everything is exported as UTC date. (We might provide the user with an option
+# to export them in their local time.) Upon an import however, shit happens:
+# 
+# 1) If the date is as in the first case above, we're alright. 
+# 2) If it is not as in the first case:
+#   a) Check for the TZID property.
+#       * if supported , make use of it.
+#       * if not, store as UTC and issue a warning
+#   b) If it is as in the 3rd case (or making use of VTIMEZONE)
+#      we store it as UTC and issue a warning
+#   c) If it is as in the 4th case, we make use of the uploader's local time
+#

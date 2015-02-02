@@ -1,11 +1,45 @@
 {% extends 'pages/base.html' %}
 {% load humanize %}
 {% load i18n %}
+{% load filetransfers %}
 
 {% block content %}
 
-
 <div class="schedule-page">
+  
+  <div class="col-md-4">
+    <div class="student-dashboard-sidebar">
+      <div class="panel panel-default sidebar">
+        <div class="panel-body">
+          <div>
+            <hr/>
+            <!-- ######### -->
+            <!-- SCHEDULE IMPORT / EXPORT -->
+              <!-- ######### -->
+            <div class="row">
+              <div class="row text-center">
+                <span id="dashboard-scheduler-icon" class="icon icon-calendar"> Schedule Actions </span>
+              </div>
+              <br>
+              <div class="row center-block sidebar-schedule">
+                <table class="sidebar-schedule-table">
+                  <tr>
+                    <td> <a href="javascript:void(0)" id="importCalendar">Import iCal calendar</a></td>
+                  </tr>
+                  <tr>
+                    <td> <a href="{% url 'export_as_ical' %}"> Export as iCal calendar </a> </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+
     <!-- The calendar -->
     <div id="calendar"></div>
 
@@ -74,17 +108,39 @@
         {% else %}
 
         <input name="type" value="0" type="hidden" />
+        
+        {% endif %}
 
-
-      {% endif %}
-
-      <div class="form-group copy-label">
-            <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input form-control to-reset" name="num_weeks" type="text" /> weeks.  </b>   
-      </div>
-          
-
+        <div class="form-group copy-label">
+              <input  type="checkbox" name="copy" value="1"/> <b> Copy in the next <input class="tiny-text-input form-control to-reset" name="num_weeks" type="text" /> weeks.  </b>   
+        </div>
       </form>
+
     </div>
+
+    <!-- for the calendar import -->
+    
+    <div hidden id='importCalendarContainer'>
+      <form id="importForm" action="{% url 'import_ical' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        This feature is a work-in-progress. Please contact us for any bugs that may occur.
+        A valid iCalendar should adhere to the <i> iCalendar 2.0 Strict </i> ruleset. <br/>
+        <fieldset class="form-inline">
+          <div class="form-group upload-file-wrapper">
+            <input class="form-control upload-file-input" placeholder="{% trans "no file chosen" %}" disabled="disabled"/>
+            <div class="btn btn-primary upload-file">
+              <span>{% trans "Browse" %}</span>
+              <input id='calFile'  type="file" name='calFile' class="file-input"/>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      <div id="returnVal">
+        
+      </div>
+    </div>
+  
+  </div>
 </div>
 
 {% endblock %}
@@ -126,7 +182,7 @@
       tz.val( moment().zone() );
   
 
-  });
+  });  
 </script>
 <script type='text/javascript' src='{{ STATIC_URL }}schedule/schedule.js'></script>
 {% endblock %}

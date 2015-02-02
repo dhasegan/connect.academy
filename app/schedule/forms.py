@@ -39,7 +39,15 @@ class AppointmentForm(forms.Form):
 
 class PersonalAppointmentForm(AppointmentForm):
 	pass
-	
+
+class CalendarImportForm(forms.Form):
+	calFile = forms.FileField()
+
+	def clean(self):
+		cleaned_data = super(CalendarImportForm, self).clean()
+		return self.cleaned_data
+
+
 class CourseAppointmentForm(AppointmentForm):
 	course_id = forms.CharField()
 
