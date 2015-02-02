@@ -32,8 +32,11 @@ def welcome(request):
             if message.message == UNIV_CONNECTEDED_NO_EMAIL:
                 context['error'] = render_to_string(
                     "objects/notifications/auth/CN_connected_but_no_email.html", {})
+            if message.message == CN_OK_BUT_ACCOUNT_EXISTS:
+                context['error'] = render_to_string(
+                    "objects/notifications/auth/CN_OK_but_account_exists.html", {})
             if message.message.startswith(PREFIX_SIGNUP_ERROR):
-                    context['signup_errors'] = message.message.replace(PREFIX_SIGNUP_ERROR, "").split("<!>")
+                context['signup_errors'] = message.message.replace(PREFIX_SIGNUP_ERROR, "").split("<!>")
 
     context.update(csrf(request))
     return render(request, "pages/welcome_page.html", context)
