@@ -112,7 +112,8 @@ def manage_account(request):
 @login_required
 def username_change_action(request):
     user = get_object_or_404(jUser, id=request.user.id)
-
+    redirect_url = reverse("welcome")
+    
     form = ChangeUsernameForm(request.POST)
     if not form.is_valid():
         error_message = serialize_form_errors(request, form, PREFIX_MANAGE_ACCOUNT_ERROR)
