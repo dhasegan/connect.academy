@@ -229,7 +229,7 @@ CACHES = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com' # environ.get('ACADEMY_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST = environ.get('ACADEMY_EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_HOST_USER = environ.get('ACADEMY_EMAIL_HOST_USER', 'your_email@example.com')
 EMAIL_HOST_PASSWORD = environ.get('ACADEMY_EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = environ.get('ACADEMY_EMAIL_PORT', 587)
