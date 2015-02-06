@@ -621,6 +621,9 @@ var CoursePage = (function() {
     };
 
     me.initDataTables = function() {
+        if ($($(s.pendingRegistrationsTable).find("th td")).length < 4)
+            s.courseStudentsDataTableConfig["columns"].pop(); // If Course_module is missing, remove it from config
+
         $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
         {
             return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {

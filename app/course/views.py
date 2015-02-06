@@ -646,8 +646,7 @@ def approve_student_registrations(request,slug):
 
     is_registered = ProfessorCourseRegistration.objects.filter(
                     course=course, professor=user, is_approved=True).count()
-    if not is_registered:
-        print "2"
+    if not user.has_perm('approve_registrations', course):
         raise Http404
 
     # At this point we know that an approved professor of the course
