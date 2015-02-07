@@ -17,6 +17,25 @@ class ChangeNameForm(forms.Form):
     new_lname = forms.CharField(max_length=30, required=True)  # maybe we can omit the required = True of this field ?
     password = forms.CharField(required=True, widget=forms.PasswordInput())
 
+class ChangeEmailForm(forms.Form):
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required= True, widget=forms.PasswordInput())
+
+    def clean(self):
+        cleaned_data = super(ChangeEmailForm,self).clean()
+        errors = []
+        try:
+            emailID, domain = email.split('@')
+            university = University.objects.get(domains__name=domain)
+            cleaned_data['is_alumnus'] = False
+            if Domain.objects.get(name=domain).domain_type == DOMAIN_TYPE_ALUMNI:
+                cleaned_data['is_alumnus'] = True
+        except:
+            errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
+        if errors:
+            raise forms.ValidationError(erorrs)
+        return cleaned_data
+
 class EditSummaryForm(forms.Form):
 	summary = forms.CharField(max_length=300, required=False)
 
