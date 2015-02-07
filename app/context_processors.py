@@ -37,6 +37,7 @@ def dashboard_activities(request,user):
 
     # Get the (unevaluated) dashboard activities queryset
     activities_queryset = Activity.dashboard_page_activities(user)
+    
     if last_id is not None:
         activities_queryset = activities_queryset.filter(id__lt=last_id)
 
@@ -194,8 +195,8 @@ def paginated(objects, page_num, per_page):
 
 def paginate_activities(activities_queryset, page, per_page, user):
     activities_list = paginated(activities_queryset, page, per_page)
-    filtered_list = [a for a in activities_list if a.can_view(user)]
 
+    filtered_list = [a for a in activities_list if a.can_view(user)]
     if len(activities_list) == per_page:
         while len(filtered_list) < per_page:
             # Some entries were removed. Fill with new ones

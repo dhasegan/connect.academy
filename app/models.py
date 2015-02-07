@@ -1232,7 +1232,7 @@ class Activity(models.Model):
             | 
             Q(generalactivity__forumansweractivity__forum_answer__post__forum__forum_type=FORUM_COURSE, 
                 generalactivity__forumansweractivity__forum_answer__post__forum__forumcourse__course=course)
-            )).order_by('-timestamp')
+            )).distinct().order_by('-timestamp')
 
     @staticmethod
     def dashboard_page_activities(user):
@@ -1261,8 +1261,7 @@ class Activity(models.Model):
                     Q ( generalactivity__forumansweractivity__forum_answer__post__followed_by = user )
                 )        
             ), 
-            ~Q(user=user) ).order_by('-timestamp')
-    
+            ~Q(user=user) ).distinct().order_by('-timestamp')
     @staticmethod
     def profile_page_activities(user):
         activities = Activity.objects.filter(user=user)
@@ -1270,7 +1269,7 @@ class Activity(models.Model):
             ~Q(generalactivity__forumpostactivity__forum_post__anonymous=True),
             ~Q(generalactivity__forumansweractivity__forum_answer__anonymous=True),
             ~Q(courseactivity__reviewactivity__review__anonymous=True)
-        )
+        ).distinct()
         
         return activities.order_by('-timestamp')
 
