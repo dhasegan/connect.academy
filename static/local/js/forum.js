@@ -21,6 +21,7 @@ var ForumPage = (function() {
             bestanswersLinkSelector: '.bestanswers-link',
             upvotePostFormSelector: '.upvote-post-form',
             upvoteAnswerFormSelector: '.upvote-answer-form',
+            focusAnswer: '.focus-answer',
 
             ckeditorNonEditable: '.rich-cke-text',
 
@@ -31,6 +32,8 @@ var ForumPage = (function() {
             //Follow-unfollow post
             postFollowForm: 'form.post-follow-form',
             postFollowContainerSelector: 'div.post-follow-container'
+
+
         }
     }, s;
 
@@ -43,6 +46,11 @@ var ForumPage = (function() {
         // Bind ui actions for answers tab
         me.onRefreshAnswerTab($('html'));
         me.bindUIActions();
+
+        if ($(s.focusAnswer))
+            $('html, body').animate({
+                scrollTop: $(s.focusAnswer).offset().top
+            }, 500);
 
     };
 
@@ -79,6 +87,10 @@ var ForumPage = (function() {
             ConnectGlobal.global_variables.boundForumActions = true;
         }
         
+
+        $(document).on('click', s.focusAnswer, function() {
+            $(this).removeClass(s.focusAnswer.substring(1));
+        });
 
     };
 

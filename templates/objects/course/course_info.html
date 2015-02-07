@@ -48,14 +48,17 @@
                         {% endif %}
                     </div>
                     <div class="col-md-3">
+                        {% comment %}
+                        Making room for teaching assistants
                         {% if course.abbreviation %}
                             {% trans "Abbrev" %}: {{ course.abbreviation }}
                         {% endif %}
+                        {% endcomment %}
                          <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                             {% trans "Teaching Assistants" %} <span class="caret"></span> 
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            {% for ta in course.teaching_assistants.all %}
+                            {% for ta in teaching_assistants %}
                                 {% with ta as juser %}
                                     <li> {% include 'objects/user_link.html' %} </li>
                                 {% endwith %}

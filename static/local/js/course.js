@@ -114,7 +114,7 @@ var CoursePage = (function() {
                 page = "teacher";
             }
             else {
-                page = "activity";
+                page = "info";
             }
         }
         if (page in globals.availableCoursePages) {
@@ -430,7 +430,6 @@ var CoursePage = (function() {
     me.bindUIActionsForTab = function(page) {
         switch (page) {
             case "activity":
-                console.log("binding for activity");
                 Activities.init();
                 if (!globals.availableCoursePages["connect"].loaded) {
                     ForumPage.init();

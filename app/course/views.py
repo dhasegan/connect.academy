@@ -41,13 +41,9 @@ def course_page(request, slug):
         'user_auth': user
     }
     context.update(csrf(request))
-    curr_tab = request.GET.get('page', AVAILABLE_COURSE_PAGES[0])
-    if curr_tab not in AVAILABLE_COURSE_PAGES:
-        curr_tab = AVAILABLE_COURSE_PAGES[0]
-    context = dict(context.items() + course_page_context(request, course, curr_tab).items())
-
-    forum = course.forum
-    context = dict(context.items() + forum_context(forum, user).items())
+    context['current_tab'] = request.GET.get('page', AVAILABLE_COURSE_PAGES[1])
+    if context['current_tab'] not in AVAILABLE_COURSE_PAGES:
+        context['current_tab'] = AVAILABLE_COURSE_PAGES[1]
 
     available_pages = AVAILABLE_COURSE_PAGES
     if 'page' in request.GET and request.GET['page'] and \
@@ -64,8 +60,8 @@ def course_page(request, slug):
     if 'post' in request.GET and request.GET['post']:
         post_id = int(request.GET['post'])
         try:
-            post = ForumPost.objects.get(id=post_id)
-            if post.forum_id == forum.id:
+            post_exists = ForumPost.objects.filter(id=post_id).exists()
+            if post_exists:
                 context['current_post'] = post_id
                 if 'current_tab' not in context:
                     context['current_tab'] = 'connect'
@@ -76,7 +72,7 @@ def course_page(request, slug):
         answer_id = int(request.GET['answer'])
         try:
             answer = ForumAnswer.objects.get(id=answer_id)
-            if answer.post.forum_id == forum.id:
+            if answer:
                 context['current_post'] = answer.post_id
                 context['current_answer'] = answer_id
                 if 'current_tab' not in context:
@@ -95,8 +91,14 @@ def course_page(request, slug):
             if 'current_tab' not in context:
                 context['current_tab'] = 'teacher'
 
+
     if 'current_tab' not in context and not context.get('activities'):
         context['current_tab'] = 'info'
+    print context['current_tab']
+    context = dict(context.items() + course_page_context(request, course, context['current_tab']).items())
+    forum = course.forum
+    context = dict(context.items() + forum_context(forum, user).items())
+
     response = render(request, "pages/course.html", context)
     if context.get('activities'):
         response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
@@ -195,9 +197,8 @@ def view_document(request, slug, document_id):
     course = get_object_or_404(Course, slug=slug)
     document = get_object_or_404(CourseDocument, id=document_id)
 
-    if not (user.is_student_of(course) or user.is_professor_of(course) \
-        or user.is_admin_of(course) or user.is_assistant_of(course)):
-            raise Http404
+    if not document.can_view(user):
+        raise Http404
 
     if document.course_id != course.id:
         raise Http404
@@ -677,7 +678,7 @@ def approve_student_registrations(request,slug):
 
     if unregistered:
         warning_message =  str(unregistered) + " registrations could not be approved."
-        messages.warning(warning_message)
+        messages.warning(request, warning_message)
     get_params = "?page=teacher"
     return redirect( reverse('course_page', args=(course.slug,)) + get_params )
 
@@ -1089,7 +1090,7 @@ def load_course_tab(request, slug):
 
     page = request.GET.get("page")
     if page is None or page not in AVAILABLE_COURSE_PAGES:
-        page = AVAILABLE_COURSE_PAGES[0]
+        page = AVAILABLE_COURSE_PAGES[1]
 
     context = {
         "current_tab":  page,
@@ -1102,7 +1103,6 @@ def load_course_tab(request, slug):
 
     sidebar_content = render_to_string("objects/course/sidebar_tab_content.html", context)
     main_content =  render_to_string("objects/course/course_tab_content.html", context)
-
     data = {
         "status": "OK",
         "sidebar": sidebar_content,

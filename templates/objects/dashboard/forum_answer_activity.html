@@ -54,7 +54,7 @@
                 </div>
 
                 <hr class="end-of-activity">
-                {% if activity.get_instance.forum_answer.post.forum.forumcourse %}
+                {% if a.subtype == 'forumcourse' %}
                     <a href="{% url 'course_page' activity.get_instance.forum_answer.post.forum.forumcourse.course.slug %}?page=connect&amp;answer={{ answer.answer.id }}#answer{{ answer.answer.id }}"> {% trans "Reply" %} </a>
                 {% else %}
                     <a href="{% url 'forum_general' %}?answer={{ answer.answer.id }}#answer{{ answer.answer.id }}"> {% trans "Reply" %} </a>

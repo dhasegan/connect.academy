@@ -37,6 +37,7 @@ def dashboard_activities(request,user):
 
     # Get the (unevaluated) dashboard activities queryset
     activities_queryset = Activity.dashboard_page_activities(user)
+
     if last_id is not None:
         activities_queryset = activities_queryset.filter(id__lt=last_id)
 
@@ -166,9 +167,17 @@ def activity_context(activity, current_user):
 
     if activity_type  == "ForumPostActivity":
         activity_context["post"] = forum_cp.forum_post_context(activity_instance.forum_post, current_user)
+        if activity_instance.forum_post.forum.forum_type == FORUM_COURSE:
+            activity_context["subtype"] = "forumcourse"
+        else:
+            activity_context["subtype"] ="forumgeneral"
     elif activity_type == "ForumAnswerActivity":
         answer = activity_instance.forum_answer
         activity_context["answer"] = forum_cp.forum_answer_context(answer.post, answer, current_user)
+        if activity_instance.forum_answer.post.forum.forum_type == FORUM_COURSE:
+            activity_context["subtype"] = "forumcourse"
+        else:
+            activity_context["subtype"] ="forumgeneral"
     elif activity_type == "HomeworkActivity":
         activity_context['homework'] = course_cp.homework_context(activity_instance.homework, current_user)
     elif activity_type == "ReviewActivity":
@@ -194,8 +203,8 @@ def paginated(objects, page_num, per_page):
 
 def paginate_activities(activities_queryset, page, per_page, user):
     activities_list = paginated(activities_queryset, page, per_page)
-    filtered_list = [a for a in activities_list if a.can_view(user)]
 
+    filtered_list = [a for a in activities_list if a.can_view(user)]
     if len(activities_list) == per_page:
         while len(filtered_list) < per_page:
             # Some entries were removed. Fill with new ones

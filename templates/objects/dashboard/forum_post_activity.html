@@ -23,7 +23,7 @@
                                 {% trans "Someone" %}
                             {% endif %}
                             {% trans "posted in" %}
-                            {% if activity.get_instance.forum_post.forum.forumcourse %}
+                            {% if a.subtype == "forumcourse" %}
                                  the forum of  <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}"> {{ activity.get_instance.forum_post.forum.forumcourse.course.name }} </a>
                             {% else %}
                                 <a href="{% url 'forum_general' %}?post={{post.question.id}}"> Connect </a>
@@ -57,7 +57,7 @@
                 {% block all_answers %}
                     <hr class="end-of-activity">
                     <div class="tab-content best-answers">
-                    {% if activity.get_instance.forum_post.forumcourse %}
+                    {% if a.subtype == 'forumcourse' %}
                         <a href="{% url 'course_page' activity.get_instance.forum_post.forum.forumcourse.course.slug %}?page=connect&amp;post={{ post.question.id }}"> {% blocktrans %} Reply {% endblocktrans %} </a>
                     {% else %}
                         <a href="{% url 'forum_general' %}?post={{ post.question.id }}"> {% blocktrans %} Reply {% endblocktrans %} </a>

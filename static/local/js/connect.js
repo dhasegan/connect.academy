@@ -12,9 +12,10 @@ var ConnectGlobal = (function() {
             forgotPasswordPopover: $("#forgot-pw-popover"),
             localeLinks: $('.locale-change-link'),
             helpsigns: $('.help-sign'),
-            fileUploads: $('.file-input'),
+            fileUploads: '.file-input',
             ckeditorNonEditableSelector: '.rich-cke-text',
-            ckeditorEditableSelector: ".ckeditor"
+            ckeditorEditableSelector: ".ckeditor",
+            focusAnswer: ".focus-answer"
         },
         global_variables: {
             boundForumActions: false, // Has ForumPage.bindUIActions been called?
@@ -25,6 +26,7 @@ var ConnectGlobal = (function() {
         s = this.settings;
         globals = this.global_variables;
         this.bindUIActions();
+       
         //this.refreshCKInline();
         //this.refreshCK();
 
@@ -37,6 +39,7 @@ var ConnectGlobal = (function() {
         else if ($('.comments-page').length > 0) { CoursePage.init(); }
         else if ($('.homework-dashboard-page').length > 0) { HomeworkDashboard.init(); }
 
+        
 
     };
 
@@ -157,8 +160,10 @@ var ConnectGlobal = (function() {
             $.get($(this).attr("src"));
         });
 
+
+
         // General File uploads
-        $(s.fileUploads).change(function () {
+        $(document).on('change', s.fileUploads, function () {
             var file_path = this.value.replace("C:\\fakepath\\", "");
             $(this).parents('.upload-file-wrapper').find('.upload-file-input').val(file_path);
         });
