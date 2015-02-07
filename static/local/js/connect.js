@@ -14,7 +14,8 @@ var ConnectGlobal = (function() {
             helpsigns: $('.help-sign'),
             fileUploads: '.file-input',
             ckeditorNonEditableSelector: '.rich-cke-text',
-            ckeditorEditableSelector: ".ckeditor"
+            ckeditorEditableSelector: ".ckeditor",
+            focusAnswer: ".focus-answer"
         },
         global_variables: {
             boundForumActions: false, // Has ForumPage.bindUIActions been called?
@@ -25,6 +26,7 @@ var ConnectGlobal = (function() {
         s = this.settings;
         globals = this.global_variables;
         this.bindUIActions();
+       
         //this.refreshCKInline();
         //this.refreshCK();
 
@@ -37,6 +39,7 @@ var ConnectGlobal = (function() {
         else if ($('.comments-page').length > 0) { CoursePage.init(); }
         else if ($('.homework-dashboard-page').length > 0) { HomeworkDashboard.init(); }
 
+        
 
     };
 
@@ -156,6 +159,8 @@ var ConnectGlobal = (function() {
         s.emailConfirmationLinks.click( function() {
             $.get($(this).attr("src"));
         });
+
+
 
         // General File uploads
         $(document).on('change', s.fileUploads, function () {
