@@ -12,7 +12,7 @@ var ConnectGlobal = (function() {
             forgotPasswordPopover: $("#forgot-pw-popover"),
             localeLinks: $('.locale-change-link'),
             helpsigns: $('.help-sign'),
-            fileUploads: $('.file-input'),
+            fileUploads: '.file-input',
             ckeditorNonEditableSelector: '.rich-cke-text',
             ckeditorEditableSelector: ".ckeditor"
         },
@@ -158,7 +158,7 @@ var ConnectGlobal = (function() {
         });
 
         // General File uploads
-        $(s.fileUploads).change(function () {
+        $(document).on('change', s.fileUploads, function () {
             var file_path = this.value.replace("C:\\fakepath\\", "");
             $(this).parents('.upload-file-wrapper').find('.upload-file-input').val(file_path);
         });

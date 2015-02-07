@@ -331,6 +331,7 @@ def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
         context['course_path'] = course.get_catalogue()
         context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change 
         context['syllabus'] = course_syllabus_context(course,current_user)
+        context['teaching_assistants'] = course.teaching_assistants.all()
     
     elif page == "wiki":
         context['can_edit_wiki'] = course.can_edit_wiki(current_user)

@@ -13,7 +13,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django import forms
-
+from django.contrib import messages
 from app.helpers import get_slug_for
 
 
@@ -35,8 +35,13 @@ USER_TYPES = (
 )
 
 def determine_profilepic_filename(instance, filename):
-        name,extension = filename.split(".")
+        parts = filename.split('.')
+        if len(parts) > 1:
+            extension = parts[-1]
+        else:
+            extension = "jpg"
         return "users/%s/%s" % (instance.username, "profile_picture." + extension)
+        
 
 # Inheriting from Base Class 'User'
 class jUser(User):
