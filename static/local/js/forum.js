@@ -49,7 +49,7 @@ var ForumPage = (function() {
 
         if ($(s.focusAnswer))
             $('html, body').animate({
-                scrollTop: $(s.focusAnswer).offset().top
+                scrollTop: $(s.focusAnswer).offset().top - 100
             }, 500);
 
     };
