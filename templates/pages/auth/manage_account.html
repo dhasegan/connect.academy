@@ -22,11 +22,11 @@
                                     <li {% if page_id == "reset_password"%}class="active"{%endif%}><a href="#reset_password_container" role="tab" data-toggle="tab">{% trans "Reset Password" %}</a></li>
                                 {% else %}
                                     <li {% if not page_id or page_id == "change_username"  %}class="active" {%endif%}><a href="#change_username_container" role="tab" data-toggle="tab">{% trans "Change username" %}</a></li>
+                                    <li {% if page_id == "change_email"  %}class="active" {%endif%}><a href="#change_email_container" role="tab" data-toggle="tab">{% trans "Change email" %}</a></li>
                                     <li {% if page_id == "change_password"%}class="active"{%endif%}><a href="#change_password_container" role="tab" data-toggle="tab">{% trans "Change password" %}</a></li>
                                     <li {% if page_id == "change_name"%}class="active"{%endif%}><a href="#change_name_container" role="tab" data-toggle="tab">{% trans "Change name" %}</a></li>
                                     <li {% if page_id == "change_profile_picture"%}class="active"{%endif%}><a href="#change_profile_picture" role="tab" data-toggle="tab">{% trans "Change profile picture" %}</a></li>
                                 {% endif %}
-                                
                             </ul>
                         </nav>
                     </div>
@@ -78,6 +78,28 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="panel panel-default tab-pane fade {% if page_id == 'change_email'%}in active{%endif%}" id="change_email_container">
+                        <div class="panel-body">
+                            <h3>{% trans "Change Email" %}</h3>
+                            <hr>
+                            <form method="post" action="/email_change_action" id="email_form">
+                                {%csrf_token%}
+                                <div class="form-group">
+                                    <input type="email" name="email" id="email" class="form-control input-sm" placeholder='{% trans "New Email" %}' maxlength="30" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="password" id="password" class="form-control input-sm" placeholder='{% trans "Password" %}' autocomplete="off" required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" id="change_email_button" class="btn btn-primary" autocomplete="off">
+                                        {% trans "Change Email" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
 
                     <div class="panel panel-default tab-pane fade {% if page_id == 'change_password'%}in active{%endif%}" id="change_password_container">
                         <div class="panel-body">
