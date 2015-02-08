@@ -1,5 +1,5 @@
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from app.models import *
 
@@ -31,7 +31,8 @@ def require_active_user(view):
 			raise Http404
 		juser = get_object_or_404(jUser, id=request.user.id)
 		if not juser.is_active:
-			return HttpResponseRedirect(reverse('error_page', args=["not-active"]))
+			messages.error(request, "Please activate your account to be able to post to connect.")
+			return redirect(reverse('home'))
 		return view(request,*args, **kwargs)
 	return decorated
 
