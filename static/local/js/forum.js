@@ -47,7 +47,7 @@ var ForumPage = (function() {
         me.onRefreshAnswerTab($('html'));
         me.bindUIActions();
 
-        if ($(s.focusAnswer))
+        if ($(s.focusAnswer).length>0 && $(s.focusAnswer).offset())
             $('html, body').animate({
                 scrollTop: $(s.focusAnswer).offset().top - 100
             }, 500);
