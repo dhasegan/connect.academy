@@ -16,7 +16,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 # ContentType is needed for version control
 from django.contrib.contenttypes.models import ContentType
-
+from versioning.models import *
 
 from app.models import *
 from app.context_processors import *
