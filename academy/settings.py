@@ -287,7 +287,7 @@ PIPELINE_COMPILERS = (
 )
 
 
-#PIPELINE_SASS_BINARY = PROJECT_ROOT + "/thirdparty/sass/bin/sass"
+PIPELINE_SASS_BINARY = PROJECT_ROOT + "/thirdparty/sass/bin/sass"
 
 PIPELINE_CSS = {
     'bootstrap': {
