@@ -354,7 +354,7 @@ def send_email_pw_reset(request):
     form = EmailPasswordResetForm(request.POST)
 
     if not form.is_valid():
-        messages.error(request, "There is no such user registered with that email.")
+        messages.error(request, "There is no registered user with that email.")
         return redirect( reverse('welcome') )
 
     user = form.cleaned_data['user']

@@ -111,6 +111,7 @@ def manage_account(request):
 
 @require_POST
 @login_required
+@require_active_user
 def username_change_action(request):
     user = get_object_or_404(jUser, id=request.user.id)
     redirect_url = reverse("welcome")
@@ -146,6 +147,7 @@ def username_change_action(request):
 
 @require_POST
 @login_required
+@require_active_user
 def password_change_action(request):
     form = ChangePasswordForm(request.POST)
     redirect_url = reverse('manage_account') + "?page_id=change_password"
@@ -177,6 +179,7 @@ def password_change_action(request):
 
 @require_POST
 @login_required
+@require_active_user
 def name_change_action(request):
     form = ChangeNameForm(request.POST)
     redirect_url = reverse('manage_account') + "?page_id=change_name"
@@ -206,7 +209,7 @@ def name_change_action(request):
     messages.success(request, success_message)
     return redirect( revert('manage_account') )
 
-
+@require_POST
 @login_required
 @require_active_user
 def new_profile_picture(request):
@@ -224,7 +227,7 @@ def new_profile_picture(request):
 
     return redirect( reverse("profile", args=(user.username, )) )
 
-
+@require_POST
 @login_required
 @require_active_user
 def edit_summary(request):
