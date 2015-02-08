@@ -36,6 +36,7 @@ from app.decorators import *
 def course_page(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
+    forum = course.forum
     context = {
         "page": "course",
         'user_auth': user
@@ -52,8 +53,9 @@ def course_page(request, slug):
 
     if 'filter' in request.GET and request.GET['filter']:
         tag = request.GET['filter']
-        if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
-            context['current_filter'] = tag
+        if forum:
+            if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
+                context['current_filter'] = tag
         if 'current_tab' not in context:
             context['current_tab'] = 'connect'
 
