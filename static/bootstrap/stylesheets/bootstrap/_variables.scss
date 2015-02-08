@@ -31,8 +31,8 @@ $brand-dark:            #151621 !default;
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-$body-bg:                   #fff !default;
-$body-bg-image:             url(../../graphy.png);
+$body-bg:                   $gray-lighter !default;
+//$body-bg-image:             url(../../graphy.png);
 $body-bg-repeat:            repeat;
 //** Global text color on `<body>`.
 $text-color:            $gray-dark !default;

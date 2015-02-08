@@ -63,7 +63,8 @@ table thead {
 $campusnet-popover-info-color:      #29ABE2;
 $login-input-padding:           3px;
 $navbar-clickable-links:    'Source Sans Pro', sans-serif;
-$navbar-font-size:      15px;
+$navbar-font-size:      13px;
+$navbar-tab-width:      100px;
 .connect-navigation {
     border-bottom: 1px solid white;
     background-color: $connect-dark-blue;
@@ -101,22 +102,20 @@ $navbar-font-size:      15px;
         li {
             a {
                 color: white;
-                width: 100px;
+                width: $navbar-tab-width;
                 text-align:center;
                 font-family: $navbar-clickable-links;
                 font-size: $navbar-font-size;
-                &:hover {
-                    font-weight: bold;
-                }
+                
                 
             }
             &.active, &:hover {
                 a, a:hover {
                     background: none;
-                    font-weight: normal;
+                    //font-weight: bold;
                     color: $connect-gray;
-                    border-bottom: 5px solid $connect-light-blue;
-                    padding-bottom:10px;
+                    border-bottom: 3px solid $connect-light-blue;
+                    padding-bottom:12px;
                 }
                 
 
@@ -345,7 +344,11 @@ $course-img-max-size:           150px;
                     font-size: 10px;
                 }
             }
+
+
         }
+
+
         .info-bar {
             hr {
                 margin: 8px 0px;    
@@ -497,9 +500,9 @@ $course-img-max-size:           150px;
 
 // Welcome page
 $register-panel-padding-top:        75px;
-$register-panel-heading-color:      #282828;
+$register-panel-heading-color:      $brand-primary;
 $register-validation-font-size:     11px;
-$register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
+$register-panel-heading-font-family: 'Raleway', 'Source Sans Pro', sans-serif;
 
 
 .register-heading {
@@ -509,6 +512,9 @@ $register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
     font-family: $register-panel-heading-font-family;
 
 }
+
+
+
 .validation-ok {
     color: $brand-success;
     font-size: $register-validation-font-size;
@@ -534,6 +540,23 @@ $register-panel-heading-font-family: 'Source Sans Pro', sans-serif;
 .blacktie-link {
     color: #999;
 }
+
+
+.modal-header {
+    color: white;
+    h3 {
+        color:white;
+        font-weight: normal;
+    }
+}
+
+.modal-header-cancel {
+    background: transparent;
+    span {
+        color: white;
+    }
+}
+
 
 $tag-color: $connect-gray;
 $tag-hover-color: $connect-light-blue;

@@ -1,23 +1,59 @@
+{% load humanize %}
 {% load i18n %}
 <div class='course-syllabus'>
-	<ol>
+	<ol class="list-group">
 	{% for entry in syllabus %}
-		<li>
+		<li class='list-group-item' >
 			<a data-toggle="collapse" data-parent=".course-syllabus" href="#course-topic{{entry.topic.id}}">{{ entry.topic.name }}</a> 
 			
 			<div class="collapse course-topic" id="course-topic{{entry.topic.id}}">
-				{% if entry.topic.description %}
-					<strong> {% trans "Description" %}: </strong>
-					<span class='content'>
-						{{ entry.topic.description }}
-					</span>
-				{% endif %}
+				<hr/>
+				<div >
+					<div class='row'>
+						<div class='col-md-4'>
+							{% if entry.topic.description %}
+								<div class='container'>
+									{{ entry.topic.description }}
+								</div>
+							{% endif %}
+						</div>
+						
+						<div class='col-md-5'>
+							<div class='container'>
+								{% if entry.documents %}
+									<div class='row'>
+										{% for document in entry.documents %}
+											<div class='col-md-12'>
+												<a href="{% url 'view_document' course.slug document.id %}"> {{ document.name }} </a>
+											</div>
+										{% endfor %}
+									</div>	
+								{% endif %}
+							</div>
+						</div>
 
-				{% if entry.documents %}
-					{% with entry.documents as documents %}
-						{% include 'objects/course/documents.html' %}
-					{% endwith %}
-				{% endif %}
+						<div class='col-md-3'>
+							<div class='container'>
+								{% if entry.documents %}
+									<div class='row'>
+										{% for document in entry.documents %}
+											<div class='col-md-12'>
+												<span class='text-muted'>{{ document.submit_time|date:'d.m.Y   H:i' }}</span>
+											</div>
+										{% endfor %}
+									</div>	
+								{% endif %}
+							</div>
+						</div>
+
+
+
+						
+
+					</div>
+				</div>
+
+				
 
 				{% comment %}
 					{% if entry.homework %}
