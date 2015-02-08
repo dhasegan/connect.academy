@@ -10,16 +10,13 @@
 				<hr/>
 				<div >
 					<div class='row'>
-						<div class='col-md-4'>
+						<div class='col-md-5'>
 							{% if entry.topic.description %}
-								<div class='container'>
 									{{ entry.topic.description }}
-								</div>
 							{% endif %}
 						</div>
 						
-						<div class='col-md-5'>
-							<div class='container'>
+						<div class='col-md-4'>
 								{% if entry.documents %}
 									<div class='row'>
 										{% for document in entry.documents %}
@@ -29,11 +26,9 @@
 										{% endfor %}
 									</div>	
 								{% endif %}
-							</div>
 						</div>
 
 						<div class='col-md-3'>
-							<div class='container'>
 								{% if entry.documents %}
 									<div class='row'>
 										{% for document in entry.documents %}
@@ -43,12 +38,7 @@
 										{% endfor %}
 									</div>	
 								{% endif %}
-							</div>
 						</div>
-
-
-
-						
 
 					</div>
 				</div>
