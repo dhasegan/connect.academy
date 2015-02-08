@@ -628,10 +628,8 @@ def export_as_ical(request):
         event['title'] = appointment.location
         calendar.add_component(event)
 
-    data = calendar.to_ical()
-
-    if not validate_ical(data):
-        return Http404
+    if not validate_ical(calendar, purpose="export"):
+        raise Http404
 
     export_name = user.username + "_schedule.ics"
     response = HttpResponse(calendar.to_ical(), content_type='application/calendar')

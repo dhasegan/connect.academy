@@ -25,15 +25,16 @@ class ChangeEmailForm(forms.Form):
         cleaned_data = super(ChangeEmailForm,self).clean()
         errors = []
         try:
-            emailID, domain = email.split('@')
+            emailID, domain = cleaned_data['email'].split('@')
             university = University.objects.get(domains__name=domain)
             cleaned_data['is_alumnus'] = False
             if Domain.objects.get(name=domain).domain_type == DOMAIN_TYPE_ALUMNI:
                 cleaned_data['is_alumnus'] = True
-        except:
+        except Exception as e:
             errors.append(forms.ValidationError("The e-mail address you entered is not valid."))
+            print e
         if errors:
-            raise forms.ValidationError(erorrs)
+            raise forms.ValidationError(errors)
         return cleaned_data
 
 class EditSummaryForm(forms.Form):

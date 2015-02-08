@@ -12,5 +12,6 @@ urlpatterns = patterns('app.profile.views',
     url(r'^password_change_action$', 'password_change_action', name='password_change_action'),
     url(r'^username_change_action$', 'username_change_action', name='username_change_action'),
     url(r'^name_change_action$', 'name_change_action', name='name_change_action'),
+    url(r'^email_change_action$','email_change_action', name='email_change_action'),
 
 )

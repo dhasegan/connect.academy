@@ -15,6 +15,7 @@ from app.profile.context_processors import *
 from app.decorators import *
 from app.helpers import *
 from app.messages import *
+from app.auth.helpers import send_email_confirmation
 
 import json
 
@@ -202,7 +203,7 @@ def name_change_action(request):
     user.save()
 
     success_message = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "first and last name"})
-    messages.success(success_message)
+    messages.success(request, success_message)
     return redirect( revert('manage_account') )
 
 
@@ -247,3 +248,52 @@ def edit_summary(request):
         "html" : html,
     }
     return HttpResponse(json.dumps(context))
+
+
+@login_required
+@require_active_user
+@require_POST
+def email_change_action(request):
+    context = {'page':'email_change_action'}
+    user = get_object_or_404(jUser,id=request.user.id)
+    form = ChangeEmailForm(request.POST)
+    redirect_url = reverse('manage_account') + "?page_id=change_email"
+
+    if not form.is_valid():
+        raise Http404 #change this
+
+
+    u_name = user.username
+    passw = form.cleaned_data['password']
+    new_email = form.cleaned_data['email']
+    is_alumnus = form.cleaned_data['is_alumnus']
+
+    auth_user = authenticate(username=u_name, password=passw)
+
+    if not auth_user:
+        error_message = render_to_string('objects/notifications/profile/incorrect_password.html', {})
+        messages.error(request, error_message)
+        return redirect(redirect_url)
+    user.email = new_email
+
+    #if the new email indicates the user is an alumnus, change the user type 
+    #accordingly, else maintain the current user type
+    if is_alumnus:
+        user.user_type = USER_TYPE_ALUMNUS
+
+    user.is_active = False
+    user.save()
+    send_email_confirmation(request,user)
+
+    success_message = render_to_string('objects/notifications/profile/changed_object.html', {'changed_object': "email"})
+    messages.success(request,success_message)
+    return redirect(redirect_url)
+
+
+
+
+
+
+
+
+

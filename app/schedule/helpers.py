@@ -1,4 +1,5 @@
 from icalendar import *
+import re
 #the function is used for formatting the string
 #@param date_string A string of the form YYYY-mm-ddTHH:MM:SS.uuuuuu+(HHMM | HH:MM)
 #@return formatted_string The string with milliseconds (as opposed to microseconds)
@@ -38,11 +39,20 @@ def validate_ical(calendar, purpose='export'):
 		cal = None
 		try:
 			cal = Calendar.from_ical(calendar)
-		except Exception:
-			pass
+		except Exception as e:
+			print e
 		return cal
 
 	if purpose=='export':
+		date_pattern = r'^[0-9]{8}[T][0-9]{6}[Z]?$' # the pattern that should be matched
+		pattern = re.compile(date_pattern)
+
+		for component in calendar.walk():
+			if component.name == "VEVENT":
+				start_date_string = str(component.get("dtstart"))
+				end_date_string = str(component.get("dtend"))
+				match_start = pattern.match(start_date_string)
+				match_end = pattern.match(end_date_string)
+				if not match_start or not match_end:
+					return False
 		return True
-		
-	return False
