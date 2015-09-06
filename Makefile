@@ -48,7 +48,7 @@ venv: install_venv
 install: install_psql install_sass install_graphviz install_pkg-config install_venv
 
 .ONESHELL:
-setup: install_packs venv
+setup: install venv
 	( \
 		. venv/bin/activate; \
 		pip install -r requirements.txt; \
