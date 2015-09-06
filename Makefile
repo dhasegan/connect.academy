@@ -11,18 +11,18 @@ setup_venv:
 install: setup_venv
 	( \
 		. venv/bin/activate; \
-		sudo apt-get install libpq-dev python-dev; \
-		sudo apt-get install rbenv; \
-		sudo gem install sass; \
-		sudo apt-get install graphviz libgraphviz-dev pkg-config; \
+		sudo apt-get install libpq-dev python-dev -y; \
+		sudo apt-get install rbenv -y; \
+		sudo gem install sass -y; \
+		sudo apt-get install graphviz libgraphviz-dev pkg-config -y; \
 		pip install -r requirements.txt; \
-		mkdir academy/db; \
+		mkdir -p academy/db; \
 		touch academy/db/database.db; \
 		./manage.py syncdb --noinput; \
 		./manage.py migrate guardian; \
 		./manage.py schemamigration app --initial; \
 		./manage.py migrate app --fake; \
-		./manage.py shell_plus; \
+		./manage.py shell_plus -c "Populator.populate_xsmall(); exit"; \
 		./manage.py runserver; \
 	)
 
