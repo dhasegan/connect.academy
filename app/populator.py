@@ -138,7 +138,7 @@ class Populator:
         description = ""
         for i in range(random.randint(1, 4)):
             name += self.random_word() + " "
-        for i in range(random.randint(30, 60)):
+        for i in range(random.randint(10, 30)):
             description += self.random_word() + " "
         CourseTopic.objects.create(name=name, description=description, course=course)
 
@@ -168,7 +168,8 @@ class Populator:
         category = random.choice(leaf_categories)
 
         university = category.university
-
+        if not university:
+            print "Category %s has no university." % category.name
         # Add additional description
         # Add all other fields
         course = Course.objects.create(course_id=course_id, course_type=course_type, name=name,
@@ -325,6 +326,11 @@ class Populator:
             rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type)
             rat.save()
         else:
+            profs = course.professors.all()
+            if len(profs) == 0:
+                # If the course for some reason has no professors yet, add one. 
+                prof = random.choice(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR) )
+                ProfessorCourseRegistration.objects.create(course=course, professor=prof, is_approved=True)
             prof = random.choice(course.professors.all())
             rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type, professor=prof)
             rat.save()
@@ -407,7 +413,7 @@ class Populator:
     def populate_forum_upvotes_object(self, obj, students):
         random.shuffle(students)
         nr_students = len(students)
-        for i in range( random.randint(1, nr_students/2-1) ):
+        for i in range( random.randint(2, nr_students/2-1) ):
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
@@ -640,7 +646,10 @@ class Populator:
                 wiki = ""
                 for i in range(50):
                     wiki = wiki + " " + self.random_word().capitalize()
-                WikiPage.objects.create(course=course, content=wiki)
+                try:
+                    WikiPage.objects.create(course=course, content=wiki)
+                except IntegrityError:
+                    print "Course %s already has a wiki." % course.name
 
 
     def populate_wiki_contributions(self):
