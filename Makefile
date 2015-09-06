@@ -1,33 +1,65 @@
+OS := $(shell uname)
+
 install_pip:
+ifeq ($(OS),Darwin)
+	sudo easy_install pip
+else
 	sudo apt-get install python-pip
+endif
+
+install_psql:
+ifeq ($(OS),Darwin)
+	brew install postgresql
+else
+	sudo apt-get install libpq-dev python-dev -y
+endif
+
+install_rbenv:
+ifeq ($(OS),Darwin)
+	brew install rbenv
+else
+	sudo apt-get install rbenv -y
+endif
+
+install_sass: install_rbenv
+	sudo gem install sass
+	git submodule update
+
+install_graphviz:
+ifeq ($(OS),Darwin)
+	brew install graphviz
+else
+	sudo apt-get install graphviz libgraphviz-dev -y
+endif
+
+install_pkg-config:
+ifeq ($(OS),Darwin)
+	brew install pkg-config
+else
+	sudo apt-get install pkg-config -y
+endif
 
 install_venv: install_pip
-	sudo pip install virtualenv
+	pip install virtualenv
 
-setup_venv:
-	virtualenv venv
+venv: install_venv
+	virtualenv venv --distribute
+
+install: install_psql install_sass install_graphviz install_pkg-config install_venv
 
 .ONESHELL:
-install: setup_venv
+setup: install_packs venv
 	( \
 		. venv/bin/activate; \
-		sudo apt-get install libpq-dev python-dev -y; \
-		sudo apt-get install rbenv -y; \
-		sudo gem install sass -y; \
-		sudo apt-get install graphviz libgraphviz-dev pkg-config -y; \
 		pip install -r requirements.txt; \
 		mkdir -p academy/db; \
-		touch academy/db/database.db; \
 		./manage.py syncdb --noinput; \
 		./manage.py migrate guardian; \
 		./manage.py schemamigration app --initial; \
 		./manage.py migrate app --fake; \
-		./manage.py shell_plus -c "Populator.populate_xsmall(); exit"; \
-		./manage.py runserver; \
+		echo "Populator.populate_xsmall(); exit" | ./manage.py shell_plus; \
 	)
 
 clean:
 	rm academy/db -r
 	rm app/migrations/* 
-
-#also, when installing locally (for development), make sure Connect's environment variables aren't in your ~/.bashrc 
