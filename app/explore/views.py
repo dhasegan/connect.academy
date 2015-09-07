@@ -13,8 +13,10 @@ from django.views.decorators.cache import cache_page
 from app.models import *
 from app.explore.context_processors import *
 from app.cached_items import cache_explore_context, cache_categories
+from app.decorators import require_decider
 
 @login_required
+@require_decider("view_explore")
 def explore(request):
     context = {
         "page": "explore",
@@ -32,6 +34,7 @@ def explore(request):
 
 @login_required
 @require_POST
+@require_decider("view_explore")
 def explore_categories(request):
     context = {}
     checked = []

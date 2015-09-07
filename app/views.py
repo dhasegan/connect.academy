@@ -14,7 +14,8 @@ from app.models import *
 from app.context_processors import *
 from app.forms import *
 from app.messages import *
-
+from app.decorators import require_decider
+from app.decider import decider
 
 def welcome(request):
     if request.user and request.user.is_authenticated():
@@ -41,10 +42,17 @@ def welcome(request):
     context.update(csrf(request))
     return render(request, "pages/welcome_page.html", context)
 
-
-
 @login_required
 def dashboard(request):
+    if not decider.is_available("view_dashboard", request.user.username):
+        available_deciders = decider.available_deciders(request.user.username)
+        if 'view_forum' in available_deciders:
+            return redirect( reverse('forum_general') )
+        if 'view_explore' in available_deciders:
+            return redirect( reverse('explore') )
+        if 'view_schedule' in available_deciders:
+            return redirect( reverse('view_schedule') )
+
     context = {
         'page': 'dashboard',
         'user_auth': request.user.juser
@@ -61,22 +69,7 @@ def dashboard(request):
         response.set_cookie("oldest_activity_id", str(context['activities'][-1]['activity'].id), path="/")
     return response
 
-
-@login_required
-def all_comments(request):
-    context = {
-        'page': 'all_comments',
-    }
-    user = get_object_or_404(jUser, id=request.user.id)
-
-    reviews_context = []
-    reviews = Review.objects.all()
-    for review in reviews:
-        reviews_context.append( review_context(review, user) )
-    context['comments'] = reviews_context
-
-    return render(request, 'pages/comments.html', context)
-
+@require_decider("view_conduct_code")
 def conduct_code(request):
     context = {
         'page': 'conduct_code'
@@ -92,6 +85,7 @@ def error_page(request, error_type):
     return HttpResponse(json.dumps(context))
 
 @login_required
+@require_decider("view_dashboard")
 def load_dashboard_activities(request):
     user = request.user.juser
     activities = dashboard_activities(request,user)
@@ -119,6 +113,7 @@ def load_dashboard_activities(request):
     return response
 
 @login_required
+@require_decider("view_dashboard")
 def load_new_dashboard_activities(request):
     user = request.user.juser
     activities = new_dashboard_activities(request,user)

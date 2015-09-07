@@ -13,7 +13,6 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-
       
     </div>
 
@@ -21,15 +20,22 @@
       
         <ul class="nav navbar-nav navbar-tabs">
           {% if user_auth %}
-              {% if user_auth.user_type == 2 %} {% comment %} user is ADMIN {% endcomment %}
+              {% if user_auth.user_type == 2 and 'view_manage' in activated_features %} {% comment %} user is ADMIN {% endcomment %}
                 <li {% if page == 'course_categories' %} class="active" {% endif %}><a href="{% url 'course_categories' %}"> {% trans "Admin" %}</a></li>
               {% endif %}
 
-              <li {% if page == 'dashboard' %} class="active" {% endif %}><a href="{% url 'dashboard' %}"> {% trans "Dashboard" %}</a></li>
-              <li {% if page == 'forum_general' %} class="active" {% endif %}><a href="{% url 'forum_general' %}">{% trans "Connect" %}</a></li>
-              <li {% if page == 'explore' %} class="active" {% endif %}><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li>
-              <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}">{% trans "Calendar" %}</a></li>
-              
+              {% if 'view_dashboard' in activated_features %}
+                <li {% if page == 'dashboard' %} class="active" {% endif %}><a href="{% url 'dashboard' %}"> {% trans "Dashboard" %}</a></li>
+              {% endif %}
+              {% if 'view_forum' in activated_features %}
+                <li {% if page == 'forum_general' %} class="active" {% endif %}><a href="{% url 'forum_general' %}">{% trans "Connect" %}</a></li>
+              {% endif %}
+              {% if 'view_explore' in activated_features %}
+                <li {% if page == 'explore' %} class="active" {% endif %}><a href="{% url 'explore' %}">{% trans "Explore" %}</a></li>
+              {% endif %}
+              {% if 'view_schedule' in activated_features %}
+                <li {% if page == 'view_schedule' %} class="active" {% endif %}><a href="{% url 'view_schedule' %}">{% trans "Calendar" %}</a></li>
+              {% endif %}
 
               {% if page == 'all_comments' %} 
                 <li class="active" ><a href="{% url 'all_comments' %}"> {% trans "All comments" %}</a></li>
@@ -41,8 +47,6 @@
               <li> <a href="#contact" class="smoothScroll">{% trans "Contact" %}</a></li>
           {% endif %}
         </ul>
-      
-          
 
       <a class="connect-brand navbar-brand" href="{% url 'explore' %}">
         <img class="logo" id="connect_logo" src="{{ STATIC_URL }}images/connect_logo-25x34.png"/>

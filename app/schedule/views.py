@@ -32,6 +32,7 @@ date_format = "%Y-%m-%dT%H:%M:%S.%f%z"
 ical_date_format = "%Y%m%dT%H%M%S%f"
 
 @login_required
+@require_decider("view_schedule")
 def view_schedule(request):
     context = {
         'page': 'view_schedule'

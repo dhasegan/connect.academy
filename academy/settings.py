@@ -145,6 +145,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     "django.contrib.messages.context_processors.messages",
     "app.context_processors.user_authenticated",
+    "app.context_processors.deciders",
     "app.context_processors.debug"
 )
 
@@ -374,3 +375,7 @@ AGE_JUDGEMENT = 300000
 ### Jacobs specific settings
 import json
 JACOBS_USER_DETAILS = json.load( open(SETTINGS_ROOT + "jacobs_user_details.json") )
+
+### Deciders
+import json
+DECIDERS_VALUES = json.load( open(SETTINGS_ROOT + "deciders.json") )

@@ -1,0 +1,57 @@
+{
+    "view_dashboard": {
+        "available": false,
+        "comment": "The dashboard page",
+        "users": []
+    },
+    "view_forum": {
+        "available": true,
+        "comment": "The general forum page"
+    },
+    "view_explore": {
+        "available": true,
+        "comment": "The explore page"
+    },
+    "view_manage": {
+        "available": true,
+        "comment": "The manage page"
+    },
+    "view_schedule": {
+        "available": false,
+        "comment": "The schedule page"
+    },
+
+    "view_course_dashboard": {
+        "available": false,
+        "comment": "The course activity/dashboard page"
+    },
+    "view_course_forum": {
+        "available": false,
+        "comment": "The course forum"
+    },
+    "view_course_info": {
+        "available": true,
+        "comment": "The course info page"
+    },
+    "course_wiki": {
+        "available": false,
+        "comment": "Access the course wiki"
+    },
+    "course_resources": {
+        "available": false,
+        "comment": "Access the course resources"
+    },
+    "course_homework": {
+        "available": false,
+        "comment": "Access the course homework"
+    },
+    "course_professor": {
+        "available": false,
+        "comment": "Access the course professor dashboard"
+    },
+
+    "view_conduct_code": {
+        "available": true,
+        "comment": "Code of conduct for the website"
+    }
+}
