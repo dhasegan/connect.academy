@@ -138,7 +138,7 @@ class Populator:
         description = ""
         for i in range(random.randint(1, 4)):
             name += self.random_word() + " "
-        for i in range(random.randint(30, 60)):
+        for i in range(random.randint(10, 30)):
             description += self.random_word() + " "
         CourseTopic.objects.create(name=name, description=description, course=course)
 
@@ -148,16 +148,8 @@ class Populator:
 
     def add_course(self, leaf_categories=None):
         if not leaf_categories:
-            categories = Category.objects.all()
-            leaf_categories = []
-            for category in categories:
-                is_leaf = True
-                for checking_category in categories:
-                    if checking_category.parent == category:
-                        is_leaf = False
-                if is_leaf:
-                    leaf_categories.append(category)
-
+            leaf_categories = [c for c in Category.objects.all() if self.is_leaf(c)]
+        
         course_id = random.randint(100000, 999999)
         name = self.random_word() + " " + self.random_word() + " " + self.random_word()
         course_type = random.choice(list(COURSE_TYPES))[0]
@@ -168,7 +160,8 @@ class Populator:
         category = random.choice(leaf_categories)
 
         university = category.university
-
+        if not university:
+            print "Category %s has no university." % category.name
         # Add additional description
         # Add all other fields
         course = Course.objects.create(course_id=course_id, course_type=course_type, name=name,
@@ -192,17 +185,12 @@ class Populator:
 
     def populate_courses(self, count):
         categories = Category.objects.all()
-        leaf_categories = []
-        for category in categories:
-            is_leaf = True
-            for checking_category in categories:
-                if checking_category.parent == category:
-                    is_leaf = False
-            if is_leaf:
-                leaf_categories.append(category)
-
+        leaf_categories = [c for c in categories if self.is_leaf(c)]
         for i in range(count):
             self.add_course(leaf_categories)
+
+    def is_leaf(self,category):
+        return category.parent and category.children.count() == 0
 
     def populate_registrations(self):
         courses = Course.objects.all()
@@ -325,6 +313,11 @@ class Populator:
             rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type)
             rat.save()
         else:
+            profs = course.professors.all()
+            if len(profs) == 0:
+                # If the course for some reason has no professors yet, add one. 
+                prof = random.choice(jUser.objects.filter(user_type=USER_TYPE_PROFESSOR) )
+                ProfessorCourseRegistration.objects.create(course=course, professor=prof, is_approved=True)
             prof = random.choice(course.professors.all())
             rat = Rating(user=rater, course=course, rating=rating, rating_type=rat_type, professor=prof)
             rat.save()
@@ -407,7 +400,7 @@ class Populator:
     def populate_forum_upvotes_object(self, obj, students):
         random.shuffle(students)
         nr_students = len(students)
-        for i in range( random.randint(1, nr_students/2-1) ):
+        for i in range( random.randint(0, nr_students-1) ):
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
@@ -418,7 +411,7 @@ class Populator:
                 course = forum.forumcourse.course
                 students = list(course.students.all())
                 if not students:
-                    return ;
+                    return
             posts = forum.forumpost_set.all()
             for post in posts:
                 self.populate_forum_upvotes_object(post, students)
@@ -641,6 +634,7 @@ class Populator:
                 for i in range(50):
                     wiki = wiki + " " + self.random_word().capitalize()
                 WikiPage.objects.create(course=course, content=wiki)
+                
 
 
     def populate_wiki_contributions(self):
