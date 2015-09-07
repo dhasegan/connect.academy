@@ -33,13 +33,12 @@ var ConnectGlobal = (function() {
         if ($('.explore-page').length > 0) { ExplorePage.init(); }
         else if ($('.course-page').length > 0) { CoursePage.init(); }
         else if ($('.profile-page').length > 0) { ProfilePage.init(); ForumPage.init(); CoursePage.init(); Activities.init(); } // ForumPage needed to upvote forum posts
-        else if ($('.forum-page').length > 0) { ForumPage.init(); } 
+        else if ($('.forum-page').length > 0) { ForumPage.init(); }
+        else if ($('.post-page').length > 0) { ForumPage.init(); }
         else if ($('.welcome-page').length > 0) { WelcomePage.init(); } 
         else if ($('.dashboard-page').length > 0) { ForumPage.init(); CoursePage.init(); Activities.init(); } // ForumPage needed to upvote forum posts, add dashboard page when needed
         else if ($('.comments-page').length > 0) { CoursePage.init(); }
         else if ($('.homework-dashboard-page').length > 0) { HomeworkDashboard.init(); }
-
-        
 
     };
 

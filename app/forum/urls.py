@@ -5,6 +5,7 @@ urlpatterns = patterns('app.forum.views',
     url(r'^general/new_post$', 'new_post_general', name='forum_new_post_general'),
     url(r'^(?P<slug>[\w-]+)/$', 'forum_course', name='forum_course'),
     url(r'^(?P<slug>[\w-]+)/new_post$', 'new_post_course', name="forum_new_post_course"),
+    url(r'^post/(?P<post_id>[0-9]+)$', 'forum_post', name="forum_post"),
 
     url(r'^new_post$', 'new_post', name="forum_new_post"),
     url(r'^new_answer$', 'new_answer', name="forum_new_answer"),

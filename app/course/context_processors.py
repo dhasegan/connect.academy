@@ -11,22 +11,21 @@ from app.models import *
 from app.ratings import *
 
 import app.context_processors as cp_main
-from app.forum.context_processors import forum_context
+from app.forum.context_processors import course_forum_context
 import itertools
-
 
 
 def course_ratings_context(course, current_user=None):
     context = []
     types_dict = { key: val for key, val in RATING_TYPES }
     profs_dict = { prof.id: prof for prof in course.professors.all().annotate(
-        score = Avg('rated__rating'), 
+        score = Avg('rated__rating'),
         count =  Count('rated'),
-        my_score = SumIf('rated', only= Q(rated__user__id=current_user.id)) 
+        my_score = SumIf('rated', only= Q(rated__user__id=current_user.id))
         )}
-   
+
     other_ratings = course.rating_set.filter(~Q(rating_type=PROFESSOR_R)).values('rating_type').annotate(
-        score=Avg('rating'), 
+        score=Avg('rating'),
         count=Count('id'),
         my_score = SumIf('rating', only = Q(user__id=current_user.id))
         )
@@ -67,7 +66,7 @@ def course_ratings_context(course, current_user=None):
         }
         context.append(context_rating)
 
-    
+
     return context
 
 def review_context(comment, current_user=None):
@@ -75,7 +74,7 @@ def review_context(comment, current_user=None):
         'comment': comment
     }
     votes = Review.objects.filter(id=comment.id).aggregate(
-        upvotes = Count('upvoted_by'), 
+        upvotes = Count('upvoted_by'),
         downvotes = Count('downvoted_by'),
         my_upvote = CountIf('upvoted_by', only = Q(upvoted_by__id=current_user.id)),
         my_downvote = CountIf('downvoted_by', only = Q(upvoted_by__id=current_user.id)))
@@ -105,10 +104,10 @@ def course_reviews_context(course, current_user=None):
 def course_homework_count_submitted(course, homework_request):
     num_files = homework_request.number_files
     students = StudentCourseRegistration.objects.filter(course=course, is_approved=True)
-    
-    students = students.annotate(files_submitted=CountIf('student__coursehomeworksubmission', 
+
+    students = students.annotate(files_submitted=CountIf('student__coursehomeworksubmission',
         only=Q(student__coursehomeworksubmission__homework_request__id=homework_request.id) ))
-    
+
     cnt_submitted = students.filter(files_submitted=num_files).count()
     # Only 1 big ass query
 
@@ -126,7 +125,7 @@ def homework_context(hw, current_user):
     is_allowed = course.get_registration_status(current_user) == COURSE_REGISTRATION_REGISTERED
     is_student = current_user.is_student_of(course)
     can_submit_homework = is_student and is_allowed and within_deadline
-    
+
     homework_submissions = []
     if current_user.is_student_of(course):
         homework_submissions = CourseHomeworkSubmission.objects.filter(submitter=current_user, homework_request=hw)
@@ -232,7 +231,7 @@ def course_syllabus_context(course, current_user):
 # Professor extra settings
 def course_teacher_dashboard(request, course, user):
     from app.forum.context_processors import forum_stats_context
-    
+
     context = {
         'is_teacher': user.is_professor_of(course)  or user.is_assistant_of(course)
     }
@@ -324,15 +323,15 @@ def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
 
     if page == "activity":
         context['activities'] = course_activities(request, course)
-    
+
     elif page == "info":
         context['ratings'] = course_ratings_context(course, current_user)
         context['comments'] = course_reviews_context(course, current_user)
         context['course_path'] = course.get_catalogue()
-        context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change 
+        context['semester'] = context['course_path'].split(" > ")[0] # This only works for the current Jacobs course catalogue. Needs to change
         context['syllabus'] = course_syllabus_context(course,current_user)
         context['teaching_assistants'] = course.teaching_assistants.all()
-    
+
     elif page == "wiki":
         context['can_edit_wiki'] = course.can_edit_wiki(current_user)
         if hasattr(course, 'wiki'):
@@ -341,11 +340,11 @@ def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
             content_object = wiki_ctype.get_object_for_this_type(pk=course.wiki.id)
 
             context['wiki_revisions'] = Revision.objects.filter(content_type=wiki_ctype, object_id=content_object.pk)
-    
+
     elif page == "connect":
         # Course forum link
         context['forum'] = course.forum
-        context.update(forum_context(course.forum, current_user)) 
+        context.update(course_forum_context(course.forum, current_user))
     elif page == "resources":
         context.update(course_resources_context(course, current_user))
 
@@ -393,18 +392,18 @@ def course_activities(request, course):
 
 
 
-# returns the context for NEW activities (those that were created after page load) 
+# returns the context for NEW activities (those that were created after page load)
 # The request GET parameters must carry the id of the most recent activity loaded with key="last_id"
 def new_course_activities(request,course):
     user = request.user.juser
     last_id = long(request.GET.get('last_id', 0))
-    
-    # Course activities 
+
+    # Course activities
     activities_list = Activity.course_page_activities(course).filter(id__gt=last_id)
     activities_list = [a for a in activities_list if a.can_view(user)]
 
     activities_context = [cp_main.activity_context(activity,user) for activity in activities_list]
-    return activities_context 
+    return activities_context
 
 
 

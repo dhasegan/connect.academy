@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.conf import settings
 
 from app.models import *
@@ -76,18 +77,18 @@ def forum_post_context(post, current_user):
     return context
 
 
-def forum_context(forum, current_user):
+def course_forum_context(forum, current_user):
     allowed_tags = forum.get_view_tags(current_user)
     context_forum = {
         "forum": forum,
-        "user": current_user
+        "user": current_user,
+        "course": forum.course
     }
-    if forum.forum_type == FORUM_COURSE:
-        context_forum["course"] = forum.course
 
-    context_forum['posts'] = []
     tags = []
     posts = ForumPost.objects.filter(forum=forum)
+    
+    context_forum['posts'] = []
     for post in posts:
         if post.tag.name in [atag.name for atag in allowed_tags] or post.posted_by == current_user:
             context_forum['posts'].append(forum_post_context(post, current_user))
@@ -97,6 +98,24 @@ def forum_context(forum, current_user):
 
     return context_forum
 
+def general_forum_context(forum, current_user, page):
+    context_forum = {
+        "forum": forum,
+        "user": current_user
+    }
+
+    all_posts = ForumPost.objects.filter(forum=forum)
+    paginator = Paginator(all_posts, 3) # TODO: finish pagination
+    if page > paginator.num_pages:
+        page = paginator.num_pages
+
+    context_forum['posts'] = []
+    for post in paginator.page(page):
+        context_forum['posts'].append(forum_post_context(post, current_user))
+    tags = forum.get_tags()
+    context_forum['tags'] = sorted(tags, key=lambda x:x.name)
+
+    return context_forum
 
 def forum_discussion_answer_context(answer, current_user):
     context = {

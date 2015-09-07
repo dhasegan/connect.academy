@@ -78,7 +78,7 @@ var ForumPage = (function() {
                         for (idx in result.id_selectors) {
                             $(result.id_selectors[idx]).html(result.html);
                         }
-                    }, 
+                    },
                     function(jqXHR, textStatus, errorThrown) {
                         console.log(textStatus);
                     }
@@ -86,7 +86,7 @@ var ForumPage = (function() {
             });
             ConnectGlobal.global_variables.boundForumActions = true;
         }
-        
+
 
         $(document).on('click', s.focusAnswer, function() {
             $(this).removeClass(s.focusAnswer.substring(1));
@@ -100,7 +100,7 @@ var ForumPage = (function() {
         if (tag_filter == "all") {
             $(s.posts).show()
             return ;
-        } 
+        }
 
         $(s.posts).each( function() {
             var show = $(this).hasClass('ptag-' + tag_filter)
@@ -135,12 +135,10 @@ var ForumPage = (function() {
                     var $answer_tab = $(result.id_selector);
                     $answer_tab.html(result.html);
                     ForumPage.onRefreshAnswerTab($answer_tab);
-                    
-                }, 
+                },
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
                 }
-
             );
         });
 
@@ -175,9 +173,7 @@ var ForumPage = (function() {
                 url: this.href,
                 success: function(response) {
                     $forum_answers.html(response.html).slideDown();
-
                     ForumPage.onRefreshAnswerTab($forum_answers);
-
                 }
             })
         });
@@ -187,7 +183,7 @@ var ForumPage = (function() {
             var form = $(this).parents('form')[0];
             Utils.SubmitFormAjax(event, form,
                 function(result) {
-                }, 
+                },
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
                 }
@@ -198,7 +194,7 @@ var ForumPage = (function() {
             var form = $(this).parents('form')[0];
             Utils.SubmitFormAjax(event, form,
                 function(result) {
-                }, 
+                },
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus)
                 }
@@ -216,7 +212,7 @@ var ForumPage = (function() {
             $($(this).parent()).find('.answer-body').toggleClass('hidden');
         });
         // Upvote posts and answers
-        
+
         // Follow post
         SubtreeDOM.find(s.postFollowContainerSelector).on("submit", "form", function(event) {
             event.preventDefault();
@@ -236,7 +232,7 @@ var ForumPage = (function() {
             });
         });
        ConnectGlobal.refreshCKInline(SubtreeDOM);
-       ConnectGlobal.refreshCK(SubtreeDOM); 
+       ConnectGlobal.refreshCK(SubtreeDOM);
     };
 
     return me;
