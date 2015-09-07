@@ -564,6 +564,7 @@ $tag-bg-color: $connect-dark-blue;
 $dropdown-menu-bg-color: $connect-dark-blue;
 // Forum page
 .forum-page,
+.post-page,
 .course-forum {
     .forum-bar {
         background-color: $connect-dark-blue;
@@ -617,7 +618,7 @@ $dropdown-menu-bg-color: $connect-dark-blue;
         }
     }
 
-    .answers-tabs {
+    .forum-answers {
         .post-details {
             .post-name {
                 margin-top: 8px;

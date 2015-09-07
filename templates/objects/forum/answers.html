@@ -1,38 +1,40 @@
 {% load i18n %}
 {% load humanize %}
 
-<div class="forum-answers">
-    <div class="panel panel-default">
-        <div class="panel-body">
+<div class="tab-pane fade {% if not answers_hidden %}in active{% endif %}" id="answers{{post.question.id}}">
+    <div class="forum-answers">
+        <div class="panel panel-default">
+            <div class="panel-body">
 
-            {% block post_details %}
-                {% include "objects/forum/post.html" %}
-            {% endblock post_details %}
+                {% block post_details %}
+                    {% include "objects/forum/post.html" %}
+                {% endblock post_details %}
 
-            {% block answer_question_form %}
-                <div id="answerquestion{{post.question.id}}" class="collapse">
-                    {% with post.question as question %}
-                        {% with question.id as answer_parent_id %}
-                            {% include 'objects/forum/new_answer.html' %}
+                {% block answer_question_form %}
+                    <div id="answerquestion{{post.question.id}}" class="collapse">
+                        {% with post.question as question %}
+                            {% with question.id as answer_parent_id %}
+                                {% include 'objects/forum/new_answer.html' %}
+                            {% endwith %}
                         {% endwith %}
-                    {% endwith %}
-                    <hr>
-                </div>
-            {% endblock answer_question_form %}
+                        <hr>
+                    </div>
+                {% endblock answer_question_form %}
 
-            {% block all_answers %}
-                <div class="tab-content best-answers">
-                    <strong> {% trans "Best Answers" %}: </strong>
-                    {% for answer in post.answers|dictsortreversed:"rating" %}
-                        {% include 'objects/forum/answer.html' %}
-                    {% endfor %}
-                    {% if post.answers|length == 0 %}
-                        <div class="no-posts">
-                            {% trans "There are no answers yet." %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endblock all_answers %}
+                {% block all_answers %}
+                    <div class="tab-content best-answers">
+                        <strong> {% trans "Best Answers" %}: </strong>
+                        {% for answer in post.answers|dictsortreversed:"rating" %}
+                            {% include 'objects/forum/answer.html' %}
+                        {% endfor %}
+                        {% if post.answers|length == 0 %}
+                            <div class="no-posts">
+                                {% trans "There are no answers yet." %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endblock all_answers %}
+            </div>
         </div>
     </div>
 </div>

@@ -27,15 +27,12 @@ def forum_course(request, slug):
     context["course"] = course
 
     forum = course.forum
-    context = dict(context.items() + forum_context(forum, user).items())
+    context = dict(context.items() + course_forum_context(forum, user).items())
 
     if 'filter' in request.GET and request.GET['filter']:
         tag = request.GET['filter']
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
-
-    if 'post' in request.GET and request.GET['post']:
-        context['current_post'] = int(request.GET['post'])
 
     return render(request, "pages/forum/page.html", context)
 
@@ -49,18 +46,31 @@ def forum_general(request):
     }
 
     forum = get_object_or_404(ForumGeneral, forum_type=FORUM_GENERAL)
-    context = dict(context.items() + forum_context(forum, user).items())
+    page = int(request.GET['page']) if 'page' in request.GET and request.GET['page'] else 1
+    context = dict(context.items() + general_forum_context(forum, user, page).items())
 
     if 'filter' in request.GET and request.GET['filter']:
         tag = request.GET['filter']
         if tag in [vtag.name for vtag in forum.get_view_tags(user)]:
             context['current_filter'] = tag
 
-    if 'post' in request.GET and request.GET['post']:
-        context['current_post'] = int(request.GET['post'])
-
     return render(request, "pages/forum/page.html", context)
 
+
+@require_GET
+@login_required
+def forum_post(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+    user = get_object_or_404(jUser, id=request.user.id)
+
+    context = {
+        'forum': post.forum,
+        'post': forum_post_context(post, user)
+    }
+    if post.forum.forum_type == FORUM_COURSE:
+        context['course'] = post.forum.forumcourse.course
+
+    return render(request, "pages/forum/post.html", context)
 
 @require_GET
 @require_active_user
