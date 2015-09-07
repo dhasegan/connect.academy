@@ -148,16 +148,8 @@ class Populator:
 
     def add_course(self, leaf_categories=None):
         if not leaf_categories:
-            categories = Category.objects.all()
-            leaf_categories = []
-            for category in categories:
-                is_leaf = True
-                for checking_category in categories:
-                    if checking_category.parent == category:
-                        is_leaf = False
-                if is_leaf:
-                    leaf_categories.append(category)
-
+            leaf_categories = [c for c in Category.objects.all() if self.is_leaf(c)]
+        
         course_id = random.randint(100000, 999999)
         name = self.random_word() + " " + self.random_word() + " " + self.random_word()
         course_type = random.choice(list(COURSE_TYPES))[0]
@@ -193,17 +185,12 @@ class Populator:
 
     def populate_courses(self, count):
         categories = Category.objects.all()
-        leaf_categories = []
-        for category in categories:
-            is_leaf = True
-            for checking_category in categories:
-                if checking_category.parent == category:
-                    is_leaf = False
-            if is_leaf:
-                leaf_categories.append(category)
-
+        leaf_categories = [c for c in categories if self.is_leaf(c)]
         for i in range(count):
             self.add_course(leaf_categories)
+
+    def is_leaf(self,category):
+        return category.parent and category.children.count() == 0
 
     def populate_registrations(self):
         courses = Course.objects.all()
@@ -413,7 +400,7 @@ class Populator:
     def populate_forum_upvotes_object(self, obj, students):
         random.shuffle(students)
         nr_students = len(students)
-        for i in range( random.randint(2, nr_students/2-1) ):
+        for i in range( random.randint(0, nr_students-1) ):
             obj.upvoted_by.add(students[i])
 
     def populate_forum_upvotes(self):
@@ -424,7 +411,7 @@ class Populator:
                 course = forum.forumcourse.course
                 students = list(course.students.all())
                 if not students:
-                    return ;
+                    return
             posts = forum.forumpost_set.all()
             for post in posts:
                 self.populate_forum_upvotes_object(post, students)
@@ -646,10 +633,8 @@ class Populator:
                 wiki = ""
                 for i in range(50):
                     wiki = wiki + " " + self.random_word().capitalize()
-                try:
-                    WikiPage.objects.create(course=course, content=wiki)
-                except IntegrityError:
-                    print "Course %s already has a wiki." % course.name
+                WikiPage.objects.create(course=course, content=wiki)
+                
 
 
     def populate_wiki_contributions(self):

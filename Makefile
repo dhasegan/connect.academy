@@ -1,5 +1,7 @@
 OS := $(shell uname)
 
+
+
 install_pip:
 ifeq ($(OS),Darwin)
 	sudo easy_install pip
@@ -53,13 +55,20 @@ setup: install venv
 		. venv/bin/activate; \
 		pip install -r requirements.txt; \
 		mkdir -p academy/db; \
-		./manage.py syncdb --noinput; \
-		./manage.py migrate guardian; \
+		mkdir -p app/migrations; \
 		./manage.py schemamigration app --initial; \
-		./manage.py migrate app --fake; \
+		./manage.py syncdb --noinput; \
+		./manage.py migrate app; \
+		./manage.py migrate guardian; \
+		./manage.py migrate django_extensions; \
 		echo "Populator.populate_xsmall(); exit" | ./manage.py shell_plus; \
 	)
 
+.ONESHELL:
 clean:
-	rm academy/db -r
-	rm app/migrations/* 
+	sudo rm academy/db -rf
+	sudo rm app/migrations/* -f 
+	. venv/bin/activate
+	./manage.py reset_db
+	sudo rm venv -rf
+	
