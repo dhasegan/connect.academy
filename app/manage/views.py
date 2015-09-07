@@ -9,7 +9,6 @@ from django.views.decorators.http import require_GET, require_POST
 from django.core.mail import send_mail
 from django.db.models import Q
 
-
 from app.models import *
 from app.context_processors import *
 from app.decorators import *
@@ -18,6 +17,7 @@ from app.manage.forms import *
 
 @require_active_user
 @login_required
+@require_decider("view_manage")
 def course_categories(request):
     context = {
         'page': 'course_categories',
@@ -119,6 +119,7 @@ def admin_form_action(request):
         print form.errors
         raise Http404
 
+@require_decider("view_manage")
 def user_management(request):
     context = {
         'page': 'user_management'

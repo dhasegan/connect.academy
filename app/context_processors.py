@@ -7,7 +7,7 @@ from django.db.models import Q
 from app.models import *
 from app.ratings import *
 from app.forum.context_processors import forum_stats_context, forum_answer_context, forum_post_context
-#from app.course.context_processors import *
+from app.decider import decider
 
 
 def debug(context):
@@ -15,6 +15,13 @@ def debug(context):
         'DEBUG': settings.DEBUG
     }
 
+def deciders(request):
+    username = None
+    if request.user and request.user.is_authenticated():
+        username = request.user.username
+    return {
+        "activated_features": decider.available_deciders(username)
+    }
 
 def user_authenticated(request):
     context = {}
@@ -28,7 +35,6 @@ def user_authenticated(request):
                 context['warning'] = render_to_string('objects/notifications/auth/email_not_activated.html', {})
 
     return context
-
 
 def dashboard_activities(request,user):
     logged_in_user = request.user.juser # Should normally always be the same as user, adding this as a safety check
@@ -47,7 +53,6 @@ def dashboard_activities(request,user):
 
     activities_context = [activity_context(activity,user) for activity in filtered_list]
     return activities_context
-
 
 # loads NEW activities asynchronously, called with ajax
 def new_dashboard_activities(request,user):

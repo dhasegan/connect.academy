@@ -29,6 +29,7 @@ from app.decorators import *
 @require_GET
 @require_active_user
 @login_required
+@require_decider("course_wiki")
 def edit_wiki_page(request, slug):
     context = {
         "page": "edit_wiki_page",
@@ -71,6 +72,7 @@ def edit_wiki_page(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_wiki")
 def save_wiki_page(request, slug):
     context = {
         "page": "edit_wiki_page",  # it will be rendered on edit_wiki_page
@@ -122,6 +124,7 @@ def revert_wiki_page(request):
 
 
 @login_required
+@require_decider("course_wiki")
 def view_wiki_page(request, slug):
     context = {
         'page': 'view_wiki_page',

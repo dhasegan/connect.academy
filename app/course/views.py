@@ -230,6 +230,7 @@ def view_document(request, slug, document_id):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_resoures")
 def submit_document(request, slug):
     context = {}
 
@@ -259,6 +260,7 @@ def submit_document(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_resoures")
 def resubmit_document(request, slug):
     context = {}
 
@@ -284,6 +286,7 @@ def resubmit_document(request, slug):
 @require_GET
 @require_active_user
 @login_required
+@require_decider("course_homework")
 def view_homework(request, slug, homework_id):
     user = get_object_or_404(jUser, id=request.user.id)
     course = get_object_or_404(Course, slug=slug)
@@ -325,6 +328,7 @@ def view_homework(request, slug, homework_id):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_homework")
 def submit_homework(request, slug):
     context = {}
 
@@ -358,6 +362,7 @@ def submit_homework(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_homework")
 def submit_homework_request(request, slug):
     context = {}
 
@@ -411,6 +416,7 @@ def submit_homework_request(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_homework")
 def edit_homework_request(request, slug):
     context = {}
 
@@ -454,6 +460,7 @@ def edit_homework_request(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_homework")
 def submit_homework_grades(request, slug):
 
     user = get_object_or_404(jUser, id=request.user.id)
@@ -529,6 +536,7 @@ def submit_homework_grades(request, slug):
 @require_GET
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def homework_dashboard(request, slug):
     context = {
         'page': 'homework_dashboard'
@@ -585,6 +593,7 @@ def vote_review(request, slug):
 
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def register_course(request, slug):
     context = {
         "page": "register_course"
@@ -642,6 +651,7 @@ def register_course(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def approve_student_registrations(request,slug):
     # Make sure the logged in user is allowed to approve these registrations
     user = get_object_or_404(jUser, id=request.user.id)
@@ -688,6 +698,7 @@ def approve_student_registrations(request,slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def send_mass_email(request, slug):
     course = get_object_or_404(Course, slug=slug)
     context = {
@@ -724,6 +735,7 @@ def send_mass_email(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def update_info(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -749,6 +761,7 @@ def update_info(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def update_syllabus(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -775,6 +788,7 @@ def update_syllabus(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def delete_syllabus_entry(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -794,6 +808,7 @@ def delete_syllabus_entry(request, slug):
 ### ACTIVITIES AJAX URLS #####
 
 @login_required
+@require_decider("view_course_dashboard")
 def load_course_activities(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
@@ -816,6 +831,7 @@ def load_course_activities(request, slug):
     return response
 
 @login_required
+@require_decider("view_course_dashboard")
 def load_new_course_activities(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
@@ -837,6 +853,7 @@ def load_new_course_activities(request,slug):
 @require_POST
 @require_professor
 @require_active_user
+@require_decider("course_professor")
 def add_new_ta(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = request.user.juser
@@ -900,6 +917,7 @@ def add_new_ta(request,slug):
 @require_POST
 @require_professor
 @require_active_user
+@require_decider("course_professor")
 def change_ta_permissions(request,slug):
     context = {
         'page': 'course_page'
@@ -938,6 +956,7 @@ def change_ta_permissions(request,slug):
 @require_POST
 @require_professor
 @require_active_user
+@require_decider("course_professor")
 def remove_ta(request,slug):
     course = get_object_or_404(Course, slug=slug)
     current_user = request.user.juser
@@ -985,6 +1004,7 @@ def remove_ta(request,slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def new_course_module(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -1005,6 +1025,7 @@ def new_course_module(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def update_course_module(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -1029,6 +1050,7 @@ def update_course_module(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def delete_course_module(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -1048,6 +1070,7 @@ def delete_course_module(request, slug):
 @require_POST
 @require_active_user
 @login_required
+@require_decider("course_professor")
 def change_reg_module(request,slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)

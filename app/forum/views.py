@@ -17,6 +17,7 @@ from app.decorators import *
 
 @require_GET
 @login_required
+@require_decider("view_course_forum")
 def forum_course(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -41,6 +42,7 @@ def forum_course(request, slug):
 
 @require_GET
 @login_required
+@require_decider("view_forum")
 def forum_general(request):
     user = get_object_or_404(jUser, id=request.user.id)
 
@@ -65,6 +67,7 @@ def forum_general(request):
 @require_GET
 @require_active_user
 @login_required
+@require_decider("view_course_forum")
 def new_post_course(request, slug):
     course = get_object_or_404(Course, slug=slug)
     user = get_object_or_404(jUser, id=request.user.id)
@@ -84,6 +87,7 @@ def new_post_course(request, slug):
 @require_GET
 @require_active_user
 @login_required
+@require_decider("view_forum")
 def new_post_general(request):
     user = get_object_or_404(jUser, id=request.user.id)
     context = {
