@@ -99,7 +99,7 @@ def course_page(request, slug):
     print context['current_tab']
     context = dict(context.items() + course_page_context(request, course, context['current_tab']).items())
     forum = course.forum
-    context = dict(context.items() + forum_context(forum, user).items())
+    context = dict(context.items() + course_forum_context(forum, user).items())
 
     response = render(request, "pages/course.html", context)
     if context.get('activities'):
