@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import urllib
 import re
 import sys
 import os
@@ -10,9 +9,11 @@ from collections import deque
 import HTMLParser
 _htmlparser = HTMLParser.HTMLParser()
 unescape = _htmlparser.unescape
+from common.urllib import urlopen_with_retry
+
 
 BASE_URL = "https://campusnet.jacobs-university.de"
-START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A9YySH..76KIWqEjheRYANS.nDWnW-UEBJkynWmCsx0heBMeK6jgn2yRCzJ2nmsHB6TZFq2H609HAw-3S.VqAIWivPCz8zBYotVvOtPfPTTHXJJa0mf65IbTCOIa="
+START_URL = "https://campusnet.jacobs-university.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=ACTION&ARGUMENTS=-A9wUGHrCQ94QzHocWDjRHTRBwOiFfGu5F3AHaB8ke9WzZCoVL8BX6Oq7Re8iUarD1mGWFtULh0RA9TWQnTVUTOkX9eDOfmqHGpTklffRkDI4ft71zEhqHDhH.NCf="
 
 def cleanLink(link):
     return unescape(link)
@@ -33,7 +34,7 @@ while queue:
     link = queue.popleft()
     print link
 
-    page = urllib.urlopen(link)
+    page = urlopen_with_retry(link)
     page = page.read()
     encoding = chardet.detect(page)['encoding']
     if encoding != 'unicode':
@@ -50,20 +51,22 @@ while queue:
         newLinks = getLinks(table)
         newCourseNames = getCourseNames(table)
 
-        courses.extend(newLinks)
-        courseNames.extend(newCourseNames)
+        for name, link in zip(newCourseNames, newLinks):
+            if name not in courseNames:
+                courses.append(link)
+                courseNames.append(name)
         continue
     ulList = page[indexStart:indexStop]
     newLinks = getLinks(ulList)
     queue.extend(newLinks)
 
 
-fileHandle = open('courses', 'w')
+fileHandle = open('course_links-2015-Fall-01.csv', 'w')
 for course in courses:
     fileHandle.write(str(course) + "\n")
 fileHandle.close()
 
-fileHandle = open('courseNames', 'w')
+fileHandle = open('course_names-2015-Fall-01.csv', 'w')
 for course in courseNames:
     # Hacked way to avoid some bad characters
     # course = course.replace('\xe9', 'e').replace('\xa0', ' ').strip()

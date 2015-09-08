@@ -1,5 +1,4 @@
 
-import urllib
 import re
 import sys
 import os
@@ -9,6 +8,7 @@ import chardet
 from collections import deque
 from htmlentitydefs import name2codepoint
 from HTMLParser import HTMLParser
+from common.urllib import urlopen_with_retry
 
 # helper for appointments parser
 def get_match_indeces(pattern, string):
@@ -151,8 +151,8 @@ importantFields = [ 'Instructors', 'Type', 'Org-unit', 'Course Name Abbreviation
                     'Credits', 'Min. | Max. participants', 'Partial Grades', 'Official Course Description',
                     'Additional Information', 'This course is divided into the following sections',
                     'Further Grading Information']
-linksFile = open('courses', 'r')
-namesFile = open('courseNames', 'r')
+linksFile = open('course_links-2015-Fall-01.csv', 'r')
+namesFile = open('course_names-2015-Fall-01.csv', 'r')
 
 coursesList = []
 
@@ -162,7 +162,7 @@ for link in linksFile:
     courseName = namesFile.readline()
     print courseName[:-1]
     # Download the page
-    connection = urllib.urlopen(link)
+    connection = urlopen_with_retry(link)
     page = connection.read()
     encoding = chardet.detect(page)['encoding']
     if encoding != 'unicode':
@@ -173,6 +173,10 @@ for link in linksFile:
     parser.feed(page)
     uglyCourseInfo = parser.getCourseInfo()
     test = json.dumps(uglyCourseInfo)
+
+    if not uglyCourseInfo:
+        print "Error: Could not parse this course! Probably a module. Check:", link
+        continue
 
     # Delete the extra stuff and make it a dictionary
     courseInfo = dict(map(lambda x: (cleanuper(x[0]),cleanuper(x[1])), uglyCourseInfo.iteritems() ))
@@ -224,6 +228,6 @@ for link in linksFile:
 linksFile.close()
 namesFile.close()
 
-outputFile = open('courseDetailsFall', 'w')
+outputFile = open('course_details-2015-Fall-01.json', 'w')
 outputFile.write( json.dumps(coursesList) )
 outputFile.close()
