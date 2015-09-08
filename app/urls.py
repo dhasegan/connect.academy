@@ -6,7 +6,6 @@ urlpatterns = patterns('app.views',
 
     url(r'^home$', 'dashboard', name='home'),
     url(r'^dashboard$', 'dashboard', name='dashboard'),
-    url(r'^all_comments$', 'all_comments', name='all_comments'),
     url(r'^conduct_code$', 'conduct_code', name='conduct_code'),
     url(r'^load_dashboard_activities$', 'load_dashboard_activities', name='load_dashboard_activities'),
     url(r'^load_new_dashboard_activities$', 'load_new_dashboard_activities', name='load_new_dashboard_activities'),
