@@ -317,7 +317,7 @@ class Course(models.Model):
         return course_path
 
     def can_edit_wiki(self, user):
-        return user.university.id == self.university.id
+        return user and (user.university.id == self.university.id)
 
     def save(self, *args, **kwargs):
         self.slug = get_slug_for(Course, self.pk, self.name)
@@ -656,6 +656,9 @@ class CourseDocument(models.Model):
         return str(self.name)
     def can_view(self,user):
         access = self.access
+        
+        if user == None:
+            return False
 
         if access == DOC_ACCESS_LEVEL_PUBLIC:
             return True
@@ -933,8 +936,12 @@ class ForumTag(models.Model):
     tag_type = models.CharField(max_length=1, default=FORUMTAG_EXTRA)
 
     def can_view(self, user, course=None):
+        
+        if not user:
+            return self.name in PublicForumTags
+
         if self.tag_type == FORUMTAG_TOPIC or self.tag_type == FORUMTAG_EXTRA:
-            return user.is_student_of(course) or user.is_professor_of(course)
+            return user.is_student_of(course) or user.is_professor_of(course) or user.is_assistant_of(course)
         if self.tag_type == FORUMTAG_GENERAL:
             return self.name in ForumGeneralTags
 

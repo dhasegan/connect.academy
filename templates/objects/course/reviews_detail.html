@@ -2,11 +2,21 @@
 
 <div class="course-detail course-reviews" id="course_reviews">
     <div class="submititems pull-right">
-        <a data-toggle="collapse" href="#submitreview"><button type="submit" class="btn btn-primary">{%trans "Submit review" %}</button></a>
         
+        {% if user %}
+        <a data-toggle="collapse" href="#submitreview">
+            <button type="submit" class="btn btn-primary">{%trans "Submit review" %}</button>
+        </a>
+
         <a data-toggle="collapse" href="#submitrating">
             <button type="submit" class="btn btn-primary">{% trans "Rate course" %}</button>
         </a>
+
+        {% else %}
+            <button type="submit" disabled class="btn btn-primary">{%trans "Submit review" %}</button>
+            <button type="submit" disabled class="btn btn-primary">{% trans "Rate course" %}</button>
+        {% endif %}
+    
     </div>
     <h4> {% trans "Reviews" %} </h4>
     <span class="content">

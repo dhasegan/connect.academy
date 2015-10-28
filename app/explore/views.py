@@ -15,20 +15,31 @@ from app.explore.context_processors import *
 from app.cached_items import cache_explore_context, cache_categories
 from app.decorators import require_decider
 
-@login_required
 @require_decider("view_explore")
 def explore(request):
+    
     context = {
         "page": "explore",
     }
 
-    user = get_object_or_404(jUser, id=request.user.id)
-    explore_context = cache_explore_context()
+    if request.user and request.user.is_authenticated():
+        user = get_object_or_404(jUser, id=request.user.id)
+        explore_context = cache_explore_context()
 
-    uni_category = user.university.get_university_category()
-    context['explore_categories'] = explore_categories_context([uni_category.id])
+        uni_category = user.university.get_university_category()
+        context['explore_categories'] = explore_categories_context([uni_category.id])
 
-    context = dict(context.items() + explore_context.items())
+        context = dict(context.items() + explore_context.items())
+    
+    else: # user is not logged in.
+        explore_context = cache_explore_context()
+        universities = University.objects.all()
+
+        uni_categs = [ uni.get_university_category() for uni in universities ]
+        context['explore_categories'] = explore_categories_context([categ.id for categ in uni_categs])
+
+        context = dict(context.items() + explore_context.items())
+    
     return render(request, "pages/explore.html", context)
 
 

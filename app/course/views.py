@@ -32,10 +32,13 @@ from app.decorators import *
 
 
 @require_GET
-@login_required
 def course_page(request, slug):
+    # request.user is a django.contrib.auth.models.AnonymousUser, with id None.
+    
+    user = jUser.objects.get(id=request.user.id) if request.user.id else None
+
     course = get_object_or_404(Course, slug=slug)
-    user = get_object_or_404(jUser, id=request.user.id)
+    
     forum = course.forum
     context = {
         "page": "course",
