@@ -41,16 +41,18 @@
                 <li class="active" ><a href="{% url 'all_comments' %}"> {% trans "All comments" %}</a></li>
               {% endif %}
           {% else %}
-              <li> <a href="#home" class="smoothScroll">{% trans "Home" %}</a></li>
+              <!--<li> <a href="#home" class="smoothScroll">{% trans "Home" %}</a></li>
               <li> <a href="#about" class="smoothScroll">{% trans "About" %}</a></li>
               <li> <a href="#team" class="smoothScroll"> {% trans "Team" %}</a></li>
-              <li> <a href="#contact" class="smoothScroll">{% trans "Contact" %}</a></li>
+              <li> <a href="#contact" class="smoothScroll">{% trans "Contact" %}</a></li> -->
+
           {% endif %}
         </ul>
 
       <a class="connect-brand navbar-brand" href="{% url 'explore' %}">
         <img class="logo" id="connect_logo" src="{{ STATIC_URL }}images/connect_logo-25x34.png"/>
       </a>
+
       {% include 'objects/welcome/navbar_login.html' %}
     </div>
   </div>

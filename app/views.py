@@ -18,8 +18,11 @@ from app.decorators import require_decider
 from app.decider import decider
 
 def welcome(request):
+    
     if request.user and request.user.is_authenticated():
         return redirect('/home')
+    else:
+        return redirect('/explore')
 
     context = {
         "page": "welcome"

@@ -25,6 +25,7 @@ endif
 
 install_sass: install_rbenv
 	sudo gem install sass
+	git submodule init
 	git submodule update
 
 install_graphviz:

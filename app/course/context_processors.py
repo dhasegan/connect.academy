@@ -21,13 +21,13 @@ def course_ratings_context(course, current_user=None):
     profs_dict = { prof.id: prof for prof in course.professors.all().annotate(
         score = Avg('rated__rating'),
         count =  Count('rated'),
-        my_score = SumIf('rated', only= Q(rated__user__id=current_user.id))
+        my_score = SumIf('rated', only= Q(rated__user__id=current_user.id if current_user else None))
         )}
 
     other_ratings = course.rating_set.filter(~Q(rating_type=PROFESSOR_R)).values('rating_type').annotate(
         score=Avg('rating'),
         count=Count('id'),
-        my_score = SumIf('rating', only = Q(user__id=current_user.id))
+        my_score = SumIf('rating', only = Q(user__id=current_user.id if current_user else None))
         )
 
     for prof_id in profs_dict:
@@ -76,8 +76,8 @@ def review_context(comment, current_user=None):
     votes = Review.objects.filter(id=comment.id).aggregate(
         upvotes = Count('upvoted_by'),
         downvotes = Count('downvoted_by'),
-        my_upvote = CountIf('upvoted_by', only = Q(upvoted_by__id=current_user.id)),
-        my_downvote = CountIf('downvoted_by', only = Q(upvoted_by__id=current_user.id)))
+        my_upvote = CountIf('upvoted_by', only = Q(upvoted_by__id=current_user.id if current_user else None)),
+        my_downvote = CountIf('downvoted_by', only = Q(upvoted_by__id=current_user.id if current_user else None)))
 
     context_comment['upvotes'] = votes['upvotes']
     context_comment['downvotes']  = votes['downvotes']
@@ -216,10 +216,10 @@ def course_syllabus_context(course, current_user):
     for topic in course.course_topics.all():
         topic_context = {
             'topic': topic,
-            'documents': [doc for doc in topic.documents.all() if doc.can_view(current_user)],
+            'documents': [doc for doc in topic.documents.all() if current_user and doc.can_view(current_user)],
 
         }
-        if current_user.is_participant_of(course):
+        if current_user and current_user.is_participant_of(course):
             topic_context['homework'] = course_homework_context(course,current_user, topic.id)
 
         context.append(topic_context)
@@ -290,11 +290,18 @@ def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
 
     # Current user
     current_user = None
-    if request.user.is_authenticated():
+    registration_status = None
+    if request.user and request.user.is_authenticated():
         current_user = jUser.objects.get(id=request.user.id)
 
     # User - Course Registration status (open|pending|registered|not allowed)
-    registration_status = course.get_registration_status(current_user)
+    if current_user:
+        registration_status = course.get_registration_status(current_user)
+        
+        context['teacher'] = {
+            "is_teacher":  current_user.is_professor_of(course)  or current_user.is_assistant_of(course)
+        }
+
     registration_deadline = course.get_registration_deadline()  # course registration deadline
 
     # Is course registration open?
@@ -307,10 +314,6 @@ def course_page_context(request, course,page=AVAILABLE_COURSE_PAGES[0]):
 
     if registration_status in [COURSE_REGISTRATION_OPEN, COURSE_REGISTRATION_PENDING]:
         context['course_modules'] = course.modules.all().values('name','id')
-
-    context['teacher'] = {
-        "is_teacher":  current_user.is_professor_of(course)  or current_user.is_assistant_of(course)
-    }
 
 
     ##########################################################################################
