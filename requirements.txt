@@ -32,5 +32,5 @@ requests==2.3.0
 scss==0.8.73
 six==1.7.3
 static==1.0.2
-urllib3==1.10
+urllib3==1.26.5
 wsgiref==0.1.2
