@@ -18,7 +18,7 @@ futures==2.1.6
 gunicorn==18.0
 haystack==0.15
 icalendar==3.8.4
-ipython==2.1.0
+ipython==7.16.3
 newrelic==2.30.0.27
 psycopg2==2.5.2
 pygraphviz==1.2
